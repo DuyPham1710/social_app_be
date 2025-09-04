@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import RegisterUserDto from '../user/dto/register.user.dto';
 import UserResponseDto from '../user/dto/user.response.dto';
 import { UserService } from '../user/user.service';
@@ -7,6 +7,7 @@ import * as bcrypt from 'bcrypt';
 import { plainToInstance } from 'class-transformer';
 import { JwtService } from '@nestjs/jwt';
 import { MailService } from '../mail/mail.service';
+import { VerifyAccountDto } from './dto/verify.account';
 
 @Injectable()
 export class AuthService {
@@ -29,7 +30,7 @@ export class AuthService {
         const otp: string = generateOtp(6);
 
         //  console.log(`>>> check otp: ${otp}`);
-        await this.mailService.sendMail(dto.email, dto.fullName, otp);
+        await this.mailService.sendMail(dto.email, dto.username, otp);
 
         const hashedPassword = await bcrypt.hash(dto.password, 10);
 
@@ -57,4 +58,23 @@ export class AuthService {
         };
     }
 
+    async verifyAccount(verifyAccountDto: VerifyAccountDto): Promise<UserResponseDto> {
+        const user = await this.userService.findByEmail(verifyAccountDto.email);
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
+        const otpExpirationTime = 1 * 60 * 1000; // 1 phút = 60.000 ms
+        const otpValidUntil = new Date(Date.now() - otpExpirationTime);
+
+        if (user.otp === verifyAccountDto.otp && user.otpGeneratedTime && user.otpGeneratedTime > otpValidUntil) {
+            user.isActive = true;
+            await this.userService.update(user.id.toString(), user);
+
+            return plainToInstance(UserResponseDto, user, {
+                excludeExtraneousValues: true
+            });
+        }
+        throw new UnauthorizedException('OTP is invalid or has expired. Please regenerate a new OTP and try again.');
+    }
 }

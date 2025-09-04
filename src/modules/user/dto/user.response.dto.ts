@@ -9,10 +9,19 @@ export default class UserResponseDto {
     fullName: string;
 
     @Expose()
+    phoneNumber: string;
+
+    @Expose()
     bio?: string;
 
     @Expose()
     avatarUrl?: string;
+
+    @Expose()
+    dateOfBirth?: string;
+
+    @Expose()
+    gender?: string;
 
     @Expose()
     email: string;

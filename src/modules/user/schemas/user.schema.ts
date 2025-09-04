@@ -5,14 +5,23 @@ export type UserDocument = User & Document;
 
 @Schema({ timestamps: true }) // tự động tạo createdAt, updatedAt
 export class User {
-    @Prop({ type: String, required: true })
+    @Prop({ type: String })
     fullName: string;
+
+    @Prop({ type: String })
+    phoneNumber: string;
 
     @Prop({ type: String })
     bio: string;
 
     @Prop({ type: String })
     avatarUrl: string;
+
+    @Prop({ type: String })
+    dateOfBirth: string;
+
+    @Prop({ type: String })
+    gender: string;
 
     @Prop({ type: String, required: true, unique: true })
     email: string;

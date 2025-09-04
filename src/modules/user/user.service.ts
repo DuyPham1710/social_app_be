@@ -5,6 +5,7 @@ import { Model } from 'mongoose';
 import UserResponseDto from './dto/user.response.dto';
 import { plainToInstance } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
+import UpdateUserDto from './dto/update.user.dto';
 
 @Injectable()
 export class UserService {
@@ -71,5 +72,15 @@ export class UserService {
             { refreshToken: hashedRefreshToken },
             { new: true } // trả về user đã cập nhật 
         );
+    }
+
+    async update(userId: number, updateUserDto: UpdateUserDto): Promise<UserResponseDto> {
+        await this.userModel.findByIdAndUpdate(userId, updateUserDto, { new: true });
+
+        const user = await this.userModel.findById(userId).exec();
+
+        return plainToInstance(UserResponseDto, user, {
+            excludeExtraneousValues: true
+        });
     }
 }
