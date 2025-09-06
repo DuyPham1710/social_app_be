@@ -54,7 +54,8 @@ export class AuthService {
         await this.userService.updateRefreshToken(user.userId, refreshToken);
         return {
             accessToken: this.jwtService.sign(payload),
-            refreshToken: refreshToken
+            refreshToken: refreshToken,
+            user: user
         };
     }
 
