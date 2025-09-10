@@ -1,3 +1,4 @@
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import {
     IsBoolean,
     IsDate,
@@ -9,12 +10,18 @@ import {
 } from 'class-validator';
 
 export default class UpdateUserDto {
+    @ApiPropertyOptional({ description: 'User ID', example: '12345' })
+    @IsOptional()
+    @IsString()
+    userId?: string;
+
+    @ApiPropertyOptional({ description: 'Full name', example: 'Nguyen Van A' })
     @IsOptional()
     @IsString()
     @IsNotEmpty()
     fullName?: string;
 
-
+    @ApiPropertyOptional({ description: 'Phone number', example: '0987654321' })
     @IsOptional()
     @IsString()
     @IsNotEmpty()
@@ -35,6 +42,7 @@ export default class UpdateUserDto {
     @Length(6, 14, { message: 'Password must be between 6 and 14 characters' })
     password?: string;
 
+    @ApiPropertyOptional({ description: 'Bio', example: 'I love Flutter' })
     @IsOptional()
     @IsString()
     @IsNotEmpty()
@@ -44,11 +52,13 @@ export default class UpdateUserDto {
     @IsString()
     avatarUrl?: string;
 
+    @ApiPropertyOptional({ description: 'Date of birth (yyyy-mm-dd)', example: '2000-01-01' })
     @IsOptional()
     @IsString()
     @IsNotEmpty()
     dateOfBirth?: string;
 
+    @ApiPropertyOptional({ description: 'Gender', example: 'male' })
     @IsOptional()
     @IsString()
     @IsNotEmpty()

@@ -74,7 +74,7 @@ export class UserService {
         );
     }
 
-    async update(userId: number, updateUserDto: UpdateUserDto): Promise<UserResponseDto> {
+    async update(userId: string, updateUserDto: UpdateUserDto): Promise<UserResponseDto> {
         await this.userModel.findByIdAndUpdate(userId, updateUserDto, { new: true });
 
         const user = await this.userModel.findById(userId).exec();

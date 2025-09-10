@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Put, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
 import UserResponseDto from './dto/user.response.dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
@@ -7,6 +7,7 @@ import UpdateUserDto from './dto/update.user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { storage } from '../cloudinary/cloudinary.storage';
 import { File } from 'multer';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @ApiBearerAuth()
 @Controller('user')
@@ -54,5 +55,13 @@ export class UserController {
       updateUserDto.avatarUrl = file.path;
     }
     return this.userService.update(req.user.userId.toString(), updateUserDto);
+  }
+
+  @Public()
+  @Put()
+  @ApiBody({ type: UpdateUserDto })
+  updatePersonalInfo(@Body() updateUserDto: UpdateUserDto): Promise<UserResponseDto> {
+    updateUserDto.avatarUrl = '';
+    return this.userService.update(updateUserDto.userId!, updateUserDto);
   }
 }
