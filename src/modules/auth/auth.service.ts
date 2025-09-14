@@ -8,6 +8,8 @@ import { plainToInstance } from 'class-transformer';
 import { JwtService } from '@nestjs/jwt';
 import { MailService } from '../mail/mail.service';
 import { VerifyAccountDto } from './dto/verify.account';
+import UpdateUserDto from '../user/dto/update.user.dto';
+import ResetPasswordDto from './dto/reset_password.dto';
 
 @Injectable()
 export class AuthService {
@@ -77,5 +79,43 @@ export class AuthService {
             });
         }
         throw new UnauthorizedException('OTP is invalid or has expired. Please regenerate a new OTP and try again.');
+    }
+
+    async resendOtp(email: string) {
+        const user = await this.userService.findByEmail(email);
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
+        const otp: string = generateOtp(6);
+
+        await this.mailService.sendMail(email, user.username, otp);
+
+        const updateUser: UpdateUserDto = {
+            otp: otp,
+            otpGeneratedTime: new Date()
+        }
+
+        await this.userService.update(user.id.toString(), updateUser);
+
+        return {
+            message: 'A new OTP has been sent to your email. Please check your inbox and verify account within 1 minute.'
+        };
+    }
+
+    async resetPassword(resetPasswordDto: ResetPasswordDto) {
+        const user = await this.userService.findByEmail(resetPasswordDto.email);
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
+        if (resetPasswordDto.newPassword === resetPasswordDto.confirmNewPassword) {
+            user.password = await bcrypt.hash(resetPasswordDto.newPassword, 10);
+            await this.userService.update(user.id.toString(), user);
+            return {
+                message: 'Password reset successfully'
+            };
+        }
+        throw new BadRequestException('Password and confirm password do not match. Please try again!');
     }
 }

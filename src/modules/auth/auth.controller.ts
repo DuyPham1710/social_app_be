@@ -6,6 +6,8 @@ import { ApiBody } from '@nestjs/swagger';
 import { LoginDto } from './dto/login.dto';
 import { LocalAuthGuard } from 'src/common/guards/local-auth.guard';
 import { VerifyAccountDto } from './dto/verify.account';
+import { EmailDto } from './dto/email.dto';
+import ResetPasswordDto from './dto/reset_password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -27,4 +29,15 @@ export class AuthController {
   verifyAccount(@Body() verifyAccountDto: VerifyAccountDto) {
     return this.authService.verifyAccount(verifyAccountDto);
   }
+
+  @Patch('resend-otp')
+  resendOtp(@Body() emailDto: EmailDto) {
+    return this.authService.resendOtp(emailDto.email);
+  }
+
+  @Patch('reset-password')
+  resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+    return this.authService.resetPassword(resetPasswordDto);
+  }
+
 }
