@@ -109,12 +109,17 @@ export class AuthService {
             throw new NotFoundException('User not found');
         }
 
+        // verify otp
+        if (user.otp !== resetPasswordDto.otp) {
+            throw new UnauthorizedException('OTP is invalid or has expired. Please regenerate a new OTP and try again.');
+        }
+
         if (resetPasswordDto.newPassword === resetPasswordDto.confirmNewPassword) {
             user.password = await bcrypt.hash(resetPasswordDto.newPassword, 10);
             await this.userService.update(user.id.toString(), user);
-            return {
-                message: 'Password reset successfully'
-            };
+            return plainToInstance(UserResponseDto, user, {
+                excludeExtraneousValues: true
+            });
         }
         throw new BadRequestException('Password and confirm password do not match. Please try again!');
     }

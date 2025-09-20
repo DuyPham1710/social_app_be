@@ -27,8 +27,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
                 statusCode: status,
                 // message: exception.message || 'Internal server error',
                 message: message,
-                timestamp: new Date().toISOString(),
-                path: request.url,
+                //      timestamp: new Date().toISOString(),
+                //    path: request.url,
             });
     }
 }
