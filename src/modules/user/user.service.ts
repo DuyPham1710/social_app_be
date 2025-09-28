@@ -26,7 +26,7 @@ export class UserService {
         return this.userModel.findOne({ username }).exec();
     }
 
-    async findOne(userId: number): Promise<UserResponseDto> {
+    async findOne(userId: string): Promise<UserResponseDto> {
         const user = await this.userModel.findById(userId).exec();
 
         if (!user) {
@@ -35,6 +35,11 @@ export class UserService {
         return plainToInstance(UserResponseDto, user, {
             excludeExtraneousValues: true
         });
+    }
+
+    async checkUserExist(userId: string): Promise<boolean> {
+        const user = await this.userModel.exists({ _id: userId }).exec();
+        return !!user;
     }
 
     async create(data: Partial<User>): Promise<UserDocument> {

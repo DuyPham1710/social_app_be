@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './config/database.config';
 import { MailModule } from './modules/mail/mail.module';
 import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
+import { PostModule } from './modules/post/post.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
     AuthModule,
     MailModule,
     CloudinaryModule,
+    PostModule,
   ],
   controllers: [AppController],
   providers: [AppService],
