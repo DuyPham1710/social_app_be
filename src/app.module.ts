@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './config/database.config';
 import { MailModule } from './modules/mail/mail.module';
 import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
+import { FriendsModule } from './modules/friends/friends.module';
 import { PostModule } from './modules/post/post.module';
 import { ReactPostModule } from './modules/react-post/react-post.module';
 import { EmojiModule } from './modules/emoji/emoji.module';
@@ -21,6 +22,7 @@ import { EmojiModule } from './modules/emoji/emoji.module';
     AuthModule,
     MailModule,
     CloudinaryModule,
+    FriendsModule,
     PostModule,
     ReactPostModule,
     EmojiModule
