@@ -7,8 +7,8 @@ import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './config/database.config';
 import { MailModule } from './modules/mail/mail.module';
 import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
-import { ReactPostModule } from './modules/react-post/react-post.module';
-import { EmojiModule } from './modules/emoji/emoji.module';
+
+
 
 @Module({
   imports: [
@@ -18,8 +18,8 @@ import { EmojiModule } from './modules/emoji/emoji.module';
     AuthModule,
     MailModule,
     CloudinaryModule,
-    ReactPostModule,
-    EmojiModule,
+
+
   ],
   controllers: [AppController],
   providers: [AppService],
