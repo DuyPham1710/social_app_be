@@ -47,4 +47,9 @@ export class PostController {
     const userId = req.user.userId;
     return this.postService.deletePost(postId, userId);
   }
+
+  @Get('/:postId')
+  getPostDetail(@Param('postId') postId: string) {
+    return this.postService.getPostDetail(postId);
+  }
 }

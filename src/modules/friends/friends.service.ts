@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Friend, FriendDocument } from './schemas/friend.schemas';
-import { FriendRequest, FriendRequestDocument} from './schemas/friend-request.schema';
+import { FriendRequest, FriendRequestDocument } from './schemas/friend-request.schema';
 import { SendFriendRequestDto } from './dto/send-friend-request.dto';
 import { RespondFriendRequestDto } from './dto/respond-friend-request.dto';
 import { RemoveFriendDto } from './dto/remove-friend.dto';
@@ -13,7 +13,7 @@ export class FriendsService {
   constructor(
     @InjectModel(Friend.name) private readonly friendModel: Model<FriendDocument>,
     @InjectModel(FriendRequest.name) private readonly friendRequestModel: Model<FriendRequestDocument>,
-  ) {}
+  ) { }
 
   // Gửi lời mời kết bạn
   async sendFriendRequest(senderId: string, sendFriendRequestDto: SendFriendRequestDto) {
@@ -62,7 +62,7 @@ export class FriendsService {
 
   // Phản hồi lời mời kết bạn (chấp nhận)
   async acceptedFriendRequest(userId: string, respondDto: RespondFriendRequestDto) {
-    const { request_id} = respondDto;
+    const { request_id } = respondDto;
 
     const friendRequest = await this.friendRequestModel.findById(request_id);
     if (!friendRequest) {
@@ -98,7 +98,7 @@ export class FriendsService {
   // Từ chối lời mời kết bạn 
   async rejectedFriendRequest(userId: string, requestId: string) {
     const friendRequest = await this.friendRequestModel.findById(requestId);
-    
+
     if (!friendRequest) {
       throw new HttpException('Không tìm thấy lời mời kết bạn', HttpStatus.NOT_FOUND);
     }
@@ -114,7 +114,7 @@ export class FriendsService {
   // Xóa bạn bè
   async removeFriend(userId: string, removeFriendDto: RemoveFriendDto) {
     const { friend_id } = removeFriendDto;
-    
+
     // Kiểm tra quan hệ bạn bè có tồn tại không
     const friendship = await this.friendModel.findOne({
       user_id: new Types.ObjectId(userId),
@@ -159,10 +159,10 @@ export class FriendsService {
 
     const pipeline: any[] = [
       // Lọc những bạn bè của user hiện tại
-      { 
-        $match: { 
-          user_id: new Types.ObjectId(userId) 
-        } 
+      {
+        $match: {
+          user_id: new Types.ObjectId(userId)
+        }
       },
       {
         $lookup: {
@@ -248,7 +248,7 @@ export class FriendsService {
   // Hủy lời mời kết bạn đã gửi
   async cancelFriendRequest(userId: string, requestId: string) {
     const friendRequest = await this.friendRequestModel.findById(requestId);
-    
+
     if (!friendRequest) {
       throw new HttpException('Không tìm thấy lời mời kết bạn', HttpStatus.NOT_FOUND);
     }

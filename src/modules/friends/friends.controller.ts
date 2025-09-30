@@ -12,7 +12,7 @@ import { SearchFriendsDto } from './dto/search-friends.dto';
 @Controller('friends')
 @UseGuards(JwtAuthGuard)
 export class FriendsController {
-  constructor(private readonly friendsService: FriendsService) {}
+  constructor(private readonly friendsService: FriendsService) { }
 
   @Post('send-request')
   @ApiOperation({ summary: 'Gửi lời mời kết bạn' })
