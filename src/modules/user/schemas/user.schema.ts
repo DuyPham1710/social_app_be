@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 
 export type UserDocument = User & Document;
 
-@Schema({ timestamps: true }) // tự động tạo createdAt, updatedAt
+@Schema({ timestamps: true, collection: 'users' }) // tự động tạo createdAt, updatedAt
 export class User {
     @Prop({ type: String })
     fullName: string;

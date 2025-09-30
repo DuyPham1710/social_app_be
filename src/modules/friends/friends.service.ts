@@ -1,0 +1,296 @@
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, Types } from 'mongoose';
+import { Friend, FriendDocument } from './schemas/friend.schemas';
+import { FriendRequest, FriendRequestDocument} from './schemas/friend-request.schema';
+import { SendFriendRequestDto } from './dto/send-friend-request.dto';
+import { RespondFriendRequestDto } from './dto/respond-friend-request.dto';
+import { RemoveFriendDto } from './dto/remove-friend.dto';
+import { SearchFriendsDto } from './dto/search-friends.dto';
+
+@Injectable()
+export class FriendsService {
+  constructor(
+    @InjectModel(Friend.name) private readonly friendModel: Model<FriendDocument>,
+    @InjectModel(FriendRequest.name) private readonly friendRequestModel: Model<FriendRequestDocument>,
+  ) {}
+
+  // Gửi lời mời kết bạn
+  async sendFriendRequest(senderId: string, sendFriendRequestDto: SendFriendRequestDto) {
+    const { receiver_id } = sendFriendRequestDto;
+
+    // Kiểm tra không thể gửi lời mời cho chính mình
+    if (senderId === receiver_id) {
+      throw new HttpException('Không thể gửi lời mời kết bạn cho chính mình', HttpStatus.BAD_REQUEST);
+    }
+
+    // Kiểm tra đã là bạn bè chưa
+    const existingFriendship = await this.friendModel.findOne({
+      $or: [
+        { user_id: new Types.ObjectId(senderId), friend_id: new Types.ObjectId(receiver_id) },
+        { user_id: new Types.ObjectId(receiver_id), friend_id: new Types.ObjectId(senderId) }
+      ]
+    });
+
+    if (existingFriendship) {
+      throw new HttpException('Bạn đã là bạn bè với người này', HttpStatus.CONFLICT);
+    }
+
+    // Kiểm tra đã có lời mời chưa
+    const existingRequest = await this.friendRequestModel.findOne({
+      $or: [
+        { sender_id: new Types.ObjectId(senderId), receiver_id: new Types.ObjectId(receiver_id) },
+        { sender_id: new Types.ObjectId(receiver_id), receiver_id: new Types.ObjectId(senderId) }
+      ]
+    });
+
+    if (existingRequest) {
+      throw new HttpException('Đã có lời mời kết bạn đang chờ xử lý', HttpStatus.CONFLICT);
+    }
+
+    // Tạo lời mời kết bạn mới
+    const friendRequest = new this.friendRequestModel({
+      sender_id: new Types.ObjectId(senderId),
+      receiver_id: new Types.ObjectId(receiver_id)
+    });
+
+    const savedRequest = await friendRequest.save();
+    return await this.friendRequestModel.findById(savedRequest._id)
+      .populate('sender_id', 'fullName username avatarUrl')
+      .populate('receiver_id', 'fullName username avatarUrl');
+  }
+
+  // Phản hồi lời mời kết bạn (chấp nhận)
+  async acceptedFriendRequest(userId: string, respondDto: RespondFriendRequestDto) {
+    const { request_id} = respondDto;
+
+    const friendRequest = await this.friendRequestModel.findById(request_id);
+    if (!friendRequest) {
+      throw new HttpException('Không tìm thấy lời mời kết bạn', HttpStatus.NOT_FOUND);
+    }
+
+    // Kiểm tra chỉ người nhận mới có thể phản hồi
+    if (friendRequest.receiver_id.toString() !== userId) {
+      throw new HttpException('Bạn không có quyền phản hồi lời mời này', HttpStatus.FORBIDDEN);
+    }
+
+
+    // Nếu chấp nhận, tạo quan hệ bạn bè
+    if (friendRequest) {
+      const friendship = new this.friendModel({
+        user_id: friendRequest.sender_id,
+        friend_id: friendRequest.receiver_id
+      });
+      await friendship.save();
+
+      // Tạo quan hệ ngược lại
+      const reverseFriendship = new this.friendModel({
+        user_id: friendRequest.receiver_id,
+        friend_id: friendRequest.sender_id
+      });
+      await reverseFriendship.save();
+    }
+
+    await this.friendRequestModel.findByIdAndDelete(request_id);
+    return { message: 'Đã chấp nhận lời mời kết bạn' };
+  }
+
+  // Từ chối lời mời kết bạn 
+  async rejectedFriendRequest(userId: string, requestId: string) {
+    const friendRequest = await this.friendRequestModel.findById(requestId);
+    
+    if (!friendRequest) {
+      throw new HttpException('Không tìm thấy lời mời kết bạn', HttpStatus.NOT_FOUND);
+    }
+
+    if (friendRequest.sender_id.toString() === userId) {
+      throw new HttpException('Bạn không có quyền từ chối lời mời này', HttpStatus.FORBIDDEN);
+    }
+
+    await this.friendRequestModel.findByIdAndDelete(requestId);
+    return { message: 'Đã từ chối lời mời kết bạn thành công' };
+  }
+
+  // Xóa bạn bè
+  async removeFriend(userId: string, removeFriendDto: RemoveFriendDto) {
+    const { friend_id } = removeFriendDto;
+    
+    // Kiểm tra quan hệ bạn bè có tồn tại không
+    const friendship = await this.friendModel.findOne({
+      user_id: new Types.ObjectId(userId),
+      friend_id: new Types.ObjectId(friend_id)
+    });
+
+    if (!friendship) {
+      throw new HttpException('Bạn không phải bạn bè với người này', HttpStatus.NOT_FOUND);
+    }
+
+    // Xóa cả 2 chiều quan hệ bạn bè
+    await this.friendModel.deleteMany({
+      $or: [
+        { user_id: new Types.ObjectId(userId), friend_id: new Types.ObjectId(friend_id) },
+        { user_id: new Types.ObjectId(friend_id), friend_id: new Types.ObjectId(userId) }
+      ]
+    });
+
+    await this.friendRequestModel.deleteMany({
+      $or: [
+        { sender_id: new Types.ObjectId(userId), receiver_id: new Types.ObjectId(friend_id) },
+        { sender_id: new Types.ObjectId(friend_id), receiver_id: new Types.ObjectId(userId) }
+      ]
+    });
+
+    return { message: 'Đã xóa bạn bè thành công' };
+  }
+
+  // Lấy danh sách bạn bè
+  async getFriends(userId: string) {
+    const friends = await this.friendModel.find({ user_id: new Types.ObjectId(userId) })
+      .populate('friend_id', 'fullName username avatarUrl bio')
+      .exec();
+
+    return friends.map(friend => friend.friend_id);
+  }
+
+  // Tìm kiếm bạn bè
+  async searchFriends(userId: string, searchDto: SearchFriendsDto) {
+    const { query, page = 1, limit = 10 } = searchDto;
+    const skip = (page - 1) * limit;
+
+    const pipeline: any[] = [
+      // Lọc những bạn bè của user hiện tại
+      { 
+        $match: { 
+          user_id: new Types.ObjectId(userId) 
+        } 
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'friend_id',
+          foreignField: '_id',
+          as: 'friendInfo'
+        }
+      },
+      { $unwind: '$friendInfo' },
+    ];
+
+    // Nếu có từ khóa tìm kiếm, thêm điều kiện match
+    if (query && query.trim()) {
+      pipeline.push({
+        $match: {
+          $or: [
+            { 'friendInfo.fullName': { $regex: query.trim(), $options: 'i' } },
+            { 'friendInfo.username': { $regex: query.trim(), $options: 'i' } }
+          ]
+        }
+      });
+    }
+
+    pipeline.push({
+      $project: {
+        _id: '$friendInfo._id',
+        fullName: '$friendInfo.fullName',
+        username: '$friendInfo.username',
+        avatarUrl: '$friendInfo.avatarUrl',
+        bio: '$friendInfo.bio',
+        createdAt: '$createdAt'
+      }
+    });
+
+    // Sắp xếp theo tên
+    pipeline.push({ $sort: { fullName: 1 } });
+
+    // Tạo pipeline để đếm tổng số kết quả
+    const countPipeline = [...pipeline, { $count: 'total' }];
+
+    pipeline.push({ $skip: skip }, { $limit: limit });
+
+    const [friends, countResult] = await Promise.all([
+      this.friendModel.aggregate(pipeline),
+      this.friendModel.aggregate(countPipeline)
+    ]);
+
+    const total = countResult.length > 0 ? countResult[0].total : 0;
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      friends,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalItems: total,
+        itemsPerPage: limit,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1
+      }
+    };
+  }
+
+  // Lấy danh sách lời mời kết bạn đã nhận
+  async getReceivedRequests(userId: string) {
+    return await this.friendRequestModel.find({
+      receiver_id: new Types.ObjectId(userId)
+    })
+      .populate('sender_id', 'fullName username avatarUrl')
+      .sort({ createdAt: -1 });
+  }
+
+  // Lấy danh sách lời mời kết bạn đã gửi
+  async getSentRequests(userId: string) {
+    return await this.friendRequestModel.find({
+      sender_id: new Types.ObjectId(userId)
+    })
+      .populate('receiver_id', 'fullName username avatarUrl')
+      .sort({ createdAt: -1 });
+  }
+
+  // Hủy lời mời kết bạn đã gửi
+  async cancelFriendRequest(userId: string, requestId: string) {
+    const friendRequest = await this.friendRequestModel.findById(requestId);
+    
+    if (!friendRequest) {
+      throw new HttpException('Không tìm thấy lời mời kết bạn', HttpStatus.NOT_FOUND);
+    }
+
+    if (friendRequest.sender_id.toString() !== userId) {
+      throw new HttpException('Bạn không có quyền hủy lời mời này', HttpStatus.FORBIDDEN);
+    }
+
+    await this.friendRequestModel.findByIdAndDelete(requestId);
+    return { message: 'Đã hủy lời mời kết bạn thành công' };
+  }
+
+  // Kiểm tra trạng thái quan hệ với một user khác
+  async getRelationshipStatus(userId: string, targetUserId: string) {
+    // Kiểm tra đã là bạn bè chưa
+    const friendship = await this.friendModel.findOne({
+      user_id: new Types.ObjectId(userId),
+      friend_id: new Types.ObjectId(targetUserId)
+    });
+
+    if (friendship) {
+      return { status: 'friends', message: 'Đã là bạn bè' };
+    }
+
+    const sentRequest = await this.friendRequestModel.findOne({
+      sender_id: new Types.ObjectId(userId),
+      receiver_id: new Types.ObjectId(targetUserId)
+    });
+
+    if (sentRequest) {
+      return { status: 'request_sent', message: 'Đã gửi lời mời kết bạn' };
+    }
+
+    const receivedRequest = await this.friendRequestModel.findOne({
+      sender_id: new Types.ObjectId(targetUserId),
+      receiver_id: new Types.ObjectId(userId)
+    });
+
+    if (receivedRequest) {
+      return { status: 'request_received', message: 'Có lời mời kết bạn chờ phản hồi' };
+    }
+
+    return { status: 'none', message: 'Không có quan hệ' };
+  }
+}
