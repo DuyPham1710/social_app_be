@@ -8,6 +8,7 @@ import { DatabaseModule } from './config/database.config';
 import { MailModule } from './modules/mail/mail.module';
 import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
 import { FriendsModule } from './modules/friends/friends.module';
+import { PostModule } from './modules/post/post.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { FriendsModule } from './modules/friends/friends.module';
     MailModule,
     CloudinaryModule,
     FriendsModule,
+    PostModule,
   ],
   controllers: [AppController],
   providers: [AppService],
