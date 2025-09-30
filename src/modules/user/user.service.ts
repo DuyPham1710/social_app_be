@@ -1,15 +1,16 @@
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schemas/user.schema';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import UserResponseDto from './dto/user.response.dto';
 import { plainToInstance } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
 import UpdateUserDto from './dto/update.user.dto';
+import { FriendsService } from '../friends/friends.service';
 
 @Injectable()
 export class UserService {
-    constructor(@InjectModel(User.name) private readonly userModel: Model<UserDocument>) { }
+    constructor(@InjectModel(User.name) private readonly userModel: Model<UserDocument>, private readonly friendsService: FriendsService) { }
 
     async findAll(): Promise<UserResponseDto[]> {
         const users = await this.userModel.find().exec();
@@ -87,5 +88,79 @@ export class UserService {
         return plainToInstance(UserResponseDto, user, {
             excludeExtraneousValues: true
         });
+    }
+
+    async searchUser(query: string, page: number, limit: number, userId: string) {
+        const skip = (page - 1) * limit;
+        const qRegex = { $regex: query, $options: 'i' };
+
+        const friends = await this.friendsService.getFriends(userId);
+        const friendIds = friends.map(friend => friend._id);
+
+        // Tìm bạn bè trực tiếp phù hợp query
+        const friendsMatched = await this.userModel.find({
+            _id: { $in: friendIds },
+            $or: [
+                { username: qRegex },
+                { fullName: qRegex }
+            ]
+        });
+
+        // Tìm mutual friends (friends-of-friends) match query
+        const mutualFriendsArrays = await Promise.all(
+            friendIds.map(friendId => this.friendsService.getFriends(friendId.toString()))
+        );
+        // mutualFriendsArrays bây giờ là 1 mảng 2 chiều: [ [friendA1, friendA2], [friendB1, friendB2], ... ]
+        // Gộp tất cả lại
+        const mutualFriends = mutualFriendsArrays.flat();
+        // Loại bỏ chính user và bạn bè trực tiếp (tránh trùng)
+        const mutualIds = mutualFriends
+            .map(f => f._id.toString())
+            .filter(id => id !== userId && !friendIds.includes(new Types.ObjectId(id)));
+
+        // Tìm mutual friends phù hợp query
+        const mutualMatched = await this.userModel.find({
+            _id: { $in: mutualIds },
+            $or: [
+                { username: qRegex },
+                { fullName: qRegex }
+            ]
+        });
+
+        // Tìm tất cả user khác phù hợp query (ngoại trừ chính mình và bạn bè đã có)
+        const otherMatched = await this.userModel.find({
+            _id: { $nin: [userId, ...friendIds, ...mutualIds] },
+            $or: [
+                { username: qRegex },
+                { fullName: qRegex }
+            ]
+        });
+
+        // Gộp lại theo thứ tự ưu tiên: bạn bè → mutual → người khác
+        let combinedResults = [
+            ...friendsMatched,
+            ...mutualMatched,
+            ...otherMatched,
+        ];
+
+        const totalItems = combinedResults.length;
+        const totalPages = Math.ceil(totalItems / limit);
+        const paginated = combinedResults.slice(skip, skip + limit);
+
+        const userResponseDtos: UserResponseDto[] = paginated.map(user => plainToInstance(UserResponseDto, user, {
+            excludeExtraneousValues: true
+        }));
+
+        return {
+            userResponseDtos,
+            pagination: {
+                currentPage: page,
+                totalPages,
+                totalItems: totalItems,
+                itemsPerPage: limit,
+                hasNextPage: page < totalPages,
+                hasPrevPage: page > 1
+            }
+        };
     }
 }

@@ -1,12 +1,12 @@
-import { Body, Controller, Get, Patch, Put, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Put, Query, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
 import UserResponseDto from './dto/user.response.dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
-import { ApiBearerAuth, ApiBody, ApiConsumes } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation } from '@nestjs/swagger';
 import UpdateUserDto from './dto/update.user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { storage } from '../cloudinary/cloudinary.storage';
-
+import { File } from 'multer';
 import { Public } from 'src/common/decorators/public.decorator';
 
 @ApiBearerAuth()
@@ -50,7 +50,7 @@ export class UserController {
   editProfile(
     @Req() req: any,
     @Body() updateUserDto: UpdateUserDto,
-    @UploadedFile() file: Express.Multer.File): Promise<UserResponseDto> {
+    @UploadedFile() file: File): Promise<UserResponseDto> {
     if (file && file.path) {
       updateUserDto.avatarUrl = file.path;
     }
@@ -63,5 +63,17 @@ export class UserController {
   updatePersonalInfo(@Body() updateUserDto: UpdateUserDto): Promise<UserResponseDto> {
     updateUserDto.avatarUrl = '';
     return this.userService.update(updateUserDto.userId!, updateUserDto);
+  }
+
+  @Get('search')
+  @ApiOperation({ summary: 'Tìm kiếm người dùng theo tên hoặc username' })
+  searchUser(
+    @Req() req: any,
+    @Query('query') query: string,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10
+  ) {
+    const userId = req.user.userId;
+    return this.userService.searchUser(query, Number(page), Number(limit), userId);
   }
 }

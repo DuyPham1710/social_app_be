@@ -15,6 +15,21 @@ export class PostService {
         private readonly userService: UserService,
     ) { }
 
+    async getPostDetail(postId: string) {
+        if (!Types.ObjectId.isValid(postId)) {
+            throw new HttpException('Invalid postId', HttpStatus.BAD_REQUEST);
+        }
+
+        const postObjectId = new Types.ObjectId(postId);
+
+        const post = await this.postModel.findById(postObjectId).populate('userId', 'username fullName avatarUrl').populate({ path: 'urls', options: { sort: { order: 1 } } }).exec();
+        if (!post) {
+            throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
+        }
+
+        return post;
+    }
+
     async getAllPostsByUser(userId: string, page: number = 1, limit: number = 5) {
         if (!Types.ObjectId.isValid(userId)) {
             throw new HttpException('Invalid userId', HttpStatus.BAD_REQUEST);
