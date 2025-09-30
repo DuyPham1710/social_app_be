@@ -1,4 +1,6 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateReactPostDto } from './create-react-post.dto';
+import { IsMongoId } from 'class-validator';
 
-export class UpdateReactPostDto extends PartialType(CreateReactPostDto) {}
+export class UpdateReactPostDto {
+  @IsMongoId()
+  emojiId: string;
+}
