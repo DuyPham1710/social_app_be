@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Post, PostSchema } from './schemas/post.schema';
 import { PostUrl, PostUrlSchema } from './schemas/post-url.schema';
 import { UserModule } from '../user/user.module';
+import { FriendsModule } from '../friends/friends.module';
 
 @Module({
   controllers: [PostController],
@@ -14,6 +15,7 @@ import { UserModule } from '../user/user.module';
       { name: Post.name, schema: PostSchema },
       { name: PostUrl.name, schema: PostUrlSchema }]),
     UserModule,
+    FriendsModule
   ],
 })
 export class PostModule { }

@@ -1,9 +1,10 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { UpdatePrivacyDto } from 'src/common/dto/update-privacy.dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
@@ -12,44 +13,77 @@ export class PostController {
   constructor(private readonly postService: PostService) { }
 
   @Get('user/:id')
+  @ApiOperation({ summary: 'Lấy danh sách bài viết của user' })
   getPostByUserId(
-    @Param('id') userId: string,
+    @Param('id') ownerId: string,
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
+    @Req() req: any,
   ) {
-    return this.postService.getAllPostsByUser(userId, Number(page), Number(limit));
+    const viewerId = req.user.userId;
+    return this.postService.getAllPostsByUser(ownerId, viewerId, Number(page), Number(limit));
   }
 
   @Get()
+  @ApiOperation({ summary: 'Lấy danh sách bài viết của user đang đăng nhập' })
   getAllPostsByUser(
     @Req() req: any,
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
   ) {
-    const userId = req.user.userId;
-    return this.postService.getAllPostsByUser(userId, Number(page), Number(limit));
+    const ownerId = req.user.userId;
+    return this.postService.getAllPostsByUser(ownerId, ownerId, Number(page), Number(limit));
   }
 
   @Post()
+  @ApiOperation({ summary: 'Tạo bài viết' })
   createPost(@Req() req: any, @Body() createPostDto: CreatePostDto) {
     const userId = req.user.userId;
     return this.postService.createPost(createPostDto, userId);
   }
 
   @Patch()
+  @ApiOperation({ summary: 'Cập nhật bài viết' })
   updatePost(@Req() req: any, @Body() updatePostDto: UpdatePostDto) {
     const userId = req.user.userId;
     return this.postService.updatePost(updatePostDto, userId);
   }
 
   @Delete('/:postId')
+  @ApiOperation({ summary: 'Xoá bài viết' })
   deletePost(@Req() req: any, @Param('postId') postId: string) {
     const userId = req.user.userId;
     return this.postService.deletePost(postId, userId);
   }
 
   @Get('/:postId')
+  @ApiOperation({ summary: 'Lấy chi tiết bài viết' })
   getPostDetail(@Param('postId') postId: string) {
     return this.postService.getPostDetail(postId);
   }
+
+  @Get('/privacy/:postId')
+  @ApiOperation({ summary: 'Lấy quyền riêng tư của bài viết' })
+  getPostPrivacy(@Param('postId') postId: string) {
+    return this.postService.getPostPrivacy(postId);
+  }
+
+  @Patch('/privacy/:postId')
+  @ApiOperation({ summary: 'Cập nhật quyền riêng tư của bài viết' })
+  updatePostPrivacy(@Param('postId') postId: string, @Body() updatePostPrivacyDto: UpdatePrivacyDto) {
+    return this.postService.updatePostPrivacy(postId, updatePostPrivacyDto);
+  }
+
+  @Get(':postId/check-privacy')
+  @ApiOperation({ summary: 'Kiểm tra quyền riêng tư của bài viết' })
+  async checkPrivacy(
+    @Param('postId') postId: string,
+    @Req() req,
+  ) {
+    const viewerId = req.user.userId;
+    const canView = await this.postService.canUserViewPost(postId, viewerId);
+
+    return { canView };
+  }
+
 }

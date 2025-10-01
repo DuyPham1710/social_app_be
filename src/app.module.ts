@@ -11,6 +11,7 @@ import { FriendsModule } from './modules/friends/friends.module';
 import { PostModule } from './modules/post/post.module';
 import { ReactPostModule } from './modules/react-post/react-post.module';
 import { EmojiModule } from './modules/emoji/emoji.module';
+import { StoryModule } from './modules/story/story.module';
 
 
 
@@ -25,7 +26,8 @@ import { EmojiModule } from './modules/emoji/emoji.module';
     FriendsModule,
     PostModule,
     ReactPostModule,
-    EmojiModule
+    EmojiModule,
+    StoryModule
   ],
   controllers: [AppController],
   providers: [AppService],

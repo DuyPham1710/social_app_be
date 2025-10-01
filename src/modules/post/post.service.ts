@@ -6,6 +6,9 @@ import { Model, Types } from 'mongoose';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UserService } from '../user/user.service';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { UpdatePrivacyDto } from 'src/common/dto/update-privacy.dto';
+import { PrivacyUtil } from 'src/common/utils/privacy.util';
+import { FriendsService } from '../friends/friends.service';
 
 @Injectable()
 export class PostService {
@@ -13,6 +16,7 @@ export class PostService {
         @InjectModel(Post.name) private postModel: Model<PostDocument>,
         @InjectModel(PostUrl.name) private postUrlModel: Model<PostUrlDocument>,
         private readonly userService: UserService,
+        private readonly friendService: FriendsService,
     ) { }
 
     async getPostDetail(postId: string) {
@@ -30,24 +34,31 @@ export class PostService {
         return post;
     }
 
-    async getAllPostsByUser(userId: string, page: number = 1, limit: number = 5) {
-        if (!Types.ObjectId.isValid(userId)) {
-            throw new HttpException('Invalid userId', HttpStatus.BAD_REQUEST);
+    async getAllPostsByUser(ownerId: string, viewerId: string, page: number = 1, limit: number = 5) {
+        if (!Types.ObjectId.isValid(ownerId)) {
+            throw new HttpException('Invalid ownerId', HttpStatus.BAD_REQUEST);
         }
 
-        const userExist = await this.userService.checkUserExist(userId);
+        // nếu không có viewerId thì mặc định viewer chính là owner
+        const effectiveViewerId = viewerId ?? ownerId;
+        console.log('effectiveViewerId', effectiveViewerId);
+        if (!Types.ObjectId.isValid(effectiveViewerId)) {
+            throw new HttpException('Invalid viewerId', HttpStatus.BAD_REQUEST);
+        }
+
+        const userExist = await this.userService.checkUserExist(ownerId);
         if (!userExist) {
             throw new HttpException('User not found', HttpStatus.NOT_FOUND);
         }
 
         const skip = (page - 1) * limit;
 
-        const userObjectId = new Types.ObjectId(userId);
+        const ownerObjectId = new Types.ObjectId(ownerId);
 
-        const totalPosts = await this.postModel.countDocuments({ userId: userObjectId });
+        const totalPosts = await this.postModel.countDocuments({ userId: ownerObjectId });
 
         const posts = await this.postModel
-            .find({ userId: userObjectId })
+            .find({ userId: ownerObjectId })
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)
@@ -56,15 +67,28 @@ export class PostService {
                 path: 'urls',
                 options: { sort: { order: 1 } }, // sort ảnh theo order
             })
+            .lean()
             .exec();
 
-        const hasNext = skip + posts.length < totalPosts;
+        // lọc theo quyền riêng tư
+        const filteredPosts = (
+            await Promise.all(
+                posts.map(async (post) => {
+                    const canView = await this.canUserViewPost(
+                        post._id.toString(),
+                        effectiveViewerId,
+                    );
+                    return canView ? post : null;
+                }),
+            )
+        ).filter((p) => p !== null);
+        const hasNext = skip + filteredPosts.length < totalPosts;
 
         return {
-            data: posts,
+            data: filteredPosts,
             page,
             limit,
-            total: totalPosts,
+            total: filteredPosts.length,
             hasNext,
         };
     }
@@ -179,4 +203,62 @@ export class PostService {
 
         return { message: 'Post deleted successfully' };
     }
+
+    async getPostPrivacy(postId: string) {
+        if (!Types.ObjectId.isValid(postId)) {
+            throw new HttpException('Invalid postId', HttpStatus.BAD_REQUEST);
+        }
+
+        const postIdObject = new Types.ObjectId(postId);
+
+        const post = await this.postModel.findById(postIdObject);
+        if (!post) {
+            throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
+        }
+
+        return post.privacy_type;
+    }
+
+    async updatePostPrivacy(postId: string, updatePostPrivacyDto: UpdatePrivacyDto) {
+        if (!Types.ObjectId.isValid(postId)) {
+            throw new HttpException('Invalid postId', HttpStatus.BAD_REQUEST);
+        }
+
+        const postIdObject = new Types.ObjectId(postId);
+
+        let post = await this.postModel.findById(postIdObject);
+        if (!post) {
+            throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
+        }
+
+        post = PrivacyUtil.applyPrivacy(post, updatePostPrivacyDto);
+        await post.save();
+
+        return post;
+    }
+
+    // api check post privacy của user đó có thể xem được post này không
+    // api kiểm tra xem mình có được quyền xem bài viết này không
+    async canUserViewPost(postId: string, viewerId: string): Promise<boolean> {
+        if (!Types.ObjectId.isValid(postId)) {
+            throw new HttpException('Invalid postId', HttpStatus.BAD_REQUEST);
+        }
+
+        if (!Types.ObjectId.isValid(viewerId)) {
+            throw new HttpException('Invalid viewerId', HttpStatus.BAD_REQUEST);
+        }
+
+        const post = await this.postModel.findById(postId).lean();
+        if (!post) return false;
+
+        // Lấy danh sách bạn bè của chủ post
+        const friendsOfOwner = await this.friendService.getFriends(post.userId.toString());
+
+        return PrivacyUtil.canView(
+            new Types.ObjectId(viewerId),
+            post,
+            friendsOfOwner.map(f => new Types.ObjectId(f)),
+        );
+    }
+
 }
