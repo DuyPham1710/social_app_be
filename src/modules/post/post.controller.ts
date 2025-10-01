@@ -35,6 +35,18 @@ export class PostController {
     return this.postService.getAllPostsByUser(ownerId, ownerId, Number(page), Number(limit));
   }
 
+  // lấy các bài viết là bạn của mình, nếu hết rồi thì lấy tiếp bài viết public nếu có
+  @Get('home')
+  @ApiOperation({ summary: 'Lấy danh sách bài viết là bạn của user đang đăng nhập, nếu hết rồi thì lấy tiếp bài viết public nếu có' })
+  getAllPostsHomePage(
+    @Req() req: any,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ) {
+    const viewerId = req.user.userId;
+    return this.postService.getAllPostsHomePage(viewerId, Number(page), Number(limit));
+  }
+
   @Post()
   @ApiOperation({ summary: 'Tạo bài viết' })
   createPost(@Req() req: any, @Body() createPostDto: CreatePostDto) {

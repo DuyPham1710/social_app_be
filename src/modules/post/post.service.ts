@@ -9,6 +9,7 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { UpdatePrivacyDto } from 'src/common/dto/update-privacy.dto';
 import { PrivacyUtil } from 'src/common/utils/privacy.util';
 import { FriendsService } from '../friends/friends.service';
+import { PrivacyType } from 'src/shared/enums/privacy_type';
 
 @Injectable()
 export class PostService {
@@ -93,6 +94,84 @@ export class PostService {
         };
     }
 
+    async getAllPostsHomePage(viewerId: string, page: number = 1, limit: number = 5) {
+        if (!Types.ObjectId.isValid(viewerId)) {
+            throw new HttpException('Invalid viewerId', HttpStatus.BAD_REQUEST);
+        }
+
+        // Lấy danh sách bạn bè
+        const friends = await this.friendService.getFriends(viewerId);
+        const friendIds = friends.map((f) => f._id);
+
+        const skip = (page - 1) * limit;
+        // Query post của bạn bè
+        let posts = await this.postModel
+            .find({ userId: { $in: friendIds } })
+            .populate('userId', 'username fullName avatarUrl')
+            .sort({ createdAt: -1 })
+            // .skip(skip)
+            // .limit(limit)
+            .lean()
+            .exec();
+
+        // lọc theo quyền riêng tư
+        const filteredPosts = (
+            await Promise.all(
+                posts.map(async (post) => {
+                    const canView = await this.canUserViewPost(
+                        post._id.toString(),
+                        viewerId,
+                    );
+                    return canView ? post : null;
+                }),
+            )
+        ).filter((p) => p !== null);
+        console.log('filteredPosts', filteredPosts);
+        // query post của mình
+        const myPosts = await this.postModel
+            .find({ userId: new Types.ObjectId(viewerId) })
+            .populate('userId', 'username fullName avatarUrl')
+            .sort({ createdAt: -1 })
+            // .skip(skip)
+            // .limit(limit)
+            .lean()
+            .exec();
+        posts = [...filteredPosts, ...myPosts];
+        console.log('posts', posts);
+        // Nếu chưa đủ limit -> bổ sung post public
+        if (posts.length < limit) {
+            // const missing = limit - posts.length;
+
+            let publicPosts = await this.postModel
+                .find({
+                    privacy_type: PrivacyType.PUBLIC,
+                    userId: { $nin: friendIds }, // loại trừ bạn bè đã lấy
+                })
+                .populate('userId', 'username fullName avatarUrl')
+                .sort({ createdAt: -1 })
+                //  .limit(missing)
+                .lean()
+                .exec();
+
+            // không lấy bài trung với myPosts
+            publicPosts = publicPosts.filter(p => !myPosts.some(mp => mp._id.toString() === p._id.toString()));
+            posts = [...posts, ...publicPosts];
+        }
+
+        // phân trang khúc này
+        const pageItems = posts.slice(skip, skip + limit);
+        const totalPosts = posts.length;
+
+        const hasNext = skip + pageItems.length < totalPosts;
+
+        return {
+            data: pageItems,
+            page,
+            limit,
+            total: totalPosts,
+            hasNext,
+        };
+    }
 
     async createPost(createPostDto: CreatePostDto, userId: string) {
         const { caption, urls } = createPostDto;
