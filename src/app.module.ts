@@ -12,6 +12,9 @@ import { PostModule } from './modules/post/post.module';
 import { ReactPostModule } from './modules/react-post/react-post.module';
 import { EmojiModule } from './modules/emoji/emoji.module';
 import { StoryModule } from './modules/story/story.module';
+import { ReactStoryModule } from './modules/react-story/react-story.module';
+import { ReactCommentModule } from './modules/react-comment/react-comment.module';
+import { CommentModule } from './modules/comment/comment.module';
 
 
 
@@ -27,7 +30,10 @@ import { StoryModule } from './modules/story/story.module';
     PostModule,
     ReactPostModule,
     EmojiModule,
-    StoryModule
+    StoryModule,
+    ReactStoryModule,
+    ReactCommentModule,
+    CommentModule
   ],
   controllers: [AppController],
   providers: [AppService],

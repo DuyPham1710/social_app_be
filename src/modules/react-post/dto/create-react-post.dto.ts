@@ -1,17 +1,11 @@
-import { IsMongoId, IsOptional } from 'class-validator';
+import { IsMongoId, IsNotEmpty } from 'class-validator';
 
 export class CreateReactPostDto {
   @IsMongoId()
-  userId: string;
-
-  @IsOptional()
-  @IsMongoId()
-  postId?: string;
-
-  @IsOptional()
-  @IsMongoId()
-  commentId?: string;
+  @IsNotEmpty()
+  postId: string;
 
   @IsMongoId()
+  @IsNotEmpty()
   emojiId: string;
 }
