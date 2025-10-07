@@ -108,6 +108,7 @@ export class PostService {
         let posts = await this.postModel
             .find({ userId: { $in: friendIds } })
             .populate('userId', 'username fullName avatarUrl')
+            .populate({ path: 'urls', options: { sort: { order: 1 } } })
             .sort({ createdAt: -1 })
             // .skip(skip)
             // .limit(limit)
@@ -131,6 +132,7 @@ export class PostService {
         const myPosts = await this.postModel
             .find({ userId: new Types.ObjectId(viewerId) })
             .populate('userId', 'username fullName avatarUrl')
+            .populate({ path: 'urls', options: { sort: { order: 1 } } })
             .sort({ createdAt: -1 })
             // .skip(skip)
             // .limit(limit)
@@ -148,6 +150,7 @@ export class PostService {
                     userId: { $nin: friendIds }, // loại trừ bạn bè đã lấy
                 })
                 .populate('userId', 'username fullName avatarUrl')
+                .populate({ path: 'urls', options: { sort: { order: 1 } } })
                 .sort({ createdAt: -1 })
                 //  .limit(missing)
                 .lean()
@@ -159,7 +162,17 @@ export class PostService {
         }
 
         // phân trang khúc này
-        const pageItems = posts.slice(skip, skip + limit);
+        const pageItems = posts.slice(skip, skip + limit).map((post: any) => {
+            if (post && post.userId && typeof post.userId === 'object' && post.userId._id) {
+                post.userId = {
+                    userId: post.userId._id,
+                    fullName: post.userId.fullName,
+                    avatarUrl: post.userId.avatarUrl,
+                    username: post.userId.username,
+                };
+            }
+            return post;
+        });
         const totalPosts = posts.length;
 
         const hasNext = skip + pageItems.length < totalPosts;

@@ -6,11 +6,17 @@ import UserResponseDto from './dto/user.response.dto';
 import { plainToInstance } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
 import UpdateUserDto from './dto/update.user.dto';
-import { FriendsService } from '../friends/friends.service';
+// import { FriendsService } from '../friends/friends.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { AppEvents } from 'src/shared/enums/app-events.enum';
 
 @Injectable()
 export class UserService {
-    constructor(@InjectModel(User.name) private readonly userModel: Model<UserDocument>, private readonly friendsService: FriendsService) { }
+    constructor(
+        @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+        //  private readonly friendsService: FriendsService,
+        private readonly eventEmitter: EventEmitter2
+    ) { }
 
     async findAll(): Promise<UserResponseDto[]> {
         const users = await this.userModel.find().exec();
@@ -94,7 +100,7 @@ export class UserService {
         const skip = (page - 1) * limit;
         const qRegex = { $regex: query, $options: 'i' };
 
-        const friends = await this.friendsService.getFriends(userId);
+        const [friends] = await this.eventEmitter.emitAsync(AppEvents.FRIENDS_GET, { userId });
         const friendIds = friends.map(friend => friend._id);
 
         // Tìm bạn bè trực tiếp phù hợp query
@@ -108,7 +114,7 @@ export class UserService {
 
         // Tìm mutual friends (friends-of-friends) match query
         const mutualFriendsArrays = await Promise.all(
-            friendIds.map(friendId => this.friendsService.getFriends(friendId.toString()))
+            friendIds.map(friendId => this.eventEmitter.emitAsync(AppEvents.FRIENDS_GET, { userId: friendId.toString() }).then(([res]) => res))
         );
         // mutualFriendsArrays bây giờ là 1 mảng 2 chiều: [ [friendA1, friendA2], [friendB1, friendB2], ... ]
         // Gộp tất cả lại
