@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Comment Test (No Auth)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 8px 15px;
+            margin: 5px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        input,
+        textarea {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+
+        #logs {
+            background: #f8f9fa;
+            padding: 10px;
+            height: 200px;
+            overflow-y: scroll;
+            font-family: monospace;
+            font-size: 12px;
+        }
+
+        .success {
+            color: #28a745;
+        }
+
+        .error {
+            color: #dc3545;
+        }
+
+        .info {
+            color: #007bff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🚀 WebSocket Comment Test (No JWT Auth)</h1>
+
+        <div class="section">
+            <h3>Connection Status</h3>
+            <p>Status: <span id="status">Disconnected</span></p>
+            <button id="connectBtn" onclick="connect()">Connect</button>
+            <button id="disconnectBtn" onclick="disconnect()" disabled>Disconnect</button>
+        </div>
+
+        <div class="section">
+            <h3>User Registration</h3>
+            <input type="text" id="userId" placeholder="User ID (e.g: user123)" value="68af2546e5af803fed30af6c">
+            <input type="text" id="username" placeholder="Username (optional)" value="testuser">
+            <button id="registerBtn" onclick="register()" disabled>Register</button>
+        </div>
+
+        <div class="section">
+            <h3>Post Actions</h3>
+            <input type="text" id="postId" placeholder="Post ID" value="60d5ecb54b24a92d4c8e4a1b">
+            <button id="joinBtn" onclick="joinPost()" disabled>Join Post</button>
+            <button id="leaveBtn" onclick="leavePost()" disabled>Leave Post</button>
+            <button id="onlineBtn" onclick="getOnlineUsers()" disabled>Get Online Users</button>
+        </div>
+
+        <div class="section">
+            <h3>Comment Actions</h3>
+            <textarea id="commentContent" placeholder="Comment content..." rows="3" style="width: 100%;"></textarea>
+            <br>
+            <button id="sendBtn" onclick="sendComment()" disabled>Send Comment</button>
+            <button id="typingBtn" onclick="sendTyping(true)">Start Typing</button>
+            <button onclick="sendTyping(false)">Stop Typing</button>
+        </div>
+
+        <div class="section">
+            <h3>Logs</h3>
+            <button onclick="clearLogs()">Clear Logs</button>
+            <div id="logs"></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+    <script>
+        let socket = null;
+        let isRegistered = false;
+        let hasJoinedPost = false;
+
+        function log(message, type = 'info') {
+            const logs = document.getElementById('logs');
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type;
+            logs.innerHTML += `<div class="${className}">[${timestamp}] ${message}</div>`;
+            logs.scrollTop = logs.scrollHeight;
+        }
+
+        function updateUI() {
+            const connected = socket && socket.connected;
+            document.getElementById('status').textContent = connected ? 'Connected' : 'Disconnected';
+            document.getElementById('connectBtn').disabled = connected;
+            document.getElementById('disconnectBtn').disabled = !connected;
+            document.getElementById('registerBtn').disabled = !connected || isRegistered;
+
+            const canUseFeatures = connected && isRegistered;
+            document.getElementById('joinBtn').disabled = !canUseFeatures || hasJoinedPost;
+            document.getElementById('leaveBtn').disabled = !canUseFeatures || !hasJoinedPost;
+            document.getElementById('onlineBtn').disabled = !canUseFeatures;
+            document.getElementById('sendBtn').disabled = !canUseFeatures || !hasJoinedPost;
+        }
+
+        function connect() {
+            socket = io('http://localhost:3000/comment', {
+                transports: ['websocket']
+            });
+
+            socket.on('connect', () => {
+                log('✅ Connected to WebSocket server', 'success');
+                updateUI();
+            });
+
+            socket.on('disconnect', () => {
+                log('❌ Disconnected from server', 'error');
+                isRegistered = false;
+                hasJoinedPost = false;
+                updateUI();
+            });
+
+            socket.on('connected', (data) => {
+                log(`📡 Server message: ${data.message}`, 'info');
+            });
+
+            socket.on('register:ack', (data) => {
+                log(`✅ Registered: ${JSON.stringify(data)}`, 'success');
+                isRegistered = true;
+                updateUI();
+            });
+
+            socket.on('joinPost:ack', (data) => {
+                log(`📥 Joined post: ${JSON.stringify(data)}`, 'success');
+                hasJoinedPost = true;
+                updateUI();
+            });
+
+            socket.on('leavePost:ack', (data) => {
+                log(`📤 Left post: ${JSON.stringify(data)}`, 'info');
+                hasJoinedPost = false;
+                updateUI();
+            });
+
+            socket.on('commentAdded', (data) => {
+                log(`💬 New comment from others: ${data.comment.content}`, 'success');
+            });
+
+            socket.on('commentAdded:ack', (data) => {
+                log(`✅ Your comment sent: ${data.comment.content}`, 'success');
+            });
+
+            socket.on('userTyping', (data) => {
+                log(`⌨️ ${data.username || data.userId} is ${data.isTyping ? 'typing...' : 'stopped typing'}`, 'info');
+            });
+
+            socket.on('userJoined', (data) => {
+                log(`👋 ${data.username || data.userId} joined the post`, 'info');
+            });
+
+            socket.on('userLeft', (data) => {
+                log(`👋 ${data.username || data.userId} left the post`, 'info');
+            });
+
+            socket.on('onlineUsers', (data) => {
+                log(`👥 Online users (${data.count}): ${data.users.map(u => u.username || u.userId).join(', ')}`, 'info');
+            });
+
+            socket.on('error', (error) => {
+                log(`❌ Error: ${error.message} (${error.event})`, 'error');
+            });
+        }
+
+        function disconnect() {
+            if (socket) {
+                socket.disconnect();
+                isRegistered = false;
+                hasJoinedPost = false;
+                updateUI();
+            }
+        }
+
+        function register() {
+            const userId = document.getElementById('userId').value;
+            const username = document.getElementById('username').value;
+
+            if (!userId) {
+                alert('Please enter User ID');
+                return;
+            }
+
+            socket.emit('register', {
+                userId: userId.trim(),
+                username: username.trim() || undefined
+            });
+
+            log(`📝 Registering user: ${userId}`, 'info');
+        }
+
+        function joinPost() {
+            const postId = document.getElementById('postId').value;
+
+            if (!postId) {
+                alert('Please enter Post ID');
+                return;
+            }
+
+            socket.emit('joinPost', {
+                postId: postId.trim()
+            });
+
+            log(`📥 Joining post: ${postId}`, 'info');
+        }
+
+        function leavePost() {
+            const postId = document.getElementById('postId').value;
+
+            if (!postId) {
+                alert('Please enter Post ID');
+                return;
+            }
+
+            socket.emit('leavePost', {
+                postId: postId.trim()
+            });
+
+            log(`📤 Leaving post: ${postId}`, 'info');
+        }
+
+        function sendComment() {
+            const content = document.getElementById('commentContent').value;
+            const postId = document.getElementById('postId').value;
+
+            if (!content || !postId) {
+                alert('Please enter comment content and post ID');
+                return;
+            }
+
+            socket.emit('newComment', {
+                content: content.trim(),
+                postId: postId.trim()
+            });
+
+            log(`💬 Sending comment: ${content}`, 'info');
+            document.getElementById('commentContent').value = '';
+        }
+
+        function sendTyping(isTyping) {
+            const postId = document.getElementById('postId').value;
+
+            if (!postId) {
+                alert('Please enter Post ID');
+                return;
+            }
+
+            socket.emit('typing', {
+                postId: postId.trim(),
+                isTyping: isTyping
+            });
+
+            log(`⌨️ Typing indicator: ${isTyping ? 'started' : 'stopped'}`, 'info');
+        }
+
+        function getOnlineUsers() {
+            const postId = document.getElementById('postId').value;
+
+            if (!postId) {
+                alert('Please enter Post ID');
+                return;
+            }
+
+            socket.emit('getOnlineUsers', {
+                postId: postId.trim()
+            });
+
+            log(`👥 Getting online users for post: ${postId}`, 'info');
+        }
+
+        function clearLogs() {
+            document.getElementById('logs').innerHTML = '';
+        }
+
+        // Initialize UI
+        updateUI();
+        log('🚀 WebSocket Comment Test Ready - Click Connect to start!', 'info');
+    </script>
+</body>
+
+</html>

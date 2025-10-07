@@ -10,7 +10,7 @@ export class ReactPostService {
   constructor(
     @InjectModel(ReactPost.name)
     private readonly reactPostModel: Model<ReactPostDocument>,
-  ) {}
+  ) { }
 
   //Thêm hoặc đổi emoji
   async createOrUpdate(userId: string, dto: CreateReactPostDto) {
@@ -36,7 +36,7 @@ export class ReactPostService {
   async findByPost(postId: string) {
     return this.reactPostModel
       .find({ postId })
-      .populate('userId', 'username avatar')
+      .populate('userId', 'username avatarUrl')
       .populate('emojiId', 'name icon');
   }
 

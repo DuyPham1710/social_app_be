@@ -16,7 +16,6 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ReactStoryModule } from './modules/react-story/react-story.module';
 import { CommentModule } from './modules/comment/comment.module';
 import { ReactCommentModule } from './modules/react-comment/react-comment.module';
-import { CommentModule } from './modules/comment/comment.module';
 
 
 
@@ -35,7 +34,7 @@ import { CommentModule } from './modules/comment/comment.module';
     EmojiModule,
     StoryModule,
     StoryModule,
-    CommentModule
+    CommentModule,
     ReactStoryModule,
     ReactCommentModule,
     CommentModule

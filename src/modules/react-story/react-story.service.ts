@@ -10,7 +10,7 @@ export class ReactStoryService {
   constructor(
     @InjectModel(ReactStory.name)
     private readonly reactStoryModel: Model<ReactStoryDocument>,
-  ) {}
+  ) { }
 
   //tạo react
   async createOrUpdate(userId: string, dto: CreateReactStoryDto) {
@@ -36,7 +36,7 @@ export class ReactStoryService {
   async findByStory(storyId: string) {
     return this.reactStoryModel
       .find({ storyId })
-      .populate('userId', 'username avatar')
+      .populate('userId', 'username avatarUrl')
       .populate('emojiId', 'name icon');
   }
 
