@@ -1,6 +1,6 @@
 import { IsMongoId, IsNotEmpty } from 'class-validator';
 
-export class UpdateReactPostDto {
+export class UpdateReactStoryDto {
   @IsMongoId()
   @IsNotEmpty()
   emojiId: string;

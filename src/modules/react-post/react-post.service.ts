@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { ReactPost, ReactPostDocument } from './schemas/react-post.schema';
@@ -9,46 +9,58 @@ import { UpdateReactPostDto } from './dto/update-react-post.dto';
 export class ReactPostService {
   constructor(
     @InjectModel(ReactPost.name)
-    private reactPostModel: Model<ReactPostDocument>,
+    private readonly reactPostModel: Model<ReactPostDocument>,
   ) {}
 
-  async create(dto: CreateReactPostDto & { userId: string }) {
-    const userId = new Types.ObjectId(dto.userId);
-    const emojiId = new Types.ObjectId(dto.emojiId);
-    const postId = dto.postId ? new Types.ObjectId(dto.postId) : null;
-    const commentId = dto.commentId ? new Types.ObjectId(dto.commentId) : null;
+  //Thêm hoặc đổi emoji
+  async createOrUpdate(userId: string, dto: CreateReactPostDto) {
+    const { postId, emojiId } = dto;
 
-    const existing = await this.reactPostModel.findOne({
-      userId,
-      postId,
-      commentId,
-    });
+    const existing = await this.reactPostModel.findOne({ userId, postId });
 
     if (existing) {
-      existing.emojiId = emojiId;
+      existing.emojiId = new Types.ObjectId(emojiId);
       return existing.save();
     }
 
-    return this.reactPostModel.create({
-      userId,
-      postId,
-      commentId,
-      emojiId,
-    });
-  }
-
-  async update(id: string, dto: UpdateReactPostDto) {
-    return this.reactPostModel.findByIdAndUpdate(
-      new Types.ObjectId(id),
-      { $set: { emojiId: new Types.ObjectId(dto.emojiId) } },
-      { new: true },
-    );
-  }
-
-  async remove(id: string, userId: string) {
-    return this.reactPostModel.findOneAndDelete({
-      _id: new Types.ObjectId(id),
+    const created = new this.reactPostModel({
       userId: new Types.ObjectId(userId),
+      postId: new Types.ObjectId(postId),
+      emojiId: new Types.ObjectId(emojiId),
     });
+
+    return created.save();
+  }
+
+  //Lấy người dùng react bài post
+  async findByPost(postId: string) {
+    return this.reactPostModel
+      .find({ postId })
+      .populate('userId', 'username avatar')
+      .populate('emojiId', 'name icon');
+  }
+
+  //kiểm tra user hiện tại có react bài post không
+  async findUserReactOnPost(userId: string, postId: string) {
+    const react = await this.reactPostModel
+      .findOne({ userId, postId })
+      .populate('emojiId', 'name icon');
+    return react ? react.emojiId : null;
+  }
+
+  //Cập nhật emoji
+  async update(userId: string, postId: string, dto: UpdateReactPostDto) {
+    const react = await this.reactPostModel.findOne({ userId, postId });
+    if (!react) throw new NotFoundException('React not found');
+
+    react.emojiId = new Types.ObjectId(dto.emojiId);
+    return react.save();
+  }
+
+  //xóa react
+  async remove(userId: string, postId: string) {
+    const deleted = await this.reactPostModel.findOneAndDelete({ userId, postId });
+    if (!deleted) throw new NotFoundException('React not found');
+    return deleted;
   }
 }

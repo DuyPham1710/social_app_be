@@ -13,6 +13,9 @@ import { ReactPostModule } from './modules/react-post/react-post.module';
 import { EmojiModule } from './modules/emoji/emoji.module';
 import { StoryModule } from './modules/story/story.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ReactStoryModule } from './modules/react-story/react-story.module';
+import { CommentModule } from './modules/comment/comment.module';
+import { ReactCommentModule } from './modules/react-comment/react-comment.module';
 import { CommentModule } from './modules/comment/comment.module';
 
 
@@ -31,6 +34,10 @@ import { CommentModule } from './modules/comment/comment.module';
     ReactPostModule,
     EmojiModule,
     StoryModule,
+    StoryModule,
+    CommentModule
+    ReactStoryModule,
+    ReactCommentModule,
     CommentModule
   ],
   controllers: [AppController],

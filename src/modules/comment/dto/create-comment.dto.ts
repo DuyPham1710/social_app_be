@@ -3,16 +3,16 @@ import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Types } from 'mongoose';
 
 export class CreateCommentDto {
-    @ApiProperty({ example: 'Bài viết rất hay!', description: 'Nội dung bình luận' })
+    @ApiProperty({ example: 'B�i vi?t r?t hay!', description: 'N?i dung b�nh lu?n' })
     @IsNotEmpty()
     @IsString()
     content: string;
 
-    @ApiProperty({ example: '66f2a0bcee0b32c4eac0f83d', description: 'ID của bài viết' })
+    @ApiProperty({ example: '66f2a0bcee0b32c4eac0f83d', description: 'ID c?a b�i vi?t' })
     @IsNotEmpty()
     postId: Types.ObjectId;
 
-    @ApiProperty({ example: '66f2a0bcee0b32c4eac0f83d', description: 'ID của bình luận cha (nếu là reply)' })
+    @ApiProperty({ example: '66f2a0bcee0b32c4eac0f83d', description: 'ID c?a b�nh lu?n cha (n?u l� reply)' })
     @IsOptional()
     parentId?: Types.ObjectId;
 }
