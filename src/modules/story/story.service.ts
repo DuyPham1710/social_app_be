@@ -5,13 +5,14 @@ import { Model, Types } from 'mongoose';
 import { CreateStoryDto } from './dto/create-story.dto';
 import { PrivacyUtil } from 'src/common/utils/privacy.util';
 import { UpdatePrivacyDto } from 'src/common/dto/update-privacy.dto';
-import { FriendsService } from '../friends/friends.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { AppEvents } from 'src/shared/enums/app-events.enum';
 
 @Injectable()
 export class StoryService {
     constructor(
         @InjectModel(Story.name) private storyModel: Model<StoryDocument>,
-        private readonly friendService: FriendsService,
+        private readonly eventEmitter: EventEmitter2,
     ) { }
 
     async createStory(createStoryDto: CreateStoryDto, userId: string) {
@@ -99,7 +100,8 @@ export class StoryService {
         if (!story) return false;
 
         // Lấy danh sách bạn bè của chủ post
-        const friendsOfOwner = await this.friendService.getFriends(story.userId.toString());
+        const [friendsOfOwner] = await this.eventEmitter.emitAsync(AppEvents.FRIENDS_GET, { userId: story.userId.toString() });
+        //  const friendsOfOwner = await this.friendService.getFriends(story.userId.toString());
 
         return PrivacyUtil.canView(
             new Types.ObjectId(viewerId),

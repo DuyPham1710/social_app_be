@@ -10,7 +10,6 @@ import { FriendsModule } from '../friends/friends.module';
     MongooseModule.forFeature([
       { name: Story.name, schema: StorySchema }
     ]),
-    FriendsModule
   ],
   controllers: [StoryController],
   providers: [StoryService],

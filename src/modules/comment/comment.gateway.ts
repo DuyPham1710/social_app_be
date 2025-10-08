@@ -8,6 +8,8 @@ import {
 import { Logger } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { CommentService } from './comment.service';
+import { CreateCommentDto } from './dto/create-comment.dto';
+import { UpdateCommentDto } from './dto/update-comment.dto';
 
 interface UserConnection {
   userId: string;
@@ -201,7 +203,7 @@ export class CommentGateway implements OnGatewayConnection, OnGatewayDisconnect 
   @SubscribeMessage('newComment')
   async handleNewComment(
     client: Socket,
-    payload: { content: string; postId: string; parentId?: string },
+    payload: CreateCommentDto,
   ) {
     try {
       const userConnection = this.connectedUsers.get(client.id);
@@ -227,22 +229,18 @@ export class CommentGateway implements OnGatewayConnection, OnGatewayDisconnect 
       this.logger.log(`Creating comment for user ${userConnection.userId} on post ${postId}`);
 
       const created = await this.commentService.create(
-        {
-          content: content.trim(),
-          postId: postId as any,
-          parentId: parentId as any
-        } as any,
+        payload,
         userConnection.userId,
       );
 
       const commentData = {
         comment: created,
         timestamp: new Date(),
-        postId,
+        postId: postId.toString(),
       };
 
       // Gửi comment tới tất cả user khác trong cùng bài post
-      client.to(postId).emit('commentAdded', commentData);
+      client.to(postId.toString()).emit('commentAdded', commentData);
 
       // Gửi lại chính user đó để xác nhận
       client.emit('commentAdded:ack', {
@@ -264,7 +262,7 @@ export class CommentGateway implements OnGatewayConnection, OnGatewayDisconnect 
   @SubscribeMessage('updateComment')
   async handleUpdateComment(
     client: Socket,
-    payload: { commentId: string; content: string; postId: string },
+    payload: UpdateCommentDto,
   ) {
     try {
       const userConnection = this.connectedUsers.get(client.id);
@@ -294,11 +292,11 @@ export class CommentGateway implements OnGatewayConnection, OnGatewayDisconnect 
       const updateData = {
         comment: updated,
         timestamp: new Date(),
-        postId,
+        postId: postId.toString(),
       };
 
       // Gửi comment đã update tới tất cả user khác trong room
-      client.to(postId).emit('commentUpdated', updateData);
+      client.to(postId.toString()).emit('commentUpdated', updateData);
 
       // Gửi xác nhận cho chính user đó
       client.emit('commentUpdated:ack', {

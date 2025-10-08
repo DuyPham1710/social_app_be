@@ -4,20 +4,19 @@ import { Post, PostDocument } from './schemas/post.schema';
 import { PostUrl, PostUrlDocument } from './schemas/post-url.schema';
 import { Model, Types } from 'mongoose';
 import { CreatePostDto } from './dto/create-post.dto';
-import { UserService } from '../user/user.service';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { UpdatePrivacyDto } from 'src/common/dto/update-privacy.dto';
 import { PrivacyUtil } from 'src/common/utils/privacy.util';
-import { FriendsService } from '../friends/friends.service';
 import { PrivacyType } from 'src/shared/enums/privacy_type';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { AppEvents } from 'src/shared/enums/app-events.enum';
 
 @Injectable()
 export class PostService {
     constructor(
         @InjectModel(Post.name) private postModel: Model<PostDocument>,
         @InjectModel(PostUrl.name) private postUrlModel: Model<PostUrlDocument>,
-        private readonly userService: UserService,
-        private readonly friendService: FriendsService,
+        private readonly eventEmitter: EventEmitter2,
     ) { }
 
     async getPostDetail(postId: string) {
@@ -42,12 +41,12 @@ export class PostService {
 
         // nếu không có viewerId thì mặc định viewer chính là owner
         const effectiveViewerId = viewerId ?? ownerId;
-        console.log('effectiveViewerId', effectiveViewerId);
+        //  console.log('effectiveViewerId', effectiveViewerId);
         if (!Types.ObjectId.isValid(effectiveViewerId)) {
             throw new HttpException('Invalid viewerId', HttpStatus.BAD_REQUEST);
         }
 
-        const userExist = await this.userService.checkUserExist(ownerId);
+        const [userExist] = await this.eventEmitter.emitAsync(AppEvents.USER_CHECK_EXISTS, { userId: ownerId });
         if (!userExist) {
             throw new HttpException('User not found', HttpStatus.NOT_FOUND);
         }
@@ -72,7 +71,7 @@ export class PostService {
             .exec();
 
         // lọc theo quyền riêng tư
-        const filteredPosts = (
+        let filteredPosts = (
             await Promise.all(
                 posts.map(async (post) => {
                     const canView = await this.canUserViewPost(
@@ -83,6 +82,19 @@ export class PostService {
                 }),
             )
         ).filter((p) => p !== null);
+
+        filteredPosts = filteredPosts.map((post: any) => {
+            if (post && post.userId && typeof post.userId === 'object' && post.userId._id) {
+                post.userId = {
+                    userId: post.userId._id,
+                    fullName: post.userId.fullName,
+                    avatarUrl: post.userId.avatarUrl,
+                    username: post.userId.username,
+                };
+            }
+            return post;
+        });
+
         const hasNext = skip + filteredPosts.length < totalPosts;
 
         return {
@@ -100,7 +112,7 @@ export class PostService {
         }
 
         // Lấy danh sách bạn bè
-        const friends = await this.friendService.getFriends(viewerId);
+        const [friends] = await this.eventEmitter.emitAsync(AppEvents.FRIENDS_GET, { userId: viewerId });
         const friendIds = friends.map((f) => f._id);
 
         const skip = (page - 1) * limit;
@@ -127,7 +139,7 @@ export class PostService {
                 }),
             )
         ).filter((p) => p !== null);
-        console.log('filteredPosts', filteredPosts);
+        // console.log('filteredPosts', filteredPosts);
         // query post của mình
         const myPosts = await this.postModel
             .find({ userId: new Types.ObjectId(viewerId) })
@@ -139,7 +151,7 @@ export class PostService {
             .lean()
             .exec();
         posts = [...filteredPosts, ...myPosts];
-        console.log('posts', posts);
+        //   console.log('posts', posts);
         // Nếu chưa đủ limit -> bổ sung post public
         if (posts.length < limit) {
             // const missing = limit - posts.length;
@@ -344,7 +356,7 @@ export class PostService {
         if (!post) return false;
 
         // Lấy danh sách bạn bè của chủ post
-        const friendsOfOwner = await this.friendService.getFriends(post.userId.toString());
+        const [friendsOfOwner] = await this.eventEmitter.emitAsync(AppEvents.FRIENDS_GET, { userId: post.userId.toString() });
 
         return PrivacyUtil.canView(
             new Types.ObjectId(viewerId),

@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsArray, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsArray, IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { PrivacyType } from "src/shared/enums/privacy_type";
 
 export class CreatePostUrlDto {
     @ApiProperty({ example: 'https://example.com/image.jpg' })
@@ -42,9 +43,16 @@ export class CreatePostDto {
     @IsArray()
     urls: CreatePostUrlDto[];
 
-    // privacy default is public
-    // @ApiProperty({ example: 'public', required: false })
-    // @IsOptional()
-    // @IsString()
-    // privacy?: string;
+    @IsOptional()
+    @IsEnum(PrivacyType)
+    @ApiProperty({ example: PrivacyType.PUBLIC, required: false })
+    privacy_type?: PrivacyType;
+
+    @IsOptional()
+    @ApiProperty({ example: ['1', '2', '3'], required: false })
+    friends_except?: string[];
+
+    @IsOptional()
+    @ApiProperty({ example: ['1', '2', '3'], required: false })
+    friends_detail?: string[];
 }

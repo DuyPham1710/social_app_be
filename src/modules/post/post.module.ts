@@ -4,8 +4,6 @@ import { PostController } from './post.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Post, PostSchema } from './schemas/post.schema';
 import { PostUrl, PostUrlSchema } from './schemas/post-url.schema';
-import { UserModule } from '../user/user.module';
-import { FriendsModule } from '../friends/friends.module';
 
 @Module({
   controllers: [PostController],
@@ -13,9 +11,7 @@ import { FriendsModule } from '../friends/friends.module';
   imports: [
     MongooseModule.forFeature([
       { name: Post.name, schema: PostSchema },
-      { name: PostUrl.name, schema: PostUrlSchema }]),
-    UserModule,
-    FriendsModule
+      { name: PostUrl.name, schema: PostUrlSchema }])
   ],
 })
 export class PostModule { }
