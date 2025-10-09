@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsArray, IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { LayoutType } from "src/shared/enums/layout_type";
 import { PrivacyType } from "src/shared/enums/privacy_type";
 
 export class CreatePostUrlDto {
@@ -42,6 +43,11 @@ export class CreatePostDto {
     @IsNotEmpty()
     @IsArray()
     urls: CreatePostUrlDto[];
+
+    @IsOptional()
+    @IsEnum(LayoutType)
+    @ApiProperty({ example: LayoutType.CLASSIC, required: false })
+    layout?: LayoutType;
 
     @IsOptional()
     @IsEnum(PrivacyType)

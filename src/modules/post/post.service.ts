@@ -116,8 +116,9 @@ export class PostService {
         const friendIds = friends.map((f) => f._id);
 
         const skip = (page - 1) * limit;
+
         // Query post của bạn bè
-        let posts = await this.postModel
+        let friendsPosts = await this.postModel
             .find({ userId: { $in: friendIds } })
             .populate('userId', 'username fullName avatarUrl')
             .populate({ path: 'urls', options: { sort: { order: 1 } } })
@@ -130,7 +131,7 @@ export class PostService {
         // lọc theo quyền riêng tư
         const filteredPosts = (
             await Promise.all(
-                posts.map(async (post) => {
+                friendsPosts.map(async (post) => {
                     const canView = await this.canUserViewPost(
                         post._id.toString(),
                         viewerId,
@@ -139,7 +140,7 @@ export class PostService {
                 }),
             )
         ).filter((p) => p !== null);
-        // console.log('filteredPosts', filteredPosts);
+
         // query post của mình
         const myPosts = await this.postModel
             .find({ userId: new Types.ObjectId(viewerId) })
@@ -150,31 +151,44 @@ export class PostService {
             // .limit(limit)
             .lean()
             .exec();
-        posts = [...filteredPosts, ...myPosts];
-        //   console.log('posts', posts);
-        // Nếu chưa đủ limit -> bổ sung post public
-        if (posts.length < limit) {
-            // const missing = limit - posts.length;
 
+        // Gộp tất cả posts và sắp xếp theo createdAt
+        let allPosts: any[] = [...filteredPosts, ...myPosts];
+        //     allPosts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+        // Nếu chưa đủ để fill trang hiện tại + check next page
+        const neededCount = skip + limit + 1;
+        if (allPosts.length < neededCount) {
+            // Lấy các ID đã có để loại trừ
+            const existingPostIds = allPosts.map(p => p._id.toString());
+            const existingUserIds = [...friendIds.map(id => id.toString()), viewerId];
+
+            // Bổ sung post public
             let publicPosts = await this.postModel
                 .find({
                     privacy_type: PrivacyType.PUBLIC,
-                    userId: { $nin: friendIds }, // loại trừ bạn bè đã lấy
+                    userId: { $nin: existingUserIds.map(id => new Types.ObjectId(id)) },
+                    _id: { $nin: existingPostIds.map(id => new Types.ObjectId(id)) }
                 })
                 .populate('userId', 'username fullName avatarUrl')
                 .populate({ path: 'urls', options: { sort: { order: 1 } } })
                 .sort({ createdAt: -1 })
-                //  .limit(missing)
                 .lean()
                 .exec();
 
-            // không lấy bài trung với myPosts
-            publicPosts = publicPosts.filter(p => !myPosts.some(mp => mp._id.toString() === p._id.toString()));
-            posts = [...posts, ...publicPosts];
+            allPosts = [...allPosts, ...publicPosts];
+            // Sắp xếp lại sau khi thêm public posts
+            //    allPosts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         }
 
-        // phân trang khúc này
-        const pageItems = posts.slice(skip, skip + limit).map((post: any) => {
+        // Lấy posts cho trang hiện tại (limit + 1 để check hasNext)
+        const postsWithExtra = allPosts.slice(skip, skip + limit + 1);
+
+        // hasNext = true nếu có nhiều hơn limit items
+        const hasNext = postsWithExtra.length > limit;
+
+        // Chỉ lấy đúng limit items để trả về
+        const pageItems = postsWithExtra.slice(0, limit).map((post: any) => {
             if (post && post.userId && typeof post.userId === 'object' && post.userId._id) {
                 post.userId = {
                     userId: post.userId._id,
@@ -185,15 +199,12 @@ export class PostService {
             }
             return post;
         });
-        const totalPosts = posts.length;
-
-        const hasNext = skip + pageItems.length < totalPosts;
 
         return {
             data: pageItems,
             page,
             limit,
-            total: totalPosts,
+            total: pageItems.length,
             hasNext,
         };
     }
@@ -245,6 +256,10 @@ export class PostService {
 
         if (updatePostDto.caption) {
             post.caption = updatePostDto.caption;
+        }
+
+        if (updatePostDto.layout) {
+            post.layout = updatePostDto.layout;
         }
 
         // Update urls

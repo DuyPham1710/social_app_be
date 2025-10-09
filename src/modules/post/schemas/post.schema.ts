@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { PrivacyBase } from 'src/common/base/privacy.base';
+import { LayoutType } from 'src/shared/enums/layout_type';
 import { PrivacyType } from 'src/shared/enums/privacy_type';
 
 export type PostDocument = Post & Document;
@@ -15,6 +16,13 @@ export class Post extends PrivacyBase {
 
     @Prop({ type: [{ type: Types.ObjectId, ref: 'PostUrl' }] })
     urls: Types.ObjectId[];
+
+    @Prop({
+        type: String,
+        enum: LayoutType,
+        default: LayoutType.CLASSIC,
+    })
+    layout: LayoutType;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);
