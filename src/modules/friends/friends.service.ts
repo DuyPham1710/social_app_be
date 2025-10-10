@@ -7,6 +7,8 @@ import { SendFriendRequestDto } from './dto/send-friend-request.dto';
 import { RespondFriendRequestDto } from './dto/respond-friend-request.dto';
 import { RemoveFriendDto } from './dto/remove-friend.dto';
 import { SearchFriendsDto } from './dto/search-friends.dto';
+import { OnEvent } from '@nestjs/event-emitter';
+import { AppEvents } from 'src/shared/enums/app-events.enum';
 
 @Injectable()
 export class FriendsService {
@@ -150,6 +152,12 @@ export class FriendsService {
       .exec();
 
     return friends.map(friend => friend.friend_id);
+  }
+
+  // Event listener 
+  @OnEvent(AppEvents.FRIENDS_GET)
+  async onGetFriendsEvent(payload: { userId: string }) {
+    return await this.getFriends(payload.userId);
   }
 
   // Tìm kiếm bạn bè

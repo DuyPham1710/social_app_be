@@ -6,11 +6,17 @@ import UserResponseDto from './dto/user.response.dto';
 import { plainToInstance } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
 import UpdateUserDto from './dto/update.user.dto';
-import { FriendsService } from '../friends/friends.service';
+// import { FriendsService } from '../friends/friends.service';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import { AppEvents } from 'src/shared/enums/app-events.enum';
 
 @Injectable()
 export class UserService {
-    constructor(@InjectModel(User.name) private readonly userModel: Model<UserDocument>, private readonly friendsService: FriendsService) { }
+    constructor(
+        @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+        //  private readonly friendsService: FriendsService,
+        private readonly eventEmitter: EventEmitter2
+    ) { }
 
     async findAll(): Promise<UserResponseDto[]> {
         const users = await this.userModel.find().exec();
@@ -81,9 +87,15 @@ export class UserService {
     }
 
     async update(userId: string, updateUserDto: UpdateUserDto): Promise<UserResponseDto> {
-        await this.userModel.findByIdAndUpdate(userId, updateUserDto, { new: true });
+        if (!Types.ObjectId.isValid(userId)) {
+            throw new HttpException('Invalid userId', HttpStatus.BAD_REQUEST);
+        }
+        const userIdObject = new Types.ObjectId(userId);
 
-        const user = await this.userModel.findById(userId).exec();
+
+        await this.userModel.findByIdAndUpdate(userIdObject, updateUserDto, { new: true });
+
+        const user = await this.userModel.findById(userIdObject).exec();
 
         return plainToInstance(UserResponseDto, user, {
             excludeExtraneousValues: true
@@ -94,7 +106,7 @@ export class UserService {
         const skip = (page - 1) * limit;
         const qRegex = { $regex: query, $options: 'i' };
 
-        const friends = await this.friendsService.getFriends(userId);
+        const [friends] = await this.eventEmitter.emitAsync(AppEvents.FRIENDS_GET, { userId });
         const friendIds = friends.map(friend => friend._id);
 
         // Tìm bạn bè trực tiếp phù hợp query
@@ -108,7 +120,7 @@ export class UserService {
 
         // Tìm mutual friends (friends-of-friends) match query
         const mutualFriendsArrays = await Promise.all(
-            friendIds.map(friendId => this.friendsService.getFriends(friendId.toString()))
+            friendIds.map(friendId => this.eventEmitter.emitAsync(AppEvents.FRIENDS_GET, { userId: friendId.toString() }).then(([res]) => res))
         );
         // mutualFriendsArrays bây giờ là 1 mảng 2 chiều: [ [friendA1, friendA2], [friendB1, friendB2], ... ]
         // Gộp tất cả lại
@@ -162,5 +174,60 @@ export class UserService {
                 hasPrevPage: page > 1
             }
         };
+    }
+
+    // ===== EVENT LISTENERS FOR AUTH =====
+    @OnEvent(AppEvents.USER_FIND_BY_EMAIL)
+    async handleFindByEmail({ email }: { email: string }): Promise<UserDocument | null> {
+        return this.findByEmail(email);
+    }
+
+    @OnEvent(AppEvents.USER_FIND_BY_USERNAME)
+    async handleFindByUsername({ username }: { username: string }): Promise<UserDocument | null> {
+        return this.findByUsername(username);
+    }
+
+    @OnEvent(AppEvents.USER_CREATE)
+    async handleCreate(data: Partial<User>): Promise<UserDocument> {
+        return this.create(data);
+    }
+
+    @OnEvent(AppEvents.USER_UPDATE)
+    async handleUpdate({ userId, updateData }: { userId: string, updateData: UpdateUserDto }): Promise<UserResponseDto> {
+        return this.update(userId, updateData);
+    }
+
+    @OnEvent(AppEvents.USER_UPDATE_REFRESH_TOKEN)
+    async handleUpdateRefreshToken({ userId, refreshToken }: { userId: string, refreshToken: string }): Promise<void> {
+        return this.updateRefreshToken(userId, refreshToken);
+    }
+
+    @OnEvent(AppEvents.USER_VALIDATE_BY_EMAIL)
+    async handleValidateByEmail({ email, password }: { email: string, password: string }): Promise<UserResponseDto | { error: string }> {
+        try {
+            return await this.validateUserByEmail(email, password);
+        } catch (error) {
+            if (error instanceof UnauthorizedException) {
+                return { error: error.message };
+            }
+            return { error: 'Authentication failed' };
+        }
+    }
+
+    @OnEvent(AppEvents.USER_FIND_ONE)
+    async handleFindOne({ userId }: { userId: string }): Promise<UserResponseDto | { error: string }> {
+        try {
+            return await this.findOne(userId);
+        } catch (error) {
+            if (error instanceof HttpException) {
+                return { error: error.message };
+            }
+            return { error: 'User not found' };
+        }
+    }
+
+    @OnEvent(AppEvents.USER_CHECK_EXISTS)
+    async handleCheckUserExists({ userId }: { userId: string }): Promise<boolean> {
+        return this.checkUserExist(userId);
     }
 }

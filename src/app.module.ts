@@ -12,11 +12,16 @@ import { PostModule } from './modules/post/post.module';
 import { ReactPostModule } from './modules/react-post/react-post.module';
 import { EmojiModule } from './modules/emoji/emoji.module';
 import { StoryModule } from './modules/story/story.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ReactStoryModule } from './modules/react-story/react-story.module';
+import { CommentModule } from './modules/comment/comment.module';
+import { ReactCommentModule } from './modules/react-comment/react-comment.module';
 
 
 
 @Module({
   imports: [
+    EventEmitterModule.forRoot(),
     ConfigModule.forRoot({ isGlobal: true }),
     DatabaseModule,
     UserModule,
@@ -27,7 +32,12 @@ import { StoryModule } from './modules/story/story.module';
     PostModule,
     ReactPostModule,
     EmojiModule,
-    StoryModule
+    StoryModule,
+    StoryModule,
+    CommentModule,
+    ReactStoryModule,
+    ReactCommentModule,
+    CommentModule
   ],
   controllers: [AppController],
   providers: [AppService],
