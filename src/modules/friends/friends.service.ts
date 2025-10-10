@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model, Types, PipelineStage } from 'mongoose';
 import { Friend, FriendDocument } from './schemas/friend.schemas';
 import { FriendRequest, FriendRequestDocument } from './schemas/friend-request.schema';
 import { SendFriendRequestDto } from './dto/send-friend-request.dto';
@@ -292,5 +292,99 @@ export class FriendsService {
     }
 
     return { status: 'none', message: 'Không có quan hệ' };
+  }
+
+  // Lấy danh sách bạn chung giữa 2 user
+  async getMutualFriends(userId: string, targetUserId: string, page: number = 1, limit: number = 10) {
+    const skip = (page - 1) * limit;
+
+    // Sử dụng aggregation để tìm bạn chung
+    const basePipeline: PipelineStage[] = [
+      // Tìm tất cả bạn bè của user hiện tại
+      {
+        $match: {
+          user_id: new Types.ObjectId(userId)
+        }
+      },
+      // Tìm bạn bè của target user
+      {
+        $lookup: {
+          from: 'friends',
+          let: { friendId: '$friend_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$user_id', new Types.ObjectId(targetUserId)] },
+                    { $eq: ['$friend_id', '$$friendId'] }
+                  ]
+                }
+              }
+            }
+          ],
+          as: 'mutualFriend'
+        }
+      },
+      // Chỉ lấy những người là bạn chung
+      {
+        $match: {
+          'mutualFriend.0': { $exists: true }
+        }
+      },
+      // Populate thông tin người dùng
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'friend_id',
+          foreignField: '_id',
+          as: 'userInfo'
+        }
+      },
+      {
+        $unwind: '$userInfo'
+      },
+      // Project các trường cần thiết
+      {
+        $project: {
+          _id: '$userInfo._id',
+          fullName: '$userInfo.fullName',
+          username: '$userInfo.username',
+          avatarUrl: '$userInfo.avatarUrl',
+          bio: '$userInfo.bio',
+          mutualFriendshipDate: '$createdAt'
+        }
+      },
+      // Sắp xếp theo tên
+      {
+        $sort: { fullName: 1 }
+      }
+    ];
+
+    // Tạo pipeline để đếm tổng số kết quả
+    const countPipeline = [...basePipeline, { $count: 'total' }];
+
+    // Tạo pipeline với phân trang
+    const paginatedPipeline = [...basePipeline, { $skip: skip }, { $limit: limit }];
+
+    const [mutualFriends, countResult] = await Promise.all([
+      this.friendModel.aggregate(paginatedPipeline),
+      this.friendModel.aggregate(countPipeline)
+    ]);
+
+    const total = countResult.length > 0 ? countResult[0].total : 0;
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      mutualFriends,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalItems: total,
+        itemsPerPage: limit,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1
+      }
+    };
   }
 }

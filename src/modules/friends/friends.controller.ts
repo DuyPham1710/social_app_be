@@ -6,6 +6,7 @@ import { SendFriendRequestDto } from './dto/send-friend-request.dto';
 import { RespondFriendRequestDto } from './dto/respond-friend-request.dto';
 import { RemoveFriendDto } from './dto/remove-friend.dto';
 import { SearchFriendsDto } from './dto/search-friends.dto';
+import { GetMutualFriendsDto } from './dto/get-mutual-friends.dto';
 
 @ApiTags('Friends')
 @ApiBearerAuth()
@@ -82,6 +83,17 @@ export class FriendsController {
   async getRelationshipStatus(@Req() req: any, @Param('targetUserId') targetUserId: string) {
     const userId = req.user.userId;
     return await this.friendsService.getRelationshipStatus(userId, targetUserId);
+  }
+
+  @Get('mutual/:targetUserId')
+  @ApiOperation({ summary: 'Lấy danh sách bạn chung với một user khác' })
+  async getMutualFriends(
+    @Req() req: any, 
+    @Param('targetUserId') targetUserId: string,
+    @Query() query: GetMutualFriendsDto
+  ) {
+    const userId = req.user.userId;
+    return await this.friendsService.getMutualFriends(userId, targetUserId, query.page, query.limit);
   }
 }
 
