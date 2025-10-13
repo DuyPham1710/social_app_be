@@ -425,4 +425,48 @@ export class CommentGateway implements OnGatewayConnection, OnGatewayDisconnect 
       });
     }
   }
+
+  // Lấy tất cả comments của một bài post
+  @SubscribeMessage('loadComments')
+  async handleLoadComments(client: Socket, payload: { postId: string }) {
+    try {
+      const userConnection = this.connectedUsers.get(client.id);
+      const { postId } = payload;
+
+      if (!userConnection) {
+        client.emit('error', {
+          message: 'User not registered. Please send register event first.',
+          event: 'loadComments'
+        });
+        return;
+      }
+
+      if (!postId || postId.trim() === '') {
+        client.emit('error', {
+          message: 'postId is required',
+          event: 'loadComments'
+        });
+        return;
+      }
+
+      this.logger.log(`Loading comments for post ${postId} by user ${userConnection.userId}`);
+
+      const comments = await this.commentService.findByPostId(postId);
+
+      client.emit('commentsLoaded', {
+        postId,
+        comments,
+        count: comments.length,
+        timestamp: new Date()
+      });
+
+      this.logger.log(`Loaded ${comments.length} comments for post ${postId}`);
+    } catch (error) {
+      this.logger.error(`Error loading comments: ${error.message}`);
+      client.emit('error', {
+        message: error?.message || 'Failed to load comments',
+        event: 'loadComments'
+      });
+    }
+  }
 }

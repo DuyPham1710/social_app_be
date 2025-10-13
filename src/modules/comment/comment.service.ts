@@ -79,4 +79,33 @@ export class CommentService {
         await this.commentModel.deleteOne({ _id: comment._id });
         return { deleted: true, id: commentId };
     }
+
+    async findByPostId(postId: string) {
+        // Validate postId
+        if (!Types.ObjectId.isValid(postId)) {
+            throw new NotFoundException('Invalid postId');
+        }
+
+        // Lấy tất cả comments của post, sắp xếp theo thời gian tạo
+        const comments = await this.commentModel
+            .find({ postId: new Types.ObjectId(postId) })
+            .sort({ createdAt: 1 }) // Sắp xếp tăng dần theo thời gian (comment cũ nhất trước)
+            .populate([
+                {
+                    path: 'userId',
+                    select: 'username fullName avatarUrl email _id'
+                },
+                {
+                    path: 'parentId',
+                    select: 'content userId createdAt',
+                    populate: {
+                        path: 'userId',
+                        select: 'username fullName avatarUrl'
+                    }
+                }
+            ])
+            .exec();
+
+        return comments;
+    }
 }
