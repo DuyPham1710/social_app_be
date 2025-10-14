@@ -7,14 +7,17 @@ import { SendFriendRequestDto } from './dto/send-friend-request.dto';
 import { RespondFriendRequestDto } from './dto/respond-friend-request.dto';
 import { RemoveFriendDto } from './dto/remove-friend.dto';
 import { SearchFriendsDto } from './dto/search-friends.dto';
+import { FriendSuggestionsDto } from './dto/friend-suggestions.dto';
 import { OnEvent } from '@nestjs/event-emitter';
 import { AppEvents } from 'src/shared/enums/app-events.enum';
+import { User, UserDocument } from '../user/schemas/user.schema';
 
 @Injectable()
 export class FriendsService {
   constructor(
     @InjectModel(Friend.name) private readonly friendModel: Model<FriendDocument>,
     @InjectModel(FriendRequest.name) private readonly friendRequestModel: Model<FriendRequestDocument>,
+    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) { }
 
   // Gửi lời mời kết bạn
@@ -395,4 +398,136 @@ export class FriendsService {
       }
     };
   }
+
+  // Gợi ý bạn bè ngẫu nhiên
+  async getFriendSuggestions(userId: string, suggestionsDto: FriendSuggestionsDto) {
+    const { limit = 10, page = 1 } = suggestionsDto;
+    const skip = (page - 1) * limit;
+
+    // Lấy thông tin user hiện tại
+    const currentUser = await this.userModel.findById(userId);
+    if (!currentUser) {
+      throw new HttpException('Không tìm thấy người dùng', HttpStatus.NOT_FOUND);
+    }
+
+    // Lấy danh sách ID của bạn bè hiện tại và lời mời đã gửi/nhận
+    const [friends, sentRequests, receivedRequests] = await Promise.all([
+      this.friendModel.find({ user_id: new Types.ObjectId(userId) }).select('friend_id'),
+      this.friendRequestModel.find({ sender_id: new Types.ObjectId(userId) }).select('receiver_id'),
+      this.friendRequestModel.find({ receiver_id: new Types.ObjectId(userId) }).select('sender_id')
+    ]);
+
+    const excludedUserIds = [
+      new Types.ObjectId(userId), // Loại trừ chính mình
+      ...friends.map(f => f.friend_id), // Loại trừ bạn bè hiện tại
+      ...sentRequests.map(r => r.receiver_id), // Loại trừ những người đã gửi lời mời
+      ...receivedRequests.map(r => r.sender_id) // Loại trừ những người đã nhận lời mời
+    ];
+
+    // Tạo pipeline aggregation để ưu tiên người có bạn chung, vẫn thêm yếu tố ngẫu nhiên
+    const pipeline: PipelineStage[] = [
+      // Loại trừ những người không nên gợi ý
+      {
+        $match: {
+          _id: { $nin: excludedUserIds },
+          isActive: true // Chỉ gợi ý user đang hoạt động
+        }
+      },
+      // Tính số bạn chung giữa currentUser và từng user mục tiêu
+      {
+        $lookup: {
+          from: 'friends',
+          let: { targetUserId: '$_id' },
+          pipeline: [
+            { $match: { $expr: { $eq: ['$user_id', '$$targetUserId'] } } },
+            {
+              $lookup: {
+                from: 'friends',
+                let: { mutualFriendId: '$friend_id' },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $and: [
+                          { $eq: ['$user_id', new Types.ObjectId(userId)] },
+                          { $eq: ['$friend_id', '$$mutualFriendId'] }
+                        ]
+                      }
+                    }
+                  }
+                ],
+                as: 'isMutual'
+              }
+            },
+            { $match: { 'isMutual.0': { $exists: true } } },
+            { $count: 'mutualCount' }
+          ],
+          as: 'mutualFriends'
+        }
+      },
+      // Tạo điểm ngẫu nhiên và điểm ưu tiên
+      {
+        $addFields: {
+          mutualFriendsCount: { $ifNull: [{ $arrayElemAt: ['$mutualFriends.mutualCount', 0] }, 0] },
+          randomScore: { $rand: {} },
+        }
+      },
+      {
+        $addFields: {
+          // Ưu tiên mạnh cho bạn chung, thêm chút ngẫu nhiên để đa dạng
+          suggestionScore: {
+            $add: [
+              { $multiply: ['$mutualFriendsCount', 1000] },
+              { $multiply: ['$randomScore', 100] }
+            ]
+          }
+        }
+      },
+      // Sắp xếp theo điểm gợi ý giảm dần
+      { $sort: { suggestionScore: -1, createdAt: -1 } },
+      // Project các trường cần thiết
+      {
+        $project: {
+          _id: 1,
+          fullName: 1,
+          username: 1,
+          avatarUrl: 1,
+          bio: 1,
+          gender: 1,
+          dateOfBirth: 1,
+          createdAt: 1,
+          randomScore: 1,
+          mutualFriendsCount: 1,
+          suggestionScore: 1
+        }
+      }
+    ];
+
+    // Tạo pipeline để đếm tổng số kết quả
+    const countPipeline = [...pipeline, { $count: 'total' }];
+
+    // Tạo pipeline với phân trang
+    const paginatedPipeline = [...pipeline, { $skip: skip }, { $limit: limit }];
+
+    const [suggestions, countResult] = await Promise.all([
+      this.userModel.aggregate(paginatedPipeline),
+      this.userModel.aggregate(countPipeline)
+    ]);
+
+    const total = countResult.length > 0 ? countResult[0].total : 0;
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      suggestions,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalItems: total,
+        itemsPerPage: limit,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1
+      }
+    };
+  }
+
 }

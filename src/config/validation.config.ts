@@ -3,6 +3,9 @@ import { ValidationError } from 'class-validator';
 
 export const validationPipe = new ValidationPipe({
     transform: true,
+    transformOptions: {
+        enableImplicitConversion: true, // cho phép tự động chuyển đổi kiểu từ query params
+    },
     exceptionFactory: (validationErrors: ValidationError[] = []) => {
         return new BadRequestException(
             validationErrors.map((error) => ({
