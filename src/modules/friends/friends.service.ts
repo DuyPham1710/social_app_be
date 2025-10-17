@@ -150,11 +150,93 @@ export class FriendsService {
 
   // Lấy danh sách bạn bè
   async getFriends(userId: string) {
-    const friends = await this.friendModel.find({ user_id: new Types.ObjectId(userId) })
-      .populate('friend_id', 'fullName username avatarUrl bio')
-      .exec();
+    const userObjectId = new Types.ObjectId(userId);
+    
+    // Sử dụng aggregation để lấy thông tin bạn bè kèm bạn chung
+    const friendsWithMutualInfo = await this.friendModel.aggregate([
+      // Bước 1: Lọc bạn bè của user hiện tại
+      {
+        $match: { user_id: userObjectId }
+      },
+      // Bước 2: Lookup thông tin user của bạn bè
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'friend_id',
+          foreignField: '_id',
+          as: 'friendInfo'
+        }
+      },
+      {
+        $unwind: '$friendInfo'
+      },
+      // Bước 3: Lookup để tìm danh sách bạn bè của từng friend
+      {
+        $lookup: {
+          from: 'friends',
+          localField: 'friend_id',
+          foreignField: 'user_id',
+          as: 'friendOfFriend'
+        }
+      },
+      // Bước 4: Lookup danh sách bạn của user để tìm giao điểm
+      {
+        $lookup: {
+          from: 'friends',
+          let: { friendOfFriendIds: '$friendOfFriend.friend_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$user_id', userObjectId] },
+                    { $in: ['$friend_id', '$$friendOfFriendIds'] }
+                  ]
+                }
+              }
+            },
+            {
+              $lookup: {
+                from: 'users',
+                localField: 'friend_id',
+                foreignField: '_id',
+                as: 'mutualUserInfo'
+              }
+            },
+            {
+              $unwind: '$mutualUserInfo'
+            },
+            {
+              $project: {
+                avatarUrl: '$mutualUserInfo.avatarUrl'
+              }
+            },
+            { $limit: 3 }
+          ],
+          as: 'mutualFriends'
+        }
+      },
+      // Bước 5: Project kết quả cuối cùng
+      {
+        $project: {
+          _id: '$friendInfo._id',
+          fullName: '$friendInfo.fullName',
+          username: '$friendInfo.username',
+          avatarUrl: '$friendInfo.avatarUrl',
+          bio: '$friendInfo.bio',
+          mutualFriendsCount: { $size: '$mutualFriends' },
+          mutualFriendAvatars: {
+            $map: {
+              input: '$mutualFriends',
+              as: 'mutual',
+              in: '$$mutual.avatarUrl'
+            }
+          }
+        }
+      }
+    ]);
 
-    return friends.map(friend => friend.friend_id);
+    return friendsWithMutualInfo;
   }
 
   // Event listener 
