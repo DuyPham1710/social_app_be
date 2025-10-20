@@ -10,6 +10,8 @@ import { PrivacyUtil } from 'src/common/utils/privacy.util';
 import { PrivacyType } from 'src/shared/enums/privacy_type';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AppEvents } from 'src/shared/enums/app-events.enum';
+import { PostResponseDto } from './dto/post-response.dto';
+import { PostListDto } from './dto/post-list.dto';
 
 @Injectable()
 export class PostService {
@@ -106,7 +108,7 @@ export class PostService {
         };
     }
 
-    async getAllPostsHomePage(viewerId: string, page: number = 1, limit: number = 5) {
+    async getAllPostsHomePage(viewerId: string, page: number = 1, limit: number = 5): Promise<PostListDto> {
         if (!Types.ObjectId.isValid(viewerId)) {
             throw new HttpException('Invalid viewerId', HttpStatus.BAD_REQUEST);
         }
@@ -118,7 +120,7 @@ export class PostService {
         const skip = (page - 1) * limit;
 
         // Query post của bạn bè
-        let friendsPosts = await this.postModel
+        let friendsPosts: PostDocument[] = await this.postModel
             .find({ userId: { $in: friendIds } })
             .populate('userId', 'username fullName avatarUrl')
             .populate({ path: 'urls', options: { sort: { order: 1 } } })
@@ -129,7 +131,7 @@ export class PostService {
             .exec();
 
         // lọc theo quyền riêng tư
-        const filteredPosts = (
+        const filteredPosts: PostDocument[] = (
             await Promise.all(
                 friendsPosts.map(async (post) => {
                     const canView = await this.canUserViewPost(
@@ -142,7 +144,7 @@ export class PostService {
         ).filter((p) => p !== null);
 
         // query post của mình
-        const myPosts = await this.postModel
+        const myPosts: PostDocument[] = await this.postModel
             .find({ userId: new Types.ObjectId(viewerId) })
             .populate('userId', 'username fullName avatarUrl')
             .populate({ path: 'urls', options: { sort: { order: 1 } } })
@@ -153,7 +155,7 @@ export class PostService {
             .exec();
 
         // Gộp tất cả posts và sắp xếp theo createdAt
-        let allPosts: any[] = [...filteredPosts, ...myPosts];
+        let allPosts: PostDocument[] = [...filteredPosts, ...myPosts];
         //     allPosts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
         // Nếu chưa đủ để fill trang hiện tại + check next page
@@ -164,7 +166,7 @@ export class PostService {
             const existingUserIds = [...friendIds.map(id => id.toString()), viewerId];
 
             // Bổ sung post public
-            let publicPosts = await this.postModel
+            let publicPosts: PostDocument[] = await this.postModel
                 .find({
                     privacy_type: PrivacyType.PUBLIC,
                     userId: { $nin: existingUserIds.map(id => new Types.ObjectId(id)) },
@@ -188,7 +190,7 @@ export class PostService {
         const hasNext = postsWithExtra.length > limit;
 
         // Chỉ lấy đúng limit items để trả về
-        const pageItems = postsWithExtra.slice(0, limit).map((post: any) => {
+        const pageItems: PostResponseDto[] = postsWithExtra.slice(0, limit).map((post: any) => {
             if (post && post.userId && typeof post.userId === 'object' && post.userId._id) {
                 post.userId = {
                     userId: post.userId._id,
@@ -199,14 +201,22 @@ export class PostService {
             }
             return post;
         });
-
-        return {
+        // return {
+        //     data: pageItems,
+        //     page,
+        //     limit,
+        //     total: pageItems.length,
+        //     hasNext,
+        // };
+        const result: PostListDto = {
             data: pageItems,
             page,
             limit,
             total: pageItems.length,
             hasNext,
         };
+
+        return result;
     }
 
     async createPost(createPostDto: CreatePostDto, userId: string) {
@@ -376,7 +386,7 @@ export class PostService {
         return PrivacyUtil.canView(
             new Types.ObjectId(viewerId),
             post,
-            friendsOfOwner.map(f => new Types.ObjectId(f)),
+            friendsOfOwner.map(f => new Types.ObjectId(f._id)),
         );
     }
 

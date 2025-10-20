@@ -9,7 +9,7 @@ export default class UserResponseDto {
     fullName: string;
 
     @Expose()
-    phoneNumber: string;
+    phoneNumber?: string;
 
     @Expose()
     bio?: string;

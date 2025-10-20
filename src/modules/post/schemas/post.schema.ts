@@ -8,6 +8,7 @@ export type PostDocument = Post & Document;
 
 @Schema({ timestamps: true }) // tự động tạo createdAt & updatedAt
 export class Post extends PrivacyBase {
+    _id: Types.ObjectId;
     @Prop()
     caption: string;
 
