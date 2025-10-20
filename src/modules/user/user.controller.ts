@@ -7,6 +7,7 @@ import UpdateUserDto from './dto/update.user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { storage } from '../cloudinary/cloudinary.storage';
 import { Public } from 'src/common/decorators/public.decorator';
+import { File } from 'multer';
 
 @ApiBearerAuth()
 @Controller('user')
@@ -49,7 +50,7 @@ export class UserController {
   editProfile(
     @Req() req: any,
     @Body() updateUserDto: UpdateUserDto,
-    @UploadedFile() file: Express.Multer.File): Promise<UserResponseDto> {
+    @UploadedFile() file: File): Promise<UserResponseDto> {
     if (file && file.path) {
       updateUserDto.avatarUrl = file.path;
     }

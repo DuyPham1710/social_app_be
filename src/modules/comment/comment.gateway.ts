@@ -233,10 +233,14 @@ export class CommentGateway implements OnGatewayConnection, OnGatewayDisconnect 
         userConnection.userId,
       );
 
+      const comments = await this.commentService.findByPostId(created.postId.toString());
+
       const commentData = {
-        comment: created,
+        postId,
+        comments: comments,
+        count: comments.length,
         timestamp: new Date(),
-        postId: postId.toString(),
+
       };
 
       // Gửi comment tới tất cả user khác trong cùng bài post

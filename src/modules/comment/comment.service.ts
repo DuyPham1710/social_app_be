@@ -87,7 +87,7 @@ export class CommentService {
         }
 
         // Lấy tất cả comments của post, sắp xếp theo thời gian tạo
-        const comments = await this.commentModel
+        let comments = await this.commentModel
             .find({ postId: new Types.ObjectId(postId) })
             .sort({ createdAt: 1 }) // Sắp xếp tăng dần theo thời gian (comment cũ nhất trước)
             .populate([
@@ -105,6 +105,19 @@ export class CommentService {
                 }
             ])
             .exec();
+
+        comments = comments.map((comment: any) => {
+            if (comment && comment.userId && typeof comment.userId === 'object' && comment.userId._id) {
+                comment.userId = {
+                    userId: comment.userId._id,
+                    fullName: comment.userId.fullName,
+                    avatarUrl: comment.userId.avatarUrl,
+                    username: comment.userId.username,
+                };
+            }
+            return comment;
+        });
+
 
         return comments;
     }
