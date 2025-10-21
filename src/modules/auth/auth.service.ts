@@ -86,10 +86,7 @@ export class AuthService {
                 userId: user._id.toString(),
                 updateData: user
             });
-
-            return plainToInstance(UserResponseDto, result, {
-                excludeExtraneousValues: true
-            });
+            return result;
         }
         throw new UnauthorizedException('OTP is invalid or has expired. Please regenerate a new OTP and try again.');
     }
