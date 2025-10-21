@@ -231,7 +231,8 @@ export class FriendsService {
               as: 'mutual',
               in: '$$mutual.avatarUrl'
             }
-          }
+          },
+          friendsSince: '$createdAt'
         }
       }
     ]);
@@ -287,7 +288,7 @@ export class FriendsService {
         username: '$friendInfo.username',
         avatarUrl: '$friendInfo.avatarUrl',
         bio: '$friendInfo.bio',
-        createdAt: '$createdAt'
+        friendsSince: '$createdAt'
       }
     });
 
@@ -445,7 +446,7 @@ export class FriendsService {
           username: '$userInfo.username',
           avatarUrl: '$userInfo.avatarUrl',
           bio: '$userInfo.bio',
-          mutualFriendshipDate: '$createdAt'
+          friendsSince: '$createdAt'
         }
       },
       // Sắp xếp theo tên
