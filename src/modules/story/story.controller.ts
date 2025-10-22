@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { StoryService } from './story.service';
 import { CreateStoryDto } from './dto/create-story.dto';
 import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { GroupedStoryListDto } from './dto/grouped-story-list.dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { UpdatePrivacyDto } from 'src/common/dto/update-privacy.dto';
 
@@ -37,6 +38,17 @@ export class StoryController {
   deleteStory(@Param('storyId') storyId: string, @Req() req: any) {
     const ownerId = req.user.userId;
     return this.storyService.deleteStory(storyId, ownerId);
+  }
+
+  @Get('home')
+  @ApiOperation({ summary: 'Lấy danh sách story của bạn bè, gom theo từng user, có phân trang theo user' })
+  getAllStoriesHomePage(
+    @Req() req: any,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ): Promise<GroupedStoryListDto> {
+    const viewerId = req.user.userId;
+    return this.storyService.getAllStoriesHomePage(viewerId, Number(page), Number(limit));
   }
 
   // api privacy

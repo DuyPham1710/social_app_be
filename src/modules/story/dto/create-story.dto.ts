@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsOptional, IsString, IsUrl } from 'class-validator';
+import { MediaType } from 'src/shared/enums/media_type';
 import { PrivacyType } from 'src/shared/enums/privacy_type';
 import { DeezerMusic } from 'src/shared/interfaces/deezer-music.interface';
 
@@ -15,9 +16,9 @@ export class CreateStoryDto {
     mediaUrl?: string;
 
     @IsOptional()
-    @IsEnum(['image', 'video', 'text'])
-    @ApiProperty({ example: 'image', required: false })
-    mediaType?: string;
+    @IsEnum(MediaType)
+    @ApiProperty({ example: MediaType.IMAGE, required: false })
+    mediaType?: MediaType;
 
     @IsOptional()
     @ApiProperty({ example: { id: 1, title: 'This is a story music', preview: 'https://example.com/music.mp3', artist: { id: 1, name: 'John Doe', picture: 'https://example.com/artist.jpg' }, album: { id: 1, title: 'This is a story album', cover: 'https://example.com/album.jpg' } }, required: false })
