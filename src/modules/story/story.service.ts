@@ -7,6 +7,10 @@ import { PrivacyUtil } from 'src/common/utils/privacy.util';
 import { UpdatePrivacyDto } from 'src/common/dto/update-privacy.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AppEvents } from 'src/shared/enums/app-events.enum';
+import { GroupedStoryListDto } from './dto/grouped-story-list.dto';
+import { plainToInstance } from 'class-transformer';
+import UserResponseDto from '../user/dto/user.response.dto';
+import { StoryResponseDto } from './dto/story-response.dto';
 
 @Injectable()
 export class StoryService {
@@ -31,7 +35,7 @@ export class StoryService {
             throw new HttpException('Invalid viewerId', HttpStatus.BAD_REQUEST);
         }
 
-        const stories = await this.storyModel
+        const stories: StoryDocument[] = await this.storyModel
             .find({ userId: new Types.ObjectId(ownerId) })
             .populate('userId', 'username fullName avatarUrl')
             .sort({ createdAt: -1 })
@@ -42,6 +46,7 @@ export class StoryService {
             return stories;
         }
 
+        // kiểm tra xem viewer có quyền xem story này không
         const filteredStories = (
             await Promise.all(
                 stories.map(async (story) => {
@@ -52,6 +57,81 @@ export class StoryService {
         ).filter((s) => s !== null);
 
         return filteredStories;
+    }
+
+    async getAllStoriesHomePage(viewerId: string, page: number = 1, limit: number = 10): Promise<GroupedStoryListDto> {
+        if (!Types.ObjectId.isValid(viewerId)) {
+            throw new HttpException('Invalid viewerId', HttpStatus.BAD_REQUEST);
+        }
+
+        // Lấy danh sách bạn bè
+        const emitResults = await this.eventEmitter.emitAsync(AppEvents.FRIENDS_GET, { userId: viewerId });
+        let friends: any[] = [];
+        if (Array.isArray(emitResults) && emitResults.length === 1 && Array.isArray(emitResults[0])) {
+            friends = emitResults[0];
+        } else if (Array.isArray(emitResults)) {
+            const firstArray = emitResults.find(r => Array.isArray(r));
+            if (firstArray) friends = firstArray as any[];
+            else friends = emitResults as any[];
+        } else if (Array.isArray((emitResults as any))) {
+            friends = emitResults as any[];
+        }
+
+        // Phân trang theo user (bạn bè)
+        const total = friends.length;
+        const totalPages = Math.ceil(total / limit);
+        const hasNext = page < totalPages;
+        const paginatedFriends = friends.slice((page - 1) * limit, page * limit);
+
+        //const expireTime = new Date(Date.now() - 1 * 60 * 1000);
+        const expireTime = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+        // Lấy story của từng bạn bè, gom lại
+        const users = await Promise.all(
+            paginatedFriends.map(async (friend) => {
+                // Convert friend to UserResponseDto
+                const userDto = plainToInstance(UserResponseDto, friend, { excludeExtraneousValues: true });
+
+                // Lấy tất cả story của user này
+                const stories: StoryDocument[] = await this.storyModel
+                    .find({
+                        userId: friend._id,
+                        createdAt: { $gte: expireTime } // chỉ lấy story trong 24h gần nhất
+                    })
+                    .populate('userId', 'username fullName avatarUrl')
+                    .sort({ createdAt: -1 })
+                    .lean()
+                    .exec();
+
+                // Filter story theo quyền riêng tư
+                const filteredStories = (
+                    await Promise.all(
+                        stories.map(async (story) => {
+                            const canView = await this.canUserViewStory(story._id.toString(), viewerId);
+                            return canView ? story : null;
+                        })
+                    )
+                ).filter((s) => s !== null);
+
+                // Convert to StoryResponseDto[]
+                const storyDtos = filteredStories.map(story =>
+                    plainToInstance(StoryResponseDto, story, { excludeExtraneousValues: true })
+                );
+
+                return {
+                    user: userDto,
+                    stories: storyDtos as StoryResponseDto[]
+                };
+            })
+        );
+
+        return {
+            users,
+            page,
+            limit,
+            total,
+            hasNext
+        };
     }
 
     async getStoryPrivacy(storyId: string) {
@@ -106,7 +186,7 @@ export class StoryService {
         return PrivacyUtil.canView(
             new Types.ObjectId(viewerId),
             story,
-            friendsOfOwner.map(f => new Types.ObjectId(f)),
+            friendsOfOwner.map(f => new Types.ObjectId(f._id)),
         );
     }
 

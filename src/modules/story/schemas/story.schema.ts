@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { PrivacyBase } from 'src/common/base/privacy.base';
+import { MediaType } from 'src/shared/enums/media_type';
 import { PrivacyType } from 'src/shared/enums/privacy_type';
 import { DeezerMusic } from 'src/shared/interfaces/deezer-music.interface';
 
@@ -8,6 +9,8 @@ export type StoryDocument = Story & Document;
 
 @Schema({ timestamps: true }) // createdAt, updatedAt
 export class Story extends PrivacyBase {
+    _id: Types.ObjectId;
+
     @Prop({ type: Types.ObjectId, ref: 'User', required: true })
     userId: Types.ObjectId;
 
@@ -17,8 +20,8 @@ export class Story extends PrivacyBase {
     @Prop({ type: String })
     mediaUrl?: string;
 
-    @Prop({ enum: ['image', 'video', 'text'], default: 'text' })
-    mediaType: string;
+    @Prop({ enum: MediaType, default: MediaType.TEXT })
+    mediaType: MediaType;
 
     @Prop({ type: Object })
     music?: DeezerMusic;
