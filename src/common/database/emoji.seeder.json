@@ -1,0 +1,50 @@
+[
+  {
+    "_id": {
+      "$oid": "671fdc000000000000000001"
+    },
+    "label": "like",
+    "icon": "👍",
+    "isActive": true
+  },
+  {
+    "_id": {
+      "$oid": "671fdc000000000000000002"
+    },
+    "label": "love",
+    "icon": "❤️",
+    "isActive": true
+  },
+  {
+    "_id": {
+      "$oid": "671fdc000000000000000003"
+    },
+    "label": "haha",
+    "icon": "😂",
+    "isActive": true
+  },
+  {
+    "_id": {
+      "$oid": "671fdc000000000000000004"
+    },
+    "label": "wow",
+    "icon": "😮",
+    "isActive": true
+  },
+  {
+    "_id": {
+      "$oid": "671fdc000000000000000005"
+    },
+    "label": "sad",
+    "icon": "😢",
+    "isActive": true
+  },
+  {
+    "_id": {
+      "$oid": "671fdc000000000000000006"
+    },
+    "label": "angry",
+    "icon": "😡",
+    "isActive": true
+  }
+]

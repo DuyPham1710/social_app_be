@@ -6,7 +6,7 @@ export type EmojiDocument = Emoji & Document;
 @Schema({ timestamps: true })
 export class Emoji extends Document {
   @Prop({ required: true })
-  name: string; 
+  label: string;
 
   @Prop({ required: true })
   icon: string; // icon unicode hoặc url ảnh

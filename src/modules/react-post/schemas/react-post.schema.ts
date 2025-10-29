@@ -5,6 +5,7 @@ export type ReactPostDocument = ReactPost & Document;
 
 @Schema({ timestamps: true })
 export class ReactPost {
+  _id: Types.ObjectId;
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   userId: Types.ObjectId;
 
@@ -13,6 +14,12 @@ export class ReactPost {
 
   @Prop({ type: Types.ObjectId, ref: 'Emoji', required: true })
   emojiId: Types.ObjectId;
+
+  @Prop({ type: Date, default: Date.now })
+  createdAt: Date;
+
+  @Prop({ type: Date, default: Date.now })
+  updatedAt: Date;
 }
 
 export const ReactPostSchema = SchemaFactory.createForClass(ReactPost);

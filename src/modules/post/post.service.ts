@@ -99,11 +99,22 @@ export class PostService {
 
         const hasNext = skip + filteredPosts.length < totalPosts;
 
+        // Lấy danh sách react của từng post thông qua event emitter
+        const [reactsMap] = await this.eventEmitter.emitAsync(AppEvents.REACT_POST_GET, { postIds: filteredPosts.map(p => p._id.toString()) });
+        const [reactMap] = await this.eventEmitter.emitAsync(AppEvents.REACT_POST_FIND_BY_USER, { userId: ownerId, postIds: filteredPosts.map(p => p._id.toString()) });
+
+        // Thêm thông tin react vào từng post
+        const postsWithReacts = filteredPosts.map(post => ({
+            ...post,
+            reacts: reactsMap[post._id.toString()] || [],
+            isReact: reactMap[post._id.toString()] || null
+        }));
+
         return {
-            data: filteredPosts,
+            data: postsWithReacts,
             page,
             limit,
-            total: filteredPosts.length,
+            total: postsWithReacts.length,
             hasNext,
         };
     }
@@ -201,6 +212,18 @@ export class PostService {
             }
             return post;
         });
+
+        // Lấy danh sách react của từng post thông qua event emitter
+        const [reactsMap] = await this.eventEmitter.emitAsync(AppEvents.REACT_POST_GET, { postIds: pageItems.map(p => p._id.toString()) });
+        const [reactMap] = await this.eventEmitter.emitAsync(AppEvents.REACT_POST_FIND_BY_USER, { userId: viewerId, postIds: pageItems.map(p => p._id.toString()) });
+
+        // Thêm thông tin react vào từng post
+        const postsWithReacts: PostResponseDto[] = pageItems.map(post => ({
+            ...post,
+            reacts: reactsMap[post._id.toString()] || [],
+            isReact: reactMap[post._id.toString()] || null
+        }));
+
         // return {
         //     data: pageItems,
         //     page,
@@ -209,10 +232,10 @@ export class PostService {
         //     hasNext,
         // };
         const result: PostListDto = {
-            data: pageItems,
+            data: postsWithReacts,
             page,
             limit,
-            total: pageItems.length,
+            total: postsWithReacts.length,
             hasNext,
         };
 

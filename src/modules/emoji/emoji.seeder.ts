@@ -7,18 +7,18 @@ import { Emoji, EmojiDocument } from './schemas/emoji.schema';
 export class EmojiSeeder implements OnModuleInit {
   constructor(
     @InjectModel(Emoji.name) private emojiModel: Model<EmojiDocument>,
-  ) {}
+  ) { }
 
   async onModuleInit() {
     const count = await this.emojiModel.countDocuments();
     if (count === 0) {
       await this.emojiModel.insertMany([
-        { name: 'like', icon: '👍' },
-        { name: 'love', icon: '❤️' },
-        { name: 'haha', icon: '😂' },
-        { name: 'wow', icon: '😮' },
-        { name: 'sad', icon: '😢' },
-        { name: 'angry', icon: '😡' },
+        { label: 'like', icon: '👍' },
+        { label: 'love', icon: '❤️' },
+        { label: 'haha', icon: '😂' },
+        { label: 'wow', icon: '😮' },
+        { label: 'sad', icon: '😢' },
+        { label: 'angry', icon: '😡' },
       ]);
       console.log('✅ Seeded emojis successfully');
     }

@@ -24,6 +24,10 @@ export enum AppEvents {
     POST_CREATED = 'post.created',
     POST_DELETED = 'post.deleted',
 
+    // ===== REACT POST =====
+    REACT_POST_GET = 'react-post.get',
+    REACT_POST_FIND_BY_USER = 'react-post.findByUser',
+
     // ===== STORY =====
     STORY_CREATED = 'story.created',
     STORY_EXPIRED = 'story.expired',
