@@ -8,12 +8,14 @@ import { ReactPostResponseDto } from './dto/react-post-response.dto';
 import { OnEvent } from '@nestjs/event-emitter';
 import { AppEvents } from 'src/shared/enums/app-events.enum';
 import { EmojiResponseDto } from '../emoji/dto/emoji_response.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class ReactPostService {
   constructor(
     @InjectModel(ReactPost.name)
     private readonly reactPostModel: Model<ReactPostDocument>,
+    private readonly eventEmitter: EventEmitter2,
   ) { }
 
   //Thêm hoặc đổi emoji
@@ -29,8 +31,17 @@ export class ReactPostService {
 
     let result;
     if (existing) {
-      existing.emojiId = emojiObjectId;
-      result = await existing.save();
+      if (existing.emojiId.toString() === emojiObjectId.toString()) {
+        // await existing.deleteOne();
+        // return null;
+        result = await this.reactPostModel.findOneAndDelete({
+          userId: userIdObjectId,
+          postId: postObjectId,
+        });
+      } else {
+        existing.emojiId = emojiObjectId;
+        result = await existing.save();
+      }
     } else {
       const created = new this.reactPostModel({
         userId: userIdObjectId,
@@ -40,14 +51,14 @@ export class ReactPostService {
       result = await created.save();
     }
 
-    result = await result.populate('userId', 'username avatarUrl');
+    result = await result.populate('userId', 'fullName username avatarUrl');
     result = await result.populate('emojiId', 'label icon');
 
     return ReactPostResponseDto.fromReactPosts([result])[0];
   }
 
-  //Lấy người dùng react bài post
-  async findByPost(postId: string): Promise<ReactPostResponseDto[]> {
+  //Lấy người dùng react bài post, kèm số bạn chung (nếu có viewerId)
+  async findByPost(postId: string, viewerId?: string): Promise<ReactPostResponseDto[]> {
     if (!Types.ObjectId.isValid(postId)) {
       throw new NotFoundException('Invalid postId');
     }
@@ -55,10 +66,46 @@ export class ReactPostService {
     const postObjectId = new Types.ObjectId(postId);
     const reacts = await this.reactPostModel
       .find({ postId: postObjectId })
-      .populate('userId', 'username avatarUrl')
+      .populate('userId', 'fullName username avatarUrl')
       .populate('emojiId', 'label icon');
 
-    return ReactPostResponseDto.fromReactPosts(reacts);
+    let reactDtos = ReactPostResponseDto.fromReactPosts(reacts);
+
+    // Tính số bạn chung nếu có viewerId
+    if (viewerId && Types.ObjectId.isValid(viewerId)) {
+      try {
+        const [viewerFriends] = await this.eventEmitter.emitAsync(AppEvents.FRIENDS_GET, { userId: viewerId });
+        const viewerFriendIds: string[] = ((viewerFriends || []).map((f: any) => f._id?.toString()).filter(Boolean)) as string[];
+        const viewerFriendSet = new Set<string>(viewerFriendIds);
+
+        // Lấy danh sách userId duy nhất từ các react
+        const uniqueReactorIds: string[] = Array.from(new Set(reactDtos.map(r => r.userId?.userId?.toString()).filter(Boolean))) as string[];
+
+        // Map userId -> friendId set
+        const reactorFriendsMap: { [key: string]: Set<string> } = {};
+        await Promise.all(uniqueReactorIds.map(async (reactorId) => {
+          const [friends] = await this.eventEmitter.emitAsync(AppEvents.FRIENDS_GET, { userId: reactorId });
+          const friendIds: string[] = ((friends || []).map((f: any) => f._id?.toString()).filter(Boolean)) as string[];
+          reactorFriendsMap[reactorId] = new Set<string>(friendIds);
+        }));
+
+        // Gán mutualFriendsCount
+        reactDtos = reactDtos.map(dto => {
+          const reactorId = dto.userId?.userId?.toString();
+          if (!reactorId) return dto;
+          const reactorFriendSet = reactorFriendsMap[reactorId] || new Set<string>();
+          let count = 0;
+          viewerFriendSet.forEach((id: string) => { if (reactorFriendSet.has(id)) count++; });
+          dto.mutualFriendsCount = count;
+          return dto;
+        });
+      } catch (e) {
+        // Nếu có lỗi khi tính bạn chung, vẫn trả về danh sách reacts bình thường
+        return reactDtos;
+      }
+    }
+
+    return reactDtos;
   }
 
   //kiểm tra user hiện tại có react bài post không
@@ -98,12 +145,12 @@ export class ReactPostService {
   }
 
   @OnEvent(AppEvents.REACT_POST_GET)
-  async onGetReactsEvent(payload: { postIds: string[] }) {
-    const { postIds } = payload;
+  async onGetReactsEvent(payload: { postIds: string[], viewerId?: string }) {
+    const { postIds, viewerId } = payload;
     const reactsMap = {};
 
     await Promise.all(postIds.map(async (postId) => {
-      const reacts = await this.findByPost(postId);
+      const reacts = await this.findByPost(postId, viewerId);
       reactsMap[postId] = reacts;
     }));
 

@@ -12,6 +12,9 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AppEvents } from 'src/shared/enums/app-events.enum';
 import { PostResponseDto } from './dto/post-response.dto';
 import { PostListDto } from './dto/post-list.dto';
+import { plainToInstance } from 'class-transformer';
+import UserResponseDto from '../user/dto/user.response.dto';
+import { omitBy, isUndefined } from 'lodash';
 
 @Injectable()
 export class PostService {
@@ -21,7 +24,7 @@ export class PostService {
         private readonly eventEmitter: EventEmitter2,
     ) { }
 
-    async getPostDetail(postId: string) {
+    async getPostDetail(postId: string, userId: string): Promise<PostResponseDto> {
         if (!Types.ObjectId.isValid(postId)) {
             throw new HttpException('Invalid postId', HttpStatus.BAD_REQUEST);
         }
@@ -33,7 +36,21 @@ export class PostService {
             throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
         }
 
-        return post;
+        const userResponseDto: UserResponseDto = plainToInstance(UserResponseDto, post.userId, {
+            excludeExtraneousValues: true
+        });
+        const cleanedUser = omitBy(userResponseDto, isUndefined) as UserResponseDto;
+
+        // Lấy danh sách react của từng post thông qua event emitter
+        const [reactsMap] = await this.eventEmitter.emitAsync(AppEvents.REACT_POST_GET, { postIds: [postId] });
+        const [reactMap] = await this.eventEmitter.emitAsync(AppEvents.REACT_POST_FIND_BY_USER, { userId: userId, postIds: [postId] });
+
+        return {
+            ...post.toObject(),
+            userId: cleanedUser,
+            reacts: reactsMap[postId] || [],
+            isReact: reactMap[postId] || null
+        } as unknown as PostResponseDto;
     }
 
     async getAllPostsByUser(ownerId: string, viewerId: string, page: number = 1, limit: number = 5) {
@@ -214,7 +231,7 @@ export class PostService {
         });
 
         // Lấy danh sách react của từng post thông qua event emitter
-        const [reactsMap] = await this.eventEmitter.emitAsync(AppEvents.REACT_POST_GET, { postIds: pageItems.map(p => p._id.toString()) });
+        const [reactsMap] = await this.eventEmitter.emitAsync(AppEvents.REACT_POST_GET, { postIds: pageItems.map(p => p._id.toString()), viewerId });
         const [reactMap] = await this.eventEmitter.emitAsync(AppEvents.REACT_POST_FIND_BY_USER, { userId: viewerId, postIds: pageItems.map(p => p._id.toString()) });
 
         // Thêm thông tin react vào từng post

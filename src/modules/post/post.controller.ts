@@ -70,8 +70,9 @@ export class PostController {
 
   @Get('/:postId')
   @ApiOperation({ summary: 'Lấy chi tiết bài viết' })
-  getPostDetail(@Param('postId') postId: string) {
-    return this.postService.getPostDetail(postId);
+  getPostDetail(@Req() req: any, @Param('postId') postId: string) {
+    const userId = req.user.userId;
+    return this.postService.getPostDetail(postId, userId);
   }
 
   @Get('/privacy/:postId')

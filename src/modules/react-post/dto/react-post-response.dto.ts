@@ -10,6 +10,7 @@ export class ReactPostResponseDto {
     emojiId: EmojiDocument;
     createdAt: Date;
     updatedAt: Date;
+    mutualFriendsCount?: number;
 
     static fromReactPosts(reactPosts: ReactPost[]): ReactPostResponseDto[] {
         const reactDtos: ReactPostResponseDto[] = reactPosts.map((react: any) => {
@@ -17,6 +18,7 @@ export class ReactPostResponseDto {
                 _id: react._id,
                 userId: {
                     userId: react.userId._id,
+                    fullName: react.userId.fullName,
                     username: react.userId.username,
                     avatarUrl: react.userId.avatarUrl,
                 },
@@ -24,6 +26,7 @@ export class ReactPostResponseDto {
                 emojiId: react.emojiId,
                 createdAt: react.createdAt,
                 updatedAt: react.updatedAt,
+                mutualFriendsCount: react.mutualFriendsCount,
             } as ReactPostResponseDto;
         });
         return reactDtos;
