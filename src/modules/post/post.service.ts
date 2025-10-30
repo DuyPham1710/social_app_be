@@ -12,6 +12,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AppEvents } from 'src/shared/enums/app-events.enum';
 import { PostResponseDto } from './dto/post-response.dto';
 import { PostListDto } from './dto/post-list.dto';
+import e from 'express';
 
 @Injectable()
 export class PostService {
@@ -61,7 +62,7 @@ export class PostService {
 
         const posts = await this.postModel
             .find({ userId: ownerObjectId })
-            .sort({ createdAt: -1 })
+            .sort({ updatedAt: -1, caption: -1 })
             .skip(skip)
             .limit(limit)
             .populate('userId', 'username fullName avatarUrl')
@@ -72,18 +73,24 @@ export class PostService {
             .lean()
             .exec();
 
+
+        console.log('>>Post\n', posts);
         // lọc theo quyền riêng tư
-        let filteredPosts = (
-            await Promise.all(
-                posts.map(async (post) => {
-                    const canView = await this.canUserViewPost(
-                        post._id.toString(),
+        // nếu ownerId === viewerId thì ko cần lọc
+        let filteredPosts = posts;
+        if (ownerId !== effectiveViewerId) {
+            filteredPosts = (
+                await Promise.all(
+                    posts.map(async (post) => {
+                        const canView = await this.canUserViewPost(
+                            post._id.toString(),
                         effectiveViewerId,
                     );
                     return canView ? post : null;
                 }),
             )
         ).filter((p) => p !== null);
+        }
 
         filteredPosts = filteredPosts.map((post: any) => {
             if (post && post.userId && typeof post.userId === 'object' && post.userId._id) {
@@ -97,6 +104,7 @@ export class PostService {
             return post;
         });
 
+        console.log('>>Filtered Post\n', filteredPosts);
         const hasNext = skip + filteredPosts.length < totalPosts;
 
         return {
