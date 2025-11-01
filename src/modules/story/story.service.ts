@@ -99,7 +99,7 @@ export class StoryService {
                         createdAt: { $gte: expireTime } // chỉ lấy story trong 24h gần nhất
                     })
                     .populate('userId', 'username fullName avatarUrl')
-                    .sort({ createdAt: -1 })
+                    .sort({ createdAt: 1 })
                     .lean()
                     .exec();
 

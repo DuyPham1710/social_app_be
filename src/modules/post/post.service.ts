@@ -15,9 +15,6 @@ import { PostListDto } from './dto/post-list.dto';
 import { plainToInstance } from 'class-transformer';
 import UserResponseDto from '../user/dto/user.response.dto';
 import { omitBy, isUndefined } from 'lodash';
-import e from 'express';
-
-
 
 @Injectable()
 export class PostService {
@@ -45,7 +42,7 @@ export class PostService {
         const cleanedUser = omitBy(userResponseDto, isUndefined) as UserResponseDto;
 
         // Lấy danh sách react của từng post thông qua event emitter
-        const [reactsMap] = await this.eventEmitter.emitAsync(AppEvents.REACT_POST_GET, { postIds: [postId] });
+        const [reactsMap] = await this.eventEmitter.emitAsync(AppEvents.REACT_POST_GET, { postIds: [postId], viewerId: userId });
         const [reactMap] = await this.eventEmitter.emitAsync(AppEvents.REACT_POST_FIND_BY_USER, { userId: userId, postIds: [postId] });
 
         return {
@@ -103,12 +100,12 @@ export class PostService {
                     posts.map(async (post) => {
                         const canView = await this.canUserViewPost(
                             post._id.toString(),
-                        effectiveViewerId,
-                    );
-                    return canView ? post : null;
-                }),
-            )
-        ).filter((p) => p !== null);
+                            effectiveViewerId,
+                        );
+                        return canView ? post : null;
+                    }),
+                )
+            ).filter((p) => p !== null);
         }
 
         filteredPosts = filteredPosts.map((post: any) => {
@@ -127,7 +124,7 @@ export class PostService {
         const hasNext = skip + filteredPosts.length < totalPosts;
 
         // Lấy danh sách react của từng post thông qua event emitter
-        const [reactsMap] = await this.eventEmitter.emitAsync(AppEvents.REACT_POST_GET, { postIds: filteredPosts.map(p => p._id.toString()) });
+        const [reactsMap] = await this.eventEmitter.emitAsync(AppEvents.REACT_POST_GET, { postIds: filteredPosts.map(p => p._id.toString()), viewerId: effectiveViewerId });
         const [reactMap] = await this.eventEmitter.emitAsync(AppEvents.REACT_POST_FIND_BY_USER, { userId: ownerId, postIds: filteredPosts.map(p => p._id.toString()) });
 
         // Thêm thông tin react vào từng post

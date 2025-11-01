@@ -92,11 +92,24 @@ export class ReactPostService {
         // Gán mutualFriendsCount
         reactDtos = reactDtos.map(dto => {
           const reactorId = dto.userId?.userId?.toString();
+
           if (!reactorId) return dto;
+
           const reactorFriendSet = reactorFriendsMap[reactorId] || new Set<string>();
           let count = 0;
+
           viewerFriendSet.forEach((id: string) => { if (reactorFriendSet.has(id)) count++; });
-          dto.mutualFriendsCount = count;
+
+          if (reactorId !== viewerId) {
+            dto.mutualFriendsCount = count;
+
+            // kiểm tra người này có phải bạn của viewer không
+            dto.isFriend = viewerFriendSet.has(reactorId);
+          }
+
+
+
+
           return dto;
         });
       } catch (e) {
@@ -149,9 +162,41 @@ export class ReactPostService {
     const { postIds, viewerId } = payload;
     const reactsMap = {};
 
+    // Lấy danh sách bạn bè của viewer (nếu có)
+    let viewerFriendSet: Set<string> | null = null;
+    const viewerIdStr = viewerId && Types.ObjectId.isValid(viewerId) ? viewerId.toString() : null;
+    if (viewerIdStr) {
+      try {
+        const [viewerFriends] = await this.eventEmitter.emitAsync(AppEvents.FRIENDS_GET, { userId: viewerIdStr });
+        const viewerFriendIds: string[] = ((viewerFriends || []).map((f: any) => f._id?.toString()).filter(Boolean)) as string[];
+        viewerFriendSet = new Set<string>(viewerFriendIds);
+      } catch {
+        viewerFriendSet = null;
+      }
+    }
+
     await Promise.all(postIds.map(async (postId) => {
       const reacts = await this.findByPost(postId, viewerId);
-      reactsMap[postId] = reacts;
+
+      // Sắp xếp: viewer trước, sau đó bạn bè, sau đó những người còn lại theo createdAt giảm dần
+      let sortedReacts = reacts;
+      if (viewerIdStr && viewerFriendSet) {
+        sortedReacts = [...reacts].sort((a, b) => {
+          const aId = a.userId?.userId?.toString() || '';
+          const bId = b.userId?.userId?.toString() || '';
+
+          const aRank = aId === viewerIdStr ? 0 : (viewerFriendSet!.has(aId) ? 1 : 2);
+          const bRank = bId === viewerIdStr ? 0 : (viewerFriendSet!.has(bId) ? 1 : 2);
+
+          if (aRank !== bRank) return aRank - bRank;
+          // Cùng nhóm: sắp xếp theo createdAt giảm dần
+          const aCreated = (a as any).createdAt ? new Date((a as any).createdAt).getTime() : 0;
+          const bCreated = (b as any).createdAt ? new Date((b as any).createdAt).getTime() : 0;
+          return bCreated - aCreated;
+        });
+      }
+
+      reactsMap[postId] = sortedReacts;
     }));
 
     return reactsMap;

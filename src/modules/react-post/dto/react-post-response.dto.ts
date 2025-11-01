@@ -11,6 +11,7 @@ export class ReactPostResponseDto {
     createdAt: Date;
     updatedAt: Date;
     mutualFriendsCount?: number;
+    isFriend?: boolean;
 
     static fromReactPosts(reactPosts: ReactPost[]): ReactPostResponseDto[] {
         const reactDtos: ReactPostResponseDto[] = reactPosts.map((react: any) => {
@@ -27,6 +28,7 @@ export class ReactPostResponseDto {
                 createdAt: react.createdAt,
                 updatedAt: react.updatedAt,
                 mutualFriendsCount: react.mutualFriendsCount,
+                isFriend: react.isFriend,
             } as ReactPostResponseDto;
         });
         return reactDtos;
