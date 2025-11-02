@@ -10,6 +10,7 @@ import { Server, Socket } from 'socket.io';
 import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
+import { DeleteCommentDto } from './dto/delete-comment.dto';
 
 interface UserConnection {
   userId: string;
@@ -291,12 +292,16 @@ export class CommentGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
       this.logger.log(`Updating comment ${commentId} by user ${userConnection.userId}`);
 
-      const updated = await this.commentService.update(commentId, content.trim(), userConnection.userId);
+      await this.commentService.update(commentId, content.trim(), userConnection.userId);
+
+      const comments = await this.commentService.findByPostId(postId.toString());
 
       const updateData = {
-        comment: updated,
-        timestamp: new Date(),
         postId: postId.toString(),
+        comments: comments,
+        count: comments.length,
+        timestamp: new Date(),
+
       };
 
       // Gửi comment đã update tới tất cả user khác trong room
@@ -322,11 +327,10 @@ export class CommentGateway implements OnGatewayConnection, OnGatewayDisconnect 
   @SubscribeMessage('deleteComment')
   async handleDeleteComment(
     client: Socket,
-    payload: { commentId: string; postId: string },
+    payload: DeleteCommentDto,
   ) {
     try {
       const userConnection = this.connectedUsers.get(client.id);
-      const { commentId, postId } = payload;
 
       // Validate input
       if (!userConnection) {
@@ -337,7 +341,7 @@ export class CommentGateway implements OnGatewayConnection, OnGatewayDisconnect 
         return;
       }
 
-      if (!commentId || !postId) {
+      if (!payload.commentId || !payload.postId) {
         client.emit('error', {
           message: 'Invalid input: commentId and postId are required',
           event: 'deleteComment'
@@ -345,18 +349,22 @@ export class CommentGateway implements OnGatewayConnection, OnGatewayDisconnect 
         return;
       }
 
-      this.logger.log(`Deleting comment ${commentId} by user ${userConnection.userId}`);
+      this.logger.log(`Deleting comment ${payload.commentId} by user ${userConnection.userId}`);
 
-      await this.commentService.remove(commentId, userConnection.userId);
+      await this.commentService.remove(payload.commentId.toString(), userConnection.userId);
+
+      const comments = await this.commentService.findByPostId(payload.postId.toString());
 
       const deleteData = {
-        id: commentId,
-        postId,
+        postId: payload.postId.toString(),
+        comments: comments,
+        count: comments.length,
         timestamp: new Date(),
+
       };
 
       // Gửi thông báo xóa tới tất cả user khác trong room
-      client.to(postId).emit('commentDeleted', deleteData);
+      client.to(payload.postId.toString()).emit('commentDeleted', deleteData);
 
       // Gửi xác nhận cho chính user đó
       client.emit('commentDeleted:ack', {
@@ -364,7 +372,7 @@ export class CommentGateway implements OnGatewayConnection, OnGatewayDisconnect 
         message: 'Comment deleted successfully'
       });
 
-      this.logger.log(`Comment ${commentId} deleted successfully`);
+      this.logger.log(`Comment ${payload.commentId} deleted successfully`);
     } catch (error) {
       this.logger.error(`Error deleting comment: ${error.message}`);
       client.emit('error', {

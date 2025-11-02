@@ -41,9 +41,11 @@ export class CommentService {
 
     async update(commentId: string, content: string, userId: string) {
         const comment = await this.commentModel.findById(commentId);
+
         if (!comment) {
             throw new NotFoundException('Comment not found');
         }
+
         if (comment.userId.toString() !== userId) {
             throw new ForbiddenException('You are not allowed to edit this comment');
         }
@@ -51,21 +53,6 @@ export class CommentService {
         comment.content = content;
         await comment.save();
 
-        // Populate user information và parent comment nếu có
-        return await comment.populate([
-            {
-                path: 'userId',
-                select: 'username fullName avatarUrl email _id'
-            },
-            {
-                path: 'parentId',
-                select: 'content userId createdAt',
-                populate: {
-                    path: 'userId',
-                    select: 'username fullName avatarUrl'
-                }
-            }
-        ]);
     }
 
     async remove(commentId: string, userId: string) {
@@ -113,6 +100,15 @@ export class CommentService {
                     fullName: comment.userId.fullName,
                     avatarUrl: comment.userId.avatarUrl,
                     username: comment.userId.username,
+                };
+            }
+
+            if (comment && comment.parentId && comment.parentId.userId && typeof comment.parentId.userId === 'object' && comment.parentId.userId._id) {
+                comment.parentId.userId = {
+                    userId: comment.parentId.userId._id,
+                    fullName: comment.parentId.userId.fullName,
+                    avatarUrl: comment.parentId.userId.avatarUrl,
+                    username: comment.parentId.userId.username,
                 };
             }
             return comment;
