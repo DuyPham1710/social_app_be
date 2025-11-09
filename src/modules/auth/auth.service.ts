@@ -49,6 +49,11 @@ export class AuthService {
             otpGeneratedTime: new Date(),
         });
 
+        // Emit event để tạo privacy mặc định cho user mới
+        await this.eventEmitter.emitAsync(AppEvents.USER_CREATED, {
+            userId: user._id.toString(),
+        });
+
         return plainToInstance(UserResponseDto, user.toObject(), {
             excludeExtraneousValues: true,
         });

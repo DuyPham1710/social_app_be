@@ -1,0 +1,66 @@
+[
+    {
+        "userId": {
+            "$oid": "68af2546e5af803fed30af6c"
+        },
+        "defaultPrivacy": "public",
+        "friends_except": [],
+        "friends_detail": []
+    },
+    {
+        "userId": {
+            "$oid": "68af4aca968b17834dab17c1"
+        },
+        "defaultPrivacy": "public",
+        "friends_except": [],
+        "friends_detail": []
+    },
+    {
+        "userId": {
+            "$oid": "68b9c6413b768072740c7770"
+        },
+        "defaultPrivacy": "public",
+        "friends_except": [],
+        "friends_detail": []
+    },
+    {
+        "userId": {
+            "$oid": "68c1aaeccf23b71c2219f0f2"
+        },
+        "defaultPrivacy": "public",
+        "friends_except": [],
+        "friends_detail": []
+    },
+    {
+        "userId": {
+            "$oid": "68ce1ff54daf88154a887d87"
+        },
+        "defaultPrivacy": "public",
+        "friends_except": [],
+        "friends_detail": []
+    },
+    {
+        "userId": {
+            "$oid": "68d351e7cb199487e57c156d"
+        },
+        "defaultPrivacy": "public",
+        "friends_except": [],
+        "friends_detail": []
+    },
+    {
+        "userId": {
+            "$oid": "68e63d5254ceb841bd4a20e0"
+        },
+        "defaultPrivacy": "public",
+        "friends_except": [],
+        "friends_detail": []
+    },
+    {
+        "userId": {
+            "$oid": "68f632aba42b5254425119f0"
+        },
+        "defaultPrivacy": "public",
+        "friends_except": [],
+        "friends_detail": []
+    }
+]
