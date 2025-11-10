@@ -269,11 +269,15 @@ export class PostService {
     }
 
     async createPost(createPostDto: CreatePostDto, userId: string, files?: File[]): Promise<{ message: string }> {
-        const { caption, titles = [], orders = [] } = createPostDto;
+        const { caption, titles = [], orders = [], layout, privacy_type, friends_except, friends_detail } = createPostDto;
 
         const post = await this.postModel.create({
             caption,
             userId: new Types.ObjectId(userId),
+            layout,
+            privacy_type,
+            friends_except: friends_except ? friends_except.map(id => new Types.ObjectId(id)) : undefined,
+            friends_detail: friends_detail ? friends_detail.map(id => new Types.ObjectId(id)) : undefined,
         });
 
         // let postUrls: PostUrlDocument[] = [];

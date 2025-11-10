@@ -105,7 +105,7 @@ export class PrivacyService {
                 });
             })
             : [];
-        console.log(friendsExcept);
+
         const friendsDetail = Array.isArray(privacy.friends_detail)
             ? privacy.friends_detail.map((friend: any) => {
                 return plainToInstance(UserResponseDto, friend, {

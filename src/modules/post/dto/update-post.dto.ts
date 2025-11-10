@@ -1,9 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsArray, IsEnum, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, Min, ValidateNested } from "class-validator";
-import { CreatePostUrlDto } from "./create-post.dto";
+// import { CreatePostUrlDto } from "./create-post.dto";
 import { Type } from "class-transformer";
 import { LayoutType } from "src/shared/enums/layout_type";
-import { PrivacyType } from "src/shared/enums/privacy_type";
+// import { PrivacyType } from "src/shared/enums/privacy_type";
 
 class UpdatePostUrlDto {
     @ApiProperty({ example: 'https://example.com/image.jpg' })
