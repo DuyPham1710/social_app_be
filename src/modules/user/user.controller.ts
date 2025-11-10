@@ -21,8 +21,16 @@ export class UserController {
   }
 
   @Get('profile')
-  profile(@Req() req: any) {
-    return req.user;
+  @ApiOperation({ summary: 'Lấy thông tin người dùng đang đăng nhập' })
+  profile(@Req() req: any): Promise<UserResponseDto> {
+    const userId: string = req.user?.userId?.toString?.() ?? req.user?.userId;
+    return this.userService.findOne(userId);
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Lấy thông tin người dùng theo ID' })
+  getById(@Param('id') id: string): Promise<UserResponseDto> {
+    return this.userService.findOne(id);
   }
 
   @Patch()
