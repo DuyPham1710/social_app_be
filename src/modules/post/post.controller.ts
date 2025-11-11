@@ -1,10 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
-import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { UpdatePrivacyDto } from 'src/common/dto/update-privacy.dto';
+import { storage } from '../cloudinary/cloudinary.storage';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { File } from 'multer';
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
@@ -49,9 +52,16 @@ export class PostController {
 
   @Post()
   @ApiOperation({ summary: 'Tạo bài viết' })
-  createPost(@Req() req: any, @Body() createPostDto: CreatePostDto) {
+  @UseInterceptors(FilesInterceptor('files', 50, { storage }))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: CreatePostDto })
+  createPost(
+    @Req() req: any,
+    @Body() createPostDto: CreatePostDto,
+    @UploadedFiles() files?: File[],
+  ) {
     const userId = req.user.userId;
-    return this.postService.createPost(createPostDto, userId);
+    return this.postService.createPost(createPostDto, userId, files);
   }
 
   @Patch()

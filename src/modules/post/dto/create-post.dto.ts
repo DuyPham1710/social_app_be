@@ -2,22 +2,24 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsArray, IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
 import { LayoutType } from "src/shared/enums/layout_type";
 import { PrivacyType } from "src/shared/enums/privacy_type";
+import { File } from "multer";
+import { Transform } from "class-transformer";
 
-export class CreatePostUrlDto {
-    @ApiProperty({ example: 'https://example.com/image.jpg' })
-    @IsNotEmpty()
-    @IsString()
-    url: string;
+// export class CreatePostUrlDto {
+//     @ApiProperty({ example: 'https://example.com/image.jpg' })
+//     @IsNotEmpty()
+//     @IsString()
+//     url: string;
 
-    @ApiProperty({ example: 'Image title', required: false })
-    @IsOptional()
-    @IsString()
-    title?: string;
+//     @ApiProperty({ example: 'Image title', required: false })
+//     @IsOptional()
+//     @IsString()
+//     title?: string;
 
-    @ApiProperty({ example: 0, required: false })
-    @IsOptional()
-    order?: number;
-}
+//     @ApiProperty({ example: 0, required: false })
+//     @IsOptional()
+//     order?: number;
+// }
 
 export class CreatePostDto {
     @ApiProperty({ example: 'This is a post caption', required: false })
@@ -25,24 +27,85 @@ export class CreatePostDto {
     @IsString()
     caption?: string;
 
+    // @ApiProperty({
+    //     type: [CreatePostUrlDto],
+    //     example: [
+    //         {
+    //             url: 'https://example.com/image1.jpg',
+    //             title: 'First image',
+    //             order: 0
+    //         },
+    //         {
+    //             url: 'https://example.com/image2.jpg',
+    //             title: 'Second image',
+    //             order: 1
+    //         }
+    //     ]
+    // })
+    // @IsNotEmpty()
+    // @IsArray()
+    // urls: CreatePostUrlDto[];
     @ApiProperty({
-        type: [CreatePostUrlDto],
-        example: [
-            {
-                url: 'https://example.com/image1.jpg',
-                title: 'First image',
-                order: 0
-            },
-            {
-                url: 'https://example.com/image2.jpg',
-                title: 'Second image',
-                order: 1
-            }
-        ]
+        type: 'string',
+        format: 'binary',
+        isArray: true,
+        required: true,
     })
-    @IsNotEmpty()
+    @IsOptional()
+    files?: File[];
+
+    @ApiProperty({
+        type: [String],
+        example: ['Ảnh 1', 'Ảnh 2'],
+        required: false,
+    })
+    @IsOptional()
+    @Transform(({ value }) => {
+        if (!value) return [];
+
+        if (Array.isArray(value)) return value; // nếu form-data tự tách rồi thì giữ nguyên
+
+        try {
+            // nếu người dùng nhập JSON hợp lệ
+            const parsed = JSON.parse(value);
+            if (Array.isArray(parsed)) return parsed;
+        } catch {
+            // nếu là chuỗi cách nhau bằng dấu phẩy
+            if (typeof value === 'string') {
+                return value.split(',').map((v) => v.trim());
+            }
+        }
+
+        // fallback cuối cùng
+        return [String(value)];
+    })
     @IsArray()
-    urls: CreatePostUrlDto[];
+    titles?: string[];
+
+    @ApiProperty({
+        type: [Number],
+        example: [0, 1],
+        required: false,
+    })
+    @IsOptional()
+    @Transform(({ value }) => {
+        if (!value) return [];
+
+        if (Array.isArray(value)) return value.map((v) => Number(v));
+
+        try {
+            const parsed = JSON.parse(value);
+            if (Array.isArray(parsed)) return parsed.map((v) => Number(v));
+        } catch {
+            if (typeof value === 'string') {
+                return value.split(',').map((v) => Number(v.trim()));
+            }
+        }
+
+        return [Number(value)];
+    })
+    @IsArray()
+    orders?: number[];
 
     @IsOptional()
     @IsEnum(LayoutType)

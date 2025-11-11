@@ -15,6 +15,8 @@ import { PostListDto } from './dto/post-list.dto';
 import { plainToInstance } from 'class-transformer';
 import UserResponseDto from '../user/dto/user.response.dto';
 import { omitBy, isUndefined } from 'lodash';
+import { v2 as cloudinary } from 'cloudinary';
+import { File } from 'multer';
 
 @Injectable()
 export class PostService {
@@ -266,33 +268,76 @@ export class PostService {
         return result;
     }
 
-    async createPost(createPostDto: CreatePostDto, userId: string) {
-        const { caption, urls } = createPostDto;
+    async createPost(createPostDto: CreatePostDto, userId: string, files?: File[]): Promise<{ message: string }> {
+        const { caption, titles = [], orders = [], layout, privacy_type, friends_except, friends_detail } = createPostDto;
 
         const post = await this.postModel.create({
             caption,
             userId: new Types.ObjectId(userId),
+            layout,
+            privacy_type,
+            friends_except: friends_except ? friends_except.map(id => new Types.ObjectId(id)) : undefined,
+            friends_detail: friends_detail ? friends_detail.map(id => new Types.ObjectId(id)) : undefined,
         });
 
-        let postUrls: PostUrlDocument[] = [];
-        if (urls && urls.length > 0) {
-            postUrls = await this.postUrlModel.insertMany(
-                urls.map((u, index) => ({
-                    url: u.url,
-                    title: u.title ?? '',
-                    order: u.order ?? index,
-                })),
+        // let postUrls: PostUrlDocument[] = [];
+        // if (urls && urls.length > 0) {
+        //     postUrls = await this.postUrlModel.insertMany(
+        //         urls.map((u, index) => ({
+        //             url: u.url,
+        //             title: u.title ?? '',
+        //             order: u.order ?? index,
+        //         })),
 
+        //     );
+        // }
+
+        // // update post urls
+        // post.urls = postUrls.map((url) => url._id as Types.ObjectId);
+        // await post.save();
+        if (files && files.length > 0) {
+
+            const postId = post._id.toString();
+
+            // Upload từng file lên Cloudinary trong folder riêng
+            const uploadedUrls: any[] = [];
+
+            const uploadResults = await Promise.all(
+                files.map((file, index) =>
+                    cloudinary.uploader.upload(file.path, {
+                        folder: `uploads/${postId}`,
+                        allowed_formats: ['jpg', 'png', 'jpeg', 'gif', 'webp'],
+                        transformation: [{ width: 1080, height: 1080, crop: 'limit' }],
+                    }).then(result => ({
+                        url: result.secure_url,
+                        title: titles[index],
+                        order: orders[index] ?? index,
+                    }))
+                )
             );
+
+            uploadedUrls.push(...uploadResults);
+
+            // Lưu URLs vào bảng post_urls
+            const postUrls = await this.postUrlModel.insertMany(
+                uploadedUrls.map((u, index) => ({
+                    url: u.url,
+                    title: u.title,
+                    order: orders[index] ?? index,
+                })),
+            );
+
+            // Gán vào post
+            post.urls = postUrls.map((url) => url._id as Types.ObjectId);
+            await post.save();
         }
 
-        // update post urls
-        post.urls = postUrls.map((url) => url._id as Types.ObjectId);
-        await post.save();
-
+        // return {
+        //     ...post.toObject(),
+        //     urls: postUrls,
+        // };
         return {
-            ...post.toObject(),
-            urls: postUrls,
+            message: 'Đã tạo bài viết thành công',
         };
     }
 
