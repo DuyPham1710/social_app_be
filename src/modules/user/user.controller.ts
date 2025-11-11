@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Put, Query, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Put, Query, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
 import UserResponseDto from './dto/user.response.dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
