@@ -303,17 +303,50 @@ export class PostService {
             const uploadedUrls: any[] = [];
 
             const uploadResults = await Promise.all(
-                files.map((file, index) =>
-                    cloudinary.uploader.upload(file.path, {
+                files.map((file, index) => {
+                    // Phân biệt hình ảnh và video
+                    const isVideo = file.mimetype?.startsWith('video/');
+                    const isImage = file.mimetype?.startsWith('image/');
+
+                    // Định dạng cho phép
+                    const allowedFormats = ['jpg', 'png', 'jpeg', 'gif', 'webp', 'mp4', 'mov', 'avi', 'webm', 'mkv', 'flv', 'wmv'];
+
+                    // Cấu hình upload dựa trên loại file
+                    const uploadOptions: any = {
                         folder: `uploads/${postId}`,
-                        allowed_formats: ['jpg', 'png', 'jpeg', 'gif', 'webp'],
-                        transformation: [{ width: 1080, height: 1080, crop: 'limit' }],
-                    }).then(result => ({
-                        url: result.secure_url,
-                        title: titles[index],
-                        order: orders[index] ?? index,
-                    }))
-                )
+                        allowed_formats: allowedFormats,
+                    };
+
+                    if (isVideo) {
+                        // Cấu hình cho video
+                        uploadOptions.resource_type = 'video';
+                        uploadOptions.transformation = [
+                            {
+                                width: 1920,
+                                height: 1080,
+                                crop: 'limit',
+                                quality: 'auto',
+                                fetch_format: 'auto'
+                            }
+                        ];
+                    } else if (isImage) {
+                        // Cấu hình cho hình ảnh
+                        uploadOptions.resource_type = 'image';
+                        uploadOptions.transformation = [
+                            { width: 1080, height: 1080, crop: 'limit' }
+                        ];
+                    } else {
+                        // Tự động phát hiện loại file
+                        uploadOptions.resource_type = 'auto';
+                    }
+
+                    return cloudinary.uploader.upload(file.path, uploadOptions)
+                        .then(result => ({
+                            url: result.secure_url,
+                            title: titles[index],
+                            order: orders[index] ?? index,
+                        }));
+                })
             );
 
             uploadedUrls.push(...uploadResults);
