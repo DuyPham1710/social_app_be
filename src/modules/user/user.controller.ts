@@ -8,14 +8,18 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { storage } from '../cloudinary/cloudinary.storage';
 import { Public } from 'src/common/decorators/public.decorator';
 import { File } from 'multer';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { UserRole } from 'src/shared/enums/user_role';
+import { Roles } from 'src/common/decorators/role.decorator';
 
 @ApiBearerAuth()
 @Controller('user')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
   @Get()
+  @Roles(UserRole.ADMIN)
   getAll(): Promise<UserResponseDto[]> {
     return this.userService.findAll();
   }
