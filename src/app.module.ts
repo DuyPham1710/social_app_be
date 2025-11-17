@@ -17,6 +17,7 @@ import { ReactStoryModule } from './modules/react-story/react-story.module';
 import { CommentModule } from './modules/comment/comment.module';
 import { ReactCommentModule } from './modules/react-comment/react-comment.module';
 import { PrivacyModule } from './modules/privacy/privacy.module';
+import { ChatModule } from './modules/chat/chat.module';
 
 
 
@@ -39,7 +40,8 @@ import { PrivacyModule } from './modules/privacy/privacy.module';
     ReactStoryModule,
     ReactCommentModule,
     CommentModule,
-    PrivacyModule
+    PrivacyModule,
+    ChatModule
   ],
   controllers: [AppController],
   providers: [AppService],

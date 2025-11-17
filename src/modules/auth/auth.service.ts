@@ -60,7 +60,12 @@ export class AuthService {
     }
 
     async login(user: UserResponseDto) {
-        const payload = { email: user.email, sub: user.userId };
+        const payload = {
+            email: user.email,
+            sub: user.userId,
+            role: user.role
+        };
+
         const refreshToken = this.jwtService.sign(payload, { expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRE });
 
         await this.eventEmitter.emitAsync(AppEvents.USER_UPDATE_REFRESH_TOKEN, {
