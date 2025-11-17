@@ -151,7 +151,6 @@ export class FriendsService {
   // Lấy danh sách bạn bè
   async getFriends(userId: string) {
     const userObjectId = new Types.ObjectId(userId);
-
     // Sử dụng aggregation để lấy thông tin bạn bè kèm bạn chung
     const friendsWithMutualInfo = await this.friendModel.aggregate([
       // Bước 1: Lọc bạn bè của user hiện tại

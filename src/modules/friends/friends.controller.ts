@@ -51,6 +51,13 @@ export class FriendsController {
     return await this.friendsService.getFriends(userId);
   }
 
+  @Get('list/:targetUserId')
+  @ApiOperation({ summary: 'Lấy danh sách bạn bè của 1 user' })
+  async getFriendsByUserId(@Req() req: any, @Param('targetUserId') targetUserId: string) {
+    const userId = targetUserId;
+    return await this.friendsService.getFriends(userId);
+  }
+
   @Get('search')
   @ApiOperation({ summary: 'Tìm kiếm bạn bè theo tên hoặc username' })
   async searchFriends(@Req() req: any, @Query() searchDto: SearchFriendsDto) {
