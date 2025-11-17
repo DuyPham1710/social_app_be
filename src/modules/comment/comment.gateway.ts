@@ -481,4 +481,48 @@ export class CommentGateway implements OnGatewayConnection, OnGatewayDisconnect 
       });
     }
   }
+
+  // Lấy lịch sử chỉnh sửa của một comment
+  @SubscribeMessage('loadCommentHistory')
+  async handleLoadCommentHistory(client: Socket, payload: { commentId: string }) {
+    try {
+      const userConnection = this.connectedUsers.get(client.id);
+      const { commentId } = payload;
+
+      if (!userConnection) {
+        client.emit('error', {
+          message: 'User not registered. Please send register event first.',
+          event: 'loadCommentHistory'
+        });
+        return;
+      }
+
+      if (!commentId || commentId.trim() === '') {
+        client.emit('error', {
+          message: 'commentId is required',
+          event: 'loadCommentHistory'
+        });
+        return;
+      }
+
+      this.logger.log(`Loading edit history for comment ${commentId} by user ${userConnection.userId}`);
+
+      const editHistory = await this.commentService.getCommentEditHistory(commentId);
+
+      client.emit('commentHistoryLoaded', {
+        commentId,
+        history: editHistory,
+        count: editHistory.length,
+        timestamp: new Date()
+      });
+
+      this.logger.log(`Loaded ${editHistory.length} edit history entries for comment ${commentId}`);
+    } catch (error) {
+      this.logger.error(`Error loading comment history: ${error.message}`);
+      client.emit('error', {
+        message: error?.message || 'Failed to load comment history',
+        event: 'loadCommentHistory'
+      });
+    }
+  }
 }
