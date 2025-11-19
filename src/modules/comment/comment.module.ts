@@ -9,5 +9,6 @@ import { MongooseModule } from '@nestjs/mongoose';
     MongooseModule.forFeature([{ name: Comment.name, schema: CommentSchema }]),
   ],
   providers: [CommentGateway, CommentService],
+  exports: [CommentService],
 })
 export class CommentModule { }

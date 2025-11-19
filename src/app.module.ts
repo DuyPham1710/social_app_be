@@ -18,6 +18,7 @@ import { CommentModule } from './modules/comment/comment.module';
 import { ReactCommentModule } from './modules/react-comment/react-comment.module';
 import { PrivacyModule } from './modules/privacy/privacy.module';
 import { ChatModule } from './modules/chat/chat.module';
+import { AdminModule } from './modules/admin/admin.module';
 
 
 
@@ -41,7 +42,8 @@ import { ChatModule } from './modules/chat/chat.module';
     ReactCommentModule,
     CommentModule,
     PrivacyModule,
-    ChatModule
+    ChatModule,
+    AdminModule
   ],
   controllers: [AppController],
   providers: [AppService],

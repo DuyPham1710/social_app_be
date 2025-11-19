@@ -13,5 +13,6 @@ import { FriendsModule } from '../friends/friends.module';
   ],
   controllers: [StoryController],
   providers: [StoryService],
+  exports: [StoryService],
 })
 export class StoryModule { }
