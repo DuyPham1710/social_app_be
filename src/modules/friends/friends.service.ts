@@ -372,7 +372,7 @@ export class FriendsService {
     });
 
     if (sentRequest) {
-      return { status: 'request_sent', message: 'Đã gửi lời mời kết bạn' };
+      return { status: 'request_sent', message: 'Đã gửi lời mời kết bạn', requestId: sentRequest._id};//, requestId: sentRequest
     }
 
     const receivedRequest = await this.friendRequestModel.findOne({
@@ -381,7 +381,7 @@ export class FriendsService {
     });
 
     if (receivedRequest) {
-      return { status: 'request_received', message: 'Có lời mời kết bạn chờ phản hồi' };
+      return { status: 'request_received', message: 'Có lời mời kết bạn chờ phản hồi', requestId: receivedRequest._id};//, requestId: receivedRequest
     }
 
     return { status: 'none', message: 'Không có quan hệ' };
