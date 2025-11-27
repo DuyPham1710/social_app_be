@@ -1,4 +1,4 @@
-import mongoose, { Document, Types } from "mongoose";
+import { Document, Types } from "mongoose";
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 export type ConversationDocument = Conversation & Document;
@@ -17,21 +17,13 @@ export class Conversation {
     name?: string; // nếu là group
 
     @Prop({ type: Types.ObjectId, ref: 'User', default: null })
-    createdBy: Types.ObjectId;
+    createdBy?: Types.ObjectId;
 
     @Prop({ default: null })
     avatar?: string; // group avatar
 
-    @Prop({
-        type: new mongoose.Schema({
-            messageId: { type: Types.ObjectId, ref: 'Message' },
-            text: String,
-            sender: { type: Types.ObjectId, ref: 'User' },
-            createdAt: Date,
-        }, { _id: false }),
-        default: null
-    })
-    lastMessage: any;
+    @Prop({ type: Types.ObjectId, ref: 'Message', default: null })
+    lastMessageId?: Types.ObjectId;
 
     createdAt?: Date;
     updatedAt?: Date;

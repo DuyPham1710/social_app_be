@@ -1,5 +1,8 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
+import { Attachment, AttachmentSchema } from "./attachment.schema";
+import { Reaction, ReactionSchema } from "./reaction.schema";
+import { SeenBy, SeenBySchema } from "./seen-by.schema";
 
 export type MessageDocument = Message & Document;
 
@@ -17,53 +20,24 @@ export class Message {
     text: string;
 
     @Prop({
-        type: [{
-            url: String,
-            type: { type: String }, // image, video, file, audio
-            size: Number,
-        }],
+        type: [AttachmentSchema],
         default: []
     })
-    attachments: {
-        url: string;
-        type: string;
-        size: number;
-    }[];
+    attachments: Attachment[];
 
     @Prop({ type: Types.ObjectId, ref: 'Message', default: null })
     replyTo?: Types.ObjectId; // reply message
 
-    @Prop({
-        type: [{
-            userId: { type: Types.ObjectId, ref: 'User' },
-            reaction: String, // ❤️ 👍 😢 👍🏻 ...
-        }],
-        default: []
-    })
-    reactions: {
-        userId: Types.ObjectId;
-        reaction: string;
-    }[];
+    @Prop({ type: [ReactionSchema], default: [] })
+    reactions: Reaction[];
 
-    @Prop({
-        type: [{
-            userId: { type: Types.ObjectId, ref: 'User' },
-            seenAt: Date
-        }],
-        default: []
-    })
-    seenBy: {
-        userId: Types.ObjectId;
-        seenAt: Date;
-    }[];
+    @Prop({ type: [SeenBySchema], default: [] })
+    seenBy: SeenBy[];
 
     @Prop({ default: false })
     deletedForEveryone: boolean;
 
-    @Prop({
-        type: [{ type: Types.ObjectId, ref: 'User' }],
-        default: []
-    })
+    @Prop({ type: [Types.ObjectId], ref: 'User', default: [] })
     deletedFor: Types.ObjectId[];
 
     createdAt?: Date;

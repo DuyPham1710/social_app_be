@@ -14,7 +14,6 @@ import { SendMessageDto, MarkAsReadDto, CreateConversationDto } from './dto';
 @WebSocketGateway({
   cors: {
     origin: '*',
-    credentials: true,
   },
   namespace: '/chat',
 })
@@ -29,19 +28,14 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   async handleConnection(client: Socket) {
     try {
-      const userId = client.handshake.query.userId as string;
+      console.log(`Client connected: ${client.id}`);
 
-      if (!userId) {
-        client.disconnect();
-        return;
-      }
-
-      this.userSockets.set(userId, client.id);
-
-      console.log(`Client connected: ${client.id} - User: ${userId}`);
-
-      // Emit online status
-      client.broadcast.emit('user:online', { userId });
+      // Emit connection success - user sẽ cần gửi register event với userId
+      client.emit('connected', {
+        message: 'Connected to chat service. Please send register event with userId.',
+        socketId: client.id,
+        timestamp: new Date(),
+      });
     } catch (error) {
       console.error('Connection error:', error);
       client.disconnect();
@@ -49,15 +43,66 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   handleDisconnect(client: Socket) {
-    const userId = client.handshake.query.userId as string;
+    // Find user by socket ID
+    let disconnectedUserId: string | null = null;
+    for (const [userId, socketId] of this.userSockets.entries()) {
+      if (socketId === client.id) {
+        disconnectedUserId = userId;
+        this.userSockets.delete(userId);
+        break;
+      }
+    }
 
-    if (userId) {
-      this.userSockets.delete(userId);
-
+    if (disconnectedUserId) {
       // Emit offline status
-      client.broadcast.emit('user:offline', { userId });
+      client.broadcast.emit('user:offline', { userId: disconnectedUserId });
+      console.log(`Client disconnected: ${client.id} - User: ${disconnectedUserId}`);
+    } else {
+      console.log(`Client disconnected: ${client.id} - Unknown user`);
+    }
+  }
 
-      console.log(`Client disconnected: ${client.id} - User: ${userId}`);
+  // User register với userId sau khi connect
+  @SubscribeMessage('register')
+  async handleRegister(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { userId: string; username?: string },
+  ) {
+    try {
+      const { userId, username } = data;
+
+      if (!userId || userId.trim() === '') {
+        client.emit('error', {
+          message: 'userId is required',
+          event: 'register'
+        });
+        return;
+      }
+
+      // Set user socket mapping
+      this.userSockets.set(userId.trim(), client.id);
+
+      console.log(`User registered: ${userId} (${username || 'Unknown'}) - Socket: ${client.id}`);
+
+      // Emit registration success
+      client.emit('register:ack', {
+        message: 'Successfully registered',
+        userId,
+        username,
+        socketId: client.id,
+        timestamp: new Date(),
+      });
+
+      // Emit online status to others
+      client.broadcast.emit('user:online', { userId });
+
+      return { success: true };
+    } catch (error) {
+      console.error('Register error:', error);
+      client.emit('error', {
+        message: 'Failed to register user',
+        event: 'register'
+      });
     }
   }
 
@@ -71,14 +116,21 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const { userId, page = 1, limit = 10 } = data;
 
       if (!userId) {
-        return { error: 'userId is required' };
+        client.emit('error', { message: 'userId is required' });
+        return;
       }
 
       const conversations = await this.chatService.getConversations(userId, page, limit);
-      return { success: true, ...conversations };
+
+      // Emit conversations list to client
+      client.emit('conversations:list',
+        conversations,
+      );
+      console.log(conversations.data);
+      console.log(`Sent ${conversations.data.length} conversations to user ${userId}`);
     } catch (error) {
       console.error('Get conversations error:', error);
-      return { error: 'Failed to get conversations' };
+      client.emit('error', { message: 'Failed to get conversations' });
     }
   }
 
@@ -142,7 +194,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const { userId, conversationId, page = 1, limit = 50 } = data;
 
       if (!userId || !conversationId) {
-        return { error: 'userId and conversationId are required' };
+        client.emit('error', {
+          message: 'userId and conversationId are required',
+          event: 'messages:get'
+        });
+        return;
       }
 
       const messages = await this.chatService.getMessages(
@@ -151,11 +207,19 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         page,
         limit,
       );
+      console.log('>>>> message: ', messages.data[0]);
+      // Emit messages tới tất cả user trong conversation room
+      this.server
+        .to(`conversation:${conversationId}`)
+        .emit('messages:loaded', messages);
 
-      return { success: true, ...messages };
+      console.log(`Sent ${messages.data?.length || 0} messages to conversation ${conversationId}`);
     } catch (error) {
       console.error('Get messages error:', error);
-      return { error: 'Failed to get messages' };
+      client.emit('error', {
+        message: 'Failed to get messages',
+        event: 'messages:get'
+      });
     }
   }
 
@@ -182,12 +246,14 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         return { error: 'You do not have access to this conversation' };
       }
 
+      await this.chatService.markMessagesAsRead(conversationId, userId);
+
       // Join room
       client.join(`conversation:${conversationId}`);
 
       console.log(`User ${userId} joined conversation ${conversationId}`);
 
-      return { success: true, conversationId };
+      // return { success: true, conversationId };
     } catch (error) {
       console.error('Join conversation error:', error);
       return { error: 'Failed to join conversation' };

@@ -32,7 +32,14 @@ export class ChatService {
             this.conversationModel
                 .find({ participants: new Types.ObjectId(userId) })
                 .populate('participants', 'username fullName avatarUrl')
-                .populate('lastMessage.sender', 'username fullName avatarUrl')
+                .populate({
+                    path: 'lastMessageId',
+                    select: 'text createdAt senderId',
+                    populate: {
+                        path: 'senderId',
+                        select: 'username fullName avatarUrl'
+                    }
+                })
                 .populate('createdBy', 'username fullName avatarUrl')
                 .sort({ updatedAt: -1 })
                 .skip(skip)
@@ -42,9 +49,21 @@ export class ChatService {
             this.conversationModel.countDocuments({ participants: new Types.ObjectId(userId) }),
         ]);
 
+        // Sắp xếp participants: đưa chính user lên đầu
+        const conversationsSorted = conversations.map(conv => {
+            if (conv.participants && conv.participants.length > 1) {
+                conv.participants.sort((a, b) => {
+                    if (a._id.toString() === userId) return -1; // user hiện tại lên đầu
+                    if (b._id.toString() === userId) return 1;
+                    return 0;
+                });
+            }
+            return conv;
+        });
+
         // Tính số tin nhắn chưa đọc cho mỗi cuộc hội thoại
         const conversationsWithUnread = await Promise.all(
-            conversations.map(async (conv) => {
+            conversationsSorted.map(async (conv) => {
                 const unreadCount = await this.messageModel.countDocuments({
                     conversationId: conv._id,
                     senderId: { $ne: new Types.ObjectId(userId) },
@@ -60,10 +79,22 @@ export class ChatService {
 
         const totalPages = Math.ceil(totalItems / limit);
 
+        // Convert ObjectId to string before transform
+        const conversationsForTransform = conversationsWithUnread.map(conv => ({
+            ...conv,
+            _id: conv._id.toString(),
+            lastMessageId: conv.lastMessageId ? {
+                ...conv.lastMessageId,
+                _id: conv.lastMessageId._id.toString()
+            } : null
+        }));
+
+        const transformedData = plainToInstance(ConversationResponseDto, conversationsForTransform, {
+            excludeExtraneousValues: true,
+        });
+
         return {
-            data: plainToInstance(ConversationResponseDto, conversationsWithUnread, {
-                excludeExtraneousValues: true,
-            }),
+            data: transformedData,
             pagination: {
                 currentPage: page,
                 totalPages,
@@ -193,6 +224,8 @@ export class ChatService {
                 })
                 .populate('senderId', 'username fullName avatarUrl')
                 .populate('replyTo')
+                .populate('reactions.userId', 'username fullName avatarUrl')
+                .populate('seenBy.userId', 'username fullName avatarUrl')
                 .sort({ createdAt: -1 })
                 .skip(skip)
                 .limit(limit)
@@ -206,10 +239,32 @@ export class ChatService {
         ]);
 
         // Transform messages to response format
-        const transformedMessages = messages.map((msg) => ({
-            ...msg,
-            sender: msg.senderId,
-        }));
+        const transformedMessages = messages.map((msg: any) => {
+            // Transform reactions: userId -> user
+            const reactions = msg.reactions?.map((reaction: any) => ({
+                user: reaction.userId,
+                reaction: reaction.reaction,
+            })) || [];
+
+            // Transform seenBy: userId -> user
+            const seenBy = msg.seenBy?.map((seen: any) => ({
+                user: seen.userId,
+                seenAt: seen.seenAt,
+            })) || [];
+
+            return {
+                ...msg,
+                _id: msg._id.toString(),
+                conversationId: msg.conversationId.toString(),
+                replyTo: msg.replyTo ? {
+                    ...msg.replyTo,
+                    _id: msg.replyTo._id?.toString(),
+                    conversationId: msg.replyTo.conversationId?.toString(),
+                } : null,
+                reactions,
+                seenBy,
+            };
+        });
 
         const totalPages = Math.ceil(totalItems / limit);
 
@@ -338,17 +393,23 @@ export class ChatService {
 
     // Kiểm tra user có quyền truy cập cuộc hội thoại không
     async checkUserInConversation(conversationId: string, userId: string): Promise<boolean> {
-        if (!Types.ObjectId.isValid(conversationId)) {
+        if (!Types.ObjectId.isValid(conversationId) || !Types.ObjectId.isValid(userId)) {
             return false;
         }
-
-        const conversation = await this.conversationModel
-            .findOne({
-                _id: new Types.ObjectId(conversationId),
-                participants: new Types.ObjectId(userId),
-            })
-            .exec();
-
-        return !!conversation;
+        console.log('conversationId', conversationId);
+        console.log('userId', userId);
+        try {
+            const conversation = await this.conversationModel
+                .findOne({
+                    _id: new Types.ObjectId(conversationId),
+                    participants: new Types.ObjectId(userId),
+                })
+                .exec();
+            console.log('conversation', conversation);
+            return !!conversation;
+        } catch (error) {
+            console.error('Error checking user in conversation:', error);
+            return false;
+        }
     }
 }

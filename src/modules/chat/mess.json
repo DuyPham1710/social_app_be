@@ -1,0 +1,87 @@
+[
+    {
+        "_id": {
+            "$oid": "67472001bbb0000000000001"
+        },
+        "conversationId": {
+            "$oid": "67471001aaa0000000000001"
+        },
+        "senderId": {
+            "$oid": "68af4aca968b17834dab17c1"
+        },
+        "text": "Này Duy, tối rảnh không?",
+        "attachments": [],
+        "replyTo": null,
+        "reactions": [],
+        "seenBy": [],
+        "deletedForEveryone": false,
+        "createdAt": {
+            "$date": "2025-11-25T11:50:00Z"
+        },
+        "updatedAt": {
+            "$date": "2025-11-25T11:50:00Z"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "67472001bbb0000000000002"
+        },
+        "conversationId": {
+            "$oid": "67471001aaa0000000000001"
+        },
+        "senderId": {
+            "$oid": "68af4aca968b17834dab17c1"
+        },
+        "text": "Chuẩn bị đi làm chưa đó?",
+        "attachments": [],
+        "replyTo": null,
+        "reactions": [],
+        "seenBy": [],
+        "deletedForEveryone": false,
+        "createdAt": {
+            "$date": "2025-11-25T11:51:00Z"
+        },
+        "updatedAt": {
+            "$date": "2025-11-25T11:51:00Z"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "67472001bbb0000000000003"
+        },
+        "conversationId": {
+            "$oid": "67471001aaa0000000000001"
+        },
+        "senderId": {
+            "$oid": "68af2546e5af803fed30af6c"
+        },
+        "text": "Nay ăn gì chưa?",
+        "attachments": [],
+        "replyTo": null,
+        "reactions": [
+            {
+                "userId": {
+                    "$oid": "68af4aca968b17834dab17c1"
+                },
+                "reaction": "👍"
+            }
+        ],
+        "seenBy": [
+            {
+                "userId": {
+                    "$oid": "68af4aca968b17834dab17c1"
+                },
+                "seenAt": {
+                    "$date": "2025-11-25T11:52:15Z"
+                }
+            }
+        ],
+        "deletedForEveryone": false,
+        "createdAt": {
+            "$date": "2025-11-25T11:52:00Z"
+        },
+        "updatedAt": {
+            "$date": "2025-11-25T11:52:30Z"
+        }
+    }
+]
