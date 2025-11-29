@@ -1,4 +1,5 @@
 import { Expose, Type } from 'class-transformer';
+import { EmojiResponseDto } from 'src/modules/emoji/dto/emoji_response.dto';
 import UserResponseDto from 'src/modules/user/dto/user.response.dto';
 
 class AttachmentDto {
@@ -18,7 +19,7 @@ class ReactionDto {
     user: UserResponseDto;
 
     @Expose()
-    reaction: string;
+    emoji: EmojiResponseDto;
 }
 
 class SeenByDto {

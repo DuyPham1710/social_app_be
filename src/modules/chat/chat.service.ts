@@ -225,6 +225,7 @@ export class ChatService {
                 .populate('senderId', 'username fullName avatarUrl')
                 .populate('replyTo')
                 .populate('reactions.userId', 'username fullName avatarUrl')
+                .populate('reactions.emojiId', 'label icon')
                 .populate('seenBy.userId', 'username fullName avatarUrl')
                 .sort({ createdAt: -1 })
                 .skip(skip)
@@ -240,10 +241,14 @@ export class ChatService {
 
         // Transform messages to response format
         const transformedMessages = messages.map((msg: any) => {
-            // Transform reactions: userId -> user
+            // Transform reactions: userId -> user, emojiId -> emoji
             const reactions = msg.reactions?.map((reaction: any) => ({
                 user: reaction.userId,
-                reaction: reaction.reaction,
+                emoji: reaction.emojiId ? {
+                    id: reaction.emojiId._id?.toString() || reaction.emojiId.toString(),
+                    label: reaction.emojiId.label,
+                    icon: reaction.emojiId.icon,
+                } : null,
             })) || [];
 
             // Transform seenBy: userId -> user

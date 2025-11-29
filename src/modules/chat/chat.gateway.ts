@@ -126,7 +126,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       client.emit('conversations:list',
         conversations,
       );
-      console.log(conversations.data);
+      //  console.log(conversations.data);
       console.log(`Sent ${conversations.data.length} conversations to user ${userId}`);
     } catch (error) {
       console.error('Get conversations error:', error);
@@ -207,7 +207,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         page,
         limit,
       );
-      console.log('>>>> message: ', messages.data[0]);
+      //  console.log('>>>> message: ', messages.data[0]);
       // Emit messages tới tất cả user trong conversation room
       this.server
         .to(`conversation:${conversationId}`)
@@ -316,7 +316,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       userId,
     });
 
-    return { success: true };
+    //  return { success: true };
   }
 
   // User dừng typing
@@ -332,7 +332,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       userId,
     });
 
-    return { success: true };
+    // return { success: true };
   }
 
   // Đánh dấu đã đọc
