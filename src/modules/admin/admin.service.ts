@@ -44,11 +44,16 @@ export class AdminService {
     page: number = 1,
     limit: number = 10,
     search?: string,
-    role?: string,
     isActive?: boolean,
+    dateFrom?: Date,
+    dateTo?: Date,
+    nameInitial?: string,
   ) {
     const skip = (page - 1) * limit;
     const query: any = {};
+
+    // Mặc định loại bỏ admin khỏi danh sách người dùng
+    query.role = { $ne: 'admin' };
 
     // Tìm kiếm theo email, username, fullName
     if (search && search.trim()) {
@@ -59,14 +64,20 @@ export class AdminService {
       ];
     }
 
-    // Lọc theo role
-    if (role) {
-      query.role = role;
-    }
-
     // Lọc theo isActive
     if (isActive !== undefined) {
       query.isActive = isActive;
+    }
+
+    // Lọc theo thời gian tạo tài khoản
+    if (dateFrom || dateTo) {
+      query.createdAt = {};
+      if (dateFrom) {
+        query.createdAt.$gte = dateFrom;
+      }
+      if (dateTo) {
+        query.createdAt.$lte = dateTo;
+      }
     }
 
     const [users, total] = await Promise.all([
@@ -275,16 +286,6 @@ export class AdminService {
         activityTimeline[0]?.createdAt ||
         null,
     };
-  }
-
-  // ===== Existing User Content Endpoints =====
-  getUserPosts(userId: string, page: number = 1, limit: number = 10) {
-    // Sử dụng ownerId làm viewerId để bỏ qua kiểm tra quyền riêng tư
-    return this.postService.getAllPostsByUser(userId, userId, page, limit);
-  }
-
-  getUserStories(userId: string) {
-    return this.storyService.getStories(userId, userId);
   }
 
   // ===== Post Management Methods =====
@@ -671,12 +672,15 @@ export class AdminService {
       newUsersThisMonth,
       newPostsThisMonth,
     ] = await Promise.all([
-      this.userModel.countDocuments().exec(),
+      this.userModel.countDocuments({ role: { $ne: 'admin' } }).exec(),
       this.postModel.countDocuments().exec(),
       this.storyModel.countDocuments().exec(),
       this.commentModel.countDocuments().exec(),
       this.userModel
-        .countDocuments({ createdAt: { $gte: startOfMonth } })
+        .countDocuments({ 
+          createdAt: { $gte: startOfMonth },
+          role: { $ne: 'admin' }
+        })
         .exec(),
       this.postModel
         .countDocuments({ createdAt: { $gte: startOfMonth } })
@@ -706,6 +710,7 @@ export class AdminService {
               $gte: startDate,
               $lte: endDate,
             },
+            role: { $ne: 'admin' },
           },
         },
         {

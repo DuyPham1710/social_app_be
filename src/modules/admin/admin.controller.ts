@@ -16,26 +16,31 @@ export class AdminController {
 
   // ===== User Management =====
   @Get('users')
-  @ApiOperation({ summary: 'Lấy danh sách người dùng (phân trang, tìm kiếm, lọc theo role/status)' })
+  @ApiOperation({ summary: 'Lấy danh sách người dùng (phân trang, tìm kiếm, lọc theo thời gian/status)' })
   @ApiQuery({ name: 'page', required: false, type: Number, description: 'Số trang' })
   @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Số lượng mỗi trang' })
   @ApiQuery({ name: 'search', required: false, type: String, description: 'Tìm kiếm theo email, username, fullName' })
-  @ApiQuery({ name: 'role', required: false, type: String, description: 'Lọc theo role (admin/user)' })
   @ApiQuery({ name: 'isActive', required: false, type: Boolean, description: 'Lọc theo trạng thái active' })
+  @ApiQuery({ name: 'dateFrom', required: false, type: String, description: 'Lọc từ ngày tạo tài khoản (ISO date)' })
+  @ApiQuery({ name: 'dateTo', required: false, type: String, description: 'Lọc đến ngày tạo tài khoản (ISO date)' })
   getAllUsers(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
     @Query('search') search?: string,
-    @Query('role') role?: string,
     @Query('isActive') isActive?: string,
+    @Query('dateFrom') dateFrom?: string,
+    @Query('dateTo') dateTo?: string,
   ) {
     const isActiveBool = isActive !== undefined ? isActive === 'true' : undefined;
+    const dateFromDate = dateFrom ? new Date(dateFrom) : undefined;
+    const dateToDate = dateTo ? new Date(dateTo) : undefined;
     return this.adminService.getAllUsers(
       Number(page),
       Number(limit),
       search,
-      role,
-      isActiveBool
+      isActiveBool,
+      dateFromDate,
+      dateToDate
     );
   }
 
@@ -61,25 +66,6 @@ export class AdminController {
   @ApiOperation({ summary: 'Lấy hoạt động gần đây của người dùng' })
   getUserActivity(@Param('userId') userId: string) {
     return this.adminService.getUserActivity(userId);
-  }
-
-  // ===== Existing User Content Endpoints =====
-  @Get('users/:userId/posts')
-  @ApiOperation({ summary: 'Lấy danh sách bài viết của người dùng' })
-  getPostsByUser(
-    @Param('userId') userId: string,
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10,
-  ) {
-    return this.adminService.getUserPosts(userId, Number(page), Number(limit));
-  }
-
-  @Get('users/:userId/stories')
-  @ApiOperation({ summary: 'Lấy danh sách story của người dùng' })
-  getStoriesByUser(
-    @Param('userId') userId: string,
-  ) {
-    return this.adminService.getUserStories(userId);
   }
 
   // ===== Post Management =====
