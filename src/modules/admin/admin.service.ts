@@ -20,6 +20,8 @@ import UserResponseDto from '../user/dto/user.response.dto';
 import { StoryResponseDto } from '../story/dto/story-response.dto';
 import { PostResponseDto } from '../post/dto/post-response.dto';
 import { omitBy, isUndefined } from 'lodash';
+import * as bcrypt from 'bcrypt';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class AdminService {
@@ -121,6 +123,38 @@ export class AdminService {
     }
 
     return plainToInstance(UserResponseDto, user, {
+      excludeExtraneousValues: true,
+    });
+  }
+
+  async createUser(createUserDto: CreateUserDto): Promise<UserResponseDto> {
+    const existingUserByEmail = await this.userModel.findOne({ email: createUserDto.email }).exec();
+    if (existingUserByEmail) {
+      throw new HttpException('Email is already in use', HttpStatus.BAD_REQUEST);
+    }
+
+    const existingUserByUsername = await this.userModel.findOne({ username: createUserDto.username }).exec();
+    if (existingUserByUsername) {
+      throw new HttpException('Username is already taken', HttpStatus.BAD_REQUEST);
+    }
+
+    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+
+    const newUser = new this.userModel({
+      ...createUserDto,
+      password: hashedPassword,
+      role: 'user',
+      isActive: createUserDto.isActive !== undefined ? createUserDto.isActive : true, // Mặc định active
+    });
+
+    const savedUser = await newUser.save();
+
+    // Emit event để tạo privacy mặc định cho user mới
+    await this.eventEmitter.emitAsync(AppEvents.USER_CREATED, {
+      userId: (savedUser._id as Types.ObjectId).toString(),
+    });
+
+    return plainToInstance(UserResponseDto, savedUser.toObject(), {
       excludeExtraneousValues: true,
     });
   }

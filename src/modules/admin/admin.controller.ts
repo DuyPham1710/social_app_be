@@ -1,21 +1,22 @@
-import { Controller, Delete, Get, Param, Put, Query, UseGuards } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post, Put, Query, Body, UseGuards } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/role.decorator';
 import { UserRole } from 'src/shared/enums/user_role';
-import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags, ApiBody } from '@nestjs/swagger';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @ApiBearerAuth()
 @ApiTags('Admin')
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles(UserRole.ADMIN)
 @Controller('admin')
 export class AdminController {
   constructor(private readonly adminService: AdminService) { }
 
   // ===== User Management =====
   @Get('users')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Lấy danh sách người dùng (phân trang, tìm kiếm, lọc theo thời gian/status)' })
   @ApiQuery({ name: 'page', required: false, type: Number, description: 'Số trang' })
   @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Số lượng mỗi trang' })
@@ -45,24 +46,36 @@ export class AdminController {
   }
 
   @Get('users/:userId')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Lấy chi tiết người dùng' })
   getUserById(@Param('userId') userId: string) {
     return this.adminService.getUserById(userId);
   }
 
+  @Post('users')
+  @Roles(UserRole.ADMIN)
+  @ApiOperation({ summary: 'Tạo người dùng mới (chỉ admin)' })
+  @ApiBody({ type: CreateUserDto })
+  createUser(@Body() createUserDto: CreateUserDto) {
+    return this.adminService.createUser(createUserDto);
+  }
+
   @Delete('users/:userId')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Xóa tài khoản người dùng (soft delete)' })
   deleteUser(@Param('userId') userId: string) {
     return this.adminService.deleteUser(userId);
   }
 
   @Get('users/:userId/friends')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Lấy danh sách bạn bè của người dùng' })
   getUserFriends(@Param('userId') userId: string) {
     return this.adminService.getUserFriends(userId);
   }
 
   @Get('users/:userId/activity')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Lấy hoạt động gần đây của người dùng' })
   getUserActivity(@Param('userId') userId: string) {
     return this.adminService.getUserActivity(userId);
@@ -70,6 +83,7 @@ export class AdminController {
 
   // ===== Post Management =====
   @Get('posts')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Lấy danh sách tất cả bài viết (phân trang, tìm kiếm, lọc)' })
   @ApiQuery({ name: 'page', required: false, type: Number, description: 'Số trang' })
   @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Số lượng mỗi trang' })
@@ -85,36 +99,42 @@ export class AdminController {
   }
 
   @Get('posts/:postId')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Lấy chi tiết bài viết' })
   getPostById(@Param('postId') postId: string) {
     return this.adminService.getPostById(postId);
   }
 
   @Delete('posts/:postId')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Xóa bài viết (admin có quyền xóa bất kỳ post nào)' })
   deletePost(@Param('postId') postId: string) {
     return this.adminService.deletePost(postId);
   }
 
   @Put('posts/:postId/hide')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Ẩn bài viết' })
   hidePost(@Param('postId') postId: string) {
     return this.adminService.hidePost(postId);
   }
 
   @Put('posts/:postId/unhide')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Hiện lại bài viết' })
   unhidePost(@Param('postId') postId: string) {
     return this.adminService.unhidePost(postId);
   }
 
   @Get('posts/:postId/reacts')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Lấy danh sách reacts của bài viết' })
   getPostReacts(@Param('postId') postId: string) {
     return this.adminService.getPostReacts(postId);
   }
 
   @Get('posts/:postId/comments')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Lấy danh sách bình luận của bài viết' })
   getPostComments(@Param('postId') postId: string) {
     return this.adminService.getPostComments(postId);
@@ -122,6 +142,7 @@ export class AdminController {
 
   // ===== Story Management =====
   @Get('stories')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Lấy danh sách tất cả story (phân trang, lọc theo user/ngày)' })
   @ApiQuery({ name: 'page', required: false, type: Number, description: 'Số trang' })
   @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Số lượng mỗi trang' })
@@ -141,18 +162,21 @@ export class AdminController {
   }
 
   @Get('stories/:storyId')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Lấy chi tiết story' })
   getStoryById(@Param('storyId') storyId: string) {
     return this.adminService.getStoryById(storyId);
   }
 
   @Delete('stories/:storyId')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Xóa story (admin có quyền xóa bất kỳ story nào)' })
   deleteStory(@Param('storyId') storyId: string) {
     return this.adminService.deleteStory(storyId);
   }
 
   @Get('stories/:storyId/reacts')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Lấy danh sách reacts của story' })
   getStoryReacts(@Param('storyId') storyId: string) {
     return this.adminService.getStoryReacts(storyId);
@@ -160,6 +184,7 @@ export class AdminController {
 
   // ===== Comment Management =====
   @Get('comments')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Lấy danh sách tất cả bình luận (phân trang, tìm kiếm)' })
   @ApiQuery({ name: 'page', required: false, type: Number, description: 'Số trang' })
   @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Số lượng mỗi trang' })
@@ -177,12 +202,14 @@ export class AdminController {
   }
 
   @Get('comments/:commentId')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Lấy chi tiết bình luận' })
   getCommentById(@Param('commentId') commentId: string) {
     return this.adminService.getCommentById(commentId);
   }
 
   @Delete('comments/:commentId')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Xóa bình luận (admin có quyền xóa bất kỳ comment nào)' })
   deleteComment(@Param('commentId') commentId: string) {
     return this.adminService.deleteComment(commentId);
@@ -190,12 +217,14 @@ export class AdminController {
 
   // ===== Dashboard Stats =====
   @Get('dashboard/stats')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Lấy thống kê tổng quan dashboard' })
   getDashboardStats() {
     return this.adminService.getDashboardStats();
   }
 
   @Get('dashboard/users-growth')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Lấy biểu đồ tăng trưởng người dùng theo thời gian' })
   @ApiQuery({ name: 'days', required: false, type: Number, description: 'Số ngày muốn lấy (mặc định 30)' })
   getUsersGrowth(@Query('days') days?: number) {
@@ -203,6 +232,7 @@ export class AdminController {
   }
 
   @Get('dashboard/posts-stats')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Lấy thống kê bài viết (theo ngày/tháng)' })
   @ApiQuery({ name: 'groupBy', required: false, enum: ['day', 'month'], description: 'Nhóm theo ngày hoặc tháng' })
   @ApiQuery({ name: 'days', required: false, type: Number, description: 'Số ngày muốn lấy (mặc định 30)' })
