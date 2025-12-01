@@ -50,20 +50,20 @@ export class ChatService {
         ]);
 
         // Sắp xếp participants: đưa chính user lên đầu
-        const conversationsSorted = conversations.map(conv => {
-            if (conv.participants && conv.participants.length > 1) {
-                conv.participants.sort((a, b) => {
-                    if (a._id.toString() === userId) return -1; // user hiện tại lên đầu
-                    if (b._id.toString() === userId) return 1;
-                    return 0;
-                });
-            }
-            return conv;
-        });
+        // const conversationsSorted = conversations.map(conv => {
+        //     if (conv.participants && conv.participants.length > 1) {
+        //         conv.participants.sort((a, b) => {
+        //             if (a._id.toString() === userId) return -1; // user hiện tại lên đầu
+        //             if (b._id.toString() === userId) return 1;
+        //             return 0;
+        //         });
+        //     }
+        //     return conv;
+        // });
 
         // Tính số tin nhắn chưa đọc cho mỗi cuộc hội thoại
         const conversationsWithUnread = await Promise.all(
-            conversationsSorted.map(async (conv) => {
+            conversations.map(async (conv) => {
                 const unreadCount = await this.messageModel.countDocuments({
                     conversationId: conv._id,
                     senderId: { $ne: new Types.ObjectId(userId) },
@@ -173,7 +173,14 @@ export class ChatService {
                 participants: new Types.ObjectId(userId),
             })
             .populate('participants', 'username fullName avatarUrl')
-            .populate('lastMessage.sender', 'username fullName avatarUrl')
+            .populate({
+                path: 'lastMessageId',
+                select: 'text createdAt senderId',
+                populate: {
+                    path: 'senderId',
+                    select: 'username fullName avatarUrl'
+                }
+            })
             .populate('createdBy', 'username fullName avatarUrl')
             .lean()
             .exec();
@@ -181,10 +188,58 @@ export class ChatService {
         if (!conversation) {
             throw new HttpException('Conversation not found', HttpStatus.NOT_FOUND);
         }
+        //  console.log('>>> userID: ', userId);
+        const unreadCount = await this.messageModel.countDocuments({
+            conversationId: conversation._id,
+            senderId: { $ne: new Types.ObjectId(userId) },
+            'seenBy.userId': { $ne: new Types.ObjectId(userId) },
+        });
 
-        return plainToInstance(ConversationResponseDto, conversation, {
+        // Sắp xếp participants: đưa chính user lên đầu
+        // if (conversation.participants && conversation.participants.length > 1) {
+        //     conversation.participants.sort((a, b) => {
+        //         if (a._id.toString() === userId) return -1; // user hiện tại lên đầu
+        //         if (b._id.toString() === userId) return 1;
+        //         return 0;
+        //     });
+        // }
+
+        const conversationWithUnread = {
+            ...conversation,
+            unreadCount,
+        };
+
+        const conversationForTransform = {
+            ...conversationWithUnread,
+            _id: conversationWithUnread._id.toString(),
+            lastMessageId: conversationWithUnread.lastMessageId ? {
+                ...conversationWithUnread.lastMessageId,
+                _id: conversationWithUnread.lastMessageId._id.toString()
+            } : null
+        };
+
+        return plainToInstance(ConversationResponseDto, conversationForTransform, {
             excludeExtraneousValues: true,
         });
+    }
+
+    // Lấy tất cả participants của conversation
+    async getParticipants(conversationId: string): Promise<any[]> {
+        if (!Types.ObjectId.isValid(conversationId)) {
+            throw new HttpException('Invalid conversation ID', HttpStatus.BAD_REQUEST);
+        }
+
+        const conversation = await this.conversationModel
+            .findById(conversationId)
+            .populate('participants', '_id username fullName avatarUrl')
+            .lean()
+            .exec();
+
+        if (!conversation) {
+            throw new HttpException('Conversation not found', HttpStatus.NOT_FOUND);
+        }
+
+        return conversation.participants || [];
     }
 
     // Lấy tin nhắn trong cuộc hội thoại với phân trang
@@ -227,7 +282,7 @@ export class ChatService {
                 .populate('reactions.userId', 'username fullName avatarUrl')
                 .populate('reactions.emojiId', 'label icon')
                 .populate('seenBy.userId', 'username fullName avatarUrl')
-                .sort({ createdAt: -1 })
+                .sort({ createdAt: 1 })
                 .skip(skip)
                 .limit(limit)
                 .lean()
@@ -329,22 +384,20 @@ export class ChatService {
             ],
         });
 
-        // Cập nhật lastMessage trong conversation
+        // Cập nhật lastMessageId trong conversation
         await this.conversationModel.findByIdAndUpdate(conversationId, {
-            lastMessage: {
-                messageId: newMessage._id,
-                text: text || '',
-                sender: new Types.ObjectId(userId),
-                createdAt: newMessage.createdAt,
-            },
+            lastMessageId: newMessage._id,
             updatedAt: new Date(),
         });
 
-        // Populate sender info
+        // Populate đầy đủ như getMessages
         const populatedMessage = await this.messageModel
             .findById(newMessage._id)
             .populate('senderId', 'username fullName avatarUrl')
             .populate('replyTo')
+            .populate('reactions.userId', 'username fullName avatarUrl')
+            .populate('reactions.emojiId', 'label icon')
+            .populate('seenBy.userId', 'username fullName avatarUrl')
             .lean()
             .exec();
 
@@ -352,10 +405,39 @@ export class ChatService {
             throw new HttpException('Failed to retrieve message', HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        const transformedMessage = {
+        // Transform giống như getMessages
+        const transformedMessage: any = {
             ...populatedMessage,
-            sender: populatedMessage.senderId,
+            _id: populatedMessage._id.toString(),
+            conversationId: populatedMessage.conversationId.toString(),
+            replyTo: populatedMessage.replyTo ? (
+                typeof populatedMessage.replyTo === 'object' && 'conversationId' in populatedMessage.replyTo
+                    ? {
+                        ...populatedMessage.replyTo,
+                        _id: populatedMessage.replyTo._id?.toString(),
+                        conversationId: populatedMessage.replyTo.conversationId?.toString(),
+                    }
+                    : {
+                        _id: populatedMessage.replyTo.toString(),
+                    }
+            ) : null,
         };
+
+        // Transform reactions: userId -> user, emojiId -> emoji
+        transformedMessage.reactions = populatedMessage.reactions?.map((reaction: any) => ({
+            user: reaction.userId,
+            emoji: reaction.emojiId ? {
+                id: reaction.emojiId._id?.toString() || reaction.emojiId.toString(),
+                label: reaction.emojiId.label,
+                icon: reaction.emojiId.icon,
+            } : null,
+        })) || [];
+
+        // Transform seenBy: userId -> user
+        transformedMessage.seenBy = populatedMessage.seenBy?.map((seen: any) => ({
+            user: seen.userId,
+            seenAt: seen.seenAt,
+        })) || [];
 
         return plainToInstance(MessageResponseDto, transformedMessage, {
             excludeExtraneousValues: true,

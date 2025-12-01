@@ -177,6 +177,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         userId,
       );
 
+      console.log('>>> conversation: ', conversation);
+
       return { success: true, conversation };
     } catch (error) {
       console.error('Get conversation error:', error);
@@ -207,7 +209,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         page,
         limit,
       );
-      //  console.log('>>>> message: ', messages.data[0]);
+      //   console.log('>>>> message: ', messages.data[0].reactions[0].emoji);
       // Emit messages tới tất cả user trong conversation room
       this.server
         .to(`conversation:${conversationId}`)
@@ -246,7 +248,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         return { error: 'You do not have access to this conversation' };
       }
 
-      await this.chatService.markMessagesAsRead(conversationId, userId);
+      //  await this.chatService.markMessagesAsRead(conversationId, userId);
 
       // Join room
       client.join(`conversation:${conversationId}`);
@@ -271,7 +273,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     console.log(`User left conversation ${conversationId}`);
 
-    return { success: true, conversationId };
+    //   return { success: true, conversationId };
   }
 
   // Gửi tin nhắn
@@ -289,11 +291,14 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
       // Lưu tin nhắn vào database
       const message = await this.chatService.sendMessage(userId, sendMessageDto);
+      //   console.log('>>>><<<< message: ', message);
 
       // Gửi tin nhắn đến tất cả người trong room
       this.server
         .to(`conversation:${sendMessageDto.conversationId}`)
         .emit('message:new', message);
+
+      await this.sendUpdatedConversation(sendMessageDto.conversationId, userId);
 
       return { success: true, message };
     } catch (error) {
@@ -339,28 +344,30 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('message:read')
   async handleMarkAsRead(
     @ConnectedSocket() client: Socket,
-    @MessageBody() data: { userId: string } & MarkAsReadDto,
+    @MessageBody() data: MarkAsReadDto,
   ) {
     try {
-      const { userId, ...markAsReadDto } = data;
+      const { userId, conversationId, messageId } = data;
 
       if (!userId) {
         return { error: 'userId is required' };
       }
 
       await this.chatService.markMessagesAsRead(
-        markAsReadDto.conversationId,
+        conversationId,
         userId,
-        markAsReadDto.messageId,
+        messageId,
       );
 
       // Notify người gửi rằng tin nhắn đã được đọc
-      client.to(`conversation:${markAsReadDto.conversationId}`).emit('message:read', {
-        conversationId: markAsReadDto.conversationId,
-        messageId: markAsReadDto.messageId,
+      client.to(`conversation:${conversationId}`).emit('message:read', {
+        conversationId,
+        messageId,
         userId,
         readAt: new Date(),
       });
+
+      await this.sendUpdatedConversation(conversationId, userId);
 
       return { success: true };
     } catch (error) {
@@ -399,5 +406,35 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   // Helper method để gửi tin nhắn đến conversation
   sendToConversation(conversationId: string, event: string, data: any) {
     this.server.to(`conversation:${conversationId}`).emit(event, data);
+  }
+
+  // Helper method để gửi tin nhắn đến tất cả participants trừ mình
+  async sendUpdatedConversation(conversationId: string, userId: string): Promise<void> {
+    // Lấy tất cả participants trừ mình ra
+    const allParticipants = await this.chatService.getParticipants(conversationId);
+    const otherParticipants = allParticipants.filter(
+      (participant: any) => participant._id.toString() !== userId
+    );
+
+    // Tính unreadCount cho từng participant khác và emit conversation:updated
+    for (const participant of otherParticipants) {
+      const participantId = participant._id.toString();
+
+      // Lấy conversation với unreadCount cho participant này
+      const updatedConversation = await this.chatService.getConversationById(
+        conversationId,
+        participantId,
+      );
+
+      // Emit conversation:updated cho từng participant với unreadCount của họ
+      this.sendToUser(participantId, 'conversation:updated', updatedConversation);
+    }
+
+    // Cũng emit cho chính người gửi (với unreadCount = 0 hoặc không có unread)
+    const senderConversation = await this.chatService.getConversationById(
+      conversationId,
+      userId,
+    );
+    this.sendToUser(userId, 'conversation:updated', senderConversation);
   }
 }
