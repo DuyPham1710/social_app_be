@@ -4,9 +4,9 @@ import {
   IsNotEmpty,
   IsString,
   IsOptional,
-  Length,
   MinLength,
 } from 'class-validator';
+import { Match } from 'src/common/decorators/match.decorator';
 
 export class CreateUserDto {
   @ApiProperty({ example: 'Nguyễn Văn A', required: false })
@@ -29,6 +29,13 @@ export class CreateUserDto {
   @IsNotEmpty()
   @MinLength(6, { message: 'Password must be at least 6 characters' })
   password: string;
+
+  @ApiProperty({ example: 'password123' })
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(6, { message: 'Confirm password must be at least 6 characters' })
+  @Match('password', { message: 'Password and confirm password must match' })
+  confirmPassword: string;
 
   @ApiProperty({ example: '0123456789', required: false })
   @IsOptional()

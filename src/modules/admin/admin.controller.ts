@@ -6,6 +6,7 @@ import { Roles } from 'src/common/decorators/role.decorator';
 import { UserRole } from 'src/shared/enums/user_role';
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags, ApiBody } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
 
 @ApiBearerAuth()
 @ApiTags('Admin')
@@ -58,6 +59,17 @@ export class AdminController {
   @ApiBody({ type: CreateUserDto })
   createUser(@Body() createUserDto: CreateUserDto) {
     return this.adminService.createUser(createUserDto);
+  }
+
+  @Put('users/:userId')
+  @Roles(UserRole.ADMIN)
+  @ApiOperation({ summary: 'Cập nhật thông tin người dùng (chỉ admin)' })
+  @ApiBody({ type: UpdateUserAdminDto })
+  updateUser(
+    @Param('userId') userId: string,
+    @Body() updateUserDto: UpdateUserAdminDto,
+  ) {
+    return this.adminService.updateUser(userId, updateUserDto);
   }
 
   @Delete('users/:userId')

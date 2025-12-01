@@ -22,6 +22,7 @@ import { PostResponseDto } from '../post/dto/post-response.dto';
 import { omitBy, isUndefined } from 'lodash';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
 
 @Injectable()
 export class AdminService {
@@ -128,23 +129,25 @@ export class AdminService {
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<UserResponseDto> {
-    const existingUserByEmail = await this.userModel.findOne({ email: createUserDto.email }).exec();
+    const { confirmPassword, ...rest } = createUserDto;
+
+    const existingUserByEmail = await this.userModel.findOne({ email: rest.email }).exec();
     if (existingUserByEmail) {
       throw new HttpException('Email is already in use', HttpStatus.BAD_REQUEST);
     }
 
-    const existingUserByUsername = await this.userModel.findOne({ username: createUserDto.username }).exec();
+    const existingUserByUsername = await this.userModel.findOne({ username: rest.username }).exec();
     if (existingUserByUsername) {
       throw new HttpException('Username is already taken', HttpStatus.BAD_REQUEST);
     }
 
-    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+    const hashedPassword = await bcrypt.hash(rest.password, 10);
 
     const newUser = new this.userModel({
-      ...createUserDto,
+      ...rest,
       password: hashedPassword,
       role: 'user',
-      isActive: createUserDto.isActive !== undefined ? createUserDto.isActive : true, // Mặc định active
+      isActive: rest.isActive !== undefined ? rest.isActive : true, // Mặc định active
     });
 
     const savedUser = await newUser.save();
@@ -155,6 +158,68 @@ export class AdminService {
     });
 
     return plainToInstance(UserResponseDto, savedUser.toObject(), {
+      excludeExtraneousValues: true,
+    });
+  }
+
+  async updateUser(
+    userId: string,
+    updateUserDto: UpdateUserAdminDto,
+  ): Promise<UserResponseDto> {
+    if (!Types.ObjectId.isValid(userId)) {
+      throw new HttpException('Invalid userId', HttpStatus.BAD_REQUEST);
+    }
+
+    const user = await this.userModel.findById(userId).exec();
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    const { confirmPassword, ...restUpdate } = updateUserDto;
+
+    // Kiểm tra email nếu thay đổi
+    if (restUpdate.email && restUpdate.email !== user.email) {
+      const existingByEmail = await this.userModel
+        .findOne({
+          email: restUpdate.email,
+          _id: { $ne: userId },
+        })
+        .exec();
+      if (existingByEmail) {
+        throw new HttpException('Email is already in use', HttpStatus.BAD_REQUEST);
+      }
+    }
+
+    // Kiểm tra username nếu thay đổi
+    if (restUpdate.username && restUpdate.username !== user.username) {
+      const existingByUsername = await this.userModel
+        .findOne({
+          username: restUpdate.username,
+          _id: { $ne: userId },
+        })
+        .exec();
+      if (existingByUsername) {
+        throw new HttpException('Username is already taken', HttpStatus.BAD_REQUEST);
+      }
+    }
+
+    const updateData: any = { ...restUpdate };
+
+    // Hash password nếu có truyền lên
+    if (restUpdate.password) {
+      updateData.password = await bcrypt.hash(restUpdate.password, 10);
+    }
+
+    const updatedUser = await this.userModel
+      .findByIdAndUpdate(userId, updateData, { new: true })
+      .lean()
+      .exec();
+
+    if (!updatedUser) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    return plainToInstance(UserResponseDto, updatedUser, {
       excludeExtraneousValues: true,
     });
   }
