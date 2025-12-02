@@ -7,7 +7,7 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { UpdatePrivacyDto } from 'src/common/dto/update-privacy.dto';
 import { storage } from '../cloudinary/cloudinary.storage';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { File } from 'multer';
+import { ReportPostDto } from './dto/report-post.dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
@@ -58,7 +58,7 @@ export class PostController {
   createPost(
     @Req() req: any,
     @Body() createPostDto: CreatePostDto,
-    @UploadedFiles() files?: File[],
+    @UploadedFiles() files?: Express.Multer.File[],
   ) {
     const userId = req.user.userId;
     return this.postService.createPost(createPostDto, userId, files);
@@ -95,6 +95,17 @@ export class PostController {
   @ApiOperation({ summary: 'Cập nhật quyền riêng tư của bài viết' })
   updatePostPrivacy(@Param('postId') postId: string, @Body() updatePostPrivacyDto: UpdatePrivacyDto) {
     return this.postService.updatePostPrivacy(postId, updatePostPrivacyDto);
+  }
+
+  @Post(':postId/report')
+  @ApiOperation({ summary: 'Báo cáo bài viết' })
+  reportPost(
+    @Param('postId') postId: string,
+    @Req() req: any,
+    @Body() reportPostDto: ReportPostDto,
+  ) {
+    const userId = req.user.userId;
+    return this.postService.reportPost(postId, userId, reportPostDto);
   }
 
   @Get(':postId/check-privacy')

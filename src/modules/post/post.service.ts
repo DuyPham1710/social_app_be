@@ -16,13 +16,15 @@ import { plainToInstance } from 'class-transformer';
 import UserResponseDto from '../user/dto/user.response.dto';
 import { omitBy, isUndefined } from 'lodash';
 import { v2 as cloudinary } from 'cloudinary';
-import { File } from 'multer';
+import { PostReport, PostReportDocument } from './schemas/post-report.schema';
+import { ReportPostDto } from './dto/report-post.dto';
 
 @Injectable()
 export class PostService {
     constructor(
         @InjectModel(Post.name) private postModel: Model<PostDocument>,
         @InjectModel(PostUrl.name) private postUrlModel: Model<PostUrlDocument>,
+        @InjectModel(PostReport.name) private postReportModel: Model<PostReportDocument>,
         private readonly eventEmitter: EventEmitter2,
     ) { }
 
@@ -268,7 +270,7 @@ export class PostService {
         return result;
     }
 
-    async createPost(createPostDto: CreatePostDto, userId: string, files?: File[]): Promise<{ message: string }> {
+    async createPost(createPostDto: CreatePostDto, userId: string, files?: Express.Multer.File[]): Promise<{ message: string }> {
         const { caption, titles = [], orders = [], layout, privacy_type, friends_except, friends_detail } = createPostDto;
 
         const post = await this.postModel.create({
@@ -513,6 +515,53 @@ export class PostService {
             post,
             friendsOfOwner.map(f => new Types.ObjectId(f._id)),
         );
+    }
+
+    async reportPost(postId: string, userId: string, reportPostDto: ReportPostDto) {
+        if (!Types.ObjectId.isValid(postId)) {
+            throw new HttpException('Invalid postId', HttpStatus.BAD_REQUEST);
+        }
+
+        if (!Types.ObjectId.isValid(userId)) {
+            throw new HttpException('Invalid userId', HttpStatus.BAD_REQUEST);
+        }
+
+        const postObjectId = new Types.ObjectId(postId);
+        const userObjectId = new Types.ObjectId(userId);
+
+        const post = await this.postModel.findById(postObjectId);
+        if (!post) {
+            throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
+        }
+
+        // Không cho phép tự báo cáo bài viết của mình (có thể bỏ check nếu muốn)
+        if (post.userId.toString() === userId) {
+            throw new HttpException('Bạn không thể báo cáo bài viết của chính mình', HttpStatus.BAD_REQUEST);
+        }
+
+        // Nếu đã tồn tại report của user này cho post này thì cập nhật lại lý do
+        const existingReport = await this.postReportModel.findOne({
+            postId: postObjectId,
+            userId: userObjectId,
+        });
+
+        if (existingReport) {
+            existingReport.reason = reportPostDto.reason;
+            existingReport.description = reportPostDto.description;
+            existingReport.status = 'pending';
+            await existingReport.save();
+        } else {
+            await this.postReportModel.create({
+                postId: postObjectId,
+                userId: userObjectId,
+                reason: reportPostDto.reason,
+                description: reportPostDto.description,
+            });
+        }
+
+        return {
+            message: 'Báo cáo bài viết thành công. Cảm ơn bạn đã đóng góp giúp cộng đồng an toàn hơn.',
+        };
     }
 
 }
