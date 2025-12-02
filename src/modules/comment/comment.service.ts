@@ -2,12 +2,14 @@ import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/commo
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Comment, CommentDocument } from './schemas/comment.schema';
+import { CommentLog, CommentLogDocument } from './schemas/comment-log.schema';
 import { CreateCommentDto } from './dto/create-comment.dto';
 
 @Injectable()
 export class CommentService {
     constructor(
         @InjectModel(Comment.name) private readonly commentModel: Model<CommentDocument>,
+        @InjectModel(CommentLog.name) private readonly commentLogModel: Model<CommentLogDocument>,
     ) { }
 
     async create(createCommentDto: CreateCommentDto, userId: string) {
@@ -50,9 +52,21 @@ export class CommentService {
             throw new ForbiddenException('You are not allowed to edit this comment');
         }
 
+        // Lưu nội dung cũ trước khi cập nhật
+        const oldContent = comment.content;
+
+        // Cập nhật nội dung mới
         comment.content = content;
         await comment.save();
 
+        // Lưu lịch sử chỉnh sửa vào comment log
+        const commentLog = new this.commentLogModel({
+            commentId: new Types.ObjectId(commentId),
+            oldContent: oldContent,
+            newContent: content,
+            editedBy: new Types.ObjectId(userId),
+        });
+        await commentLog.save();
     }
 
     async remove(commentId: string, userId: string) {
@@ -64,6 +78,8 @@ export class CommentService {
             throw new ForbiddenException('You are not allowed to delete this comment');
         }
         await this.commentModel.deleteOne({ _id: comment._id });
+        // Xóa tất cả lịch sử chỉnh sửa của comment
+        await this.commentLogModel.deleteMany({ commentId: new Types.ObjectId(commentId) });
         return { deleted: true, id: commentId };
     }
 
@@ -116,5 +132,38 @@ export class CommentService {
 
 
         return comments;
+    }
+
+    async getCommentEditHistory(commentId: string) {
+        if (!Types.ObjectId.isValid(commentId)) {
+            throw new NotFoundException('Invalid commentId');
+        }
+
+        // Lấy tất cả lịch sử chỉnh sửa của comment, sắp xếp theo thời gian tạo (cũ nhất trước)
+        const editHistory = await this.commentLogModel
+            .find({ commentId: new Types.ObjectId(commentId) })
+            .sort({ createdAt: 1 })
+            .populate({
+                path: 'editedBy',
+                select: 'username fullName avatarUrl email _id'
+            })
+            .exec();
+
+        // Format lại dữ liệu editedBy để đồng nhất với format của userId trong comment
+        const formattedHistory = editHistory.map((log: any) => {
+            const logObj = log.toObject();
+            if (logObj.editedBy && typeof logObj.editedBy === 'object' && logObj.editedBy._id) {
+                logObj.editedBy = {
+                    userId: logObj.editedBy._id,
+                    fullName: logObj.editedBy.fullName,
+                    avatarUrl: logObj.editedBy.avatarUrl,
+                    username: logObj.editedBy.username,
+                    email: logObj.editedBy.email,
+                };
+            }
+            return logObj;
+        });
+
+        return formattedHistory;
     }
 }
