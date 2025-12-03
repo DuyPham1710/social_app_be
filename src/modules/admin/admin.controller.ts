@@ -7,6 +7,7 @@ import { UserRole } from 'src/shared/enums/user_role';
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags, ApiBody } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
+import { UpdatePostReportStatusDto } from './dto/update-post-report-status.dto';
 
 @ApiBearerAuth()
 @ApiTags('Admin')
@@ -225,6 +226,60 @@ export class AdminController {
   @ApiOperation({ summary: 'Xóa bình luận (admin có quyền xóa bất kỳ comment nào)' })
   deleteComment(@Param('commentId') commentId: string) {
     return this.adminService.deleteComment(commentId);
+  }
+
+  // ===== Post Report Management =====
+
+  @Get('post-reports')
+  @Roles(UserRole.ADMIN)
+  @ApiOperation({
+    summary: 'Lấy danh sách báo cáo bài viết (phân trang, lọc theo status/postId/userId)',
+  })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    enum: ['pending', 'reviewed', 'rejected'],
+  })
+  @ApiQuery({ name: 'postId', required: false, type: String })
+  @ApiQuery({ name: 'userId', required: false, type: String })
+  getPostReports(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Query('status') status?: 'pending' | 'reviewed' | 'rejected',
+    @Query('postId') postId?: string,
+    @Query('userId') userId?: string,
+  ) {
+    return this.adminService.getPostReports(
+      Number(page),
+      Number(limit),
+      status,
+      postId,
+      userId,
+    );
+  }
+
+  @Get('post-reports/:reportId')
+  @Roles(UserRole.ADMIN)
+  @ApiOperation({ summary: 'Lấy chi tiết một báo cáo bài viết' })
+  getPostReportById(@Param('reportId') reportId: string) {
+    return this.adminService.getPostReportById(reportId);
+  }
+
+  @Put('post-reports/:reportId/status')
+  @Roles(UserRole.ADMIN)
+  @ApiOperation({ summary: 'Cập nhật trạng thái xử lý của báo cáo bài viết' })
+  @ApiBody({ type: UpdatePostReportStatusDto })
+  updatePostReportStatus(
+    @Param('reportId') reportId: string,
+    @Body() body: UpdatePostReportStatusDto,
+  ) {
+    return this.adminService.updatePostReportStatus(
+      reportId,
+      body.status,
+      body.note,
+    );
   }
 
   // ===== Dashboard Stats =====

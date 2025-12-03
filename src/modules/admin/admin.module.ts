@@ -8,6 +8,7 @@ import { Story, StorySchema } from '../story/schemas/story.schema';
 import { Comment, CommentSchema } from '../comment/schemas/comment.schema';
 import { ReactPost, ReactPostSchema } from '../react-post/schemas/react-post.schema';
 import { ReactStory, ReactStorySchema } from '../react-story/schemas/react-story.schema';
+import { PostReport, PostReportSchema } from '../post/schemas/post-report.schema';
 import { PostModule } from '../post/post.module';
 import { StoryModule } from '../story/story.module';
 import { CommentModule } from '../comment/comment.module';
@@ -25,6 +26,7 @@ import { UserModule } from '../user/user.module';
       { name: Comment.name, schema: CommentSchema },
       { name: ReactPost.name, schema: ReactPostSchema },
       { name: ReactStory.name, schema: ReactStorySchema },
+      { name: PostReport.name, schema: PostReportSchema },
     ]),
     PostModule,
     StoryModule,

@@ -7,6 +7,7 @@ import { Story, StoryDocument } from '../story/schemas/story.schema';
 import { Comment, CommentDocument } from '../comment/schemas/comment.schema';
 import { ReactPost, ReactPostDocument } from '../react-post/schemas/react-post.schema';
 import { ReactStory, ReactStoryDocument } from '../react-story/schemas/react-story.schema';
+import { PostReport, PostReportDocument } from '../post/schemas/post-report.schema';
 import { PostService } from '../post/post.service';
 import { StoryService } from '../story/story.service';
 import { CommentService } from '../comment/comment.service';
@@ -33,6 +34,7 @@ export class AdminService {
     @InjectModel(Comment.name) private commentModel: Model<CommentDocument>,
     @InjectModel(ReactPost.name) private reactPostModel: Model<ReactPostDocument>,
     @InjectModel(ReactStory.name) private reactStoryModel: Model<ReactStoryDocument>,
+    @InjectModel(PostReport.name) private postReportModel: Model<PostReportDocument>,
     private readonly postService: PostService,
     private readonly storyService: StoryService,
     private readonly commentService: CommentService,
@@ -756,6 +758,123 @@ export class AdminService {
     await comment.deleteOne();
 
     return { message: 'Comment deleted successfully' };
+  }
+
+  // ===== Post Report Management Methods =====
+
+  async getPostReports(
+    page: number = 1,
+    limit: number = 10,
+    status?: 'pending' | 'reviewed' | 'rejected',
+    postId?: string,
+    userId?: string,
+  ) {
+    const skip = (page - 1) * limit;
+    const query: any = {};
+
+    if (status) {
+      query.status = status;
+    }
+
+    if (postId && Types.ObjectId.isValid(postId)) {
+      query.postId = new Types.ObjectId(postId);
+    }
+
+    if (userId && Types.ObjectId.isValid(userId)) {
+      query.userId = new Types.ObjectId(userId);
+    }
+
+    const [reports, total] = await Promise.all([
+      this.postReportModel
+        .find(query)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .populate({
+          path: 'postId',
+          populate: [
+            {
+              path: 'userId',
+              select: 'username fullName avatarUrl',
+            },
+            {
+              path: 'urls',
+              options: { sort: { order: 1 } },
+            },
+          ],
+        })
+        .populate('userId', 'username fullName email avatarUrl')
+        .lean()
+        .exec(),
+      this.postReportModel.countDocuments(query).exec(),
+    ]);
+
+    return {
+      data: reports,
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(total / limit),
+        totalItems: total,
+        itemsPerPage: limit,
+        hasNextPage: page < Math.ceil(total / limit),
+        hasPrevPage: page > 1,
+      },
+    };
+  }
+
+  async getPostReportById(reportId: string) {
+    if (!Types.ObjectId.isValid(reportId)) {
+      throw new HttpException('Invalid reportId', HttpStatus.BAD_REQUEST);
+    }
+
+    const report = await this.postReportModel
+      .findById(reportId)
+      .populate({
+        path: 'postId',
+        populate: [
+          {
+            path: 'userId',
+            select: 'username fullName avatarUrl',
+          },
+          {
+            path: 'urls',
+            options: { sort: { order: 1 } },
+          },
+        ],
+      })
+      .populate('userId', 'username fullName email avatarUrl')
+      .lean()
+      .exec();
+
+    if (!report) {
+      throw new HttpException('Post report not found', HttpStatus.NOT_FOUND);
+    }
+
+    return report;
+  }
+
+  async updatePostReportStatus(
+    reportId: string,
+    status: 'pending' | 'reviewed' | 'rejected',
+    note?: string,
+  ) {
+    if (!Types.ObjectId.isValid(reportId)) {
+      throw new HttpException('Invalid reportId', HttpStatus.BAD_REQUEST);
+    }
+
+    const report = await this.postReportModel.findById(reportId).exec();
+    if (!report) {
+      throw new HttpException('Post report not found', HttpStatus.NOT_FOUND);
+    }
+
+    report.status = status;
+    // Nếu muốn lưu note, có thể mở rộng schema PostReport để thêm field note
+    await report.save();
+
+    return {
+      message: 'Post report status updated successfully',
+      status: report.status,
+    };
   }
 
   // ===== Dashboard Stats Methods =====
