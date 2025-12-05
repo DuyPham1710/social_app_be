@@ -7,7 +7,6 @@ import UpdateUserDto from './dto/update.user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { storage } from '../cloudinary/cloudinary.storage';
 import { Public } from 'src/common/decorators/public.decorator';
-import { File } from 'multer';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { UserRole } from 'src/shared/enums/user_role';
 import { Roles } from 'src/common/decorators/role.decorator';
@@ -29,6 +28,18 @@ export class UserController {
   profile(@Req() req: any): Promise<UserResponseDto> {
     const userId: string = req.user?.userId?.toString?.() ?? req.user?.userId;
     return this.userService.findOne(userId);
+  }
+
+  @Get('search')
+  @ApiOperation({ summary: 'Tìm kiếm người dùng theo tên hoặc username' })
+  searchUser(
+    @Req() req: any,
+    @Query('query') query: string,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10
+  ) {
+    const userId = req.user.userId;
+    return this.userService.searchUser(query, Number(page), Number(limit), userId);
   }
 
   @Get(':id')
@@ -62,7 +73,7 @@ export class UserController {
   editProfile(
     @Req() req: any,
     @Body() updateUserDto: UpdateUserDto,
-    @UploadedFile() file: File): Promise<UserResponseDto> {
+    @UploadedFile() file: Express.Multer.File): Promise<UserResponseDto> {
     if (file && file.path) {
       updateUserDto.avatarUrl = file.path;
     }
@@ -75,17 +86,5 @@ export class UserController {
   updatePersonalInfo(@Body() updateUserDto: UpdateUserDto): Promise<UserResponseDto> {
     updateUserDto.avatarUrl = '';
     return this.userService.update(updateUserDto.userId!, updateUserDto);
-  }
-
-  @Get('search')
-  @ApiOperation({ summary: 'Tìm kiếm người dùng theo tên hoặc username' })
-  searchUser(
-    @Req() req: any,
-    @Query('query') query: string,
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10
-  ) {
-    const userId = req.user.userId;
-    return this.userService.searchUser(query, Number(page), Number(limit), userId);
   }
 }

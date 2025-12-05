@@ -34,6 +34,10 @@ export class UserService {
     }
 
     async findOne(userId: string): Promise<UserResponseDto> {
+        if (!Types.ObjectId.isValid(userId)) {
+            throw new HttpException(`Invalid userId: ${userId}`, HttpStatus.BAD_REQUEST);
+        }
+        
         const user = await this.userModel.findById(userId).exec();
 
         if (!user) {
@@ -125,10 +129,15 @@ export class UserService {
         // mutualFriendsArrays bây giờ là 1 mảng 2 chiều: [ [friendA1, friendA2], [friendB1, friendB2], ... ]
         // Gộp tất cả lại
         const mutualFriends = mutualFriendsArrays.flat();
-        // Loại bỏ chính user và bạn bè trực tiếp (tránh trùng)
-        const mutualIds = mutualFriends
-            .map(f => f._id.toString())
-            .filter(id => id !== userId && !friendIds.includes(new Types.ObjectId(id)));
+        // Loại bỏ chính user và bạn bè trực tiếp, và loại bỏ duplicate bằng Set
+        const mutualIdsSet = new Set<string>();
+        mutualFriends.forEach(f => {
+            const id = f._id.toString();
+            if (id !== userId && !friendIds.some(fid => fid.toString() === id)) {
+                mutualIdsSet.add(id);
+            }
+        });
+        const mutualIds = Array.from(mutualIdsSet);
 
         // Tìm mutual friends phù hợp query
         const mutualMatched = await this.userModel.find({
@@ -149,11 +158,36 @@ export class UserService {
         });
 
         // Gộp lại theo thứ tự ưu tiên: bạn bè → mutual → người khác
-        let combinedResults = [
-            ...friendsMatched,
-            ...mutualMatched,
-            ...otherMatched,
-        ];
+        // Sử dụng Set và Map để loại bỏ duplicate dựa trên _id
+        const addedUserIds = new Set<string>();
+        const combinedResults: UserDocument[] = [];
+        
+        // Thêm bạn bè trực tiếp (ưu tiên cao nhất)
+        for (const user of friendsMatched) {
+            const userId = (user as any)._id.toString();
+            if (!addedUserIds.has(userId)) {
+                addedUserIds.add(userId);
+                combinedResults.push(user);
+            }
+        }
+        
+        // Thêm mutual friends (chỉ nếu chưa có)
+        for (const user of mutualMatched) {
+            const userId = (user as any)._id.toString();
+            if (!addedUserIds.has(userId)) {
+                addedUserIds.add(userId);
+                combinedResults.push(user);
+            }
+        }
+        
+        // Thêm người khác (chỉ nếu chưa có)
+        for (const user of otherMatched) {
+            const userId = (user as any)._id.toString();
+            if (!addedUserIds.has(userId)) {
+                addedUserIds.add(userId);
+                combinedResults.push(user);
+            }
+        }
 
         const totalItems = combinedResults.length;
         const totalPages = Math.ceil(totalItems / limit);
