@@ -24,6 +24,9 @@ export class Post extends PrivacyBase {
         default: LayoutType.CLASSIC,
     })
     layout: LayoutType;
+
+    @Prop({ type: Boolean, default: false })
+    isHidden?: boolean;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);

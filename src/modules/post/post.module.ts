@@ -13,5 +13,6 @@ import { PostUrl, PostUrlSchema } from './schemas/post-url.schema';
       { name: Post.name, schema: PostSchema },
       { name: PostUrl.name, schema: PostUrlSchema }])
   ],
+  exports: [PostService],
 })
 export class PostModule { }
