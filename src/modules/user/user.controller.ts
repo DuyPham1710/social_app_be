@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Put, Query, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Put, Query, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
 import UserResponseDto from './dto/user.response.dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
@@ -40,6 +40,46 @@ export class UserController {
   ) {
     const userId = req.user.userId;
     return this.userService.searchUser(query, Number(page), Number(limit), userId);
+  }
+
+  @Get('search/history')
+  @ApiOperation({ summary: 'Lấy lịch sử tìm kiếm của người dùng' })
+  async getSearchHistory(
+    @Req() req: any,
+    @Query('limit') limit: number = 10
+  ) {
+    const userId = req.user.userId;
+    return this.userService.getSearchHistory(userId, Number(limit));
+  }
+
+  @Get('search/history/viewed/:viewedUserId')
+  @ApiOperation({ summary: 'Lưu người dùng đã xem vào lịch sử tìm kiếm' })
+  async saveViewedUser(
+    @Req() req: any,
+    @Param('viewedUserId') viewedUserId: string
+  ) {
+    const userId = req.user.userId;
+    await this.userService.saveViewedUser(userId, viewedUserId);
+    return { message: 'Viewed user saved to search history successfully' };
+  }
+
+  @Delete('search/history/clear')
+  @ApiOperation({ summary: 'Xóa tất cả lịch sử tìm kiếm của người dùng' })
+  async clearSearchHistory(@Req() req: any) {
+    const userId = req.user.userId;
+    await this.userService.deleteSearchHistory(userId);
+    return { message: 'All search history cleared successfully' };
+  }
+
+  @Delete('search/history/:id')
+  @ApiOperation({ summary: 'Xóa một lịch sử tìm kiếm cụ thể' })
+  async deleteSearchHistory(
+    @Req() req: any,
+    @Param('id') id: string
+  ) {
+    const userId = req.user.userId;
+    await this.userService.deleteSearchHistory(userId, id);
+    return { message: 'Search history deleted successfully' };
   }
 
   @Get(':id')

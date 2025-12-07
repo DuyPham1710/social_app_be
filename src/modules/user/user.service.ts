@@ -1,8 +1,10 @@
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schemas/user.schema';
+import { SearchHistory, SearchHistoryDocument } from './schemas/search-history.schema';
 import { Model, Types } from 'mongoose';
 import UserResponseDto from './dto/user.response.dto';
+import { SearchHistoryResponseDto } from './dto/search-history-response.dto';
 import { plainToInstance } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
 import UpdateUserDto from './dto/update.user.dto';
@@ -14,6 +16,7 @@ import { AppEvents } from 'src/shared/enums/app-events.enum';
 export class UserService {
     constructor(
         @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+        @InjectModel(SearchHistory.name) private readonly searchHistoryModel: Model<SearchHistoryDocument>,
         //  private readonly friendsService: FriendsService,
         private readonly eventEmitter: EventEmitter2
     ) { }
@@ -197,6 +200,14 @@ export class UserService {
             excludeExtraneousValues: true
         }));
 
+        // Lưu lịch sử tìm kiếm (chỉ lưu khi có kết quả và query không rỗng)
+        if (query.trim().length > 0) {
+            this.saveSearchHistory(userId, query, totalItems).catch(err => {
+                // Log error nhưng không throw để không ảnh hưởng đến response
+                console.error('Error saving search history:', err);
+            });
+        }
+
         return {
             userResponseDtos,
             pagination: {
@@ -208,6 +219,165 @@ export class UserService {
                 hasPrevPage: page > 1
             }
         };
+    }
+
+    async saveSearchHistory(userId: string, query: string, resultCount: number): Promise<SearchHistoryDocument> {
+        // Kiểm tra xem đã có lịch sử tìm kiếm gần đây với query này chưa (trong vòng 1 giờ)
+        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+        const existingHistory = await this.searchHistoryModel.findOne({
+            userId: new Types.ObjectId(userId),
+            query: query.trim(),
+            createdAt: { $gte: oneHourAgo }
+        }).exec();
+
+        if (existingHistory) {
+            // Cập nhật lịch sử hiện có
+            existingHistory.resultCount = resultCount;
+            (existingHistory as any).createdAt = new Date();
+            return existingHistory.save();
+        }
+
+        // Tạo lịch sử mới
+        const searchHistory = new this.searchHistoryModel({
+            userId: new Types.ObjectId(userId),
+            query: query.trim(),
+            resultCount: resultCount
+        });
+
+        return searchHistory.save();
+    }
+
+    async saveViewedUser(userId: string, viewedUserId: string): Promise<SearchHistoryDocument> {
+        // Kiểm tra xem đã có lịch sử xem user này gần đây chưa (trong vòng 1 giờ)
+        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+        const existingHistory = await this.searchHistoryModel.findOne({
+            userId: new Types.ObjectId(userId),
+            viewedUserId: new Types.ObjectId(viewedUserId),
+            createdAt: { $gte: oneHourAgo }
+        }).exec();
+
+        if (existingHistory) {
+            // Cập nhật thời gian xem
+            (existingHistory as any).createdAt = new Date();
+            return existingHistory.save();
+        }
+
+        // Tạo lịch sử mới
+        const searchHistory = new this.searchHistoryModel({
+            userId: new Types.ObjectId(userId),
+            viewedUserId: new Types.ObjectId(viewedUserId)
+        });
+
+        return searchHistory.save();
+    }
+
+    async getSearchHistory(userId: string, limit: number = 10): Promise<SearchHistoryResponseDto[]> {
+        const histories = await this.searchHistoryModel
+            .find({ userId: new Types.ObjectId(userId) })
+            .populate('viewedUserId', '_id fullName username avatarUrl email')
+            .sort({ createdAt: -1 })
+            .limit(limit)
+            .exec();
+
+        const result = histories.map(history => {
+            // Sử dụng toObject() để lấy plain object với tất cả fields bao gồm createdAt và updatedAt
+            const historyObj = history.toObject() as any;
+            const dto: any = {
+                _id: historyObj._id,
+                query: historyObj.query,
+                resultCount: historyObj.resultCount,
+                createdAt: historyObj.createdAt,
+                updatedAt: historyObj.updatedAt,
+            };
+
+            // Nếu có viewedUserId và đã populate, thêm thông tin user
+            if (historyObj.viewedUserId && typeof historyObj.viewedUserId === 'object') {
+                const viewedUser = historyObj.viewedUserId as any;
+                // Đảm bảo _id được include và convert thành string
+                const userId = viewedUser._id ? (typeof viewedUser._id === 'string' ? viewedUser._id : viewedUser._id.toString()) : (viewedUser.id ? (typeof viewedUser.id === 'string' ? viewedUser.id : viewedUser.id.toString()) : null);
+
+                // Nếu không có _id, bỏ qua user này
+                if (!userId) {
+                    dto.viewedUser = undefined;
+                } else {
+                    // Tạo userData với _id để transform hoạt động
+                    const userData = {
+                        ...viewedUser,
+                        _id: userId,
+                    };
+                    const transformedUser = plainToInstance(UserResponseDto, userData, {
+                        excludeExtraneousValues: true
+                    });
+                    
+                    // Đảm bảo userId được set (transform có thể không hoạt động khi serialize lại)
+                    transformedUser.userId = userId;
+                    
+                    // Tạo plain object với tất cả fields bao gồm userId để đảm bảo có trong response
+                    const userPlain: any = {
+                        userId: userId,
+                        fullName: transformedUser.fullName,
+                        email: transformedUser.email,
+                        username: transformedUser.username,
+                    };
+                    
+                    // Thêm các fields optional nếu có
+                    if (transformedUser.phoneNumber) userPlain.phoneNumber = transformedUser.phoneNumber;
+                    if (transformedUser.bio) userPlain.bio = transformedUser.bio;
+                    if (transformedUser.avatarUrl) userPlain.avatarUrl = transformedUser.avatarUrl;
+                    if (transformedUser.dateOfBirth) userPlain.dateOfBirth = transformedUser.dateOfBirth;
+                    if (transformedUser.gender) userPlain.gender = transformedUser.gender;
+                    if (transformedUser.isActive !== undefined) userPlain.isActive = transformedUser.isActive;
+                    if (transformedUser.createdAt) userPlain.createdAt = transformedUser.createdAt;
+                    if (transformedUser.role) userPlain.role = transformedUser.role;
+                    
+                    // Transform lại từ plain object với userId đã được set
+                    dto.viewedUser = plainToInstance(UserResponseDto, userPlain, {
+                        excludeExtraneousValues: true
+                    });
+                    
+                    // Đảm bảo userId được set sau khi transform
+                    if (dto.viewedUser) {
+                        dto.viewedUser.userId = userId;
+                    }
+                }
+            }
+            
+            const finalDto = plainToInstance(SearchHistoryResponseDto, dto, {
+                excludeExtraneousValues: true
+            });
+            
+            // Đảm bảo userId được set trong viewedUser sau khi serialize lại
+            if (finalDto.viewedUser && historyObj.viewedUserId) {
+                const viewedUser = historyObj.viewedUserId as any;
+                const userId = viewedUser._id ? (typeof viewedUser._id === 'string' ? viewedUser._id : viewedUser._id.toString()) : null;
+                if (userId) {
+                    // Set trực tiếp vào instance để đảm bảo có trong response
+                    (finalDto.viewedUser as any).userId = userId;
+                }
+            }          
+            return finalDto;
+        });
+
+        return result;
+    }
+
+    async deleteSearchHistory(userId: string, historyId?: string): Promise<void> {
+        if (historyId) {
+            // Xóa một lịch sử cụ thể
+            const result = await this.searchHistoryModel.deleteOne({
+                _id: new Types.ObjectId(historyId),
+                userId: new Types.ObjectId(userId)
+            }).exec();
+
+            if (result.deletedCount === 0) {
+                throw new HttpException('Search history not found', HttpStatus.NOT_FOUND);
+            }
+        } else {
+            // Xóa tất cả lịch sử của user
+            await this.searchHistoryModel.deleteMany({
+                userId: new Types.ObjectId(userId)
+            }).exec();
+        }
     }
 
     // ===== EVENT LISTENERS FOR AUTH =====
