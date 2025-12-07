@@ -31,6 +31,24 @@ class SeenByDto {
     seenAt: Date;
 }
 
+export class ParentMessageDto {
+    @Expose()
+    _id: string;
+
+    @Expose()
+    text: string;
+
+    @Expose()
+    @Type(() => UserResponseDto)
+    senderId: UserResponseDto;
+
+    @Expose()
+    createdAt: Date;
+
+    @Expose()
+    updatedAt: Date;
+}
+
 export class MessageResponseDto {
     @Expose()
     _id: string;
@@ -50,7 +68,8 @@ export class MessageResponseDto {
     attachments: AttachmentDto[];
 
     @Expose()
-    replyTo?: MessageResponseDto; // có thể expand thành MessageResponseDto nếu cần
+    @Type(() => ParentMessageDto)
+    replyTo?: ParentMessageDto;
 
     @Expose()
     @Type(() => ReactionDto)
@@ -66,6 +85,9 @@ export class MessageResponseDto {
     @Expose()
     @Type(() => UserResponseDto)
     deletedFor: UserResponseDto[];
+
+    @Expose()
+    isEdited: boolean;
 
     @Expose()
     createdAt: Date;

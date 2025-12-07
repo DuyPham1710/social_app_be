@@ -40,6 +40,9 @@ export class Message {
     @Prop({ type: [Types.ObjectId], ref: 'User', default: [] })
     deletedFor: Types.ObjectId[];
 
+    @Prop({ default: false })
+    isEdited: boolean;
+
     createdAt?: Date;
     updatedAt?: Date;
 }

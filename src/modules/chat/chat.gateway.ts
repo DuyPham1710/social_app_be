@@ -9,7 +9,9 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
-import { SendMessageDto, MarkAsReadDto, CreateConversationDto } from './dto';
+import { SendMessageDto, MarkAsReadDto, CreateConversationDto, UpdateMessageDto } from './dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { AppEvents } from 'src/shared/enums/app-events.enum';
 
 @WebSocketGateway({
   cors: {
@@ -24,7 +26,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   // Map để lưu userId -> socketId
   private userSockets = new Map<string, string>();
 
-  constructor(private readonly chatService: ChatService) { }
+  constructor(
+    private readonly chatService: ChatService,
+    private readonly eventEmitter: EventEmitter2,
+  ) { }
 
   async handleConnection(client: Socket) {
     try {
@@ -126,7 +131,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       client.emit('conversations:list',
         conversations,
       );
-      //  console.log(conversations.data);
+      //   console.log('>>> conversations: ', conversations.data);
       console.log(`Sent ${conversations.data.length} conversations to user ${userId}`);
     } catch (error) {
       console.error('Get conversations error:', error);
@@ -177,7 +182,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         userId,
       );
 
-      console.log('>>> conversation: ', conversation);
+      //   console.log('>>> conversation: ', conversation);
 
       return { success: true, conversation };
     } catch (error) {
@@ -209,7 +214,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         page,
         limit,
       );
-      //   console.log('>>>> message: ', messages.data[0].reactions[0].emoji);
+      //  console.log('>>>> message: ', messages.data[13].replyTo);
       // Emit messages tới tất cả user trong conversation room
       this.server
         .to(`conversation:${conversationId}`)
@@ -221,6 +226,45 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       client.emit('error', {
         message: 'Failed to get messages',
         event: 'messages:get'
+      });
+    }
+  }
+
+  // Lấy tin nhắn xung quanh một message ID cụ thể
+  @SubscribeMessage('messages:getAroundId')
+  async handleGetMessagesAroundId(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { userId: string; conversationId: string; messageId: string; limit?: number },
+  ) {
+    try {
+      const { userId, conversationId, messageId, limit = 20 } = data;
+
+      if (!userId || !conversationId || !messageId) {
+        client.emit('error', {
+          message: 'userId, conversationId and messageId are required',
+          event: 'messages:getAroundId'
+        });
+        return;
+      }
+
+      const messages = await this.chatService.getMessagesAroundId(
+        conversationId,
+        userId,
+        messageId,
+        limit,
+      );
+
+      // Emit messages tới tất cả user trong conversation room
+      this.server
+        .to(`conversation:${conversationId}`)
+        .emit('messages:loaded', messages);
+
+      console.log(`Sent ${messages.data?.length || 0} messages around ID ${messageId} to conversation ${conversationId}`);
+    } catch (error) {
+      console.error('Get messages around ID error:', error);
+      client.emit('error', {
+        message: error?.message || 'Failed to get messages around ID',
+        event: 'messages:getAroundId'
       });
     }
   }
@@ -343,7 +387,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   // Đánh dấu đã đọc
   @SubscribeMessage('message:read')
   async handleMarkAsRead(
-    @ConnectedSocket() client: Socket,
     @MessageBody() data: MarkAsReadDto,
   ) {
     try {
@@ -359,11 +402,15 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         messageId,
       );
 
-      // Notify người gửi rằng tin nhắn đã được đọc
-      client.to(`conversation:${conversationId}`).emit('message:read', {
+      // Lấy thông tin user đã đọc để gửi kèm event qua EventEmitter
+      const [userInfo] = await this.eventEmitter.emitAsync(AppEvents.USER_GET_BASIC_INFO, { userId });
+      // console.log('>>> userInfo: ', userInfo);
+      // Notify tất cả người trong conversation rằng tin nhắn đã được đọc
+      this.server.to(`conversation:${conversationId}`).emit('message:read', {
         conversationId,
         messageId,
         userId,
+        user: userInfo || null, // Thông tin user đã đọc (userId, username, fullName, avatarUrl)
         readAt: new Date(),
       });
 
@@ -373,6 +420,48 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     } catch (error) {
       console.error('Mark as read error:', error);
       return { error: 'Failed to mark as read' };
+    }
+  }
+
+  // Chỉnh sửa tin nhắn
+  @SubscribeMessage('message:update')
+  async handleUpdateMessage(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { userId: string } & UpdateMessageDto,
+  ) {
+    try {
+      const { userId, ...updateMessageDto } = data;
+
+      if (!userId) {
+        client.emit('error', {
+          message: 'userId is required',
+          event: 'message:update'
+        });
+        return;
+      }
+
+      // Cập nhật tin nhắn (có validation 15 phút và lưu log)
+      const updatedMessage = await this.chatService.updateMessage(userId, updateMessageDto);
+
+      // Lấy conversationId từ message để emit
+      const conversationId = updatedMessage.conversationId;
+
+      // Emit message đã được update đến tất cả user trong conversation
+      this.server
+        .to(`conversation:${conversationId}`)
+        .emit('message:updated', updatedMessage);
+
+      // Cập nhật conversation cho tất cả participants
+      await this.sendUpdatedConversation(conversationId, userId);
+
+      return { success: true, message: updatedMessage };
+    } catch (error) {
+      console.error('Update message error:', error);
+      client.emit('error', {
+        message: error?.message || 'Failed to update message',
+        event: 'message:update'
+      });
+      return { error: error?.message || 'Failed to update message' };
     }
   }
 
@@ -393,6 +482,42 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
 
     return { success: true };
+  }
+
+  // Lấy lịch sử chỉnh sửa của message
+  @SubscribeMessage('message:editLogs:get')
+  async handleGetMessageEditLogs(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { userId: string; messageId: string },
+  ) {
+    try {
+      const { userId, messageId } = data;
+
+      if (!userId || !messageId) {
+        client.emit('error', {
+          message: 'userId and messageId are required',
+          event: 'message:editLogs:get'
+        });
+        return;
+      }
+
+      const editLogs = await this.chatService.getMessageEditLogs(messageId, userId);
+
+      // Emit edit logs to client
+      client.emit('message:editLogs:loaded', {
+        messageId,
+        editLogs,
+      });
+
+      return { success: true, editLogs };
+    } catch (error) {
+      console.error('Get message edit logs error:', error);
+      client.emit('error', {
+        message: error?.message || 'Failed to get message edit logs',
+        event: 'message:editLogs:get'
+      });
+      return { error: error?.message || 'Failed to get message edit logs' };
+    }
   }
 
   // Helper method để gửi tin nhắn đến một user cụ thể

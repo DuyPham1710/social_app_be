@@ -11,6 +11,7 @@ export enum AppEvents {
     USER_UPDATE_REFRESH_TOKEN = 'user.updateRefreshToken',
     USER_VALIDATE_BY_EMAIL = 'user.validateByEmail',
     USER_CHECK_EXISTS = 'user.checkExists',
+    USER_GET_BASIC_INFO = 'user.getBasicInfo',
 
     // ===== MAIL =====
     MAIL_SEND = 'mail.send',

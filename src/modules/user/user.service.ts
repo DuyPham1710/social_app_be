@@ -44,6 +44,29 @@ export class UserService {
         });
     }
 
+    async getBasicUserInfo(userId: string): Promise<{ userId: string; username: string; fullName: string; avatarUrl?: string } | null> {
+        if (!Types.ObjectId.isValid(userId)) {
+            return null;
+        }
+
+        const user = await this.userModel
+            .findById(userId)
+            .select('username fullName avatarUrl')
+            .lean()
+            .exec();
+
+        if (!user) {
+            return null;
+        }
+
+        return {
+            userId: (user as any)._id.toString(),
+            username: user.username,
+            fullName: user.fullName,
+            avatarUrl: user.avatarUrl,
+        };
+    }
+
     async checkUserExist(userId: string): Promise<boolean> {
         const user = await this.userModel.exists({ _id: userId }).exec();
         return !!user;
@@ -229,5 +252,10 @@ export class UserService {
     @OnEvent(AppEvents.USER_CHECK_EXISTS)
     async handleCheckUserExists({ userId }: { userId: string }): Promise<boolean> {
         return this.checkUserExist(userId);
+    }
+
+    @OnEvent(AppEvents.USER_GET_BASIC_INFO)
+    async handleGetBasicUserInfo({ userId }: { userId: string }): Promise<{ userId: string; username: string; fullName: string; avatarUrl?: string } | null> {
+        return this.getBasicUserInfo(userId);
     }
 }
