@@ -44,8 +44,8 @@ import { AdminModule } from './modules/admin/admin.module';
     CommentModule,
     PrivacyModule,
     ChatModule,
-    NotificationModule
-    AdminModule
+    NotificationModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],
