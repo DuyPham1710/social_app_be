@@ -1,10 +1,17 @@
-import { Expose, Type } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 import { Types } from 'mongoose';
 import UserResponseDto from './user.response.dto';
 
 export class SearchHistoryResponseDto {
     @Expose()
-    _id: Types.ObjectId;
+    @Transform(({ obj }) => {
+        // Convert ObjectId to string
+        if (obj._id) {
+            return typeof obj._id === 'string' ? obj._id : obj._id.toString();
+        }
+        return obj._id;
+    })
+    _id: string;
 
     @Expose()
     query?: string;

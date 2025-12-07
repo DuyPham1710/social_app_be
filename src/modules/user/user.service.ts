@@ -283,7 +283,7 @@ export class UserService {
             // Sử dụng toObject() để lấy plain object với tất cả fields bao gồm createdAt và updatedAt
             const historyObj = history.toObject() as any;
             const dto: any = {
-                _id: historyObj._id,
+                _id: historyObj._id ? (typeof historyObj._id === 'string' ? historyObj._id : historyObj._id.toString()) : historyObj._id,
                 query: historyObj.query,
                 resultCount: historyObj.resultCount,
                 createdAt: historyObj.createdAt,
