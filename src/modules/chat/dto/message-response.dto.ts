@@ -1,18 +1,6 @@
 import { Expose, Type } from 'class-transformer';
-
-class UserBasicDto {
-    @Expose()
-    _id: string;
-
-    @Expose()
-    username: string;
-
-    @Expose()
-    fullName: string;
-
-    @Expose()
-    avatarUrl: string;
-}
+import { EmojiResponseDto } from 'src/modules/emoji/dto/emoji_response.dto';
+import UserResponseDto from 'src/modules/user/dto/user.response.dto';
 
 class AttachmentDto {
     @Expose()
@@ -27,19 +15,38 @@ class AttachmentDto {
 
 class ReactionDto {
     @Expose()
-    userId: string;
+    @Type(() => UserResponseDto)
+    user: UserResponseDto;
 
     @Expose()
-    reaction: string;
+    emoji: EmojiResponseDto;
 }
 
 class SeenByDto {
     @Expose()
-    @Type(() => UserBasicDto)
-    user: UserBasicDto;
+    @Type(() => UserResponseDto)
+    user: UserResponseDto;
 
     @Expose()
     seenAt: Date;
+}
+
+export class ParentMessageDto {
+    @Expose()
+    _id: string;
+
+    @Expose()
+    text: string;
+
+    @Expose()
+    @Type(() => UserResponseDto)
+    senderId: UserResponseDto;
+
+    @Expose()
+    createdAt: Date;
+
+    @Expose()
+    updatedAt: Date;
 }
 
 export class MessageResponseDto {
@@ -50,8 +57,8 @@ export class MessageResponseDto {
     conversationId: string;
 
     @Expose()
-    @Type(() => UserBasicDto)
-    sender: UserBasicDto;
+    @Type(() => UserResponseDto)
+    senderId: UserResponseDto;
 
     @Expose()
     text?: string;
@@ -61,7 +68,8 @@ export class MessageResponseDto {
     attachments: AttachmentDto[];
 
     @Expose()
-    replyTo?: any; // có thể expand thành MessageResponseDto nếu cần
+    @Type(() => ParentMessageDto)
+    replyTo?: ParentMessageDto;
 
     @Expose()
     @Type(() => ReactionDto)
@@ -73,6 +81,13 @@ export class MessageResponseDto {
 
     @Expose()
     deletedForEveryone: boolean;
+
+    @Expose()
+    @Type(() => UserResponseDto)
+    deletedFor: UserResponseDto[];
+
+    @Expose()
+    isEdited: boolean;
 
     @Expose()
     createdAt: Date;

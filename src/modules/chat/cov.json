@@ -1,0 +1,19 @@
+[
+    {
+        "_id": {
+            "$oid": "67471001aaa0000000000001"
+        },
+        "participants": [
+            {
+                "$oid": "68af2546e5af803fed30af6c"
+            },
+            {
+                "$oid": "68af4aca968b17834dab17c1"
+            }
+        ],
+        "isGroup": false,
+        "lastMessageId": {
+            "$oid": "67472001bbb0000000000001"
+        }
+    }
+]

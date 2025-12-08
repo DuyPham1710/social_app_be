@@ -1,29 +1,17 @@
 import { Expose, Type } from 'class-transformer';
-
-class UserBasicDto {
-    @Expose()
-    _id: string;
-
-    @Expose()
-    username: string;
-
-    @Expose()
-    fullName: string;
-
-    @Expose()
-    avatarUrl: string;
-}
+import UserResponseDto from 'src/modules/user/dto/user.response.dto';
 
 class LastMessageDto {
     @Expose()
-    messageId: string;
+    @Type(() => String)
+    _id: string;
 
     @Expose()
     text: string;
 
     @Expose()
-    @Type(() => UserBasicDto)
-    sender: UserBasicDto;
+    @Type(() => UserResponseDto)
+    senderId: UserResponseDto;
 
     @Expose()
     createdAt: Date;
@@ -31,11 +19,12 @@ class LastMessageDto {
 
 export class ConversationResponseDto {
     @Expose()
+    @Type(() => String)
     _id: string;
 
     @Expose()
-    @Type(() => UserBasicDto)
-    participants: UserBasicDto[];
+    @Type(() => UserResponseDto)
+    participants: UserResponseDto[];
 
     @Expose()
     isGroup: boolean;
@@ -47,12 +36,12 @@ export class ConversationResponseDto {
     avatar?: string;
 
     @Expose()
-    @Type(() => UserBasicDto)
-    createdBy?: UserBasicDto;
+    @Type(() => UserResponseDto)
+    createdBy?: UserResponseDto;
 
     @Expose()
     @Type(() => LastMessageDto)
-    lastMessage?: LastMessageDto;
+    lastMessageId?: LastMessageDto;
 
     @Expose()
     createdAt: Date;
