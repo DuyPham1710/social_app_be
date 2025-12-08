@@ -9,7 +9,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
-import { SendMessageDto, MarkAsReadDto, CreateConversationDto, UpdateMessageDto } from './dto';
+import { SendMessageDto, MarkAsReadDto, CreateConversationDto, UpdateMessageDto, ReactMessageDto, DeleteMessageDto } from './dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AppEvents } from 'src/shared/enums/app-events.enum';
 
@@ -152,12 +152,29 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         return { error: 'userId is required' };
       }
 
-      const conversation = await this.chatService.createOrGetConversation(
+      const { conversation, isNew } = await this.chatService.createOrGetConversation(
         userId,
         createConversationDto,
       );
 
-      return { success: true, conversation };
+      // Emit event conversation:created cho tất cả participants (cả conversation mới và đã tồn tại)
+      // Frontend cần event này để nhận conversation vì socket.io client không hỗ trợ acknowledgment
+      if (conversation.participants) {
+        const participantIds = conversation.participants.map((p: any) => p.userId || p._id?.toString() || p.toString());
+
+        // Emit event cho tất cả participants
+        participantIds.forEach((participantId: string) => {
+          const socketId = this.userSockets.get(participantId);
+          if (socketId) {
+            this.server.to(socketId).emit('conversation:created', {
+              conversation,
+              isNew, // Thêm flag để biết conversation mới hay đã tồn tại
+            });
+          }
+        });
+      }
+
+      return { success: true, conversation, isNew };
     } catch (error) {
       console.error('Create conversation error:', error);
       return { error: 'Failed to create conversation' };
@@ -469,19 +486,85 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('message:react')
   async handleReaction(
     @ConnectedSocket() client: Socket,
-    @MessageBody() data: { userId: string; conversationId: string; messageId: string; reaction: string },
+    @MessageBody() data: { userId: string; conversationId: string } & ReactMessageDto,
   ) {
-    const { userId, conversationId, messageId, reaction } = data;
+    try {
+      const { userId, conversationId, ...reactMessageDto } = data;
 
-    // Broadcast reaction đến các user khác
-    this.server.to(`conversation:${conversationId}`).emit('message:reacted', {
-      conversationId,
-      messageId,
-      userId,
-      reaction,
-    });
+      if (!userId) {
+        client.emit('error', {
+          message: 'userId is required',
+          event: 'message:react'
+        });
+        return;
+      }
 
-    return { success: true };
+      // Thêm hoặc xóa reaction (toggle)
+      const updatedMessage = await this.chatService.addReactionToMessage(
+        userId,
+        reactMessageDto.messageId,
+        reactMessageDto.emojiId,
+      );
+
+      // Emit message đã được update đến tất cả user trong conversation
+      this.server
+        .to(`conversation:${conversationId}`)
+        .emit('message:updated', updatedMessage);
+
+      // Cập nhật conversation cho tất cả participants
+      await this.sendUpdatedConversation(conversationId, userId);
+
+      return { success: true, message: updatedMessage };
+    } catch (error) {
+      console.error('React message error:', error);
+      client.emit('error', {
+        message: error?.message || 'Failed to react to message',
+        event: 'message:react'
+      });
+      return { error: error?.message || 'Failed to react to message' };
+    }
+  }
+
+  // Xóa tin nhắn
+  @SubscribeMessage('message:delete')
+  async handleDeleteMessage(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { userId: string } & DeleteMessageDto,
+  ) {
+    try {
+      const { userId, ...deleteMessageDto } = data;
+
+      if (!userId) {
+        client.emit('error', {
+          message: 'userId is required',
+          event: 'message:delete'
+        });
+        return;
+      }
+
+      // Xóa tin nhắn
+      const deletedMessage = await this.chatService.deleteMessage(userId, deleteMessageDto);
+
+      // Lấy conversationId từ message để emit
+      const conversationId = deletedMessage.conversationId;
+
+      // Emit message đã được xóa đến tất cả user trong conversation
+      this.server
+        .to(`conversation:${conversationId}`)
+        .emit('message:updated', deletedMessage);
+
+      // Cập nhật conversation cho tất cả participants
+      await this.sendUpdatedConversation(conversationId, userId);
+
+      return { success: true, message: deletedMessage };
+    } catch (error) {
+      console.error('Delete message error:', error);
+      client.emit('error', {
+        message: error?.message || 'Failed to delete message',
+        event: 'message:delete'
+      });
+      return { error: error?.message || 'Failed to delete message' };
+    }
   }
 
   // Lấy lịch sử chỉnh sửa của message

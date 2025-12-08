@@ -13,6 +13,7 @@ import {
     PaginatedResponseDto,
     SendMessageDto,
     UpdateMessageDto,
+    DeleteMessageDto,
 } from './dto';
 
 @Injectable()
@@ -114,7 +115,7 @@ export class ChatService {
     async createOrGetConversation(
         userId: string,
         createConversationDto: CreateConversationDto,
-    ): Promise<ConversationResponseDto> {
+    ): Promise<{ conversation: ConversationResponseDto; isNew: boolean }> {
         const { participantIds, isGroup, name, avatar } = createConversationDto;
 
         // Thêm userId vào danh sách participants
@@ -135,9 +136,12 @@ export class ChatService {
                 .exec();
 
             if (existingConversation) {
-                return plainToInstance(ConversationResponseDto, existingConversation, {
-                    excludeExtraneousValues: true,
-                });
+                return {
+                    conversation: plainToInstance(ConversationResponseDto, existingConversation, {
+                        excludeExtraneousValues: true,
+                    }),
+                    isNew: false,
+                };
             }
         }
 
@@ -157,9 +161,12 @@ export class ChatService {
             .lean()
             .exec();
 
-        return plainToInstance(ConversationResponseDto, populated, {
-            excludeExtraneousValues: true,
-        });
+        return {
+            conversation: plainToInstance(ConversationResponseDto, populated, {
+                excludeExtraneousValues: true,
+            }),
+            isNew: true,
+        };
     }
 
     // Lấy chi tiết một cuộc hội thoại
@@ -274,18 +281,22 @@ export class ChatService {
 
         const skip = (page - 1) * limit;
 
+        const userIdObjectId = new Types.ObjectId(userId);
+
         const [messages, totalItems] = await Promise.all([
             this.messageModel
                 .find({
                     conversationId: new Types.ObjectId(conversationId),
-                    deletedFor: { $ne: new Types.ObjectId(userId) },
-                    deletedForEveryone: false,
+                    deletedFor: { $nin: [userIdObjectId] }, // userId không có trong deletedFor array
+                    // Vẫn lấy message bị xóa cho mọi người để hiển thị ở frontend
                 })
                 .populate('senderId', 'username fullName avatarUrl')
                 .populate({
                     path: 'replyTo',
                     select: 'text senderId createdAt updatedAt conversationId _id',
-                    match: { deletedForEveryone: false }, // Chỉ lấy message chưa bị xóa
+                    match: {
+                        deletedFor: { $nin: [userIdObjectId] },
+                    },
                     populate: {
                         path: 'senderId',
                         select: 'username fullName avatarUrl'
@@ -301,8 +312,7 @@ export class ChatService {
                 .exec(),
             this.messageModel.countDocuments({
                 conversationId: new Types.ObjectId(conversationId),
-                deletedFor: { $ne: new Types.ObjectId(userId) },
-                deletedForEveryone: false,
+                deletedFor: { $nin: [userIdObjectId] },
             }),
         ]);
 
@@ -356,13 +366,15 @@ export class ChatService {
             );
         }
 
+        const userIdObjectId = new Types.ObjectId(userId);
+
         // Tìm message với messageId
         const targetMessage = await this.messageModel
             .findOne({
                 _id: new Types.ObjectId(messageId),
                 conversationId: new Types.ObjectId(conversationId),
-                deletedFor: { $ne: new Types.ObjectId(userId) },
-                deletedForEveryone: false,
+                deletedFor: { $nin: [userIdObjectId] },
+                // Vẫn lấy message bị xóa cho mọi người để hiển thị ở frontend
             })
             .exec();
 
@@ -373,16 +385,14 @@ export class ChatService {
         // Tính tổng số messages
         const totalItems = await this.messageModel.countDocuments({
             conversationId: new Types.ObjectId(conversationId),
-            deletedFor: { $ne: new Types.ObjectId(userId) },
-            deletedForEveryone: false,
+            deletedFor: { $nin: [userIdObjectId] },
         });
 
         // Tính số messages mới hơn target message (createdAt > targetMessage.createdAt)
         // Vì sort từ mới nhất đến cũ nhất, messages mới hơn sẽ ở các trang trước
         const countNewerMessages = await this.messageModel.countDocuments({
             conversationId: new Types.ObjectId(conversationId),
-            deletedFor: { $ne: new Types.ObjectId(userId) },
-            deletedForEveryone: false,
+            deletedFor: { $nin: [userIdObjectId] },
             createdAt: { $gt: targetMessage.createdAt },
         });
 
@@ -396,14 +406,15 @@ export class ChatService {
         const messages = await this.messageModel
             .find({
                 conversationId: new Types.ObjectId(conversationId),
-                deletedFor: { $ne: new Types.ObjectId(userId) },
-                deletedForEveryone: false,
+                deletedFor: { $nin: [userIdObjectId] },
             })
             .populate('senderId', 'username fullName avatarUrl')
             .populate({
                 path: 'replyTo',
                 select: 'text senderId createdAt updatedAt conversationId _id',
-                match: { deletedForEveryone: false },
+                match: {
+                    deletedFor: { $nin: [userIdObjectId] },
+                },
                 populate: {
                     path: 'senderId',
                     select: 'username fullName avatarUrl'
@@ -484,13 +495,16 @@ export class ChatService {
         });
 
         // Populate đầy đủ như getMessages
+        const userIdObjectId = new Types.ObjectId(userId);
         const populatedMessage = await this.messageModel
             .findById(newMessage._id)
             .populate('senderId', 'username fullName avatarUrl')
             .populate({
                 path: 'replyTo',
                 select: 'text senderId createdAt updatedAt conversationId _id',
-                match: { deletedForEveryone: false }, // Chỉ lấy message chưa bị xóa
+                match: {
+                    deletedFor: { $nin: [userIdObjectId] },
+                },
                 populate: {
                     path: 'senderId',
                     select: 'username fullName avatarUrl'
@@ -602,13 +616,118 @@ export class ChatService {
         await message.save();
 
         // Populate và trả về message đã được update
+        const userIdObjectIdForUpdate = new Types.ObjectId(userId);
         const populatedMessage = await this.messageModel
             .findById(message._id)
             .populate('senderId', 'username fullName avatarUrl')
             .populate({
                 path: 'replyTo',
                 select: 'text senderId createdAt updatedAt conversationId _id',
-                match: { deletedForEveryone: false },
+                match: {
+                    deletedFor: { $nin: [userIdObjectIdForUpdate] },
+                },
+                populate: {
+                    path: 'senderId',
+                    select: 'username fullName avatarUrl'
+                }
+            })
+            .populate('reactions.userId', 'username fullName avatarUrl')
+            .populate('reactions.emojiId', 'label icon')
+            .populate('seenBy.userId', 'username fullName avatarUrl')
+            .lean()
+            .exec();
+
+        if (!populatedMessage) {
+            throw new HttpException('Failed to retrieve updated message', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // Transform message sang response format
+        return this.transformToMessageResponseDto(populatedMessage);
+    }
+
+    // Thêm hoặc xóa reaction vào message (toggle)
+    async addReactionToMessage(
+        userId: string,
+        messageId: string,
+        emojiId: string,
+    ): Promise<MessageResponseDto> {
+        if (!Types.ObjectId.isValid(messageId)) {
+            throw new HttpException('Invalid message ID', HttpStatus.BAD_REQUEST);
+        }
+
+        if (!Types.ObjectId.isValid(emojiId)) {
+            throw new HttpException('Invalid emoji ID', HttpStatus.BAD_REQUEST);
+        }
+
+        // Tìm message
+        const message = await this.messageModel.findById(messageId).exec();
+
+        if (!message) {
+            throw new HttpException('Message not found', HttpStatus.NOT_FOUND);
+        }
+
+        // Kiểm tra user có trong conversation không
+        const conversation = await this.conversationModel
+            .findOne({
+                _id: message.conversationId,
+                participants: new Types.ObjectId(userId),
+            })
+            .exec();
+
+        if (!conversation) {
+            throw new HttpException(
+                'You do not have access to this message',
+                HttpStatus.FORBIDDEN,
+            );
+        }
+
+        const userIdObjectId = new Types.ObjectId(userId);
+        const emojiIdObjectId = new Types.ObjectId(emojiId);
+
+        // Tìm tất cả reactions của user này
+        const userReactions = message.reactions.filter(
+            (reaction) => reaction.userId.toString() === userId,
+        );
+
+        // Kiểm tra xem user đã react với emoji này chưa
+        const existingReactionIndex = message.reactions.findIndex(
+            (reaction) =>
+                reaction.userId.toString() === userId &&
+                reaction.emojiId.toString() === emojiId,
+        );
+
+        if (existingReactionIndex !== -1) {
+            // Đã có reaction với emoji này -> xóa (toggle off)
+            message.reactions.splice(existingReactionIndex, 1);
+        } else {
+            // Chưa có reaction với emoji này
+            // Nếu user đã react với emoji khác, xóa tất cả reactions cũ của user
+            if (userReactions.length > 0) {
+                // Xóa tất cả reactions cũ của user
+                message.reactions = message.reactions.filter(
+                    (reaction) => reaction.userId.toString() !== userId,
+                );
+            }
+            // Thêm reaction mới
+            message.reactions.push({
+                userId: userIdObjectId,
+                emojiId: emojiIdObjectId,
+            } as any);
+        }
+
+        await message.save();
+
+        // Populate và trả về message đã được update
+        // userIdObjectId đã được khai báo ở trên
+        const populatedMessage = await this.messageModel
+            .findById(message._id)
+            .populate('senderId', 'username fullName avatarUrl')
+            .populate({
+                path: 'replyTo',
+                select: 'text senderId createdAt updatedAt conversationId _id',
+                match: {
+                    deletedFor: { $nin: [userIdObjectId] },
+                },
                 populate: {
                     path: 'senderId',
                     select: 'username fullName avatarUrl'
@@ -750,5 +869,97 @@ export class ChatService {
         return plainToInstance(MessageEditLogResponseDto, transformedLogs, {
             excludeExtraneousValues: true,
         });
+    }
+
+    // Xóa tin nhắn
+    async deleteMessage(
+        userId: string,
+        deleteMessageDto: DeleteMessageDto,
+    ): Promise<MessageResponseDto> {
+        const { messageId, deleteForEveryone } = deleteMessageDto;
+
+        if (!Types.ObjectId.isValid(messageId)) {
+            throw new HttpException('Invalid message ID', HttpStatus.BAD_REQUEST);
+        }
+
+        // Tìm message
+        const message = await this.messageModel.findById(messageId).exec();
+
+        if (!message) {
+            throw new HttpException('Message not found', HttpStatus.NOT_FOUND);
+        }
+
+        // Kiểm tra user có trong conversation không
+        const conversation = await this.conversationModel
+            .findOne({
+                _id: message.conversationId,
+                participants: new Types.ObjectId(userId),
+            })
+            .exec();
+
+        if (!conversation) {
+            throw new HttpException(
+                'You do not have access to this message',
+                HttpStatus.FORBIDDEN,
+            );
+        }
+
+        if (deleteForEveryone) {
+            // Xóa cho mọi người: chỉ người gửi mới có quyền
+            if (message.senderId.toString() !== userId) {
+                throw new HttpException(
+                    'Only the sender can delete message for everyone',
+                    HttpStatus.FORBIDDEN,
+                );
+            }
+            // Đánh dấu deletedForEveryone = true
+            message.deletedForEveryone = true;
+            message.deletedFor = [];
+        } else {
+            // Xóa cho tôi: thêm userId vào deletedFor array
+            const userIdObjectId = new Types.ObjectId(userId);
+            if (!message.deletedFor) {
+                message.deletedFor = [];
+            }
+            // Kiểm tra xem đã có trong deletedFor chưa
+            const alreadyDeleted = message.deletedFor.some(
+                (id) => id.toString() === userId,
+            );
+            if (!alreadyDeleted) {
+                message.deletedFor.push(userIdObjectId);
+            }
+        }
+
+        await message.save();
+
+        // Populate và trả về message đã được update
+        const userIdObjectIdForPopulate = new Types.ObjectId(userId);
+
+        const populatedMessage = await this.messageModel
+            .findById(message._id)
+            .populate('senderId', 'username fullName avatarUrl')
+            .populate({
+                path: 'replyTo',
+                select: 'text senderId createdAt updatedAt conversationId _id',
+                match: {
+                    deletedFor: { $nin: [userIdObjectIdForPopulate] },
+                },
+                populate: {
+                    path: 'senderId',
+                    select: 'username fullName avatarUrl'
+                }
+            })
+            .populate('reactions.userId', 'username fullName avatarUrl')
+            .populate('reactions.emojiId', 'label icon')
+            .populate('seenBy.userId', 'username fullName avatarUrl')
+            .lean()
+            .exec();
+
+        if (!populatedMessage) {
+            throw new HttpException('Failed to retrieve deleted message', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // Transform message sang response format
+        return this.transformToMessageResponseDto(populatedMessage);
     }
 }
