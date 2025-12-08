@@ -1,12 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Patch, Put, Query, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Put, Query, Req, UploadedFile, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
 import UserResponseDto from './dto/user.response.dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation } from '@nestjs/swagger';
 import UpdateUserDto from './dto/update.user.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { storage } from '../cloudinary/cloudinary.storage';
 import { Public } from 'src/common/decorators/public.decorator';
+import { File } from 'multer';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { UserRole } from 'src/shared/enums/user_role';
 import { Roles } from 'src/common/decorators/role.decorator';
@@ -88,8 +89,11 @@ export class UserController {
     return this.userService.findOne(id);
   }
 
-  @Patch()
-  @UseInterceptors(FileInterceptor('file', { storage }))
+ @Patch()
+  @UseInterceptors(FileFieldsInterceptor([
+    { name: 'file', maxCount: 1 },  // Avatar
+    { name: 'cover', maxCount: 1 }  // Ảnh bìa mới
+  ], { storage })) // Vẫn dùng storage cloudinary cũ
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -99,24 +103,57 @@ export class UserController {
         phoneNumber: { type: 'string', example: '0909090909' },
         dateOfBirth: { type: 'string', example: '2000-01-01' },
         gender: { type: 'string', example: 'male' },
-        // email: { type: 'string', example: 'abc@gmail.com' },
-        // username: { type: 'string', example: 'username123' },
-        // password: { type: 'string', example: 'mypassword' },
         bio: { type: 'string', example: 'This is my bio.' },
+        school: { type: 'string', example: 'UTE' },
+        currentCity: { type: 'string', example: 'Ho Chi Minh City' },
+        hometown: { type: 'string', example: 'Ha Noi' },
+        workplace: { type: 'string', example: 'Google' },
+        relationshipStatus: { type: 'string', example: 'Độc thân' },
+
         file: {
           type: 'string',
           format: 'binary',
+          description: 'Avatar image'
+        },
+        cover: {
+          type: 'string',
+          format: 'binary',
+          description: 'Cover image (Ảnh bìa)'
         },
       },
     },
   })
+  // editProfile(
+  //   @Req() req: any,
+  //   @Body() updateUserDto: UpdateUserDto,
+  //   @UploadedFiles() files: { file?: File, cover?: File}
+  // ): Promise<UserResponseDto> {
+    
+  //   if (files?.file && files.file.path) {
+  //     updateUserDto.avatarUrl = files.file.path;
+  //   }
+
+  //   if (files?.cover && files.cover.path) {
+  //     updateUserDto.coverUrl = files.cover.path;
+  //   }
+
+  //   return this.userService.update(req.user.userId.toString(), updateUserDto);
+  // }
   editProfile(
     @Req() req: any,
     @Body() updateUserDto: UpdateUserDto,
-    @UploadedFile() file: Express.Multer.File): Promise<UserResponseDto> {
-    if (file && file.path) {
-      updateUserDto.avatarUrl = file.path;
+    // Sửa type của files thành mảng file
+    @UploadedFiles() files: { file?: File[], cover?: File[] }
+  ): Promise<UserResponseDto> {
+    
+    if (files?.file && files.file.length > 0) {
+      updateUserDto.avatarUrl = files.file[0].path;
     }
+
+    if (files?.cover && files.cover.length > 0) {
+      updateUserDto.coverUrl = files.cover[0].path;
+    }
+
     return this.userService.update(req.user.userId.toString(), updateUserDto);
   }
 
@@ -125,6 +162,7 @@ export class UserController {
   @ApiBody({ type: UpdateUserDto })
   updatePersonalInfo(@Body() updateUserDto: UpdateUserDto): Promise<UserResponseDto> {
     updateUserDto.avatarUrl = '';
+    updateUserDto.coverUrl = '';
     return this.userService.update(updateUserDto.userId!, updateUserDto);
   }
 }

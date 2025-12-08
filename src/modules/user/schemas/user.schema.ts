@@ -24,6 +24,24 @@ export class User {
     @Prop({ type: String })
     gender: string;
 
+    @Prop({ type: String })
+    coverUrl: string;
+
+    @Prop({ type: String })
+    school: string;
+
+    @Prop({ type: String })
+    currentCity: string;
+
+    @Prop({ type: String })
+    hometown: string;
+
+    @Prop({ type: String })
+    workplace: string;
+
+    @Prop({ type: String })
+    relationshipStatus: string;
+
     @Prop({ type: String, required: true, unique: true })
     email: string;
 
