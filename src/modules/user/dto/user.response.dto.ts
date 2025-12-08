@@ -24,6 +24,24 @@ export default class UserResponseDto {
     gender?: string;
 
     @Expose()
+    coverUrl: string;
+
+    @Expose()
+    school?: string;
+
+    @Expose()
+    currentCity?: string;
+
+    @Expose()
+    hometown?: string;
+
+    @Expose()
+    workplace?: string;
+
+    @Expose()
+    relationshipStatus?: string;
+
+    @Expose()
     email: string;
 
     @Expose()

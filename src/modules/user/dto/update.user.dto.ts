@@ -65,6 +65,35 @@ export default class UpdateUserDto {
     gender?: string;
 
     @IsOptional()
+    @IsString()
+    coverUrl?: string;
+
+    @ApiPropertyOptional({ description: 'school', example: 'a' })
+    @IsOptional()
+    @IsString()
+    school?: string;
+
+    @ApiPropertyOptional({ description: 'currentCity', example: 'a' })
+    @IsOptional()
+    @IsString()
+    currentCity?: string;
+
+    @ApiPropertyOptional({ description: 'hometown', example: 'a' })
+    @IsOptional()
+    @IsString()
+    hometown?: string;
+
+    @ApiPropertyOptional({ description: 'workplace', example: 'a' })
+    @IsOptional()
+    @IsString()
+    workplace?: string;
+
+    @ApiPropertyOptional({ description: 'relationshipStatus', example: 'a' })
+    @IsOptional()
+    @IsString()
+    relationshipStatus?: string;
+
+    @IsOptional()
     @IsBoolean()
     isActive?: boolean;
 
