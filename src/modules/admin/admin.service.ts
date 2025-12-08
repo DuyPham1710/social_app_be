@@ -394,7 +394,6 @@ export class AdminService {
     page: number = 1,
     limit: number = 10,
     search?: string,
-    userId?: string,
   ) {
     const skip = (page - 1) * limit;
     const query: any = {};
@@ -402,11 +401,6 @@ export class AdminService {
     // Tìm kiếm theo caption
     if (search && search.trim()) {
       query.caption = { $regex: search.trim(), $options: 'i' };
-    }
-
-    // Lọc theo userId
-    if (userId && Types.ObjectId.isValid(userId)) {
-      query.userId = new Types.ObjectId(userId);
     }
 
     const [posts, total] = await Promise.all([
@@ -537,17 +531,11 @@ export class AdminService {
   async getAllStories(
     page: number = 1,
     limit: number = 10,
-    userId?: string,
     dateFrom?: Date,
     dateTo?: Date,
   ) {
     const skip = (page - 1) * limit;
     const query: any = {};
-
-    // Lọc theo userId
-    if (userId && Types.ObjectId.isValid(userId)) {
-      query.userId = new Types.ObjectId(userId);
-    }
 
     // Lọc theo ngày
     if (dateFrom || dateTo) {
@@ -766,22 +754,12 @@ export class AdminService {
     page: number = 1,
     limit: number = 10,
     status?: 'pending' | 'reviewed' | 'rejected',
-    postId?: string,
-    userId?: string,
   ) {
     const skip = (page - 1) * limit;
     const query: any = {};
 
     if (status) {
       query.status = status;
-    }
-
-    if (postId && Types.ObjectId.isValid(postId)) {
-      query.postId = new Types.ObjectId(postId);
-    }
-
-    if (userId && Types.ObjectId.isValid(userId)) {
-      query.userId = new Types.ObjectId(userId);
     }
 
     const [reports, total] = await Promise.all([

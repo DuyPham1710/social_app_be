@@ -101,14 +101,12 @@ export class AdminController {
   @ApiQuery({ name: 'page', required: false, type: Number, description: 'Số trang' })
   @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Số lượng mỗi trang' })
   @ApiQuery({ name: 'search', required: false, type: String, description: 'Tìm kiếm theo caption' })
-  @ApiQuery({ name: 'userId', required: false, type: String, description: 'Lọc theo userId' })
   getAllPosts(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
     @Query('search') search?: string,
-    @Query('userId') userId?: string,
   ) {
-    return this.adminService.getAllPosts(Number(page), Number(limit), search, userId);
+    return this.adminService.getAllPosts(Number(page), Number(limit), search);
   }
 
   @Get('posts/:postId')
@@ -159,19 +157,17 @@ export class AdminController {
   @ApiOperation({ summary: 'Lấy danh sách tất cả story (phân trang, lọc theo user/ngày)' })
   @ApiQuery({ name: 'page', required: false, type: Number, description: 'Số trang' })
   @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Số lượng mỗi trang' })
-  @ApiQuery({ name: 'userId', required: false, type: String, description: 'Lọc theo userId' })
   @ApiQuery({ name: 'dateFrom', required: false, type: String, description: 'Lọc từ ngày (ISO date)' })
   @ApiQuery({ name: 'dateTo', required: false, type: String, description: 'Lọc đến ngày (ISO date)' })
   getAllStories(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
-    @Query('userId') userId?: string,
     @Query('dateFrom') dateFrom?: string,
     @Query('dateTo') dateTo?: string,
   ) {
     const dateFromDate = dateFrom ? new Date(dateFrom) : undefined;
     const dateToDate = dateTo ? new Date(dateTo) : undefined;
-    return this.adminService.getAllStories(Number(page), Number(limit), userId, dateFromDate, dateToDate);
+    return this.adminService.getAllStories(Number(page), Number(limit), dateFromDate, dateToDate);
   }
 
   @Get('stories/:storyId')
@@ -233,7 +229,7 @@ export class AdminController {
   @Get('post-reports')
   @Roles(UserRole.ADMIN)
   @ApiOperation({
-    summary: 'Lấy danh sách báo cáo bài viết (phân trang, lọc theo status/postId/userId)',
+    summary: 'Lấy danh sách báo cáo bài viết (phân trang, lọc theo status)',
   })
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
@@ -242,21 +238,15 @@ export class AdminController {
     required: false,
     enum: ['pending', 'reviewed', 'rejected'],
   })
-  @ApiQuery({ name: 'postId', required: false, type: String })
-  @ApiQuery({ name: 'userId', required: false, type: String })
   getPostReports(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
     @Query('status') status?: 'pending' | 'reviewed' | 'rejected',
-    @Query('postId') postId?: string,
-    @Query('userId') userId?: string,
   ) {
     return this.adminService.getPostReports(
       Number(page),
       Number(limit),
       status,
-      postId,
-      userId,
     );
   }
 
