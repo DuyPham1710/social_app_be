@@ -1,58 +1,134 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { Notification } from './schemas/notification.schema';
+import { Notification, NotificationDocument } from './schemas/notification.schema';
+import { CreateNotificationDto } from './dto/create-notification.dto';
 import { NotificationGateway } from './notification.gateway';
+import { NotificationResponse } from './dto/notification-response.dto';
+import { OnEvent } from '@nestjs/event-emitter';
+import { NotificationType } from 'src/shared/enums/notification_type';
 
 @Injectable()
 export class NotificationService {
+  private readonly logger = new Logger(NotificationService.name);
   constructor(
     @InjectModel(Notification.name)
-    private notificationModel: Model<Notification>,
-    private readonly notificationGateway: NotificationGateway,
+    private readonly notificationModel: Model<NotificationDocument>,
+
+    @Inject(forwardRef(() => NotificationGateway))
+    private readonly gateway: NotificationGateway,
+
   ) {}
 
-  async create(data: {
-    receiver: string;
-    sender?: string;
-    type: string;
-    message: string;
-    targetId?: string;
-  }) {
-    const created: any = await this.notificationModel.create({
-      ...data,
-      receiver: new Types.ObjectId(data.receiver),
-      sender: data.sender ? new Types.ObjectId(data.sender) : null,
-      targetId: data.targetId ? new Types.ObjectId(data.targetId) : null,
-    });
-
-
-    // Emit realtime
-    this.notificationGateway.pushNotification(data.receiver, {
-      id: created._id,
-      type: created.type,
-      message: created.message,
-      sender: created.sender,
-      receiver: created.receiver,
-      targetId: created.targetId,
-      createdAt: created.createdAt,
-    });
-
-    return created;
+  private toObjectId(id: string) {
+    return new Types.ObjectId(id);
   }
 
-  async getUserNotifications(userId: string) {
-    return this.notificationModel
-      .find({ receiver: userId })
+  async create(dto: CreateNotificationDto) {
+  const n = new this.notificationModel({
+    receiver: this.toObjectId(dto.receiver),
+    sender: dto.sender ? this.toObjectId(dto.sender) : undefined,
+    type: dto.type,
+    targetId: dto.targetId ? this.toObjectId(dto.targetId) : undefined,
+    message: dto.message,
+    isRead: false,
+  });
+
+  let saved = await n.save();
+
+  // Populate sender
+  saved = await saved.populate({
+    path: 'sender',
+    select: 'username fullName avatarUrl _id'
+  });
+
+  return saved;
+}
+
+// create + emit to receiver
+async createAndEmit(dto: CreateNotificationDto) {
+
+  console.log(">>> Creating notification for owner:", dto.receiver?.toString());
+  const saved = await this.create(dto);
+
+  const sender: any = saved.sender;
+
+  const payload = {
+    id: saved._id,
+    receiver: saved.receiver,
+    sender: sender ? {
+      userId: sender._id,
+      username: sender.username,
+      fullName: sender.fullName,
+      avatarUrl: sender.avatarUrl,
+    } : null,
+    type: saved.type,
+    targetId: saved.targetId,
+    message: saved.message,
+    isRead: saved.isRead,
+    createdAt: saved.createdAt,
+  };
+
+
+  try {
+    this.gateway.emitToUser(dto.receiver, 'notification:new', payload);
+  } catch (err) {
+    this.logger.log(`Emit failed or user offline: ${err?.message || err}`);
+  }
+
+  return payload;
+}
+
+  async findByUser(userId: string,limit = 20,page = 1): Promise<{
+    items: NotificationResponse[];
+    total: number;
+    unread: number;
+    page: number;
+    limit: number;
+  }> {
+    const skip = (page - 1) * limit;
+    const q = { receiver: this.toObjectId(userId) };
+
+    const notifications = await this.notificationModel
+      .find(q)
       .sort({ createdAt: -1 })
-      .populate('sender', 'fullName avatar');
+      .skip(skip)
+      .limit(limit)
+      .populate({
+        path: 'sender',
+        select: 'username fullName avatarUrl _id'
+      })
+      .lean<NotificationResponse[]>()
+      .exec();
+
+    const total = await this.notificationModel.countDocuments(q);
+    const unread = await this.notificationModel.countDocuments({
+      ...q,
+      isRead: false,
+    });
+
+    return { items: notifications, total, unread, page, limit };
   }
 
-  async markAsRead(id: string) {
-    return this.notificationModel.findByIdAndUpdate(
-      id,
-      { isRead: true },
-      { new: true },
-    );
+
+  async countUnread(userId: string) {
+    return this.notificationModel.countDocuments({ receiver: this.toObjectId(userId), isRead: false });
+  }
+
+  async markRead(notificationId: string, userId: string) {
+    const n = await this.notificationModel.findById(notificationId);
+    if (!n) throw new NotFoundException('Notification not found');
+    if (n.receiver.toString() !== userId) throw new NotFoundException('Not allowed');
+
+    n.isRead = true;
+    await n.save();
+    // optionally notify client about change
+    this.gateway.emitToUser(userId, 'notification:read', { id: notificationId });
+    return n;
+  }
+
+  async markAllRead(userId: string) {
+    await this.notificationModel.updateMany({ receiver: this.toObjectId(userId), isRead: false }, { $set: { isRead: true } });
+    this.gateway.emitToUser(userId, 'notification:markAllRead', { userId });
   }
 }
