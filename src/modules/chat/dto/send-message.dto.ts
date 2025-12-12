@@ -1,6 +1,6 @@
 import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class AttachmentDto {
+class AttachmentDto {
     @IsString()
     url: string;
 
@@ -22,7 +22,7 @@ export class SendMessageDto {
 
     @IsArray()
     @IsOptional()
-    attachments?: AttachmentDto[];
+    attachments?: AttachmentDto[]; // URLs từ Cloudinary sau khi upload
 
     @IsString()
     @IsOptional()

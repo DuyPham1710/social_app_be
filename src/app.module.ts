@@ -20,6 +20,7 @@ import { PrivacyModule } from './modules/privacy/privacy.module';
 import { ChatModule } from './modules/chat/chat.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { VideoCallModule } from './modules/video-call/video-call.module';
 
 
 
@@ -46,6 +47,7 @@ import { AdminModule } from './modules/admin/admin.module';
     ChatModule,
     NotificationModule,
     AdminModule,
+    VideoCallModule,
   ],
   controllers: [AppController],
   providers: [AppService],
