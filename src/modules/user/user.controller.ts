@@ -37,10 +37,12 @@ export class UserController {
     @Req() req: any,
     @Query('query') query: string,
     @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10
+    @Query('limit') limit: number = 10,
+    @Query('saveToHistory') saveToHistory: string = 'true'
   ) {
     const userId = req.user.userId;
-    return this.userService.searchUser(query, Number(page), Number(limit), userId);
+    const shouldSaveToHistory = saveToHistory === 'true' || saveToHistory === '1';
+    return this.userService.searchUser(query, Number(page), Number(limit), userId, shouldSaveToHistory);
   }
 
   @Get('search/history')
