@@ -5,6 +5,7 @@ import { Conversation } from './schemas/conversation.schema';
 import { Message } from './schemas/message.schema';
 import { MessageEditLog } from './schemas/message-edit-log.schema';
 import { plainToInstance } from 'class-transformer';
+import { File } from 'multer';
 import {
     ConversationResponseDto,
     CreateConversationDto,
@@ -14,7 +15,9 @@ import {
     SendMessageDto,
     UpdateMessageDto,
     DeleteMessageDto,
+    AttachmentDto,
 } from './dto';
+import { uploadChatAttachmentsFromFiles } from './helpers/upload-attachments.helper';
 
 @Injectable()
 export class ChatService {
@@ -39,7 +42,7 @@ export class ChatService {
                 .populate('participants', 'username fullName avatarUrl')
                 .populate({
                     path: 'lastMessageId',
-                    select: 'text createdAt senderId',
+                    select: 'text createdAt senderId attachments',
                     populate: {
                         path: 'senderId',
                         select: 'username fullName avatarUrl'
@@ -186,7 +189,7 @@ export class ChatService {
             .populate('participants', 'username fullName avatarUrl')
             .populate({
                 path: 'lastMessageId',
-                select: 'text createdAt senderId',
+                select: 'text createdAt senderId attachments',
                 populate: {
                     path: 'senderId',
                     select: 'username fullName avatarUrl'
@@ -293,7 +296,7 @@ export class ChatService {
                 .populate('senderId', 'username fullName avatarUrl')
                 .populate({
                     path: 'replyTo',
-                    select: 'text senderId createdAt updatedAt conversationId _id',
+                    select: 'text senderId createdAt updatedAt conversationId _id attachments',
                     match: {
                         deletedFor: { $nin: [userIdObjectId] },
                     },
@@ -411,7 +414,7 @@ export class ChatService {
             .populate('senderId', 'username fullName avatarUrl')
             .populate({
                 path: 'replyTo',
-                select: 'text senderId createdAt updatedAt conversationId _id',
+                select: 'text senderId createdAt updatedAt conversationId _id attachments',
                 match: {
                     deletedFor: { $nin: [userIdObjectId] },
                 },
@@ -501,7 +504,7 @@ export class ChatService {
             .populate('senderId', 'username fullName avatarUrl')
             .populate({
                 path: 'replyTo',
-                select: 'text senderId createdAt updatedAt conversationId _id',
+                select: 'text senderId createdAt updatedAt conversationId _id attachments',
                 match: {
                     deletedFor: { $nin: [userIdObjectId] },
                 },
@@ -522,6 +525,62 @@ export class ChatService {
 
         // Transform message sang response format
         return this.transformToMessageResponseDto(populatedMessage);
+    }
+
+    // Upload files lên Cloudinary và trả về URLs (không tạo message)
+    async sendMessageWithFiles(
+        userId: string,
+        sendMessageDto: SendMessageDto,
+        files?: File[],
+    ): Promise<AttachmentDto[]> {
+        const { conversationId } = sendMessageDto;
+
+        if (!Types.ObjectId.isValid(conversationId)) {
+            throw new HttpException('Invalid conversation ID', HttpStatus.BAD_REQUEST);
+        }
+
+        // Kiểm tra user có trong cuộc hội thoại không
+        const conversation = await this.conversationModel
+            .findOne({
+                _id: new Types.ObjectId(conversationId),
+                participants: new Types.ObjectId(userId),
+            })
+            .exec();
+
+        if (!conversation) {
+            throw new HttpException(
+                'Conversation not found or you are not a participant',
+                HttpStatus.FORBIDDEN,
+            );
+        }
+
+        // Xử lý upload files nếu có (từ Multer)
+        let finalAttachments: AttachmentDto[] = [];
+        if (files && files.length > 0) {
+            try {
+                // Upload files lên Cloudinary từ Multer files
+                const uploadedAttachments = await uploadChatAttachmentsFromFiles(
+                    files,
+                    conversationId,
+                );
+
+                // Chuyển đổi sang format AttachmentDto
+                finalAttachments = uploadedAttachments.map((att) => ({
+                    url: att.url,
+                    type: att.type,
+                    size: att.size,
+                }));
+            } catch (error) {
+                console.error('Error uploading files:', error);
+                throw new HttpException(
+                    'Failed to upload files',
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                );
+            }
+        }
+
+        // Chỉ trả về attachments, không tạo message
+        return finalAttachments;
     }
 
     // Đánh dấu tin nhắn đã đọc
@@ -622,7 +681,7 @@ export class ChatService {
             .populate('senderId', 'username fullName avatarUrl')
             .populate({
                 path: 'replyTo',
-                select: 'text senderId createdAt updatedAt conversationId _id',
+                select: 'text senderId createdAt updatedAt conversationId _id attachments',
                 match: {
                     deletedFor: { $nin: [userIdObjectIdForUpdate] },
                 },
@@ -724,7 +783,7 @@ export class ChatService {
             .populate('senderId', 'username fullName avatarUrl')
             .populate({
                 path: 'replyTo',
-                select: 'text senderId createdAt updatedAt conversationId _id',
+                select: 'text senderId createdAt updatedAt conversationId _id attachments',
                 match: {
                     deletedFor: { $nin: [userIdObjectId] },
                 },
@@ -940,7 +999,7 @@ export class ChatService {
             .populate('senderId', 'username fullName avatarUrl')
             .populate({
                 path: 'replyTo',
-                select: 'text senderId createdAt updatedAt conversationId _id',
+                select: 'text senderId createdAt updatedAt conversationId _id attachments',
                 match: {
                     deletedFor: { $nin: [userIdObjectIdForPopulate] },
                 },

@@ -1,5 +1,6 @@
 import { Expose, Type } from 'class-transformer';
 import UserResponseDto from 'src/modules/user/dto/user.response.dto';
+import { AttachmentDto } from './message-response.dto';
 
 class LastMessageDto {
     @Expose()
@@ -8,6 +9,10 @@ class LastMessageDto {
 
     @Expose()
     text: string;
+
+    @Expose()
+    @Type(() => AttachmentDto)
+    attachments: AttachmentDto[];
 
     @Expose()
     @Type(() => UserResponseDto)

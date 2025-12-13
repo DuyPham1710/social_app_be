@@ -132,7 +132,7 @@ export class UserService {
         });
     }
 
-    async searchUser(query: string, page: number, limit: number, userId: string) {
+    async searchUser(query: string, page: number, limit: number, userId: string, saveToHistory: boolean = true) {
         const skip = (page - 1) * limit;
         const qRegex = { $regex: query, $options: 'i' };
 
@@ -223,8 +223,8 @@ export class UserService {
             excludeExtraneousValues: true
         }));
 
-        // Lưu lịch sử tìm kiếm (chỉ lưu khi có kết quả và query không rỗng)
-        if (query.trim().length > 0) {
+        // Lưu lịch sử tìm kiếm (chỉ lưu khi có kết quả, query không rỗng và saveToHistory = true)
+        if (query.trim().length > 0 && saveToHistory) {
             this.saveSearchHistory(userId, query, totalItems).catch(err => {
                 // Log error nhưng không throw để không ảnh hưởng đến response
                 console.error('Error saving search history:', err);

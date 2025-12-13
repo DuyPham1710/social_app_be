@@ -2,7 +2,7 @@ import { Expose, Type } from 'class-transformer';
 import { EmojiResponseDto } from 'src/modules/emoji/dto/emoji_response.dto';
 import UserResponseDto from 'src/modules/user/dto/user.response.dto';
 
-class AttachmentDto {
+export class AttachmentDto {
     @Expose()
     url: string;
 
@@ -37,6 +37,10 @@ export class ParentMessageDto {
 
     @Expose()
     text: string;
+
+    @Expose()
+    @Type(() => AttachmentDto)
+    attachments: AttachmentDto[];
 
     @Expose()
     @Type(() => UserResponseDto)
