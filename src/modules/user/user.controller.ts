@@ -7,7 +7,7 @@ import UpdateUserDto from './dto/update.user.dto';
 import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { storage } from '../cloudinary/cloudinary.storage';
 import { Public } from 'src/common/decorators/public.decorator';
-import { File } from 'multer';
+//import { File } from 'multer';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { UserRole } from 'src/shared/enums/user_role';
 import { Roles } from 'src/common/decorators/role.decorator';
@@ -145,7 +145,7 @@ export class UserController {
     @Req() req: any,
     @Body() updateUserDto: UpdateUserDto,
     // Sửa type của files thành mảng file
-    @UploadedFiles() files: { file?: File[], cover?: File[] }
+    @UploadedFiles() files: { file?: Express.Multer.File[], cover?: Express.Multer.File[] }
   ): Promise<UserResponseDto> {
     
     if (files?.file && files.file.length > 0) {

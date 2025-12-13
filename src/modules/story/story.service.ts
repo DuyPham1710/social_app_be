@@ -11,6 +11,7 @@ import { GroupedStoryListDto } from './dto/grouped-story-list.dto';
 import { plainToInstance } from 'class-transformer';
 import UserResponseDto from '../user/dto/user.response.dto';
 import { StoryResponseDto } from './dto/story-response.dto';
+import { uploadAudioFromUrl } from './helpers/upload-audio.helper';
 
 @Injectable()
 export class StoryService {
@@ -24,7 +25,34 @@ export class StoryService {
             ...createStoryDto,
             userId: new Types.ObjectId(userId),
         });
-        return story.save();
+        
+        // Lưu story trước để có storyId
+        const savedStory = await story.save();
+        
+        // Nếu có music và có preview link, tải audio và upload lên Cloudinary
+        if (createStoryDto.music?.preview) {
+            try {
+                const cloudinaryAudioUrl = await uploadAudioFromUrl(
+                    createStoryDto.music.preview,
+                    savedStory._id.toString(),
+                );
+                
+                // Cập nhật music object với link Cloudinary
+                savedStory.music = {
+                    ...createStoryDto.music,
+                    preview: cloudinaryAudioUrl, // Thay thế preview link bằng link Cloudinary
+                };
+                
+                await savedStory.save();
+            } catch (error) {
+                // Nếu upload thất bại, vẫn giữ nguyên preview link gốc
+                console.error('Failed to upload audio to Cloudinary:', error);
+                // Có thể throw error hoặc chỉ log và tiếp tục với preview link gốc
+                // throw new HttpException('Failed to upload audio', HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        
+        return savedStory;
     }
 
     async getStories(ownerId: string, viewerId: string) {
