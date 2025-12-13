@@ -53,21 +53,46 @@ async createAndEmit(dto: CreateNotificationDto) {
 
   const sender: any = saved.sender;
 
+  // const payload = {
+  //   id: saved._id.toString(),
+  //   receiver: saved.receiver.toString(),
+  //   sender: sender ? {
+  //     userId: sender._id,
+  //     username: sender.username,
+  //     fullName: sender.fullName,
+  //     avatarUrl: sender.avatarUrl,
+  //   } : null,
+  //   type: saved.type,
+  //   targetId: saved.targetId.toString(),
+  //   message: saved.message,
+  //   isRead: saved.isRead,
+  //   createdAt: saved.createdAt,
+  // };
   const payload = {
-    id: saved._id,
-    receiver: saved.receiver,
-    sender: sender ? {
-      userId: sender._id,
-      username: sender.username,
-      fullName: sender.fullName,
-      avatarUrl: sender.avatarUrl,
-    } : null,
+    _id: saved._id.toString(),
+
+    receiver: saved.receiver.toString(),
+
+    sender: sender
+      ? {
+          userId: sender._id,
+          username: sender.username,
+          fullName: sender.fullName,
+          avatarUrl: sender.avatarUrl,
+        }
+      : null,
+
     type: saved.type,
-    targetId: saved.targetId,
+
+    targetId: saved.targetId ? saved.targetId.toString() : null,
+
     message: saved.message,
+
     isRead: saved.isRead,
-    createdAt: saved.createdAt,
+
+    createdAt: saved.createdAt!.toISOString(),
   };
+
 
 
   try {
@@ -79,27 +104,41 @@ async createAndEmit(dto: CreateNotificationDto) {
   return payload;
 }
 
-  async findByUser(userId: string,limit = 20,page = 1): Promise<{
-    items: NotificationResponse[];
-    total: number;
-    unread: number;
-    page: number;
-    limit: number;
-  }> {
+  async findByUser(userId: string, limit = 20, page = 1) {
     const skip = (page - 1) * limit;
     const q = { receiver: this.toObjectId(userId) };
 
-    const notifications = await this.notificationModel
+    const raw = await this.notificationModel
       .find(q)
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
       .populate({
         path: 'sender',
-        select: 'username fullName avatarUrl _id'
+        select: 'username fullName avatarUrl _id',
       })
-      .lean<NotificationResponse[]>()
+      .lean()
       .exec();
+
+    const items = raw.map((n: any) => ({
+      _id: n._id.toString(),
+      receiver: n.receiver.toString(),
+
+      sender: n.sender
+        ? {
+            userId: n.sender._id,
+            username: n.sender.username,
+            fullName: n.sender.fullName,
+            avatarUrl: n.sender.avatarUrl,
+          }
+        : null,
+
+      type: n.type,
+      targetId: n.targetId ? n.targetId.toString() : null,
+      message: n.message,
+      isRead: n.isRead,
+      createdAt: n.createdAt.toISOString(),
+    }));
 
     const total = await this.notificationModel.countDocuments(q);
     const unread = await this.notificationModel.countDocuments({
@@ -107,8 +146,9 @@ async createAndEmit(dto: CreateNotificationDto) {
       isRead: false,
     });
 
-    return { items: notifications, total, unread, page, limit };
+    return { items, total, unread, page, limit };
   }
+
 
 
   async countUnread(userId: string) {

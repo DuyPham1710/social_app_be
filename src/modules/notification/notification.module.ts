@@ -6,32 +6,21 @@ import { NotificationGateway } from './notification.gateway';
 import { UserModule } from 'src/modules/user/user.module'; // nếu cần populate user
 import { NotificationListener } from './notification.listener';
 
-// @Module({
-//   imports: [
-//     MongooseModule.forFeature([{ name: Notification.name, schema: NotificationSchema }]),
-//     forwardRef(() => UserModule),
-//   ],
-//   providers: [
-//     {
-//       provide: NotificationService,
-//       useClass: NotificationService,
-//     },
-//     NotificationGateway,
-//   ],
-
-//   exports: [NotificationService, NotificationGateway],
-// })
-// export class NotificationModule {}
-
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: Notification.name, schema: NotificationSchema }
+      { name: Notification.name, schema: NotificationSchema },
     ]),
+    forwardRef(() => UserModule), // nếu populate user
   ],
-  providers: [NotificationService, NotificationGateway, NotificationListener],
+  providers: [
+    NotificationService,
+    NotificationGateway,
+    NotificationListener,
+  ],
   exports: [NotificationService],
 })
 export class NotificationModule {}
+
 
 
