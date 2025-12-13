@@ -25,7 +25,7 @@ export class NotificationListener {
       sender: payload.sender,
       type: NotificationType.POST_COMMENT,
       targetId: payload.commentId,
-      message: `${payload.user.fullName || payload.user.username} đã bình luận: "${payload.content.substring(0, 100)}"`,
+      message: ` đã bình luận về bài viết của bạn: "${payload.content.substring(0, 100)}"`,
     });
   }
 }
