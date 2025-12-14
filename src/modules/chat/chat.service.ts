@@ -455,7 +455,7 @@ export class ChatService {
         userId: string,
         sendMessageDto: SendMessageDto,
     ): Promise<MessageResponseDto> {
-        const { conversationId, text, attachments, replyTo } = sendMessageDto;
+        const { conversationId, text, attachments, replyTo, metadata } = sendMessageDto;
 
         if (!Types.ObjectId.isValid(conversationId)) {
             throw new HttpException('Invalid conversation ID', HttpStatus.BAD_REQUEST);
@@ -483,6 +483,7 @@ export class ChatService {
             text: text || null,
             attachments: attachments || [],
             replyTo: replyTo ? new Types.ObjectId(replyTo) : null,
+            metadata: metadata || null,
             seenBy: [
                 {
                     userId: new Types.ObjectId(userId),
@@ -841,6 +842,7 @@ export class ChatService {
             replyTo,
             reactions,
             seenBy,
+            metadata: msg.metadata || null, // Explicitly include metadata
         };
     }
 

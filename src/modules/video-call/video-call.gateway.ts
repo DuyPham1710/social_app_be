@@ -12,6 +12,7 @@ import { VideoCallService } from './video-call.service';
 import { CreateCallDto, CreateGroupCallDto, CallInviteResponseDto } from './dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AppEvents } from 'src/shared/enums/app-events.enum';
+import UserResponseDto from '../user/dto/user.response.dto';
 
 @WebSocketGateway({
     cors: {
@@ -153,7 +154,7 @@ export class VideoCallGateway implements OnGatewayConnection, OnGatewayDisconnec
                 callId: callResponse.callId,
                 channelId: callResponse.channelId,
                 callerId: userId,
-                callerInfo: callerInfo || undefined,
+                callerInfo: callerInfo as UserResponseDto || undefined,
                 callType: callResponse.callType,
                 conversationId: callResponse.conversationId,
             };
@@ -174,7 +175,7 @@ export class VideoCallGateway implements OnGatewayConnection, OnGatewayDisconnec
             // Send call created response to caller with token
             client.emit('call:created', {
                 ...callResponse,
-                callerInfo: callerInfo || undefined,
+                callerInfo: callerInfo as UserResponseDto || undefined,
             });
 
             console.log(`[VideoCall] Call ${callResponse.callId} created by ${userId} to ${callResponse.receiverIds.join(', ')}`);
@@ -227,7 +228,7 @@ export class VideoCallGateway implements OnGatewayConnection, OnGatewayDisconnec
                 callId: callResponse.callId,
                 channelId: callResponse.channelId,
                 callerId: userId,
-                callerInfo: callerInfo || undefined,
+                callerInfo: callerInfo as UserResponseDto || undefined,
                 callType: callResponse.callType,
                 conversationId: callResponse.conversationId,
             };
@@ -248,7 +249,7 @@ export class VideoCallGateway implements OnGatewayConnection, OnGatewayDisconnec
             // Send call created response to caller with token
             client.emit('call:created', {
                 ...callResponse,
-                callerInfo: callerInfo || undefined,
+                callerInfo: callerInfo as UserResponseDto || undefined,
             });
 
             console.log(`[VideoCall] Group call ${callResponse.callId} created by ${userId} with ${callResponse.receiverIds.length} participants`);
@@ -308,7 +309,6 @@ export class VideoCallGateway implements OnGatewayConnection, OnGatewayDisconnec
             // Notify caller and other participants
             this.sendToUser(activeCall.callerId, 'call:accepted', {
                 callId,
-                //    channelId: activeCall.channelId,
                 acceptedBy: userId,
                 ...tokenData,
             });
@@ -316,7 +316,6 @@ export class VideoCallGateway implements OnGatewayConnection, OnGatewayDisconnec
             // Send token to the user who accepted
             client.emit('call:accepted', {
                 callId,
-                //  channelId: activeCall.channelId,
                 ...tokenData,
             });
 
@@ -376,6 +375,21 @@ export class VideoCallGateway implements OnGatewayConnection, OnGatewayDisconnec
                 rejectedBy: userId,
             });
 
+            // Send call summary message to conversation (if conversationId exists)
+            if (activeCall.conversationId) {
+                await this.sendCallSummaryMessage({
+                    callerId: activeCall.callerId,
+                    conversationId: activeCall.conversationId,
+                    callType: activeCall.callType,
+                    callStatus: 'rejected',
+                    duration: 0,
+                    callId,
+                });
+            }
+
+            // Remove from active calls
+            this.activeCalls.delete(callId);
+
             console.log(`[VideoCall] Call ${callId} rejected by ${userId}`);
 
             return { success: true };
@@ -393,10 +407,10 @@ export class VideoCallGateway implements OnGatewayConnection, OnGatewayDisconnec
     @SubscribeMessage('call:end')
     async handleCallEnd(
         @ConnectedSocket() client: Socket,
-        @MessageBody() data: { userId: string; callId: string },
+        @MessageBody() data: { userId: string; callId: string; duration?: number; callStatus?: string },
     ) {
         try {
-            const { userId, callId } = data;
+            const { userId, callId, duration, callStatus } = data;
 
             if (!userId || !callId) {
                 client.emit('error', {
@@ -411,6 +425,15 @@ export class VideoCallGateway implements OnGatewayConnection, OnGatewayDisconnec
                 return { success: true }; // Call already ended
             }
 
+            // Determine call status
+            // If duration exists or callStatus is 'completed', it's a completed call
+            // If duration = 0 and no callStatus, it's missed (caller ended before receiver picked up)
+            let finalCallStatus: 'completed' | 'missed' | 'rejected' = callStatus as any || 'completed';
+            if (!duration || duration === 0) {
+                // No duration means call wasn't answered
+                finalCallStatus = 'missed';
+            }
+
             // Update call status
             await this.videoCallService.updateCallStatus(activeCall.channelId, 'ended', userId);
 
@@ -421,13 +444,26 @@ export class VideoCallGateway implements OnGatewayConnection, OnGatewayDisconnec
                     callId,
                     channelId: activeCall.channelId,
                     endedBy: userId,
+                    callStatus: finalCallStatus, // Add status to event
                 });
             });
+
+            // Send call summary message to conversation (if conversationId exists)
+            if (activeCall.conversationId) {
+                await this.sendCallSummaryMessage({
+                    callerId: activeCall.callerId,
+                    conversationId: activeCall.conversationId,
+                    callType: activeCall.callType,
+                    callStatus: finalCallStatus, // Use determined status
+                    duration: duration || 0,
+                    callId,
+                });
+            }
 
             // Remove from active calls
             this.activeCalls.delete(callId);
 
-            console.log(`[VideoCall] Call ${callId} ended by ${userId}`);
+            console.log(`[VideoCall] Call ${callId} ended by ${userId} with status: ${finalCallStatus}`);
 
             return { success: true };
         } catch (error) {
@@ -554,6 +590,52 @@ export class VideoCallGateway implements OnGatewayConnection, OnGatewayDisconnec
                     }
                 });
             }
+        }
+    }
+
+    // Helper method to send call summary message
+    private async sendCallSummaryMessage(data: {
+        callerId: string;
+        conversationId: string;
+        callType: 'video' | 'audio';
+        callStatus: 'completed' | 'missed' | 'rejected';
+        duration: number;
+        callId: string;
+    }) {
+        try {
+            console.log('[VideoCall] Sending call summary message:', data);
+
+            // Format message text based on call status
+            let messageText = '';
+            if (data.callStatus === 'completed' && data.duration > 0) {
+                const minutes = Math.floor(data.duration / 60);
+                const seconds = data.duration % 60;
+                const durationText = minutes > 0
+                    ? `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+                    : `0:${seconds.toString().padStart(2, '0')}`;
+                messageText = `Cuộc gọi ${data.callType === 'video' ? 'video' : 'thoại'} đã kết thúc. Thời lượng: ${durationText}`;
+            } else if (data.callStatus === 'rejected') {
+                messageText = `Đã bỏ lỡ cuộc gọi ${data.callType === 'video' ? 'video' : 'thoại'}`;
+            } else {
+                messageText = `Nhỡ cuộc gọi ${data.callType === 'video' ? 'video' : 'thoại'}`;
+            }
+
+            // Emit event to chat gateway
+            await this.eventEmitter.emitAsync(AppEvents.CHAT_SEND_MESSAGE, {
+                userId: data.callerId,
+                conversationId: data.conversationId,
+                text: messageText,
+                metadata: {
+                    type: data.callType === 'video' ? 'video_call' : 'audio_call',
+                    callStatus: data.callStatus,
+                    duration: data.duration,
+                    callId: data.callId,
+                },
+            });
+
+            console.log('[VideoCall] Call summary message event emitted successfully');
+        } catch (error) {
+            console.error('[VideoCall] Error sending call summary message:', error);
         }
     }
 }
