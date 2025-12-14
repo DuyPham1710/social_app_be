@@ -53,6 +53,20 @@ export class ParentMessageDto {
     updatedAt: Date;
 }
 
+class MessageMetadataDto {
+    @Expose()
+    type?: string; // 'video_call' | 'audio_call'
+
+    @Expose()
+    callStatus?: string; // 'completed' | 'missed' | 'rejected'
+
+    @Expose()
+    duration?: number; // in seconds
+
+    @Expose()
+    callId?: string;
+}
+
 export class MessageResponseDto {
     @Expose()
     _id: string;
@@ -92,6 +106,10 @@ export class MessageResponseDto {
 
     @Expose()
     isEdited: boolean;
+
+    @Expose()
+    @Type(() => MessageMetadataDto)
+    metadata?: MessageMetadataDto;
 
     @Expose()
     createdAt: Date;

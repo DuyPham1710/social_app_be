@@ -24,9 +24,7 @@ export class VideoCallService {
         }
     }
 
-    /**
-     * Generate Agora RTC token for a user
-     */
+    // Generate Agora RTC token for a user
     generateToken(
         channelId: string,
         userId: string | number,
@@ -43,8 +41,10 @@ export class VideoCallService {
         const tokenExpire = currentTimestamp + this.tokenExpirationTime;
         const privilegeExpire = currentTimestamp + this.tokenExpirationTime;
 
-        // Convert userId to number if it's a string
-        const uid = typeof userId === 'string' ? parseInt(userId.replace(/\D/g, ''), 10) || 0 : userId;
+        // Dùng UID = 0 để Agora tự động generate
+        // Phù hợp với Flutter client (uid: 0)
+        const uid = 0;
+
 
         const token = RtcTokenBuilder.buildTokenWithUid(
             this.appId,
@@ -59,9 +59,7 @@ export class VideoCallService {
         return token;
     }
 
-    /**
-     * Generate tokens for multiple users (group call)
-     */
+    // Generate tokens for multiple users (group call)
     generateTokensForUsers(
         channelId: string,
         userIds: string[],
@@ -76,9 +74,7 @@ export class VideoCallService {
         return tokens;
     }
 
-    /**
-     * Create a call (1-1 or group)
-     */
+    // Create a call (1-1 or group)
     async createCall(
         callerId: string,
         createCallDto: CreateCallDto | CreateGroupCallDto,
@@ -134,9 +130,7 @@ export class VideoCallService {
         };
     }
 
-    /**
-     * Get call history for a user
-     */
+    // Get call history for a user
     async getCallHistory(
         userId: string,
         page: number = 1,
@@ -177,9 +171,7 @@ export class VideoCallService {
         };
     }
 
-    /**
-     * Update call status
-     */
+    // Update call status
     async updateCallStatus(
         channelId: string,
         status: 'ringing' | 'answered' | 'rejected' | 'ended' | 'missed',
@@ -207,9 +199,7 @@ export class VideoCallService {
         await this.callHistoryModel.updateOne({ channelId }, updateData);
     }
 
-    /**
-     * Get token for existing call
-     */
+    // Get token for existing call
     async getTokenForCall(
         channelId: string,
         userId: string,

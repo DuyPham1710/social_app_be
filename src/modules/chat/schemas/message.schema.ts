@@ -43,6 +43,15 @@ export class Message {
     @Prop({ default: false })
     isEdited: boolean;
 
+    // Metadata for special message types
+    @Prop({ type: Object, default: null })
+    metadata?: {
+        type?: 'video_call' | 'audio_call';
+        callStatus?: 'completed' | 'missed' | 'rejected';
+        duration?: number; // in seconds
+        callId?: string;
+    };
+
     createdAt?: Date;
     updatedAt?: Date;
 }
