@@ -8,7 +8,7 @@ import { RespondFriendRequestDto } from './dto/respond-friend-request.dto';
 import { RemoveFriendDto } from './dto/remove-friend.dto';
 import { SearchFriendsDto } from './dto/search-friends.dto';
 import { FriendSuggestionsDto } from './dto/friend-suggestions.dto';
-import { OnEvent } from '@nestjs/event-emitter';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { AppEvents } from 'src/shared/enums/app-events.enum';
 import { User, UserDocument } from '../user/schemas/user.schema';
 
@@ -18,6 +18,7 @@ export class FriendsService {
     @InjectModel(Friend.name) private readonly friendModel: Model<FriendDocument>,
     @InjectModel(FriendRequest.name) private readonly friendRequestModel: Model<FriendRequestDocument>,
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+    private readonly eventEmitter: EventEmitter2,
   ) { }
 
   // Gửi lời mời kết bạn
@@ -60,6 +61,14 @@ export class FriendsService {
     });
 
     const savedRequest = await friendRequest.save();
+
+    this.eventEmitter.emit('friend.request', {
+      receiver: receiver_id,
+      sender: senderId,
+      requestId: savedRequest._id,
+    });
+
+
     return await this.friendRequestModel.findById(savedRequest._id)
       .populate('sender_id', 'fullName username avatarUrl')
       .populate('receiver_id', 'fullName username avatarUrl');

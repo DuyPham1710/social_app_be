@@ -9,6 +9,7 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { AppEvents } from 'src/shared/enums/app-events.enum';
 import { EmojiResponseDto } from '../emoji/dto/emoji_response.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { find } from 'rxjs';
 
 @Injectable()
 export class ReactPostService {
@@ -30,6 +31,7 @@ export class ReactPostService {
     const existing = await this.reactPostModel.findOne({ userId: userIdObjectId, postId: postObjectId });
 
     let result;
+    let isDeleted = false;
     if (existing) {
       if (existing.emojiId.toString() === emojiObjectId.toString()) {
         // await existing.deleteOne();
@@ -38,6 +40,7 @@ export class ReactPostService {
           userId: userIdObjectId,
           postId: postObjectId,
         });
+        isDeleted = true;
       } else {
         existing.emojiId = emojiObjectId;
         result = await existing.save();
@@ -54,6 +57,18 @@ export class ReactPostService {
     result = await result.populate('userId', 'fullName username avatarUrl');
     result = await result.populate('emojiId', 'label icon');
 
+    if (!isDeleted) {
+      this.eventEmitter.emit('react.created', {
+        postId: postId,
+        sender: userId,
+        reactId: result._id.toString(),
+        content: result.emojiId['label'],
+        user: {
+          fullName: result.userId['fullName'],
+          username: result.userId['username'],
+        }
+      });
+    }
     return ReactPostResponseDto.fromReactPosts([result])[0];
   }
 

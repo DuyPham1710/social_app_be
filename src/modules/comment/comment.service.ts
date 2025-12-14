@@ -4,12 +4,17 @@ import { Model, Types } from 'mongoose';
 import { Comment, CommentDocument } from './schemas/comment.schema';
 import { CommentLog, CommentLogDocument } from './schemas/comment-log.schema';
 import { CreateCommentDto } from './dto/create-comment.dto';
+import { NotificationType } from 'src/shared/enums/notification_type';
+import { PostDocument, Post } from '../post/schemas/post.schema';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class CommentService {
     constructor(
         @InjectModel(Comment.name) private readonly commentModel: Model<CommentDocument>,
         @InjectModel(CommentLog.name) private readonly commentLogModel: Model<CommentLogDocument>,
+        @InjectModel(Post.name) private readonly postModel: Model<PostDocument>,
+        private eventEmitter: EventEmitter2,
     ) { }
 
     async create(createCommentDto: CreateCommentDto, userId: string) {
@@ -23,9 +28,11 @@ export class CommentService {
         });
 
         const saved = await comment.save();
+        const post = await this.postModel.findById(createCommentDto.postId).select('userId');
+        const postOwnerId = post?.userId;
 
         // Populate user information và parent comment nếu có
-        return await saved.populate([
+        const populated = await saved.populate([
             {
                 path: 'userId',
                 select: 'username fullName avatarUrl email _id'
@@ -39,6 +46,26 @@ export class CommentService {
                 }
             }
         ]);
+
+        if(populated.parentId!== null){
+            
+        }
+        else{
+            const user = populated.userId as any;
+            if (postOwnerId && postOwnerId.toString() !== userId) {
+                this.eventEmitter.emit('comment.created', {
+                    receiver: postOwnerId.toString(),
+                    sender: userId,
+                    commentId: saved._id,
+                    content: saved.content,
+                    user: {
+                        fullName: user.fullName,
+                        username: user.username,
+                    }
+                });
+            }
+        }
+        return populated;
     }
 
     async update(commentId: string, content: string, userId: string) {
