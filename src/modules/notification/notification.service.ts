@@ -113,6 +113,7 @@ async createAndEmit(dto: CreateNotificationDto) {
       type: n.type,
       targetId: n.targetId ? n.targetId.toString() : null,
       message: n.message,
+      content: n.content,
       isRead: n.isRead,
       createdAt: n.createdAt.toISOString(),
     }));

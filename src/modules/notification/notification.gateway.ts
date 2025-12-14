@@ -96,6 +96,21 @@ export class NotificationGateway
     client.emit('notifications:list', result);
   }
 
+  @SubscribeMessage('markAllRead')
+  async handleMarkAllRead(
+    @ConnectedSocket() client: Socket,
+  ) {
+    const userId = (client as any).userId;
+    if (!userId) {
+      client.emit('error', { message: 'userId required' });
+      return;
+    }
+
+    await this.notificationService.markAllRead(userId);
+    
+    this.logger.log(`Marked all notifications as read for user ${userId}`);
+  }
+
   emitToUser(userId: string, event: string, payload: any) {
     const sockets = this.userSockets.get(userId);
 
