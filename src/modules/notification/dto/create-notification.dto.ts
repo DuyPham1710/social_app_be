@@ -19,6 +19,9 @@ export class CreateNotificationDto {
   @IsString()
   message: string;
 
+  @IsString()
+  content?: string;
+
 }
 
 

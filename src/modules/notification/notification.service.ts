@@ -31,6 +31,7 @@ export class NotificationService {
     type: dto.type,
     targetId: dto.targetId ? this.toObjectId(dto.targetId) : undefined,
     message: dto.message,
+    content: dto.content,
     isRead: false,
   });
 
@@ -52,27 +53,9 @@ async createAndEmit(dto: CreateNotificationDto) {
   const saved = await this.create(dto);
 
   const sender: any = saved.sender;
-
-  // const payload = {
-  //   id: saved._id.toString(),
-  //   receiver: saved.receiver.toString(),
-  //   sender: sender ? {
-  //     userId: sender._id,
-  //     username: sender.username,
-  //     fullName: sender.fullName,
-  //     avatarUrl: sender.avatarUrl,
-  //   } : null,
-  //   type: saved.type,
-  //   targetId: saved.targetId.toString(),
-  //   message: saved.message,
-  //   isRead: saved.isRead,
-  //   createdAt: saved.createdAt,
-  // };
   const payload = {
     _id: saved._id.toString(),
-
     receiver: saved.receiver.toString(),
-
     sender: sender
       ? {
           userId: sender._id,
@@ -81,19 +64,13 @@ async createAndEmit(dto: CreateNotificationDto) {
           avatarUrl: sender.avatarUrl,
         }
       : null,
-
     type: saved.type,
-
     targetId: saved.targetId ? saved.targetId.toString() : null,
-
     message: saved.message,
-
+    content: saved.content,
     isRead: saved.isRead,
-
     createdAt: saved.createdAt!.toISOString(),
   };
-
-
 
   try {
     this.gateway.emitToUser(dto.receiver, 'notification:new', payload);
