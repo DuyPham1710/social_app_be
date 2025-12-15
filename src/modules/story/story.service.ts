@@ -20,7 +20,12 @@ export class StoryService {
         private readonly eventEmitter: EventEmitter2,
     ) { }
 
-    async createStory(createStoryDto: CreateStoryDto, userId: string) {
+    async createStory(createStoryDto: CreateStoryDto, userId: string, file?: Express.Multer.File) {
+        // Nếu có file, lấy mediaUrl từ file.path (CloudinaryStorage đã upload và trả về secure_url)
+        if (file && file.path) {
+            createStoryDto.mediaUrl = file.path;
+        }
+
         const story = new this.storyModel({
             ...createStoryDto,
             userId: new Types.ObjectId(userId),
