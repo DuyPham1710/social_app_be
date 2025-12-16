@@ -111,6 +111,36 @@ export class NotificationGateway
     this.logger.log(`Marked all notifications as read for user ${userId}`);
   }
 
+  @SubscribeMessage('deleteNotification')
+  async handleDeleteNotification(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: { notificationId: string },
+  ) {
+    const userId = (client as any).userId;
+    if (!userId) {
+      client.emit('error', { message: 'userId required' });
+      return;
+    }
+    const { notificationId } = payload || {};
+    if (!notificationId) {
+      client.emit('error', { message: 'notificationId required' });
+      return;
+    }
+
+    try {
+      await this.notificationService.delete(notificationId, userId);
+      // // Option A: emit updated list back to the client
+      // client.emit('getNotifications', { page: 1, limit: 10 });
+      //       // Or Option B: emit a small event indicating deletion so client can remove locally
+      //       // thay
+      // // this.gateway.emitToUser(userId, 'notification:deleted', { id: notificationId });
+      // // bằng
+      this.emitToUser(userId, 'notification:deleted', { id: notificationId });
+    } catch (err) {
+      client.emit('error', { message: err?.message || 'delete failed' });
+    }
+  }
+
   emitToUser(userId: string, event: string, payload: any) {
     const sockets = this.userSockets.get(userId);
 

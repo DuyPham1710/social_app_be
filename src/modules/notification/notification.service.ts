@@ -127,7 +127,17 @@ async createAndEmit(dto: CreateNotificationDto) {
     return { items, total, unread, page, limit };
   }
 
+  async delete(notificationId: string, userId: string) {
+    const n = await this.notificationModel.findById(notificationId);
+    if (!n) throw new NotFoundException('Notification not found');
+    if (n.receiver.toString() !== userId) throw new NotFoundException('Not allowed');
 
+    await this.notificationModel.deleteOne({ _id: n._id });
+
+    // notify client's other sockets if needed
+    this.gateway.emitToUser(userId, 'notification:deleted', { id: notificationId });
+    return { ok: true };
+  }
 
   async countUnread(userId: string) {
     return this.notificationModel.countDocuments({ receiver: this.toObjectId(userId), isRead: false });
