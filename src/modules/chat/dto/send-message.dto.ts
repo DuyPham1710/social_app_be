@@ -27,5 +27,13 @@ export class SendMessageDto {
     @IsString()
     @IsOptional()
     replyTo?: string;
+
+    @IsOptional()
+    metadata?: {
+        type?: 'video_call' | 'audio_call';
+        callStatus?: 'completed' | 'missed' | 'rejected';
+        duration?: number;
+        callId?: string;
+    };
 }
 

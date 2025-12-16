@@ -1,3 +1,5 @@
+import UserResponseDto from "src/modules/user/dto/user.response.dto";
+
 export class CallResponseDto {
     callId: string;
     channelId: string;
@@ -14,12 +16,7 @@ export class CallInviteResponseDto {
     callId: string;
     channelId: string;
     callerId: string;
-    callerInfo?: {
-        userId: string;
-        username: string;
-        fullName?: string;
-        avatarUrl?: string;
-    };
+    callerInfo?: UserResponseDto
     callType: 'video' | 'audio';
     conversationId?: string;
 }

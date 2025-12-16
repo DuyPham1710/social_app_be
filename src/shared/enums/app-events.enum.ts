@@ -33,4 +33,7 @@ export enum AppEvents {
     // ===== STORY =====
     STORY_CREATED = 'story.created',
     STORY_EXPIRED = 'story.expired',
+
+    // ===== CHAT =====
+    CHAT_SEND_MESSAGE = 'chat.sendMessage',
 }

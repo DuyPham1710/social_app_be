@@ -29,7 +29,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     private readonly chatService: ChatService,
     private readonly eventEmitter: EventEmitter2,
-  ) { }
+  ) {
+    // Listen for video call ended/rejected to send message
+    this.eventEmitter.on(AppEvents.CHAT_SEND_MESSAGE, this.handleSendMessageFromEvent.bind(this));
+  }
 
   async handleConnection(client: Socket) {
     try {
@@ -614,6 +617,44 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   // Helper method để gửi tin nhắn đến conversation
   sendToConversation(conversationId: string, event: string, data: any) {
     this.server.to(`conversation:${conversationId}`).emit(event, data);
+  }
+
+  // Handler for event emitter to send message (triggered by video call)
+  async handleSendMessageFromEvent(data: {
+    userId: string;
+    conversationId: string;
+    text?: string;
+    metadata?: {
+      type?: 'video_call' | 'audio_call';
+      callStatus?: 'completed' | 'missed' | 'rejected';
+      duration?: number;
+      callId?: string;
+    };
+  }) {
+    try {
+      console.log('[ChatGateway] Received CHAT_SEND_MESSAGE event:', data);
+
+      const { userId, conversationId, text, metadata } = data;
+
+      // Gửi tin nhắn vào database
+      const message = await this.chatService.sendMessage(userId, {
+        conversationId,
+        text: text || '',
+        metadata,
+      });
+
+      // Broadcast tin nhắn mới đến tất cả người trong conversation
+      this.server
+        .to(`conversation:${conversationId}`)
+        .emit('message:new', message);
+
+      // Cập nhật conversation cho tất cả participants
+      await this.sendUpdatedConversation(conversationId, userId);
+
+      console.log('[ChatGateway] Call summary message sent successfully');
+    } catch (error) {
+      console.error('[ChatGateway] Error sending call summary message:', error);
+    }
   }
 
   // Helper method để gửi tin nhắn đến tất cả participants trừ mình
