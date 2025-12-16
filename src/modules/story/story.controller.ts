@@ -1,10 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { StoryService } from './story.service';
 import { CreateStoryDto } from './dto/create-story.dto';
-import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation } from '@nestjs/swagger';
 import { GroupedStoryListDto } from './dto/grouped-story-list.dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { UpdatePrivacyDto } from 'src/common/dto/update-privacy.dto';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { storage } from '../cloudinary/cloudinary.storage';
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
@@ -14,9 +16,18 @@ export class StoryController {
 
   @Post()
   @ApiOperation({ summary: 'Tạo story' })
-  createStory(@Req() req: any, @Body() createStoryDto: CreateStoryDto) {
+  @UseInterceptors(FilesInterceptor('file', 1, { storage }))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: CreateStoryDto })
+  createStory(
+    @Req() req: any,
+    @Body() createStoryDto: CreateStoryDto,
+    @UploadedFiles() files?: Express.Multer.File[],
+  ) {
     const userId = req.user.userId;
-    return this.storyService.createStory(createStoryDto, userId);
+    // Lấy file đầu tiên nếu có
+    const file = files && files.length > 0 ? files[0] : undefined;
+    return this.storyService.createStory(createStoryDto, userId, file);
   }
 
   @Get()
