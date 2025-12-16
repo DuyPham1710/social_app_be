@@ -24,7 +24,7 @@ export default class UserResponseDto {
     gender?: string;
 
     @Expose()
-    coverUrl: string;
+    coverUrl?: string;
 
     @Expose()
     school?: string;
@@ -42,17 +42,17 @@ export default class UserResponseDto {
     relationshipStatus?: string;
 
     @Expose()
-    email: string;
+    email?: string;
 
     @Expose()
-    username: string;
+    username?: string;
 
     @Expose()
-    isActive: boolean
+    isActive?: boolean;
 
     @Expose()
-    createdAt: Date;
+    createdAt?: Date;
 
     @Expose()
-    role: string;
+    role?: string;
 }
