@@ -41,12 +41,14 @@ export class NotificationListener {
     const post = await this.postModel.findById(payload.postId).select('userId');
     if (!post) return; 
 
-    const ownerId = post.userId;
+    const ownerId = post.userId.toString();
+
+    console.log('NotificationListener - handleReactCreated - ownerId:', ownerId, ' payload.sender:', payload.sender);
 
     if (ownerId === payload.sender) return;
 
     await this.notificationService.createAndEmit({
-      receiver: ownerId.toString(),
+      receiver: ownerId,
       sender: payload.sender,
       type: NotificationType.POST_REACTION,
       targetId: payload.reactId,
