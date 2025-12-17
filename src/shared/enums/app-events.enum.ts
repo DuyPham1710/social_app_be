@@ -36,4 +36,6 @@ export enum AppEvents {
 
     // ===== CHAT =====
     CHAT_SEND_MESSAGE = 'chat.sendMessage',
+    REACT_COMMENT_GET = "REACT_COMMENT_GET",
+    REACT_COMMENT_FIND_BY_USER = "REACT_COMMENT_FIND_BY_USER",
 }
