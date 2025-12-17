@@ -159,8 +159,51 @@ export class StoryService {
             })
         );
 
+        // Nếu là trang đầu tiên, thêm story của người đăng nhập lên đầu nếu có
+        let finalUsers = users;
+        if (page === 1) {
+            // Lấy thông tin user đăng nhập
+            const [currentUserResult] = await this.eventEmitter.emitAsync(AppEvents.USER_FIND_ONE, { userId: viewerId });
+            let currentUserDto: UserResponseDto | null = null;
+            
+            // Xử lý kết quả từ event emitter
+            if (currentUserResult && !currentUserResult.error) {
+                // currentUserResult đã là UserResponseDto từ USER_FIND_ONE event
+                currentUserDto = currentUserResult as UserResponseDto;
+            }
+
+            if (currentUserDto && currentUserDto.userId) {
+                // Lấy story của người đăng nhập
+                const currentUserStories: StoryDocument[] = await this.storyModel
+                    .find({
+                        userId: new Types.ObjectId(viewerId),
+                        createdAt: { $gte: expireTime }
+                    })
+                    .populate('userId', 'username fullName avatarUrl')
+                    .sort({ createdAt: 1 })
+                    .lean()
+                    .exec();
+
+                // Convert to StoryResponseDto[]
+                const currentUserStoryDtos = currentUserStories.map(story =>
+                    plainToInstance(StoryResponseDto, story, { excludeExtraneousValues: true })
+                );
+
+                // Chỉ thêm vào đầu nếu có story
+                if (currentUserStoryDtos.length > 0) {
+                    finalUsers = [
+                        {
+                            user: currentUserDto,
+                            stories: currentUserStoryDtos as StoryResponseDto[]
+                        },
+                        ...users
+                    ];
+                }
+            }
+        }
+
         return {
-            users,
+            users: finalUsers,
             page,
             limit,
             total,
