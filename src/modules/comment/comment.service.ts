@@ -19,20 +19,24 @@ export class CommentService {
     ) { }
 
     async create(createCommentDto: CreateCommentDto, userId: string) {
-        const { content, postId, parentId } = createCommentDto;
+        const { content, postId, parentId, taggedUserIds } = createCommentDto;
+
+        const uniqueTaggedIds = taggedUserIds
+            ? [...new Set(taggedUserIds)].map(id => new Types.ObjectId(id))
+            : [];
+
 
         const comment = new this.commentModel({
             content,
             userId: new Types.ObjectId(userId),
             postId: new Types.ObjectId(postId),
             parentId: parentId ? new Types.ObjectId(parentId) : null,
+            taggedUserIds: uniqueTaggedIds, 
         });
 
         const saved = await comment.save();
         const post = await this.postModel.findById(createCommentDto.postId).select('userId');
         const postOwnerId = post?.userId;
-
-        // Populate user information và parent comment nếu có
         const populated = await saved.populate([
             {
                 path: 'userId',
@@ -45,23 +49,45 @@ export class CommentService {
                     path: 'userId',
                     select: 'username fullName avatarUrl'
                 }
+            },
+            { 
+                path: 'taggedUserIds',
+                select: 'username fullName avatarUrl _id' 
             }
         ]);
 
-        if(populated.parentId!== null){
-            
+        const user = populated.userId as any;
+
+        if (uniqueTaggedIds.length > 0) {
+            uniqueTaggedIds.forEach(taggedId => {
+                if (taggedId.toString() !== userId) {
+                    this.eventEmitter.emit('comment.tagged', {
+                        receiver: taggedId.toString(),
+                        sender: userId,
+                        commentId: saved._id,
+                        content: saved.content,
+                        type: NotificationType.MENTION,
+                        user: {
+                            fullName: user.fullName,
+                            username: user.username,
+                            avatarUrl: user.avatarUrl
+                        }
+                    });
+                }
+            });
         }
         else{
-            const user = populated.userId as any;
             if (postOwnerId && postOwnerId.toString() !== userId) {
                 this.eventEmitter.emit('comment.created', {
                     receiver: postOwnerId.toString(),
                     sender: userId,
                     commentId: saved._id,
                     content: saved.content,
+                    type: NotificationType.POST_COMMENT,
                     user: {
                         fullName: user.fullName,
                         username: user.username,
+                        avatarUrl: user.avatarUrl
                     }
                 });
             }
@@ -134,6 +160,10 @@ export class CommentService {
                         select: 'username fullName avatarUrl',
                     },
                 },
+                {
+                    path: 'taggedUserIds',
+                    select: '_id fullName avatarUrl username',
+                }
             ])
             .lean()
             .exec();
@@ -156,6 +186,19 @@ export class CommentService {
                     avatarUrl: comment.parentId.userId.avatarUrl,
                     username: comment.parentId.userId.username,
                 };
+            }
+            if (Array.isArray(comment.taggedUserIds)) {
+                comment.taggedUserIds = comment.taggedUserIds.map((u: any) => {
+                    if (u && u._id) {
+                        return {
+                        userId: u._id,
+                        fullName: u.fullName,
+                        avatarUrl: u.avatarUrl,
+                        username: u.username,
+                        };
+                    }
+                    return u;
+                });
             }
             return comment;
         });
@@ -181,13 +224,13 @@ export class CommentService {
         }
 
         // Log để debug số lượng reacts trên mỗi comment
-        console.log(
-            '[CommentService] findByPostId result:',
-            comments.map((c: any) => ({
-                id: c._id?.toString(),
-                reactsCount: Array.isArray(c.reacts) ? c.reacts.length : 0,
-            })),
-        );
+        // console.log(
+        //     '[CommentService] findByPostId result:',
+        //     comments.map((c: any) => ({
+        //         id: c._id?.toString(),
+        //         reactsCount: Array.isArray(c.reacts) ? c.reacts.length : 0,
+        //     })),
+        // );
 
         return comments;
     }

@@ -3,16 +3,20 @@ import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Types } from 'mongoose';
 
 export class CreateCommentDto {
-    @ApiProperty({ example: 'Bài vi?t r?t hay!', description: 'N?i dung bình lu?n' })
+    @ApiProperty({ example: 'Bï¿½i vi?t r?t hay!', description: 'N?i dung bï¿½nh lu?n' })
     @IsNotEmpty()
     @IsString()
     content: string;
 
-    @ApiProperty({ example: '66f2a0bcee0b32c4eac0f83d', description: 'ID c?a bài vi?t' })
+    @ApiProperty({ example: '66f2a0bcee0b32c4eac0f83d', description: 'ID c?a bï¿½i vi?t' })
     @IsNotEmpty()
     postId: Types.ObjectId;
 
-    @ApiProperty({ example: '66f2a0bcee0b32c4eac0f83d', description: 'ID c?a bình lu?n cha (n?u là reply)' })
+    @ApiProperty({ example: '66f2a0bcee0b32c4eac0f83d', description: 'ID c?a bï¿½nh lu?n cha (n?u lï¿½ reply)' })
     @IsOptional()
     parentId?: Types.ObjectId;
+
+    @ApiProperty({ example: ['66f2a0bcee0b32c4eac0f83d'], description: 'Danh sï¿½ch ID ngï¿½ï¿½ï¿½ï¿½ï¿½i dï¿½ng ï¿½ï¿½ï¿½ï¿½ï¿½c gï¿½ï¿½n thï¿½ï¿½ï¿½ trong bï¿½nh luï¿½n', required: false })
+    @IsOptional()
+    taggedUserIds?: string[];
 }

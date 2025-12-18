@@ -56,4 +56,16 @@ export class NotificationListener {
       content: payload.content,
     });
   }
+  @OnEvent('comment.tagged')
+  async handleCommentTagged(payload: any) {
+      await this.notificationService.createAndEmit({
+          receiver: payload.receiver,
+          sender: payload.sender,
+          type: NotificationType.POST_COMMENT,
+          targetId: payload.commentId,         
+          message: `đã nhắc đến bạn trong một bình luận: "${payload.content}"`,
+          content: payload.content,
+      });
+
+  }
 }

@@ -17,6 +17,10 @@ export class Comment {
     // Nếu là trả lời bình luận khác → parentId chính là comment cha
     @Prop({ type: Types.ObjectId, ref: 'Comment', default: null })
     parentId?: Types.ObjectId;
+
+    // gắn thẻ ai người dùng trong comment
+    @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], default: [] })
+    taggedUserIds: Types.ObjectId[];
 }
 
 export type CommentDocument = Comment & Document;

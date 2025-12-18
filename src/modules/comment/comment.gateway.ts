@@ -477,16 +477,16 @@ export class CommentGateway implements OnGatewayConnection, OnGatewayDisconnect 
         userConnection.userId,
       );
 
-      this.logger.log(
-        `Loaded ${comments.length} comments for post ${postId}. React summary: ${JSON.stringify(
-          comments.map((c: any) => ({
-            id: c._id?.toString?.(),
-            reactsCount: Array.isArray((c as any).reacts)
-              ? (c as any).reacts.length
-              : 0,
-          })),
-        )}`,
-      );
+      // this.logger.log(
+      //   `Loaded ${comments.length} comments for post ${postId}. React summary: ${JSON.stringify(
+      //     comments.map((c: any) => ({
+      //       id: c._id?.toString?.(),
+      //       reactsCount: Array.isArray((c as any).reacts)
+      //         ? (c as any).reacts.length
+      //         : 0,
+      //     })),
+      //   )}`,
+      // );
 
       client.emit('commentsLoaded', {
         postId,
