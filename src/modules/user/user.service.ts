@@ -40,7 +40,7 @@ export class UserService {
         if (!Types.ObjectId.isValid(userId)) {
             throw new HttpException(`Invalid userId: ${userId}`, HttpStatus.BAD_REQUEST);
         }
-        
+
         const user = await this.userModel.findById(userId).exec();
 
         if (!user) {
@@ -116,6 +116,32 @@ export class UserService {
         );
     }
 
+    async updateFcmToken(userId: string, fcmToken: string): Promise<void> {
+        if (!Types.ObjectId.isValid(userId)) {
+            throw new HttpException('Invalid userId', HttpStatus.BAD_REQUEST);
+        }
+
+        await this.userModel.findByIdAndUpdate(
+            userId,
+            { fcmToken },
+            { new: true }
+        );
+    }
+
+    async getFcmToken(userId: string): Promise<string | null> {
+        if (!Types.ObjectId.isValid(userId)) {
+            return null;
+        }
+
+        const user = await this.userModel
+            .findById(userId)
+            .select('fcmToken')
+            .lean()
+            .exec();
+
+        return user?.fcmToken || null;
+    }
+
     async update(userId: string, updateUserDto: UpdateUserDto): Promise<UserResponseDto> {
         if (!Types.ObjectId.isValid(userId)) {
             throw new HttpException('Invalid userId', HttpStatus.BAD_REQUEST);
@@ -187,7 +213,7 @@ export class UserService {
         // Sử dụng Set và Map để loại bỏ duplicate dựa trên _id
         const addedUserIds = new Set<string>();
         const combinedResults: UserDocument[] = [];
-        
+
         // Thêm bạn bè trực tiếp (ưu tiên cao nhất)
         for (const user of friendsMatched) {
             const userId = (user as any)._id.toString();
@@ -196,7 +222,7 @@ export class UserService {
                 combinedResults.push(user);
             }
         }
-        
+
         // Thêm mutual friends (chỉ nếu chưa có)
         for (const user of mutualMatched) {
             const userId = (user as any)._id.toString();
@@ -205,7 +231,7 @@ export class UserService {
                 combinedResults.push(user);
             }
         }
-        
+
         // Thêm người khác (chỉ nếu chưa có)
         for (const user of otherMatched) {
             const userId = (user as any)._id.toString();
@@ -331,10 +357,10 @@ export class UserService {
                     const transformedUser = plainToInstance(UserResponseDto, userData, {
                         excludeExtraneousValues: true
                     });
-                    
+
                     // Đảm bảo userId được set (transform có thể không hoạt động khi serialize lại)
                     transformedUser.userId = userId;
-                    
+
                     // Tạo plain object với tất cả fields bao gồm userId để đảm bảo có trong response
                     const userPlain: any = {
                         userId: userId,
@@ -342,7 +368,7 @@ export class UserService {
                         email: transformedUser.email,
                         username: transformedUser.username,
                     };
-                    
+
                     // Thêm các fields optional nếu có
                     if (transformedUser.phoneNumber) userPlain.phoneNumber = transformedUser.phoneNumber;
                     if (transformedUser.bio) userPlain.bio = transformedUser.bio;
@@ -352,23 +378,23 @@ export class UserService {
                     if (transformedUser.isActive !== undefined) userPlain.isActive = transformedUser.isActive;
                     if (transformedUser.createdAt) userPlain.createdAt = transformedUser.createdAt;
                     if (transformedUser.role) userPlain.role = transformedUser.role;
-                    
+
                     // Transform lại từ plain object với userId đã được set
                     dto.viewedUser = plainToInstance(UserResponseDto, userPlain, {
                         excludeExtraneousValues: true
                     });
-                    
+
                     // Đảm bảo userId được set sau khi transform
                     if (dto.viewedUser) {
                         dto.viewedUser.userId = userId;
                     }
                 }
             }
-            
+
             const finalDto = plainToInstance(SearchHistoryResponseDto, dto, {
                 excludeExtraneousValues: true
             });
-            
+
             // Đảm bảo userId được set trong viewedUser sau khi serialize lại
             if (finalDto.viewedUser && historyObj.viewedUserId) {
                 const viewedUser = historyObj.viewedUserId as any;
@@ -377,7 +403,7 @@ export class UserService {
                     // Set trực tiếp vào instance để đảm bảo có trong response
                     (finalDto.viewedUser as any).userId = userId;
                 }
-            }          
+            }
             return finalDto;
         });
 

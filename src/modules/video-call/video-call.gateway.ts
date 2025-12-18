@@ -13,6 +13,7 @@ import { CreateCallDto, CreateGroupCallDto, CallInviteResponseDto } from './dto'
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AppEvents } from 'src/shared/enums/app-events.enum';
 import UserResponseDto from '../user/dto/user.response.dto';
+import { FcmService } from 'src/shared/services/fcm.service';
 
 @WebSocketGateway({
     cors: {
@@ -39,6 +40,7 @@ export class VideoCallGateway implements OnGatewayConnection, OnGatewayDisconnec
     constructor(
         private readonly videoCallService: VideoCallService,
         private readonly eventEmitter: EventEmitter2,
+        private readonly fcmService: FcmService,
     ) { }
 
     async handleConnection(client: Socket) {
@@ -161,15 +163,15 @@ export class VideoCallGateway implements OnGatewayConnection, OnGatewayDisconnec
 
             // Emit to receiver(s) - check if online first
             callResponse.receiverIds.forEach((receiverId) => {
-                const isOnline = this.userSockets.has(receiverId);
+                // const isOnline = this.userSockets.has(receiverId);
 
-                if (isOnline) {
-                    // User is online - send via socket
-                    this.sendToUser(receiverId, 'call:incoming', inviteData);
-                } else {
-                    // User is offline - send push notification
-                    this.sendPushNotificationForCall(receiverId, inviteData, callerInfo);
-                }
+                // if (isOnline) {
+                //     // User is online - send via socket
+                //     this.sendToUser(receiverId, 'call:incoming', inviteData);
+                // } else {
+                // User is offline - send push notification
+                this.sendPushNotificationForCall(receiverId, inviteData, callerInfo);
+                // }
             });
 
             // Send call created response to caller with token
@@ -235,15 +237,15 @@ export class VideoCallGateway implements OnGatewayConnection, OnGatewayDisconnec
 
             // Emit to all participants - check if online first
             callResponse.receiverIds.forEach((participantId) => {
-                const isOnline = this.userSockets.has(participantId);
+                // const isOnline = this.userSockets.has(participantId);
 
-                if (isOnline) {
-                    // User is online - send via socket
-                    this.sendToUser(participantId, 'call:incoming', inviteData);
-                } else {
-                    // User is offline - send push notification
-                    this.sendPushNotificationForCall(participantId, inviteData, callerInfo);
-                }
+                // if (isOnline) {
+                //     // User is online - send via socket
+                //     this.sendToUser(participantId, 'call:incoming', inviteData);
+                // } else {
+                // User is offline - send push notification
+                this.sendPushNotificationForCall(participantId, inviteData, callerInfo);
+                // }
             });
 
             // Send call created response to caller with token
@@ -306,6 +308,9 @@ export class VideoCallGateway implements OnGatewayConnection, OnGatewayDisconnec
             // Generate token for the user
             const tokenData = await this.videoCallService.getTokenForCall(activeCall.channelId, userId);
 
+            // Get caller info for the receiver to display
+            const [callerInfo] = await this.eventEmitter.emitAsync(AppEvents.USER_GET_BASIC_INFO, { userId: activeCall.callerId });
+
             // Notify caller and other participants
             this.sendToUser(activeCall.callerId, 'call:accepted', {
                 callId,
@@ -313,10 +318,14 @@ export class VideoCallGateway implements OnGatewayConnection, OnGatewayDisconnec
                 ...tokenData,
             });
 
-            // Send token to the user who accepted
+            // Send token to the user who accepted (include caller info for display)
             client.emit('call:accepted', {
                 callId,
                 ...tokenData,
+                callerInfo: callerInfo as UserResponseDto || undefined,
+                callerId: activeCall.callerId,
+                callType: activeCall.callType,
+                conversationId: activeCall.conversationId,
             });
 
             // Notify all participants that someone joined
@@ -531,33 +540,23 @@ export class VideoCallGateway implements OnGatewayConnection, OnGatewayDisconnec
                 return;
             }
 
-            // TODO: Implement FCM service to send push notification
-            // This requires:
-            // 1. Install firebase-admin package
-            // 2. Create FCM service
-            // 3. Send notification with call data
-
             console.log(`[VideoCall] Sending push notification to ${receiverId} for call ${inviteData.callId}`);
 
-            // Example push notification payload:
-            // {
-            //   notification: {
-            //     title: `${callerInfo?.fullName || callerInfo?.username || 'Someone'} is calling`,
-            //     body: inviteData.callType === 'video' ? 'Incoming video call' : 'Incoming audio call',
-            //   },
-            //   data: {
-            //     type: 'incoming_call',
-            //     callId: inviteData.callId,
-            //     channelId: inviteData.channelId,
-            //     callerId: inviteData.callerId,
-            //     callType: inviteData.callType,
-            //     conversationId: inviteData.conversationId || '',
-            //   },
-            //   token: userData.fcmToken,
-            // }
+            // Send FCM notification
+            await this.fcmService.sendIncomingCallNotification({
+                fcmToken: userData.fcmToken,
+                callId: inviteData.callId,
+                callerId: inviteData.callerId,
+                callerName: callerInfo?.fullName || callerInfo?.username || 'Someone',
+                callerAvatar: callerInfo?.avatarUrl,
+                callType: inviteData.callType,
+                channelId: inviteData.channelId,
+                receiverId: receiverId,
+            });
 
+            console.log(`[VideoCall] Push notification sent successfully to ${receiverId}`);
         } catch (error) {
-            console.error(`[VideoCall] Error sending push notification to ${receiverId}:`, error);
+            console.error(`[VideoCall] Failed to send push notification to ${receiverId}:`, error);
         }
     }
 

@@ -7,6 +7,7 @@ import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { UpdatePrivacyDto } from 'src/common/dto/update-privacy.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { storage } from '../cloudinary/cloudinary.storage';
+import { File } from 'multer';
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
@@ -22,7 +23,7 @@ export class StoryController {
   createStory(
     @Req() req: any,
     @Body() createStoryDto: CreateStoryDto,
-    @UploadedFiles() files?: Express.Multer.File[],
+    @UploadedFiles() files?: File[],
   ) {
     const userId = req.user.userId;
     // Lấy file đầu tiên nếu có
