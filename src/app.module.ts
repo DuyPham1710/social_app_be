@@ -30,7 +30,7 @@ import { SharedModule } from './shared/shared.module';
     EventEmitterModule.forRoot(),
     ConfigModule.forRoot({ isGlobal: true }),
     DatabaseModule,
-    SharedModule, // Add SharedModule for FcmService
+    SharedModule,
     UserModule,
     AuthModule,
     MailModule,
