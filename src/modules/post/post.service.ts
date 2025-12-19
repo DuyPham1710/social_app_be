@@ -271,7 +271,7 @@ export class PostService {
         return result;
     }
 
-    async createPost(createPostDto: CreatePostDto, userId: string, files?: File[]): Promise<{ message: string }> {
+    async createPost(createPostDto: CreatePostDto, userId: string, files?: Express.Multer.File[]): Promise<{ message: string }> {
         const { caption, titles = [], orders = [], layout, privacy_type, friends_except, friends_detail } = createPostDto;
 
         const post = await this.postModel.create({
@@ -483,15 +483,50 @@ export class PostService {
 
         const postIdObject = new Types.ObjectId(postId);
 
-        let post = await this.postModel.findById(postIdObject);
+        const post = await this.postModel.findById(postIdObject);
         if (!post) {
             throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
         }
 
-        post = PrivacyUtil.applyPrivacy(post, updatePostPrivacyDto);
-        await post.save();
 
-        return post;
+        const setData: any = {
+            privacy_type: updatePostPrivacyDto.privacy_type,
+        };
+        const unsetData: any = {};
+
+
+        if (updatePostPrivacyDto.privacy_type === PrivacyType.FRIENDS_EXCEPT) {
+            if (updatePostPrivacyDto.friends_except && updatePostPrivacyDto.friends_except.length > 0) {
+                setData.friends_except = updatePostPrivacyDto.friends_except.map(id => new Types.ObjectId(id));
+            } else {
+                setData.friends_except = [];
+            }
+
+            unsetData.friends_detail = '';
+        } else if (updatePostPrivacyDto.privacy_type === PrivacyType.FRIENDS_DETAIL) {
+            if (updatePostPrivacyDto.friends_detail && updatePostPrivacyDto.friends_detail.length > 0) {
+                setData.friends_detail = updatePostPrivacyDto.friends_detail.map(id => new Types.ObjectId(id));
+            } else {
+                setData.friends_detail = [];
+            }
+
+            unsetData.friends_except = '';
+        } else {
+            // Các privacy type khác, xóa cả hai
+            unsetData.friends_except = '';
+            unsetData.friends_detail = '';
+        }
+
+
+        const updateQuery: any = { $set: setData };
+        if (Object.keys(unsetData).length > 0) {
+            updateQuery.$unset = unsetData;
+        }
+
+        await this.postModel.updateOne({ _id: postIdObject }, updateQuery);
+        const updatedPost = await this.postModel.findById(postIdObject);
+
+        return updatedPost;
     }
 
     // api check post privacy của user đó có thể xem được post này không
