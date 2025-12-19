@@ -147,9 +147,14 @@ export class StoryService {
                 ).filter((s) => s !== null);
 
                 // Convert to StoryResponseDto[]
-                const storyDtos = filteredStories.map(story =>
-                    plainToInstance(StoryResponseDto, story, { excludeExtraneousValues: true })
-                );
+
+                const storyDtos = filteredStories.map(story => {
+                    const storyObj = {
+                        ...story,
+                        id: story.id?.toString(),
+                    };
+                    return plainToInstance(StoryResponseDto, storyObj, { excludeExtraneousValues: true });
+                });
 
                 return {
                     user: userDto,
@@ -184,9 +189,14 @@ export class StoryService {
                     .exec();
 
                 // Convert to StoryResponseDto[]
-                const currentUserStoryDtos = currentUserStories.map(story =>
-                    plainToInstance(StoryResponseDto, story, { excludeExtraneousValues: true })
-                );
+
+                const currentUserStoryDtos = currentUserStories.map(story => {
+                    const storyObj = {
+                        ...story,
+                        id: story.id?.toString(),
+                    };
+                    return plainToInstance(StoryResponseDto, storyObj, { excludeExtraneousValues: true });
+                });
 
                 // Chỉ thêm vào đầu nếu có story
                 if (currentUserStoryDtos.length > 0) {
