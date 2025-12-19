@@ -64,6 +64,7 @@ export class CommentService {
                     this.eventEmitter.emit('comment.tagged', {
                         receiver: taggedId.toString(),
                         sender: userId,
+                        postId: postId,
                         commentId: saved._id,
                         content: saved.content,
                         type: NotificationType.MENTION,
@@ -83,6 +84,7 @@ export class CommentService {
                     sender: userId,
                     commentId: saved._id,
                     content: saved.content,
+                    postId: postId,
                     type: NotificationType.POST_COMMENT,
                     user: {
                         fullName: user.fullName,
