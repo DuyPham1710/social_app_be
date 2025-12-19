@@ -41,17 +41,31 @@ export class NotificationListener {
     const post = await this.postModel.findById(payload.postId).select('userId');
     if (!post) return; 
 
-    const ownerId = post.userId;
+    const ownerId = post.userId.toString();
+
+    console.log('NotificationListener - handleReactCreated - ownerId:', ownerId, ' payload.sender:', payload.sender);
 
     if (ownerId === payload.sender) return;
 
     await this.notificationService.createAndEmit({
-      receiver: ownerId.toString(),
+      receiver: ownerId,
       sender: payload.sender,
       type: NotificationType.POST_REACTION,
       targetId: payload.reactId,
       message: ` đã bày tỏ cảm xúc về bài viết của bạn: "${payload.content.substring(0, 100)}"`,
       content: payload.content,
     });
+  }
+  @OnEvent('comment.tagged')
+  async handleCommentTagged(payload: any) {
+      await this.notificationService.createAndEmit({
+          receiver: payload.receiver,
+          sender: payload.sender,
+          type: NotificationType.POST_COMMENT,
+          targetId: payload.commentId,         
+          message: `đã nhắc đến bạn trong một bình luận: "${payload.content}"`,
+          content: payload.content,
+      });
+
   }
 }

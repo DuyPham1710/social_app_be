@@ -7,6 +7,7 @@ import { CreateCommentDto } from './dto/create-comment.dto';
 import { NotificationType } from 'src/shared/enums/notification_type';
 import { PostDocument, Post } from '../post/schemas/post.schema';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { AppEvents } from 'src/shared/enums/app-events.enum';
 
 @Injectable()
 export class CommentService {
@@ -18,20 +19,24 @@ export class CommentService {
     ) { }
 
     async create(createCommentDto: CreateCommentDto, userId: string) {
-        const { content, postId, parentId } = createCommentDto;
+        const { content, postId, parentId, taggedUserIds } = createCommentDto;
+
+        const uniqueTaggedIds = taggedUserIds
+            ? [...new Set(taggedUserIds)].map(id => new Types.ObjectId(id))
+            : [];
+
 
         const comment = new this.commentModel({
             content,
             userId: new Types.ObjectId(userId),
             postId: new Types.ObjectId(postId),
             parentId: parentId ? new Types.ObjectId(parentId) : null,
+            taggedUserIds: uniqueTaggedIds, 
         });
 
         const saved = await comment.save();
         const post = await this.postModel.findById(createCommentDto.postId).select('userId');
         const postOwnerId = post?.userId;
-
-        // Populate user information và parent comment nếu có
         const populated = await saved.populate([
             {
                 path: 'userId',
@@ -44,23 +49,45 @@ export class CommentService {
                     path: 'userId',
                     select: 'username fullName avatarUrl'
                 }
+            },
+            { 
+                path: 'taggedUserIds',
+                select: 'username fullName avatarUrl _id' 
             }
         ]);
 
-        if(populated.parentId!== null){
-            
+        const user = populated.userId as any;
+
+        if (uniqueTaggedIds.length > 0) {
+            uniqueTaggedIds.forEach(taggedId => {
+                if (taggedId.toString() !== userId) {
+                    this.eventEmitter.emit('comment.tagged', {
+                        receiver: taggedId.toString(),
+                        sender: userId,
+                        commentId: saved._id,
+                        content: saved.content,
+                        type: NotificationType.MENTION,
+                        user: {
+                            fullName: user.fullName,
+                            username: user.username,
+                            avatarUrl: user.avatarUrl
+                        }
+                    });
+                }
+            });
         }
         else{
-            const user = populated.userId as any;
             if (postOwnerId && postOwnerId.toString() !== userId) {
                 this.eventEmitter.emit('comment.created', {
                     receiver: postOwnerId.toString(),
                     sender: userId,
                     commentId: saved._id,
                     content: saved.content,
+                    type: NotificationType.POST_COMMENT,
                     user: {
                         fullName: user.fullName,
                         username: user.username,
+                        avatarUrl: user.avatarUrl
                     }
                 });
             }
@@ -110,32 +137,38 @@ export class CommentService {
         return { deleted: true, id: commentId };
     }
 
-    async findByPostId(postId: string) {
+    async findByPostId(postId: string, viewerId?: string) {
         // Validate postId
         if (!Types.ObjectId.isValid(postId)) {
             throw new NotFoundException('Invalid postId');
         }
 
         // Lấy tất cả comments của post, sắp xếp theo thời gian tạo
-        let comments = await this.commentModel
+        let comments: any[] = await this.commentModel
             .find({ postId: new Types.ObjectId(postId) })
             .sort({ createdAt: 1 }) // Sắp xếp tăng dần theo thời gian (comment cũ nhất trước)
             .populate([
                 {
                     path: 'userId',
-                    select: 'username fullName avatarUrl email _id'
+                    select: 'username fullName avatarUrl email _id',
                 },
                 {
                     path: 'parentId',
                     select: 'content userId createdAt',
                     populate: {
                         path: 'userId',
-                        select: 'username fullName avatarUrl'
-                    }
+                        select: 'username fullName avatarUrl',
+                    },
+                },
+                {
+                    path: 'taggedUserIds',
+                    select: '_id fullName avatarUrl username',
                 }
             ])
+            .lean()
             .exec();
 
+        // Chuẩn hóa userId / parentId.userId giống trước đây
         comments = comments.map((comment: any) => {
             if (comment && comment.userId && typeof comment.userId === 'object' && comment.userId._id) {
                 comment.userId = {
@@ -154,9 +187,50 @@ export class CommentService {
                     username: comment.parentId.userId.username,
                 };
             }
+            if (Array.isArray(comment.taggedUserIds)) {
+                comment.taggedUserIds = comment.taggedUserIds.map((u: any) => {
+                    if (u && u._id) {
+                        return {
+                        userId: u._id,
+                        fullName: u.fullName,
+                        avatarUrl: u.avatarUrl,
+                        username: u.username,
+                        };
+                    }
+                    return u;
+                });
+            }
             return comment;
         });
 
+        // Lấy danh sách react cho từng comment thông qua ReactCommentService
+        const commentIds = comments.map((c: any) => c._id?.toString()).filter(Boolean);
+
+        if (commentIds.length > 0) {
+            try {
+                const [reactsMap] = await this.eventEmitter.emitAsync(AppEvents.REACT_COMMENT_GET, {
+                    commentIds,
+                    viewerId,
+                });
+
+                comments = comments.map((comment: any) => {
+                    const id = comment._id?.toString();
+                    comment.reacts = (reactsMap && reactsMap[id]) ? reactsMap[id] : [];
+                    return comment;
+                });
+            } catch (e) {
+                // Nếu lỗi khi lấy reacts thì vẫn trả về comments bình thường
+            }
+        }
+
+        // Log để debug số lượng reacts trên mỗi comment
+        // console.log(
+        //     '[CommentService] findByPostId result:',
+        //     comments.map((c: any) => ({
+        //         id: c._id?.toString(),
+        //         reactsCount: Array.isArray(c.reacts) ? c.reacts.length : 0,
+        //     })),
+        // );
 
         return comments;
     }

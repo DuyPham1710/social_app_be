@@ -1,4 +1,7 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateReactCommentDto } from './create-react-comment.dto';
+import { IsMongoId, IsNotEmpty } from 'class-validator';
 
-export class UpdateReactCommentDto extends PartialType(CreateReactCommentDto) {}
+export class UpdateReactCommentDto {
+  @IsMongoId()
+  @IsNotEmpty()
+  emojiId: string;
+}

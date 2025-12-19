@@ -234,7 +234,10 @@ export class CommentGateway implements OnGatewayConnection, OnGatewayDisconnect 
         userConnection.userId,
       );
 
-      const comments = await this.commentService.findByPostId(created.postId.toString());
+      const comments = await this.commentService.findByPostId(
+        created.postId.toString(),
+        userConnection.userId,
+      );
 
       const commentData = {
         postId,
@@ -294,7 +297,10 @@ export class CommentGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
       await this.commentService.update(commentId, content.trim(), userConnection.userId);
 
-      const comments = await this.commentService.findByPostId(postId.toString());
+      const comments = await this.commentService.findByPostId(
+        postId.toString(),
+        userConnection.userId,
+      );
 
       const updateData = {
         postId: postId.toString(),
@@ -353,7 +359,10 @@ export class CommentGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
       await this.commentService.remove(payload.commentId.toString(), userConnection.userId);
 
-      const comments = await this.commentService.findByPostId(payload.postId.toString());
+      const comments = await this.commentService.findByPostId(
+        payload.postId.toString(),
+        userConnection.userId,
+      );
 
       const deleteData = {
         postId: payload.postId.toString(),
@@ -463,7 +472,21 @@ export class CommentGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
       this.logger.log(`Loading comments for post ${postId} by user ${userConnection.userId}`);
 
-      const comments = await this.commentService.findByPostId(postId);
+      const comments = await this.commentService.findByPostId(
+        postId,
+        userConnection.userId,
+      );
+
+      // this.logger.log(
+      //   `Loaded ${comments.length} comments for post ${postId}. React summary: ${JSON.stringify(
+      //     comments.map((c: any) => ({
+      //       id: c._id?.toString?.(),
+      //       reactsCount: Array.isArray((c as any).reacts)
+      //         ? (c as any).reacts.length
+      //         : 0,
+      //     })),
+      //   )}`,
+      // );
 
       client.emit('commentsLoaded', {
         postId,
@@ -471,8 +494,6 @@ export class CommentGateway implements OnGatewayConnection, OnGatewayDisconnect 
         count: comments.length,
         timestamp: new Date()
       });
-
-      this.logger.log(`Loaded ${comments.length} comments for post ${postId}`);
     } catch (error) {
       this.logger.error(`Error loading comments: ${error.message}`);
       client.emit('error', {
