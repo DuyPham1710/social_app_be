@@ -21,6 +21,7 @@ import { ChatModule } from './modules/chat/chat.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { VideoCallModule } from './modules/video-call/video-call.module';
+import { SharedModule } from './shared/shared.module';
 
 
 
@@ -29,6 +30,7 @@ import { VideoCallModule } from './modules/video-call/video-call.module';
     EventEmitterModule.forRoot(),
     ConfigModule.forRoot({ isGlobal: true }),
     DatabaseModule,
+    SharedModule,
     UserModule,
     AuthModule,
     MailModule,

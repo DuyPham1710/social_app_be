@@ -1,13 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Patch, Put, Query, Req, UploadedFile, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, Req, UploadedFile, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
 import UserResponseDto from './dto/user.response.dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation } from '@nestjs/swagger';
 import UpdateUserDto from './dto/update.user.dto';
+import { UpdateFcmTokenDto } from './dto/update-fcm-token.dto';
 import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { storage } from '../cloudinary/cloudinary.storage';
 import { Public } from 'src/common/decorators/public.decorator';
-//import { File } from 'multer';
+import { File } from 'multer';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { UserRole } from 'src/shared/enums/user_role';
 import { Roles } from 'src/common/decorators/role.decorator';
@@ -92,7 +93,7 @@ export class UserController {
     return this.userService.findOne(id);
   }
 
- @Patch()
+  @Patch()
   @UseInterceptors(FileFieldsInterceptor([
     { name: 'file', maxCount: 1 },  // Avatar
     { name: 'cover', maxCount: 1 }  // Ảnh bìa mới
@@ -131,7 +132,7 @@ export class UserController {
   //   @Body() updateUserDto: UpdateUserDto,
   //   @UploadedFiles() files: { file?: File, cover?: File}
   // ): Promise<UserResponseDto> {
-    
+
   //   if (files?.file && files.file.path) {
   //     updateUserDto.avatarUrl = files.file.path;
   //   }
@@ -148,7 +149,7 @@ export class UserController {
     // Sửa type của files thành mảng file
     @UploadedFiles() files: { file?: File[], cover?: File[] }
   ): Promise<UserResponseDto> {
-    
+
     if (files?.file && files.file.length > 0) {
       updateUserDto.avatarUrl = files.file[0].path;
     }
@@ -167,5 +168,17 @@ export class UserController {
     updateUserDto.avatarUrl = '';
     updateUserDto.coverUrl = '';
     return this.userService.update(updateUserDto.userId!, updateUserDto);
+  }
+
+  @Post('fcm-token')
+  @ApiOperation({ summary: 'Cập nhật FCM token cho push notification' })
+  @ApiBody({ type: UpdateFcmTokenDto })
+  async updateFcmToken(
+    @Req() req: any,
+    @Body() updateFcmTokenDto: UpdateFcmTokenDto
+  ): Promise<{ message: string }> {
+    const userId = req.user.userId;
+    await this.userService.updateFcmToken(userId, updateFcmTokenDto.fcmToken);
+    return { message: 'FCM token updated successfully' };
   }
 }

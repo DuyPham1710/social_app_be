@@ -31,8 +31,8 @@ export class NotificationListener {
       sender: payload.sender,
       type: NotificationType.POST_COMMENT,
       targetId: payload.commentId,
-      content: payload.content,
       message: ` đã bình luận về bài viết của bạn: "${payload.content.substring(0, 100)}"`,
+      content: payload.postId,
     });
   }
 
@@ -51,7 +51,7 @@ export class NotificationListener {
       receiver: ownerId,
       sender: payload.sender,
       type: NotificationType.POST_REACTION,
-      targetId: payload.reactId,
+      targetId: payload.postId,
       message: ` đã bày tỏ cảm xúc về bài viết của bạn: "${payload.content.substring(0, 100)}"`,
       content: payload.content,
     });
@@ -64,7 +64,7 @@ export class NotificationListener {
           type: NotificationType.POST_COMMENT,
           targetId: payload.commentId,         
           message: `đã nhắc đến bạn trong một bình luận: "${payload.content}"`,
-          content: payload.content,
+          content: payload.postId,
       });
 
   }
