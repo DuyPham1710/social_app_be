@@ -55,4 +55,7 @@ export default class UserResponseDto {
 
     @Expose()
     role?: string;
+
+    @Expose()
+    fcmToken?: string;
 }

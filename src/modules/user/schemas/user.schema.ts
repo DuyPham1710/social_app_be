@@ -63,6 +63,10 @@ export class User {
     @Prop({ type: String })
     refreshToken?: string;
 
+    // FCM token for push notifications
+    @Prop({ type: String, default: '' })
+    fcmToken: string;
+
     // role of user
     @Prop({ type: String, enum: UserRole, default: UserRole.USER })
     role: UserRole;

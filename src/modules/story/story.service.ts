@@ -31,10 +31,10 @@ export class StoryService {
             ...createStoryDto,
             userId: new Types.ObjectId(userId),
         });
-        
+
         // Lưu story trước để có storyId
         const savedStory = await story.save();
-        
+
         // Nếu có music và có preview link, tải audio và upload lên Cloudinary
         if (createStoryDto.music?.preview) {
             try {
@@ -42,13 +42,13 @@ export class StoryService {
                     createStoryDto.music.preview,
                     savedStory._id.toString(),
                 );
-                
+
                 // Cập nhật music object với link Cloudinary
                 savedStory.music = {
                     ...createStoryDto.music,
                     preview: cloudinaryAudioUrl, // Thay thế preview link bằng link Cloudinary
                 };
-                
+
                 await savedStory.save();
             } catch (error) {
                 // Nếu upload thất bại, vẫn giữ nguyên preview link gốc
@@ -57,7 +57,7 @@ export class StoryService {
                 // throw new HttpException('Failed to upload audio', HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
-        
+
         return savedStory;
     }
 
@@ -165,7 +165,7 @@ export class StoryService {
             // Lấy thông tin user đăng nhập
             const [currentUserResult] = await this.eventEmitter.emitAsync(AppEvents.USER_FIND_ONE, { userId: viewerId });
             let currentUserDto: UserResponseDto | null = null;
-            
+
             // Xử lý kết quả từ event emitter
             if (currentUserResult && !currentUserResult.error) {
                 // currentUserResult đã là UserResponseDto từ USER_FIND_ONE event
