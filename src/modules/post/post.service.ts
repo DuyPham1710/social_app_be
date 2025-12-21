@@ -36,7 +36,7 @@ export class PostService {
 
         const postObjectId = new Types.ObjectId(postId);
 
-        const post = await this.postModel.findById(postObjectId).populate('userId', 'username fullName avatarUrl').populate({ path: 'urls', options: { sort: { order: 1 } } }).exec();
+        const post = await this.postModel.findOne({ _id: postObjectId, isHidden: { $ne: true } }).populate('userId', 'username fullName avatarUrl').populate({ path: 'urls', options: { sort: { order: 1 } } }).exec();
         if (!post) {
             throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
         }
@@ -79,10 +79,10 @@ export class PostService {
 
         const ownerObjectId = new Types.ObjectId(ownerId);
 
-        const totalPosts = await this.postModel.countDocuments({ userId: ownerObjectId });
+        const totalPosts = await this.postModel.countDocuments({ userId: ownerObjectId, isHidden: { $ne: true } });
 
         const posts = await this.postModel
-            .find({ userId: ownerObjectId })
+            .find({ userId: ownerObjectId, isHidden: { $ne: true } })
             .sort({ updatedAt: -1, caption: -1 })
             .skip(skip)
             .limit(limit)
@@ -161,7 +161,7 @@ export class PostService {
 
         // Query post của bạn bè
         let friendsPosts: PostDocument[] = await this.postModel
-            .find({ userId: { $in: friendIds } })
+            .find({ userId: { $in: friendIds }, isHidden: { $ne: true } })
             .populate('userId', 'username fullName avatarUrl')
             .populate({ path: 'urls', options: { sort: { order: 1 } } })
             .sort({ createdAt: -1 })
@@ -185,7 +185,7 @@ export class PostService {
 
         // query post của mình
         const myPosts: PostDocument[] = await this.postModel
-            .find({ userId: new Types.ObjectId(viewerId) })
+            .find({ userId: new Types.ObjectId(viewerId), isHidden: { $ne: true } })
             .populate('userId', 'username fullName avatarUrl')
             .populate({ path: 'urls', options: { sort: { order: 1 } } })
             .sort({ createdAt: -1 })
@@ -210,7 +210,8 @@ export class PostService {
                 .find({
                     privacy_type: PrivacyType.PUBLIC,
                     userId: { $nin: existingUserIds.map(id => new Types.ObjectId(id)) },
-                    _id: { $nin: existingPostIds.map(id => new Types.ObjectId(id)) }
+                    _id: { $nin: existingPostIds.map(id => new Types.ObjectId(id)) },
+                    isHidden: { $ne: true }
                 })
                 .populate('userId', 'username fullName avatarUrl')
                 .populate({ path: 'urls', options: { sort: { order: 1 } } })
@@ -540,7 +541,7 @@ export class PostService {
             throw new HttpException('Invalid viewerId', HttpStatus.BAD_REQUEST);
         }
 
-        const post = await this.postModel.findById(postId).lean();
+        const post = await this.postModel.findOne({ _id: postId, isHidden: { $ne: true } }).lean();
         if (!post) return false;
 
         // Lấy danh sách bạn bè của chủ post
