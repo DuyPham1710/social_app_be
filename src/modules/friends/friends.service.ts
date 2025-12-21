@@ -178,6 +178,12 @@ export class FriendsService {
       {
         $unwind: '$friendInfo'
       },
+
+      {
+        $match: {
+          'friendInfo.role': { $ne: 'admin' }
+        }
+      },
       // Bước 3: Lookup để tìm danh sách bạn bè của từng friend
       {
         $lookup: {
@@ -275,6 +281,12 @@ export class FriendsService {
         }
       },
       { $unwind: '$friendInfo' },
+
+      {
+        $match: {
+          'friendInfo.role': { $ne: 'admin' }
+        }
+      }
     ];
 
     // Nếu có từ khóa tìm kiếm, thêm điều kiện match
@@ -446,6 +458,12 @@ export class FriendsService {
       {
         $unwind: '$userInfo'
       },
+
+      {
+        $match: {
+          'userInfo.role': { $ne: 'admin' }
+        }
+      },
       // Project các trường cần thiết
       {
         $project: {
@@ -521,7 +539,8 @@ export class FriendsService {
       {
         $match: {
           _id: { $nin: excludedUserIds },
-          isActive: true // Chỉ gợi ý user đang hoạt động
+          isActive: true, // Chỉ gợi ý user đang hoạt động
+          role: { $ne: 'admin' } 
         }
       },
       // Tính số bạn chung giữa currentUser và từng user mục tiêu
