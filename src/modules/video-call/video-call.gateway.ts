@@ -446,7 +446,7 @@ export class VideoCallGateway implements OnGatewayConnection, OnGatewayDisconnec
             // Update call status
             await this.videoCallService.updateCallStatus(activeCall.channelId, 'ended', userId);
 
-            // Notify all participants
+            // Notify all participants via socket
             const allParticipants = [activeCall.callerId, ...activeCall.participantIds];
             allParticipants.forEach((participantId) => {
                 this.sendToUser(participantId, 'call:ended', {
@@ -456,6 +456,19 @@ export class VideoCallGateway implements OnGatewayConnection, OnGatewayDisconnec
                     callStatus: finalCallStatus, // Add status to event
                 });
             });
+
+            // Send FCM notification to dismiss CallKit UI for all participants
+            const reason: 'missed' | 'rejected' | 'ended' =
+                (finalCallStatus === 'missed' || (!duration || duration === 0))
+                    ? 'missed'
+                    : 'ended';
+
+            // Send to all participants (receivers) who didn't end the call
+            for (const participantId of activeCall.participantIds) {
+                if (participantId !== userId) {
+                    await this.sendCallEndedNotification(participantId, callId, reason);
+                }
+            }
 
             // Send call summary message to conversation (if conversationId exists)
             if (activeCall.conversationId) {
@@ -557,6 +570,36 @@ export class VideoCallGateway implements OnGatewayConnection, OnGatewayDisconnec
             console.log(`[VideoCall] Push notification sent successfully to ${receiverId}`);
         } catch (error) {
             console.error(`[VideoCall] Failed to send push notification to ${receiverId}:`, error);
+        }
+    }
+
+    // Helper method để gửi FCM notification khi call ended
+    private async sendCallEndedNotification(
+        receiverId: string,
+        callId: string,
+        reason: 'missed' | 'rejected' | 'ended',
+    ) {
+        try {
+            // Get user's FCM token from database
+            const [userData] = await this.eventEmitter.emitAsync(AppEvents.USER_FIND_ONE, { userId: receiverId });
+
+            if (!userData || !userData.fcmToken) {
+                console.log(`[VideoCall] User ${receiverId} has no FCM token, cannot send call ended notification`);
+                return;
+            }
+
+            console.log(`[VideoCall] Sending call ended notification to ${receiverId} for call ${callId}`);
+
+            // Send FCM notification
+            await this.fcmService.sendCallEndedNotification({
+                fcmToken: userData.fcmToken,
+                callId: callId,
+                reason: reason,
+            });
+
+            console.log(`[VideoCall] Call ended notification sent successfully to ${receiverId}`);
+        } catch (error) {
+            console.error(`[VideoCall] Failed to send call ended notification to ${receiverId}:`, error);
         }
     }
 
