@@ -11,7 +11,6 @@ import { Public } from 'src/common/decorators/public.decorator';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { UserRole } from 'src/shared/enums/user_role';
 import { Roles } from 'src/common/decorators/role.decorator';
-import { File } from 'multer';
 
 @ApiBearerAuth()
 @Controller('user')
