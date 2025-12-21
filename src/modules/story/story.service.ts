@@ -147,12 +147,18 @@ export class StoryService {
                     )
                 ).filter((s) => s !== null);
 
-                // Convert to StoryResponseDto[]
+                // Lấy danh sách react của từng story thông qua event emitter
+                const storyIds = filteredStories.map(s => s._id.toString());
+                const [reactsMap] = await this.eventEmitter.emitAsync(AppEvents.REACT_STORY_GET, { storyIds, viewerId });
+                const [reactMap] = await this.eventEmitter.emitAsync(AppEvents.REACT_STORY_FIND_BY_USER, { userId: viewerId, storyIds });
 
+                // Convert to StoryResponseDto[]
                 const storyDtos = filteredStories.map(story => {
                     const storyObj = {
                         ...story,
                         id: story.id?.toString(),
+                        reacts: reactsMap[story._id.toString()] || [],
+                        isReact: reactMap[story._id.toString()] || null,
                     };
                     return plainToInstance(StoryResponseDto, storyObj, { excludeExtraneousValues: true });
                 });
@@ -189,12 +195,18 @@ export class StoryService {
                     .lean()
                     .exec();
 
-                // Convert to StoryResponseDto[]
+                // Lấy danh sách react của từng story thông qua event emitter
+                const currentUserStoryIds = currentUserStories.map(s => s._id.toString());
+                const [currentUserReactsMap] = await this.eventEmitter.emitAsync(AppEvents.REACT_STORY_GET, { storyIds: currentUserStoryIds, viewerId });
+                const [currentUserReactMap] = await this.eventEmitter.emitAsync(AppEvents.REACT_STORY_FIND_BY_USER, { userId: viewerId, storyIds: currentUserStoryIds });
 
+                // Convert to StoryResponseDto[]
                 const currentUserStoryDtos = currentUserStories.map(story => {
                     const storyObj = {
                         ...story,
                         id: story.id?.toString(),
+                        reacts: currentUserReactsMap[story._id.toString()] || [],
+                        isReact: currentUserReactMap[story._id.toString()] || null,
                     };
                     return plainToInstance(StoryResponseDto, storyObj, { excludeExtraneousValues: true });
                 });

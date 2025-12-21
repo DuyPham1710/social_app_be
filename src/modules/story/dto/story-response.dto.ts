@@ -3,6 +3,8 @@ import { PrivacyBase } from 'src/common/base/privacy.base';
 import UserResponseDto from 'src/modules/user/dto/user.response.dto';
 import { DeezerMusic } from 'src/shared/interfaces/deezer-music.interface';
 import { MediaType } from 'src/shared/enums/media_type';
+import { ReactStoryResponseDto } from 'src/modules/react-story/dto/react-story-response.dto';
+import { EmojiResponseDto } from 'src/modules/emoji/dto/emoji_response.dto';
 
 export class StoryResponseDto extends PrivacyBase {
     @Expose()
@@ -33,4 +35,10 @@ export class StoryResponseDto extends PrivacyBase {
 
     @Expose()
     updatedAt: Date;
+
+    @Expose()
+    reacts?: ReactStoryResponseDto[];
+
+    @Expose()
+    isReact?: EmojiResponseDto | null;
 }

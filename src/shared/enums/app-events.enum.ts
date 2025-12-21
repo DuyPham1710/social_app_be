@@ -34,6 +34,10 @@ export enum AppEvents {
     STORY_CREATED = 'story.created',
     STORY_EXPIRED = 'story.expired',
 
+    // ===== REACT STORY =====
+    REACT_STORY_GET = 'react-story.get',
+    REACT_STORY_FIND_BY_USER = 'react-story.findByUser',
+
     // ===== CHAT =====
     CHAT_SEND_MESSAGE = 'chat.sendMessage',
     REACT_COMMENT_GET = "REACT_COMMENT_GET",
