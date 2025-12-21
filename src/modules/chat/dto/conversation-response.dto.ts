@@ -56,5 +56,8 @@ export class ConversationResponseDto {
 
     @Expose()
     unreadCount?: number;
+
+    @Expose()
+    firstUnreadMessageIndex?: number; // Index của tin nhắn chưa đọc đầu tiên trong list
 }
 

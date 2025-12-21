@@ -272,7 +272,7 @@ export class PostService {
         return result;
     }
 
-    async createPost(createPostDto: CreatePostDto, userId: string, files?: Express.Multer.File[]): Promise<{ message: string }> {
+    async createPost(createPostDto: CreatePostDto, userId: string, files?: File[]): Promise<{ message: string }> {
         const { caption, titles = [], orders = [], layout, privacy_type, friends_except, friends_detail } = createPostDto;
 
         const post = await this.postModel.create({
