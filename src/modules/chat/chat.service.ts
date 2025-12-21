@@ -69,18 +69,28 @@ export class ChatService {
         //     return conv;
         // });
 
-        // Tính số tin nhắn chưa đọc cho mỗi cuộc hội thoại
+        // Tính số tin nhắn chưa đọc và index tin nhắn chưa đọc đầu tiên cho mỗi cuộc hội thoại
+        const userIdObjectId = new Types.ObjectId(userId);
         const conversationsWithUnread = await Promise.all(
             conversations.map(async (conv) => {
                 const unreadCount = await this.messageModel.countDocuments({
                     conversationId: conv._id,
-                    senderId: { $ne: new Types.ObjectId(userId) },
-                    'seenBy.userId': { $ne: new Types.ObjectId(userId) },
+                    senderId: { $ne: userIdObjectId },
+                    'seenBy.userId': { $ne: userIdObjectId },
+                    deletedFor: { $nin: [userIdObjectId] },
                 });
+
+                // Tính toán index của tin nhắn chưa đọc đầu tiên
+                const firstUnreadMessageIndex = await this.calculateFirstUnreadMessageIndex(
+                    conv._id.toString(),
+                    userId,
+                    unreadCount,
+                );
 
                 return {
                     ...conv,
                     unreadCount,
+                    firstUnreadMessageIndex,
                 };
             }),
         );
@@ -203,11 +213,21 @@ export class ChatService {
             throw new HttpException('Conversation not found', HttpStatus.NOT_FOUND);
         }
         //  console.log('>>> userID: ', userId);
+        const userIdObjectId = new Types.ObjectId(userId);
+
         const unreadCount = await this.messageModel.countDocuments({
             conversationId: conversation._id,
-            senderId: { $ne: new Types.ObjectId(userId) },
-            'seenBy.userId': { $ne: new Types.ObjectId(userId) },
+            senderId: { $ne: userIdObjectId },
+            'seenBy.userId': { $ne: userIdObjectId },
+            deletedFor: { $nin: [userIdObjectId] },
         });
+
+        // Tính toán index của tin nhắn chưa đọc đầu tiên
+        const firstUnreadMessageIndex = await this.calculateFirstUnreadMessageIndex(
+            conversationId,
+            userId,
+            unreadCount,
+        );
 
         // Sắp xếp participants: đưa chính user lên đầu
         // if (conversation.participants && conversation.participants.length > 1) {
@@ -221,6 +241,7 @@ export class ChatService {
         const conversationWithUnread = {
             ...conversation,
             unreadCount,
+            firstUnreadMessageIndex,
         };
 
         const conversationForTransform = {
@@ -805,6 +826,68 @@ export class ChatService {
 
         // Transform message sang response format
         return this.transformToMessageResponseDto(populatedMessage);
+    }
+
+    // Tính toán index của tin nhắn chưa đọc đầu tiên
+    // Messages được sort từ mới nhất đến cũ nhất (createdAt: -1)
+    // Tìm tin nhắn chưa đọc đầu tiên từ dưới lên (từ cũ nhất đến mới nhất)
+    private async calculateFirstUnreadMessageIndex(
+        conversationId: string,
+        userId: string,
+        unreadCount: number,
+    ): Promise<number | undefined> {
+        if (unreadCount <= 0) {
+            return undefined;
+        }
+
+        const userIdObjectId = new Types.ObjectId(userId);
+        const conversationObjectId = new Types.ObjectId(conversationId);
+
+        // Tối ưu: Tìm tin nhắn chưa đọc đầu tiên (từ cũ nhất) bằng aggregation
+        // Chỉ query tin nhắn chưa đọc, sort từ cũ đến mới, lấy tin nhắn đầu tiên
+        const firstUnreadMessage = await this.messageModel
+            .aggregate([
+                {
+                    $match: {
+                        conversationId: conversationObjectId,
+                        deletedFor: { $nin: [userIdObjectId] },
+                        senderId: { $ne: userIdObjectId },
+                        $or: [
+                            { seenBy: { $exists: false } },
+                            { 'seenBy.userId': { $ne: userIdObjectId } },
+                        ],
+                    },
+                },
+                {
+                    $sort: { createdAt: 1 }, // Sort từ cũ đến mới để lấy tin nhắn đầu tiên
+                },
+                {
+                    $limit: 1, // Chỉ lấy tin nhắn đầu tiên
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        createdAt: 1,
+                    },
+                },
+            ])
+            .exec();
+
+        if (!firstUnreadMessage || firstUnreadMessage.length === 0) {
+            return undefined;
+        }
+
+        const firstUnreadCreatedAt = firstUnreadMessage[0].createdAt;
+
+        // Đếm số messages mới hơn tin nhắn chưa đọc đầu tiên
+        // Đây chính là index của tin nhắn đó trong list (sort từ mới đến cũ)
+        const index = await this.messageModel.countDocuments({
+            conversationId: conversationObjectId,
+            deletedFor: { $nin: [userIdObjectId] },
+            createdAt: { $gt: firstUnreadCreatedAt },
+        });
+
+        return index;
     }
 
     // Transform message từ database format sang response format
