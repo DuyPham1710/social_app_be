@@ -178,7 +178,6 @@ export class FriendsService {
       {
         $unwind: '$friendInfo'
       },
-
       {
         $match: {
           'friendInfo.role': { $ne: 'admin' }
@@ -281,7 +280,6 @@ export class FriendsService {
         }
       },
       { $unwind: '$friendInfo' },
-
       {
         $match: {
           'friendInfo.role': { $ne: 'admin' }
@@ -458,7 +456,6 @@ export class FriendsService {
       {
         $unwind: '$userInfo'
       },
-
       {
         $match: {
           'userInfo.role': { $ne: 'admin' }
@@ -514,7 +511,7 @@ export class FriendsService {
     const skip = (page - 1) * limit;
 
     // Lấy thông tin user hiện tại
-    const currentUser = await this.userModel.findById(userId);
+    const currentUser = await this.userModel.findById(userId).lean();
     if (!currentUser) {
       throw new HttpException('Không tìm thấy người dùng', HttpStatus.NOT_FOUND);
     }
@@ -533,6 +530,16 @@ export class FriendsService {
       ...receivedRequests.map(r => r.sender_id) // Loại trừ những người đã nhận lời mời
     ];
 
+    // Chuẩn bị giá trị từ currentUser để dùng trong aggregation
+    const currentUserGender = currentUser.gender || '';
+    const currentUserSchool = currentUser.school || '';
+    const currentUserCurrentCity = currentUser.currentCity || '';
+    const currentUserHometown = currentUser.hometown || '';
+    const currentUserWorkplace = currentUser.workplace || '';
+    const currentUserRelationshipStatus = currentUser.relationshipStatus || '';
+    const currentUserDateOfBirth = currentUser.dateOfBirth || '';
+    const currentUserBirthYear = currentUserDateOfBirth ? parseInt(currentUserDateOfBirth.substring(0, 4)) || 0 : 0;
+
     // Tạo pipeline aggregation để ưu tiên người có bạn chung, vẫn thêm yếu tố ngẫu nhiên
     const pipeline: PipelineStage[] = [
       // Loại trừ những người không nên gợi ý
@@ -540,7 +547,7 @@ export class FriendsService {
         $match: {
           _id: { $nin: excludedUserIds },
           isActive: true, // Chỉ gợi ý user đang hoạt động
-          role: { $ne: 'admin' } 
+          role: { $ne: 'admin' } // Không gợi ý admin
         }
       },
       // Tính số bạn chung giữa currentUser và từng user mục tiêu
@@ -575,26 +582,22 @@ export class FriendsService {
           as: 'mutualFriends'
         }
       },
-      // Tạo điểm ngẫu nhiên và điểm ưu tiên
+      // Tính điểm cơ bản dựa trên bạn chung và yếu tố ngẫu nhiên
       {
         $addFields: {
           mutualFriendsCount: { $ifNull: [{ $arrayElemAt: ['$mutualFriends.mutualCount', 0] }, 0] },
           randomScore: { $rand: {} },
-        }
-      },
-      {
-        $addFields: {
-          // Ưu tiên mạnh cho bạn chung, thêm chút ngẫu nhiên để đa dạng
-          suggestionScore: {
+          // Điểm cơ bản từ bạn chung và ngẫu nhiên
+          baseScore: {
             $add: [
-              { $multiply: ['$mutualFriendsCount', 1000] },
-              { $multiply: ['$randomScore', 100] }
+              { $multiply: [{ $ifNull: [{ $arrayElemAt: ['$mutualFriends.mutualCount', 0] }, 0] }, 1000] },
+              { $multiply: [{ $rand: {} }, 50] }
             ]
           }
         }
       },
-      // Sắp xếp theo điểm gợi ý giảm dần
-      { $sort: { suggestionScore: -1, createdAt: -1 } },
+      // Sắp xếp tạm thời theo điểm cơ bản
+      { $sort: { baseScore: -1, createdAt: -1 } },
       // Project các trường cần thiết
       {
         $project: {
@@ -605,8 +608,12 @@ export class FriendsService {
           bio: 1,
           gender: 1,
           dateOfBirth: 1,
+          school: 1,
+          currentCity: 1,
+          hometown: 1,
+          workplace: 1,
+          relationshipStatus: 1,
           createdAt: 1,
-          randomScore: 1,
           mutualFriendsCount: 1,
           suggestionScore: 1
         }
@@ -619,10 +626,56 @@ export class FriendsService {
     // Tạo pipeline với phân trang
     const paginatedPipeline = [...pipeline, { $skip: skip }, { $limit: limit }];
 
-    const [suggestions, countResult] = await Promise.all([
+    const [suggestionsRaw, countResult] = await Promise.all([
       this.userModel.aggregate(paginatedPipeline),
       this.userModel.aggregate(countPipeline)
     ]);
+
+    // Tính điểm số dựa trên các tiêu chí sau khi aggregation
+    const suggestions = suggestionsRaw.map((user: any) => {
+      let score = user.suggestionScore || 0;
+      
+      // Cùng trường học (+150 điểm)
+      if (user.school && currentUserSchool && user.school === currentUserSchool) {
+        score += 150;
+      }
+      
+      // Cùng thành phố hiện tại (+150 điểm)
+      if (user.currentCity && currentUserCurrentCity && user.currentCity === currentUserCurrentCity) {
+        score += 150;
+      }
+      
+      // Cùng quê quán (+150 điểm)
+      if (user.hometown && currentUserHometown && user.hometown === currentUserHometown) {
+        score += 150;
+      }
+      
+      // Cùng nơi làm việc (+150 điểm)
+      if (user.workplace && currentUserWorkplace && user.workplace === currentUserWorkplace) {
+        score += 150;
+      }
+      
+      // Cùng trạng thái quan hệ (+100 điểm)
+      if (user.relationshipStatus && currentUserRelationshipStatus && user.relationshipStatus === currentUserRelationshipStatus) {
+        score += 100;
+      }
+      
+      // Cùng độ tuổi (+100 điểm nếu chênh lệch <= 3 năm)
+      if (user.dateOfBirth && currentUserBirthYear > 0) {
+        const userBirthYear = parseInt(user.dateOfBirth.substring(0, 4)) || 0;
+        if (userBirthYear > 0 && Math.abs(userBirthYear - currentUserBirthYear) <= 3) {
+          score += 100;
+        }
+      }
+      
+      return {
+        ...user,
+        suggestionScore: score
+      };
+    });
+
+    // Sắp xếp lại theo điểm số sau khi tính toán
+    suggestions.sort((a: any, b: any) => b.suggestionScore - a.suggestionScore);
 
     const total = countResult.length > 0 ? countResult[0].total : 0;
     const totalPages = Math.ceil(total / limit);

@@ -149,9 +149,7 @@ export class AuthService {
                 userId: user._id.toString(),
                 updateData: { password: hashedPassword }
             });
-            return plainToInstance(UserResponseDto, updatedUser, {
-                excludeExtraneousValues: true
-            });
+            return updatedUser;
         }
         throw new BadRequestException('Password and confirm password do not match. Please try again!');
     }
