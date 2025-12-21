@@ -1,5 +1,4 @@
-import { Expose, Type } from 'class-transformer';
-import { Types } from 'mongoose';
+import { Expose, Transform, Type } from 'class-transformer';
 import { PrivacyBase } from 'src/common/base/privacy.base';
 import UserResponseDto from 'src/modules/user/dto/user.response.dto';
 import { DeezerMusic } from 'src/shared/interfaces/deezer-music.interface';
@@ -7,7 +6,8 @@ import { MediaType } from 'src/shared/enums/media_type';
 
 export class StoryResponseDto extends PrivacyBase {
     @Expose()
-    _id: Types.ObjectId;
+    @Transform(({ obj }) => obj._id?.toString() || obj.id?.toString())
+    _id: string;
 
     @Expose()
     title?: string;

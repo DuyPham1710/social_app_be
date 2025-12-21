@@ -9,12 +9,30 @@ export class PrivacyUtil {
     ): T {
         entity.privacy_type = dto.privacy_type;
 
-        if (dto.friends_except) {
-            entity.friends_except = dto.friends_except.map(id => new Types.ObjectId(id));
-        }
+        if (dto.privacy_type === PrivacyType.FRIENDS_EXCEPT) {
 
-        if (dto.friends_detail) {
-            entity.friends_detail = dto.friends_detail.map(id => new Types.ObjectId(id));
+            if (dto.friends_except && dto.friends_except.length > 0) {
+                entity.friends_except = dto.friends_except.map(id => new Types.ObjectId(id));
+            } else {
+
+                entity.friends_except = [];
+            }
+
+            (entity as any).friends_detail = undefined;
+        } else if (dto.privacy_type === PrivacyType.FRIENDS_DETAIL) {
+
+            if (dto.friends_detail && dto.friends_detail.length > 0) {
+                entity.friends_detail = dto.friends_detail.map(id => new Types.ObjectId(id));
+            } else {
+
+                entity.friends_detail = [];
+            }
+
+            (entity as any).friends_except = undefined;
+        } else {
+
+            (entity as any).friends_except = undefined;
+            (entity as any).friends_detail = undefined;
         }
 
         return entity;
