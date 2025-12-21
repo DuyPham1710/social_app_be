@@ -846,8 +846,18 @@ export class AdminService {
     }
 
     report.status = status;
-    // Nếu muốn lưu note, có thể mở rộng schema PostReport để thêm field note
     await report.save();
+
+    const post = await this.postModel.findById(report.postId).exec();
+    if (post) {
+      if (status === 'reviewed') {
+        post.isHidden = true;
+        await post.save();
+      } else if (status === 'rejected') {
+        post.isHidden = false;
+        await post.save();
+      }
+    }
 
     return {
       message: 'Post report status updated successfully',

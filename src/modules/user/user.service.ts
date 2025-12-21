@@ -168,6 +168,7 @@ export class UserService {
         // Tìm bạn bè trực tiếp phù hợp query
         const friendsMatched = await this.userModel.find({
             _id: { $in: friendIds },
+            role: { $ne: 'admin' },
             $or: [
                 { username: qRegex },
                 { fullName: qRegex }
@@ -194,6 +195,7 @@ export class UserService {
         // Tìm mutual friends phù hợp query
         const mutualMatched = await this.userModel.find({
             _id: { $in: mutualIds },
+            role: { $ne: 'admin' },
             $or: [
                 { username: qRegex },
                 { fullName: qRegex }
@@ -203,6 +205,7 @@ export class UserService {
         // Tìm tất cả user khác phù hợp query (ngoại trừ chính mình và bạn bè đã có)
         const otherMatched = await this.userModel.find({
             _id: { $nin: [userId, ...friendIds, ...mutualIds] },
+            role: { $ne: 'admin' },
             $or: [
                 { username: qRegex },
                 { fullName: qRegex }

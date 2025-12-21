@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -23,9 +25,13 @@ export class ReactStoryController {
   constructor(private readonly reactStoryService: ReactStoryService) {}
 
   @Post()
-  createOrUpdate(@Req() req, @Body() dto: CreateReactStoryDto) {
+  async createOrUpdate(@Req() req, @Body() dto: CreateReactStoryDto) {
     const userId = req.user.userId;
-    return this.reactStoryService.createOrUpdate(userId, dto);
+    const result = await this.reactStoryService.createOrUpdate(userId, dto);
+    if (result === null) {
+      return null; 
+    }
+    return result;
   }
   @Get(':storyId')
   findByStory(@Param('storyId') storyId: string) {
