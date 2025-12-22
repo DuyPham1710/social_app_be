@@ -431,7 +431,10 @@ export class VideoCallGateway implements OnGatewayConnection, OnGatewayDisconnec
 
             const activeCall = this.activeCalls.get(callId);
             if (!activeCall) {
-                return { success: true }; // Call already ended
+                // Call already ended - this happens when the other party already called end
+                // Don't send duplicate message or notifications
+                console.log(`[VideoCall] Call ${callId} already ended, ignoring duplicate end request from ${userId}`);
+                return { success: true };
             }
 
             // Determine call status
@@ -442,6 +445,8 @@ export class VideoCallGateway implements OnGatewayConnection, OnGatewayDisconnec
                 // No duration means call wasn't answered
                 finalCallStatus = 'missed';
             }
+
+            this.activeCalls.delete(callId);
 
             // Update call status
             await this.videoCallService.updateCallStatus(activeCall.channelId, 'ended', userId);
@@ -481,9 +486,6 @@ export class VideoCallGateway implements OnGatewayConnection, OnGatewayDisconnec
                     callId,
                 });
             }
-
-            // Remove from active calls
-            this.activeCalls.delete(callId);
 
             console.log(`[VideoCall] Call ${callId} ended by ${userId} with status: ${finalCallStatus}`);
 
