@@ -11,6 +11,7 @@ import { GroupedStoryListDto } from './dto/grouped-story-list.dto';
 import { plainToInstance } from 'class-transformer';
 import UserResponseDto from '../user/dto/user.response.dto';
 import { StoryResponseDto } from './dto/story-response.dto';
+import { ReactStoryResponseDto } from '../react-story/dto/react-story-response.dto';
 import { uploadAudioFromUrl } from './helpers/upload-audio.helper';
 import { File } from 'multer';
 
@@ -154,10 +155,14 @@ export class StoryService {
 
                 // Convert to StoryResponseDto[]
                 const storyDtos = filteredStories.map(story => {
+                    const reacts = (reactsMap[story._id.toString()] || []).map((react: any) => 
+                        plainToInstance(ReactStoryResponseDto, react, { excludeExtraneousValues: true })
+                    );
+                    
                     const storyObj = {
                         ...story,
                         id: story.id?.toString(),
-                        reacts: reactsMap[story._id.toString()] || [],
+                        reacts: reacts,
                         isReact: reactMap[story._id.toString()] || null,
                     };
                     return plainToInstance(StoryResponseDto, storyObj, { excludeExtraneousValues: true });
@@ -202,10 +207,14 @@ export class StoryService {
 
                 // Convert to StoryResponseDto[]
                 const currentUserStoryDtos = currentUserStories.map(story => {
+                    const reacts = (currentUserReactsMap[story._id.toString()] || []).map((react: any) => 
+                        plainToInstance(ReactStoryResponseDto, react, { excludeExtraneousValues: true })
+                    );
+                    
                     const storyObj = {
                         ...story,
                         id: story.id?.toString(),
-                        reacts: currentUserReactsMap[story._id.toString()] || [],
+                        reacts: reacts,
                         isReact: currentUserReactMap[story._id.toString()] || null,
                     };
                     return plainToInstance(StoryResponseDto, storyObj, { excludeExtraneousValues: true });

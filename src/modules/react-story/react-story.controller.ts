@@ -29,7 +29,7 @@ export class ReactStoryController {
     const userId = req.user.userId;
     const result = await this.reactStoryService.createOrUpdate(userId, dto);
     if (result === null) {
-      return null; 
+      return null;
     }
     return result;
   }
