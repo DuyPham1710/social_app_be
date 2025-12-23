@@ -37,8 +37,19 @@ export class StoryResponseDto extends PrivacyBase {
     updatedAt: Date;
 
     @Expose()
+    @Type(() => ReactStoryResponseDto)
     reacts?: ReactStoryResponseDto[];
 
     @Expose()
+    @Transform(({ obj }) => {
+        if (obj.isReact) {
+            return {
+                _id: obj.isReact._id?.toString() || obj.isReact.toString(),
+                label: obj.isReact.label,
+                icon: obj.isReact.icon,
+            };
+        }
+        return null;
+    })
     isReact?: EmojiResponseDto | null;
 }

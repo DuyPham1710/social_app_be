@@ -143,9 +143,14 @@ export class ReactStoryService {
       .lean()
       .exec();
 
-    if (!react) return null;
+    if (!react || !react.emojiId) return null;
 
-    return react.emojiId as unknown as EmojiResponseDto;
+    const emojiId = react.emojiId as any;
+    return {
+      _id: emojiId._id?.toString() || emojiId.toString(),
+      label: emojiId.label,
+      icon: emojiId.icon,
+    } as unknown as EmojiResponseDto;
   }
 
   //cập nhật react
