@@ -131,6 +131,70 @@ export class FcmService implements OnModuleInit {
             return false;
         }
     }
+
+    // Send new message notification
+    async sendMessageNotification(data: {
+        fcmToken: string;
+        conversationId: string;
+        messageId: string;
+        senderId: string;
+        senderName: string;
+        senderAvatar?: string;
+        messageText: string;
+        receiverId: string;
+        unreadCount?: number;
+        firstUnreadMessageIndex?: number;
+    }): Promise<boolean> {
+        try {
+            if (admin.apps.length === 0) {
+                this.logger.warn('Firebase not initialized, skipping FCM');
+                return false;
+            }
+
+            // Truncate message text if too long
+            const truncatedText = data.messageText.length > 100
+                ? data.messageText.substring(0, 100) + '...'
+                : data.messageText;
+
+            const message: admin.messaging.Message = {
+                token: data.fcmToken,
+                data: {
+                    type: 'new_message',
+                    conversationId: data.conversationId,
+                    messageId: data.messageId,
+                    senderId: data.senderId,
+                    senderName: data.senderName,
+                    senderAvatar: data.senderAvatar || '',
+                    messageText: truncatedText,
+                    receiverId: data.receiverId,
+                    unreadCount: String(data.unreadCount ?? 0),
+                    firstUnreadMessageIndex: String(data.firstUnreadMessageIndex ?? -1),
+                },
+                android: {
+                    priority: 'high',
+                    notification: {
+                        channelId: 'chat_messages',
+                        priority: 'high',
+                        sound: 'default',
+                        defaultSound: true,
+                        defaultVibrateTimings: true,
+                        title: data.senderName,
+                        body: truncatedText,
+                        imageUrl: data.senderAvatar, // Avatar image for notification
+                    },
+                },
+            };
+
+            const response = await admin.messaging().send(message);
+            this.logger.log(
+                `Message notification sent successfully: ${response}`,
+            );
+            return true;
+        } catch (error) {
+            this.logger.error('Failed to send message notification:', error);
+            return false;
+        }
+    }
 }
 
 
