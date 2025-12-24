@@ -4,5 +4,7 @@ export enum NotificationType {
   NEW_POST = 'NEW_POST',                    // Người bạn theo dõi đăng bài
   POST_REACTION = 'POST_REACTION',          // Ai đó react bài viết của bạn
   POST_COMMENT = 'POST_COMMENT',            // Ai đó bình luận bài bạn
-  MENTION = 'MENTION'                       // Ai đó nhắc tới bạn
+  MENTION = 'MENTION',                       // Ai đó nhắc tới bạn
+  STORY_REACTION = "STORY_REACTION",
+  COMMENT_REACTION = "COMMENT_REACTION"
 }

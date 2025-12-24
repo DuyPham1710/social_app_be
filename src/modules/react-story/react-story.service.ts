@@ -30,7 +30,7 @@ export class ReactStoryService {
     const existing = await this.reactStoryModel.findOne({ userId: userIdObjectId, storyId: storyObjectId });
 
     let result;
-    let isDeleted = false;
+    let isCreated = false;
     if (existing) {
       if (existing.emojiId.toString() === emojiObjectId.toString()) {
 
@@ -38,13 +38,13 @@ export class ReactStoryService {
           userId: userIdObjectId,
           storyId: storyObjectId,
         });
-        isDeleted = true;
       } else {
 
         existing.emojiId = emojiObjectId;
         result = await existing.save();
       }
     } else {
+      isCreated = true;
 
       const created = new this.reactStoryModel({
         userId: userIdObjectId,
@@ -54,15 +54,21 @@ export class ReactStoryService {
       result = await created.save();
     }
 
-
-    if (isDeleted) {
-      return null;
-    }
-
-
     if (result) {
       result = await result.populate('userId', 'fullName username avatarUrl');
       result = await result.populate('emojiId', 'label icon');
+    }
+    if (isCreated) {
+      this.eventEmitter.emit('react.story.created', {
+        storyId: storyObjectId,
+        sender: userId,
+        reactId: result._id.toString(),
+        content: result.emojiId['label'],
+        user: {
+          fullName: result.userId['fullName'],
+          username: result.userId['username'],
+        }
+      });
     }
 
     return result;

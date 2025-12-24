@@ -32,7 +32,7 @@ export class ReactCommentService {
     const existing = await this.reactCommentModel.findOne({ userId: userIdObjectId, commentId: commentObjectId });
 
     let result;
-    let isDeleted = false;
+    let isCreated = false;
     if (existing) {
       if (existing.emojiId.toString() === emojiObjectId.toString()) {
         // await existing.deleteOne();
@@ -41,7 +41,6 @@ export class ReactCommentService {
           userId: userIdObjectId,
           commentId: commentObjectId,
         });
-        isDeleted = true;
       } else {
         existing.emojiId = emojiObjectId;
         result = await existing.save();
@@ -52,14 +51,15 @@ export class ReactCommentService {
         commentId: commentObjectId,
         emojiId: emojiObjectId,
       });
+      isCreated = true;
       result = await created.save();
     }
 
     result = await result.populate('userId', 'fullName username avatarUrl');
     result = await result.populate('emojiId', 'label icon');
 
-    if (!isDeleted) {
-      this.eventEmitter.emit('react.created', {
+    if (isCreated) {
+      this.eventEmitter.emit('react.comment.created', {
         commentId: commentId,
         sender: userId,
         reactId: result._id.toString(),
@@ -67,7 +67,7 @@ export class ReactCommentService {
         user: {
           fullName: result.userId['fullName'],
           username: result.userId['username'],
-        }
+        },
       });
     }
     return ReactCommentResponseDto.fromReactComments([result])[0];
