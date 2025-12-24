@@ -12,6 +12,7 @@ import { ChatService } from './chat.service';
 import { SendMessageDto, MarkAsReadDto, CreateConversationDto, UpdateMessageDto, ReactMessageDto, DeleteMessageDto } from './dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AppEvents } from 'src/shared/enums/app-events.enum';
+import { FcmService } from 'src/shared/services/fcm.service';
 
 @WebSocketGateway({
   cors: {
@@ -26,9 +27,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   // Map để lưu userId -> socketId
   private userSockets = new Map<string, string>();
 
+  // Map để track users đang join conversation: conversationId -> Set<userId>
+  private conversationUsers = new Map<string, Set<string>>();
+
   constructor(
     private readonly chatService: ChatService,
     private readonly eventEmitter: EventEmitter2,
+    private readonly fcmService: FcmService,
   ) {
     // Listen for video call ended/rejected to send message
     this.eventEmitter.on(AppEvents.CHAT_SEND_MESSAGE, this.handleSendMessageFromEvent.bind(this));
@@ -62,6 +67,19 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     if (disconnectedUserId) {
+      // Remove user from all conversations they were in
+      for (const [conversationId, users] of this.conversationUsers.entries()) {
+        if (users.has(disconnectedUserId)) {
+          users.delete(disconnectedUserId);
+          console.log(`[ChatGateway] Removed user ${disconnectedUserId} from conversation ${conversationId} on disconnect`);
+
+          // Clean up empty sets
+          if (users.size === 0) {
+            this.conversationUsers.delete(conversationId);
+          }
+        }
+      }
+
       // Emit offline status
       client.broadcast.emit('user:offline', { userId: disconnectedUserId });
       console.log(`Client disconnected: ${client.id} - User: ${disconnectedUserId}`);
@@ -317,7 +335,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       // Join room
       client.join(`conversation:${conversationId}`);
 
-      console.log(`User ${userId} joined conversation ${conversationId}`);
+      // Track user in conversation
+      if (!this.conversationUsers.has(conversationId)) {
+        this.conversationUsers.set(conversationId, new Set());
+      }
+      const conversationUserSet = this.conversationUsers.get(conversationId);
+      if (conversationUserSet) {
+        conversationUserSet.add(userId);
+        console.log(`User ${userId} joined conversation ${conversationId}`);
+        console.log(`[ChatGateway] Users in conversation ${conversationId}:`, Array.from(conversationUserSet));
+      }
 
       // return { success: true, conversationId };
     } catch (error) {
@@ -330,12 +357,27 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('conversation:leave')
   async handleLeaveConversation(
     @ConnectedSocket() client: Socket,
-    @MessageBody() data: { conversationId: string },
+    @MessageBody() data: { conversationId: string; userId?: string },
   ) {
-    const { conversationId } = data;
+    const { conversationId, userId } = data;
     client.leave(`conversation:${conversationId}`);
 
-    console.log(`User left conversation ${conversationId}`);
+    // Remove user from conversation tracking
+    if (userId && this.conversationUsers.has(conversationId)) {
+      const conversationUserSet = this.conversationUsers.get(conversationId);
+      if (conversationUserSet) {
+        conversationUserSet.delete(userId);
+        console.log(`User ${userId} left conversation ${conversationId}`);
+        console.log(`[ChatGateway] Users in conversation ${conversationId}:`, Array.from(conversationUserSet));
+
+        // Clean up empty sets
+        if (conversationUserSet.size === 0) {
+          this.conversationUsers.delete(conversationId);
+        }
+      }
+    } else {
+      console.log(`User left conversation ${conversationId}`);
+    }
 
     //   return { success: true, conversationId };
   }
@@ -363,6 +405,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         .emit('message:new', message);
 
       await this.sendUpdatedConversation(sendMessageDto.conversationId, userId);
+
+      // Send push notification to offline users
+      await this.sendPushNotificationForMessage(
+        sendMessageDto.conversationId,
+        message,
+        userId,
+      );
 
       return { success: true, message };
     } catch (error) {
@@ -685,5 +734,99 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       userId,
     );
     this.sendToUser(userId, 'conversation:updated', senderConversation);
+  }
+
+  // Helper method để gửi push notification cho tin nhắn mới
+  private async sendPushNotificationForMessage(
+    conversationId: string,
+    message: any,
+    senderId: string,
+  ) {
+    try {
+      // Get sender info
+      const [senderInfo] = await this.eventEmitter.emitAsync(
+        AppEvents.USER_FIND_ONE,
+        { userId: senderId }
+      );
+
+      if (!senderInfo) {
+        console.log(`[ChatGateway] Sender ${senderId} not found, cannot send push notification`);
+        return;
+      }
+
+      // Get all participants except sender
+      const allParticipants = await this.chatService.getParticipants(conversationId);
+      const otherParticipants = allParticipants.filter(
+        (participant: any) => participant._id.toString() !== senderId
+      );
+
+      // Send notification to each participant
+      for (const participant of otherParticipants) {
+        const participantId = participant._id.toString();
+
+        // Check if user is currently in the conversation (joined)
+        const conversationUserSet = this.conversationUsers.get(conversationId);
+        const isUserInConversation = conversationUserSet ? conversationUserSet.has(participantId) : false;
+
+        if (isUserInConversation) {
+          console.log(`[ChatGateway] User ${participantId} is currently in conversation ${conversationId}, skipping push notification`);
+          continue;
+        }
+
+        const [userData] = await this.eventEmitter.emitAsync(
+          AppEvents.USER_FIND_ONE,
+          { userId: participantId }
+        );
+
+        if (!userData || !userData.fcmToken) {
+          console.log(`[ChatGateway] User ${participantId} has no FCM token, skipping push notification`);
+          continue;
+        }
+
+        console.log(`[ChatGateway] User ${participantId} is NOT in conversation, sending push notification`);
+
+        // Get conversation with unreadCount and firstUnreadMessageIndex for this participant
+        const conversation = await this.chatService.getConversationById(
+          conversationId,
+          participantId,
+        );
+
+        // Prepare message text based on message type
+        let messageText = message.text || '';
+        if (message.metadata?.type === 'video_call' || message.metadata?.type === 'audio_call') {
+          const callType = message.metadata.type === 'video_call' ? 'Video' : 'Audio';
+          const callStatus = message.metadata.callStatus;
+          if (callStatus === 'completed') {
+            messageText = `${callType} call - ${Math.floor(message.metadata.duration / 60)}:${String(message.metadata.duration % 60).padStart(2, '0')}`;
+          } else if (callStatus === 'missed') {
+            messageText = `Missed ${callType.toLowerCase()} call`;
+          } else if (callStatus === 'rejected') {
+            messageText = `${callType} call declined`;
+          }
+        } else if (message.images && message.images.length > 0) {
+          messageText = `📷 Sent ${message.images.length} photo${message.images.length > 1 ? 's' : ''}`;
+        } else if (message.videos && message.videos.length > 0) {
+          messageText = `🎥 Sent ${message.videos.length} video${message.videos.length > 1 ? 's' : ''}`;
+        }
+
+        // Send FCM notification
+        await this.fcmService.sendMessageNotification({
+          fcmToken: userData.fcmToken,
+          conversationId: conversationId,
+          messageId: message._id.toString(),
+          senderId: senderId,
+          senderName: senderInfo.fullName || senderInfo.username || 'Someone',
+          senderAvatar: senderInfo.avatarUrl,
+          messageText: messageText,
+          receiverId: participantId,
+          unreadCount: conversation.unreadCount || 0,
+          firstUnreadMessageIndex: conversation.firstUnreadMessageIndex ?? -1,
+        });
+
+        console.log(`[ChatGateway] Message push notification sent successfully to ${participantId}`);
+      }
+    } catch (error) {
+      console.error(`[ChatGateway] Failed to send message push notification:`, error);
+    }
   }
 }
