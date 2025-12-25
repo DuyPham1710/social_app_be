@@ -195,6 +195,94 @@ export class FcmService implements OnModuleInit {
             return false;
         }
     }
+
+    async sendAppNotification(params: {
+        fcmToken: string;
+        type: string;
+        notificationId: string;
+        targetId?: string;
+        senderId?: string;
+        senderName: string;
+        senderAvatar?: string;
+        message: string;
+        content?: string;
+    }): Promise<boolean> {
+    try {
+        if (admin.apps.length === 0) {
+        this.logger.warn('Firebase not initialized, skipping FCM');
+        return false;
+        }
+
+        const {
+        fcmToken,
+        type,
+        notificationId,
+        targetId,
+        senderId,
+        senderName,
+        senderAvatar,
+        message,
+        content,
+        } = params;
+
+        // Build FCM message
+        const fcmMessage: admin.messaging.Message = {
+        token: fcmToken,
+        // Data payload - ALL values must be strings
+        data: {
+            type: type,
+            notificationId: notificationId,
+            targetId: targetId || '',
+            senderId: senderId || '',
+            senderName: senderName,
+            senderAvatar: senderAvatar || '',
+            message: message,
+            content: content || '',
+        },
+        // Android specific configuration
+        android: {
+            priority: 'high',
+            notification: {
+            channelId: 'app_notifications', // Must match Flutter channel ID
+            sound: 'default',
+            priority: 'high',
+            defaultSound: true,
+            defaultVibrateTimings: true,
+            title: senderName,
+            body: message,
+            imageUrl: senderAvatar, // Avatar image for notification
+            },
+        },
+        // iOS specific configuration
+        apns: {
+            payload: {
+            aps: {
+                sound: 'default',
+                badge: 1, // TODO: Calculate actual unread count
+                'content-available': 1,
+                alert: {
+                title: senderName,
+                body: message,
+                },
+            },
+            },
+        },
+        };
+        // Send notification
+        const response = await admin.messaging().send(fcmMessage);
+        this.logger.log(
+        `✅ App notification sent successfully. MessageId: ${response}`,
+        );
+        return true;
+    } catch (error) {
+        this.logger.error(
+        `❌ Failed to send app notification: ${error.message}`,
+        error.stack,
+        );
+        // Don't throw - FCM errors should not break the main flow
+        return false;
+    }
+    }
 }
 
 

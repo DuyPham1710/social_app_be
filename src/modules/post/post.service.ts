@@ -604,6 +604,9 @@ export class PostService {
     @OnEvent(AppEvents.POST_GET_USER_ID)
     async handlePostGetUserId(payload: any) {
         const post = await this.postModel.findById(payload.postId).select('userId');
+        if (!post) {
+            return;
+        }
         return post;
     }
 

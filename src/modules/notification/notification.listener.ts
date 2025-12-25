@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
+import { OnEvent, EventEmitter2 } from '@nestjs/event-emitter';
 import { NotificationService } from './notification.service';
 import { NotificationType } from 'src/shared/enums/notification_type';
 import { emit } from 'process';
@@ -7,9 +7,9 @@ import { AppEvents } from 'src/shared/enums/app-events.enum';
 
 @Injectable()
 export class NotificationListener {
-  eventEmitter: any;
   constructor(
-    private readonly notificationService: NotificationService) {}
+    private readonly notificationService: NotificationService,
+    private readonly eventEmitter: EventEmitter2) {}
 
   @OnEvent('friend.request')
   async handleFriendRequest(payload: any) {
@@ -86,7 +86,7 @@ export class NotificationListener {
 
     console.log('NotificationListener - handleReactCommentCreated - ownerId:', ownerId, ' payload.sender:', payload.sender);
 
-    const [post] = await this.eventEmitter.emitAsync(AppEvents.POST_GET_USER_ID, { postId: comment.postId.toString() });
+    const [post] = await this.eventEmitter.emitAsync(AppEvents.POST_GET_USER_ID, { postId: comment.postId});
     if (ownerId === payload.sender) return;
 
     await this.notificationService.createAndEmit({

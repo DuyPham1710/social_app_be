@@ -33,7 +33,7 @@ export class CommentService {
         });
 
         const saved = await comment.save();
-        const [post] = await this.eventEmitter.emitAsync(AppEvents.POST_GET_USER_ID, { postId: createCommentDto.postId });
+        const [post] = await this.eventEmitter.emitAsync(AppEvents.POST_GET_USER_ID, { postId: createCommentDto.postId  });
         const postOwnerId = post?.userId;
         const populated = await saved.populate([
             {

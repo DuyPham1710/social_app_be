@@ -491,4 +491,13 @@ export class UserService {
     async handleGetBasicUserInfo({ userId }: { userId: string }): Promise<{ userId: string; username: string; fullName: string; avatarUrl?: string } | null> {
         return this.getBasicUserInfo(userId);
     }
+
+    @OnEvent(AppEvents.USER_GET_FCM_TOKEN)
+    async handleGetFcmToken({ userId }: { userId: string }): Promise<UserDocument> {
+        const user = await this.userModel.findById(userId).select('fcmToken');
+        if (!user) {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        }
+        return user;
+    }
 }

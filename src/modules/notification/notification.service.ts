@@ -5,8 +5,10 @@ import { Notification, NotificationDocument } from './schemas/notification.schem
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { NotificationGateway } from './notification.gateway';
 import { NotificationResponse } from './dto/notification-response.dto';
-import { OnEvent } from '@nestjs/event-emitter';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { NotificationType } from 'src/shared/enums/notification_type';
+import { FcmService } from 'src/shared/services/fcm.service';
+import { AppEvents } from 'src/shared/enums/app-events.enum';
 
 @Injectable()
 export class NotificationService {
@@ -17,6 +19,9 @@ export class NotificationService {
 
     @Inject(forwardRef(() => NotificationGateway))
     private readonly gateway: NotificationGateway,
+
+    private readonly eventEmitter: EventEmitter2,
+    private readonly fcmService: FcmService,
 
   ) {}
 
@@ -74,6 +79,11 @@ async createAndEmit(dto: CreateNotificationDto) {
 
   try {
     this.gateway.emitToUser(dto.receiver, 'notification:new', payload);
+    try {
+      await this.sendFcmNotification(dto.receiver, saved);
+    } catch (err) {
+      this.logger.log(`FCM failed: ${err}`);
+    }
   } catch (err) {
     this.logger.log(`Emit failed or user offline: ${err?.message || err}`);
   }
@@ -159,4 +169,44 @@ async createAndEmit(dto: CreateNotificationDto) {
     await this.notificationModel.updateMany({ receiver: this.toObjectId(userId), isRead: false }, { $set: { isRead: true } });
     this.gateway.emitToUser(userId, 'notification:markAllRead', { userId });
   }
+
+  private async sendFcmNotification(
+    receiverId: string,
+    notification: NotificationDocument,
+  ) {
+    try {
+      // Get user's FCM token
+      const [user] = await this.eventEmitter.emitAsync(AppEvents.USER_GET_FCM_TOKEN, { userId: receiverId });
+      //const user = await this.userModel.findById(receiverId).select('fcmToken');
+      
+      if (!user || !user.fcmToken) {
+        this.logger.log(`No FCM token found for user: ${receiverId}`);
+        return;
+      }
+
+      const sender: any = notification.sender;
+      
+      // Use FCM Service to send notification
+      await this.fcmService.sendAppNotification({
+        fcmToken: user.fcmToken,
+        type: notification.type,
+        notificationId: (notification as any)._id.toString(),
+        targetId: notification.targetId?.toString(),
+        senderId: sender?._id?.toString(),
+        senderName: sender?.fullName || sender?.username || 'Someone',
+        senderAvatar: sender?.avatarUrl,
+        message: notification.message,
+        content: notification.content,
+      });
+
+      this.logger.log(`FCM notification sent successfully to user ${receiverId}`);
+    } catch (error) {
+      this.logger.error(
+        `Error sending FCM notification to user ${receiverId}: ${error.message}`,
+        error.stack,
+      );
+      // Don't throw - notification should not block the main flow
+    }
+  }
+
 }
