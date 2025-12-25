@@ -8,7 +8,7 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { UpdatePrivacyDto } from 'src/common/dto/update-privacy.dto';
 import { PrivacyUtil } from 'src/common/utils/privacy.util';
 import { PrivacyType } from 'src/shared/enums/privacy_type';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { AppEvents } from 'src/shared/enums/app-events.enum';
 import { PostResponseDto } from './dto/post-response.dto';
 import { PostListDto } from './dto/post-list.dto';
@@ -599,6 +599,12 @@ export class PostService {
         return {
             message: 'Báo cáo bài viết thành công. Cảm ơn bạn đã đóng góp giúp cộng đồng an toàn hơn.',
         };
+    }
+
+    @OnEvent(AppEvents.POST_GET_USER_ID)
+    async handlePostGetUserId(payload: any) {
+        const post = await this.postModel.findById(payload.postId).select('userId');
+        return post;
     }
 
 }

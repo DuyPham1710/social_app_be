@@ -5,7 +5,7 @@ import { Model, Types } from 'mongoose';
 import { CreateStoryDto } from './dto/create-story.dto';
 import { PrivacyUtil } from 'src/common/utils/privacy.util';
 import { UpdatePrivacyDto } from 'src/common/dto/update-privacy.dto';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { AppEvents } from 'src/shared/enums/app-events.enum';
 import { GroupedStoryListDto } from './dto/grouped-story-list.dto';
 import { plainToInstance } from 'class-transformer';
@@ -315,5 +315,12 @@ export class StoryService {
         await story.deleteOne();
 
         return { message: 'Story deleted successfully' };
+    }
+
+    @OnEvent(AppEvents.STORY_GET_USER_ID)
+    async handleStoryGetUserId(payload: any) {
+        const story = await this.storyModel.findById(payload.storyId).select('userId');
+        if (!story) return;
+        return story;
     }
 }

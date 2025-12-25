@@ -2,18 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { NotificationService } from './notification.service';
 import { NotificationType } from 'src/shared/enums/notification_type';
-import { InjectModel } from '@nestjs/mongoose';
-import { PostDocument, Post } from '../post/schemas/post.schema';
-import { Model } from 'mongoose';
-import { Story, StoryDocument } from '../story/schemas/story.schema';
-import { Comment, CommentDocument } from '../comment/schemas/comment.schema';
+import { emit } from 'process';
+import { AppEvents } from 'src/shared/enums/app-events.enum';
 
 @Injectable()
 export class NotificationListener {
+  eventEmitter: any;
   constructor(
-    @InjectModel(Post.name) private postModel: Model<PostDocument>,
-    @InjectModel(Story.name) private storyModel: Model<StoryDocument>,
-    @InjectModel(Comment.name) private commentModel: Model<CommentDocument>,
     private readonly notificationService: NotificationService) {}
 
   @OnEvent('friend.request')
@@ -42,9 +37,8 @@ export class NotificationListener {
 
   @OnEvent('react.created')
   async handleReactCreated(payload: any) {
-    const post = await this.postModel.findById(payload.postId).select('userId');
-    if (!post) return; 
-
+    const [post] = await this.eventEmitter.emitAsync(AppEvents.POST_GET_USER_ID, { postId: payload.postId });
+    if (!post) return;
     const ownerId = post.userId.toString();
 
     console.log('NotificationListener - handleReactCreated - ownerId:', ownerId, ' payload.sender:', payload.sender);
@@ -63,7 +57,7 @@ export class NotificationListener {
 
   @OnEvent('react.story.created')
   async handleReactStoryCreated(payload: any) {
-    const story = await this.storyModel.findById(payload.storyId).select('userId');
+    const [story] = await this.eventEmitter.emitAsync(AppEvents.STORY_GET_USER_ID, { storyId: payload.storyId });
     if (!story) return; 
 
     const ownerId = story.userId.toString();
@@ -84,14 +78,15 @@ export class NotificationListener {
 
   @OnEvent('react.comment.created')
   async handleReactCommentCreated(payload: any) {
-    const comment = await this.commentModel.findById(payload.commentId).select('userId');
+    const [comment] = await this.eventEmitter.emitAsync(AppEvents.COMMENT_GET_USER_ID, { commentId: payload.commentId });
+
     if (!comment) return; 
 
     const ownerId = comment.userId.toString();
 
     console.log('NotificationListener - handleReactCommentCreated - ownerId:', ownerId, ' payload.sender:', payload.sender);
 
-    const post = await this.commentModel.findById(payload.commentId).select('postId');
+    const [post] = await this.eventEmitter.emitAsync(AppEvents.POST_GET_USER_ID, { postId: comment.postId.toString() });
     if (ownerId === payload.sender) return;
 
     await this.notificationService.createAndEmit({

@@ -5,8 +5,7 @@ import { Comment, CommentDocument } from './schemas/comment.schema';
 import { CommentLog, CommentLogDocument } from './schemas/comment-log.schema';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { NotificationType } from 'src/shared/enums/notification_type';
-import { PostDocument, Post } from '../post/schemas/post.schema';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { AppEvents } from 'src/shared/enums/app-events.enum';
 
 @Injectable()
@@ -14,7 +13,6 @@ export class CommentService {
     constructor(
         @InjectModel(Comment.name) private readonly commentModel: Model<CommentDocument>,
         @InjectModel(CommentLog.name) private readonly commentLogModel: Model<CommentLogDocument>,
-        @InjectModel(Post.name) private readonly postModel: Model<PostDocument>,
         private eventEmitter: EventEmitter2,
     ) { }
 
@@ -35,7 +33,7 @@ export class CommentService {
         });
 
         const saved = await comment.save();
-        const post = await this.postModel.findById(createCommentDto.postId).select('userId');
+        const [post] = await this.eventEmitter.emitAsync(AppEvents.POST_GET_USER_ID, { postId: createCommentDto.postId });
         const postOwnerId = post?.userId;
         const populated = await saved.populate([
             {
@@ -268,5 +266,12 @@ export class CommentService {
         });
 
         return formattedHistory;
+    }
+
+    @OnEvent(AppEvents.COMMENT_GET_USER_ID)
+    async handleCommentGetUserId(payload: any) {
+        const comment = await this.commentModel.findById(payload.commentId).select('userId');
+        if (!comment) return;
+        return comment;
     }
 }
