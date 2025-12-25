@@ -323,4 +323,10 @@ export class StoryService {
         if (!story) return;
         return story;
     }
+
+    @OnEvent(AppEvents.STORY_GET)
+    async handleGetStories(payload: { ownerId: string, viewerId: string }) {
+        const { ownerId, viewerId } = payload;
+        return await this.getStories(ownerId, viewerId);
+    }
 }

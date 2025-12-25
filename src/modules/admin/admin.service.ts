@@ -8,12 +8,6 @@ import { Comment, CommentDocument } from '../comment/schemas/comment.schema';
 import { ReactPost, ReactPostDocument } from '../react-post/schemas/react-post.schema';
 import { ReactStory, ReactStoryDocument } from '../react-story/schemas/react-story.schema';
 import { PostReport, PostReportDocument } from '../post/schemas/post-report.schema';
-import { PostService } from '../post/post.service';
-import { StoryService } from '../story/story.service';
-import { CommentService } from '../comment/comment.service';
-import { ReactPostService } from '../react-post/react-post.service';
-import { ReactStoryService } from '../react-story/react-story.service';
-import { FriendsService } from '../friends/friends.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AppEvents } from 'src/shared/enums/app-events.enum';
 import { plainToInstance } from 'class-transformer';
@@ -35,12 +29,6 @@ export class AdminService {
     @InjectModel(ReactPost.name) private reactPostModel: Model<ReactPostDocument>,
     @InjectModel(ReactStory.name) private reactStoryModel: Model<ReactStoryDocument>,
     @InjectModel(PostReport.name) private postReportModel: Model<PostReportDocument>,
-    private readonly postService: PostService,
-    private readonly storyService: StoryService,
-    private readonly commentService: CommentService,
-    private readonly reactPostService: ReactPostService,
-    private readonly reactStoryService: ReactStoryService,
-    private readonly friendsService: FriendsService,
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
@@ -272,10 +260,10 @@ export class AdminService {
     }
 
     // Lấy dữ liệu thô: posts, stories, comments, postReactions, storyReactions
-    const [posts, stories, user, postReactionsRaw, storyReactionsRaw] =
+    const [postsResult, storiesResult, user, postReactionsRaw, storyReactionsRaw] =
       await Promise.all([
-        this.postService.getAllPostsByUser(userId, userId, 1, 5),
-        this.storyService.getStories(userId, userId),
+        this.eventEmitter.emitAsync(AppEvents.POST_GET_ALL_BY_USER, { ownerId: userId, viewerId: userId, page: 1, limit: 5 }),
+        this.eventEmitter.emitAsync(AppEvents.STORY_GET, { ownerId: userId, viewerId: userId }),
         this.userModel.findById(userId).select('updatedAt').lean().exec(),
         this.reactPostModel
           .find({ userId: new Types.ObjectId(userId) })
@@ -308,6 +296,9 @@ export class AdminService {
       .populate('userId', 'username fullName avatarUrl')
       .lean()
       .exec();
+
+    const posts = postsResult[0] || { data: [] };
+    const stories = storiesResult[0] || [];
 
     const postActivities =
       (posts.data || []).map((post: any) => ({
@@ -441,9 +432,11 @@ export class AdminService {
         );
 
         // Lấy comments
-        const comments = await this.commentService.findByPostId(
-          post._id.toString(),
+        const [commentsResult] = await this.eventEmitter.emitAsync(
+          AppEvents.COMMENT_FIND_BY_POST_ID,
+          { postId: post._id.toString() },
         );
+        const comments = commentsResult || [];
 
         return {
           ...post,
@@ -474,9 +467,11 @@ export class AdminService {
     }
 
     // Admin có thể xem post mà không cần userId
-    const post = await this.postService.getPostDetail(postId, postId);
-    const comments = await this.commentService.findByPostId(postId);
-    return { ...post, comments: comments || [] } as any;
+    const [postResult] = await this.eventEmitter.emitAsync(AppEvents.POST_GET_DETAIL, { postId, userId: postId });
+    const [commentsResult] = await this.eventEmitter.emitAsync(AppEvents.COMMENT_FIND_BY_POST_ID, { postId });
+    const post = postResult || {};
+    const comments = commentsResult || [];
+    return { ...post, comments } as any;
   }
 
   async deletePost(postId: string): Promise<{ message: string }> {
@@ -990,15 +985,18 @@ export class AdminService {
     return posts;
   }
 
-  getPostReacts(postId: string) {
-    return this.reactPostService.findByPost(postId);
+  async getPostReacts(postId: string) {
+    const [result] = await this.eventEmitter.emitAsync(AppEvents.REACT_POST_FIND_BY_POST, { postId });
+    return result || [];
   }
 
-  getPostComments(postId: string) {
-    return this.commentService.findByPostId(postId);
+  async getPostComments(postId: string) {
+    const [result] = await this.eventEmitter.emitAsync(AppEvents.COMMENT_FIND_BY_POST_ID, { postId });
+    return result || [];
   }
 
-  getStoryReacts(storyId: string) {
-    return this.reactStoryService.findByStory(storyId);
+  async getStoryReacts(storyId: string) {
+    const [result] = await this.eventEmitter.emitAsync(AppEvents.REACT_STORY_FIND_BY_STORY, { storyId });
+    return result || [];
   }
 }
