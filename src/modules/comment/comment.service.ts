@@ -270,7 +270,7 @@ export class CommentService {
 
     @OnEvent(AppEvents.COMMENT_GET_USER_ID)
     async handleCommentGetUserId(payload: any) {
-        const comment = await this.commentModel.findById(payload.commentId).select('userId');
+        const comment = await this.commentModel.findById(payload.commentId).select('userId postId');
         if (!comment) return;
         return comment;
     }

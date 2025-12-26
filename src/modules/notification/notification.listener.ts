@@ -86,7 +86,7 @@ export class NotificationListener {
 
     console.log('NotificationListener - handleReactCommentCreated - ownerId:', ownerId, ' payload.sender:', payload.sender);
 
-    const [post] = await this.eventEmitter.emitAsync(AppEvents.POST_GET_USER_ID, { postId: comment.postId});
+
     if (ownerId === payload.sender) return;
 
     await this.notificationService.createAndEmit({
@@ -95,7 +95,7 @@ export class NotificationListener {
           type: NotificationType.COMMENT_REACTION,
           targetId: payload.commentId,         
           message: `đã thả cảm xúc về bình luận của bạn: "${payload.content}"`,
-          content: post?.postId.toString() || '',
+          content: comment?.postId.toString() || '',
       });
   }
 

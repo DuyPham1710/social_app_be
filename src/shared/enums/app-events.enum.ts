@@ -51,4 +51,5 @@ export enum AppEvents {
     //===== COMMENT =====
     COMMENT_GET_USER_ID = 'comment.getUserId',
     USER_GET_FCM_TOKEN = "USER_GET_FCM_TOKEN",
+    COMMENT_GET_POST_ID = "COMMENT_GET_POST_ID",
 }
