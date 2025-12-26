@@ -232,4 +232,10 @@ export class ReactStoryService {
 
     return reactMap;
   }
+
+  @OnEvent(AppEvents.REACT_STORY_FIND_BY_STORY)
+  async onFindByStoryEvent(payload: { storyId: string, viewerId?: string }) {
+    const { storyId, viewerId } = payload;
+    return await this.findByStory(storyId, viewerId);
+  }
 }

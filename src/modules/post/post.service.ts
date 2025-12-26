@@ -272,7 +272,7 @@ export class PostService {
         return result;
     }
 
-    async createPost(createPostDto: CreatePostDto, userId: string, files?: File[]): Promise<{ message: string }> {
+    async createPost(createPostDto: CreatePostDto, userId: string, files?: Express.Multer.File[]): Promise<{ message: string }> {
         const { caption, titles = [], orders = [], layout, privacy_type, friends_except, friends_detail } = createPostDto;
 
         const post = await this.postModel.create({
@@ -608,6 +608,18 @@ export class PostService {
             return;
         }
         return post;
+    }
+
+    @OnEvent(AppEvents.POST_GET_ALL_BY_USER)
+    async handleGetAllPostsByUser(payload: { ownerId: string, viewerId: string, page?: number, limit?: number }) {
+        const { ownerId, viewerId, page = 1, limit = 5 } = payload;
+        return await this.getAllPostsByUser(ownerId, viewerId, page, limit);
+    }
+
+    @OnEvent(AppEvents.POST_GET_DETAIL)
+    async handleGetPostDetail(payload: { postId: string, userId: string }) {
+        const { postId, userId } = payload;
+        return await this.getPostDetail(postId, userId);
     }
 
 }

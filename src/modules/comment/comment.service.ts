@@ -274,4 +274,10 @@ export class CommentService {
         if (!comment) return;
         return comment;
     }
+
+    @OnEvent(AppEvents.COMMENT_FIND_BY_POST_ID)
+    async handleFindByPostId(payload: { postId: string, viewerId?: string }) {
+        const { postId, viewerId } = payload;
+        return await this.findByPostId(postId, viewerId);
+    }
 }

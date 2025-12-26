@@ -26,15 +26,19 @@ export enum AppEvents {
     POST_CREATED = 'post.created',
     POST_DELETED = 'post.deleted',
     POST_GET_USER_ID = 'post.getUserId',
+    POST_GET_ALL_BY_USER = 'post.getAllByUser',
+    POST_GET_DETAIL = 'post.getDetail',
 
     // ===== REACT POST =====
     REACT_POST_GET = 'react-post.get',
     REACT_POST_FIND_BY_USER = 'react-post.findByUser',
+    REACT_POST_FIND_BY_POST = 'react-post.findByPost',
 
     // ===== STORY =====
     STORY_CREATED = 'story.created',
     STORY_EXPIRED = 'story.expired',
     STORY_GET_USER_ID = 'story.getUserId',
+    STORY_GET = 'story.get',
 
     // ===== REACT COMMENT =====
 
@@ -42,6 +46,7 @@ export enum AppEvents {
     // ===== REACT STORY =====
     REACT_STORY_GET = 'react-story.get',
     REACT_STORY_FIND_BY_USER = 'react-story.findByUser',
+    REACT_STORY_FIND_BY_STORY = 'react-story.findByStory',
 
     // ===== CHAT =====
     CHAT_SEND_MESSAGE = 'chat.sendMessage',
@@ -51,5 +56,6 @@ export enum AppEvents {
     //===== COMMENT =====
     COMMENT_GET_USER_ID = 'comment.getUserId',
     USER_GET_FCM_TOKEN = "USER_GET_FCM_TOKEN",
+    COMMENT_FIND_BY_POST_ID = 'comment.findByPostId',
     COMMENT_GET_POST_ID = "COMMENT_GET_POST_ID",
 }

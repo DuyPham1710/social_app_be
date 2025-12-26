@@ -229,4 +229,10 @@ export class ReactPostService {
 
     return reactMap;
   }
+
+  @OnEvent(AppEvents.REACT_POST_FIND_BY_POST)
+  async onFindByPostEvent(payload: { postId: string, viewerId?: string }) {
+    const { postId, viewerId } = payload;
+    return await this.findByPost(postId, viewerId);
+  }
 }

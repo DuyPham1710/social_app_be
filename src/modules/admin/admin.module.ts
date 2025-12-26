@@ -9,12 +9,6 @@ import { Comment, CommentSchema } from '../comment/schemas/comment.schema';
 import { ReactPost, ReactPostSchema } from '../react-post/schemas/react-post.schema';
 import { ReactStory, ReactStorySchema } from '../react-story/schemas/react-story.schema';
 import { PostReport, PostReportSchema } from '../post/schemas/post-report.schema';
-import { PostModule } from '../post/post.module';
-import { StoryModule } from '../story/story.module';
-import { CommentModule } from '../comment/comment.module';
-import { ReactPostModule } from '../react-post/react-post.module';
-import { ReactStoryModule } from '../react-story/react-story.module';
-import { FriendsModule } from '../friends/friends.module';
 import { UserModule } from '../user/user.module';
 
 @Module({
@@ -28,12 +22,6 @@ import { UserModule } from '../user/user.module';
       { name: ReactStory.name, schema: ReactStorySchema },
       { name: PostReport.name, schema: PostReportSchema },
     ]),
-    PostModule,
-    StoryModule,
-    CommentModule,
-    ReactPostModule,
-    ReactStoryModule,
-    FriendsModule,
     UserModule,
   ],
   controllers: [AdminController],
