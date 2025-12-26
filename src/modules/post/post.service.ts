@@ -1,4 +1,4 @@
-import { ForbiddenException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ForbiddenException, HttpException, HttpStatus, Injectable, Inject, forwardRef, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Post, PostDocument } from './schemas/post.schema';
 import { PostUrl, PostUrlDocument } from './schemas/post-url.schema';
@@ -18,15 +18,21 @@ import { omitBy, isUndefined } from 'lodash';
 import { v2 as cloudinary } from 'cloudinary';
 import { PostReport, PostReportDocument } from './schemas/post-report.schema';
 import { ReportPostDto } from './dto/report-post.dto';
+import { NotificationService } from '../notification/notification.service';
+import { NotificationType } from 'src/shared/enums/notification_type';
 //import { File } from 'multer';
 
 @Injectable()
 export class PostService {
+    private readonly logger = new Logger(PostService.name);
+
     constructor(
         @InjectModel(Post.name) private postModel: Model<PostDocument>,
         @InjectModel(PostUrl.name) private postUrlModel: Model<PostUrlDocument>,
         @InjectModel(PostReport.name) private postReportModel: Model<PostReportDocument>,
         private readonly eventEmitter: EventEmitter2,
+        @Inject(forwardRef(() => NotificationService))
+        private readonly notificationService: NotificationService,
     ) { }
 
     async getPostDetail(postId: string, userId: string): Promise<PostResponseDto> {
@@ -1042,7 +1048,7 @@ export class PostService {
         status: 'pending' | 'reviewed' | 'rejected';
         note?: string;
     }) {
-        const { reportId, status } = payload;
+        const { reportId, status, note } = payload;
         if (!Types.ObjectId.isValid(reportId)) {
             throw new HttpException('Invalid reportId', HttpStatus.BAD_REQUEST);
         }
@@ -1055,7 +1061,7 @@ export class PostService {
         report.status = status;
         await report.save();
 
-        const post = await this.postModel.findById(report.postId).exec();
+        const post = await this.postModel.findById(report.postId).populate('userId', 'username fullName avatarUrl').exec();
         if (post) {
             if (status === 'reviewed') {
                 post.isHidden = true;
@@ -1063,6 +1069,39 @@ export class PostService {
             } else if (status === 'rejected') {
                 post.isHidden = false;
                 await post.save();
+            }
+
+            // Gửi thông báo đến người sở hữu bài viết khi admin xử lý báo cáo
+            if (status === 'reviewed' || status === 'rejected') {
+                const postOwnerId = (post.userId as any)?._id?.toString() || (post.userId as any)?.toString();
+                
+                if (postOwnerId) {
+                    try {
+                        const statusText = status === 'reviewed' ? 'đã được xác nhận' : 'đã bị từ chối';
+                        
+                        // Lấy caption của bài viết, truncate nếu quá dài
+                        const postCaption = post.caption || '';
+                        const truncatedCaption = postCaption.length > 50 
+                            ? postCaption.substring(0, 50) + '...' 
+                            : postCaption;
+                        
+                        // Tạo message với tên bài viết
+                        const postTitle = truncatedCaption || 'bài viết của bạn';
+                        const message = `Báo cáo về "${postTitle}" ${statusText}`;
+                        
+                        // Gửi thông báo trong ứng dụng
+                        await this.notificationService.createAndEmit({
+                            receiver: postOwnerId,
+                            sender: undefined, // Admin không có sender
+                            type: NotificationType.POST_REPORT_REVIEWED,
+                            targetId: post._id.toString(),
+                            message: message,
+                            content: note || undefined,
+                        });
+                    } catch (error) {
+                        this.logger.error(`Failed to send notification for post report ${reportId}:`, error);
+                    }
+                }
             }
         }
 
@@ -1078,7 +1117,7 @@ export class PostService {
         status: 'pending' | 'reviewed' | 'rejected';
         note?: string;
     }) {
-        const { reportIds, status } = payload;
+        const { reportIds, status, note } = payload;
         const validReportIds = reportIds.filter((id) => Types.ObjectId.isValid(id));
         if (validReportIds.length === 0) {
             throw new HttpException('No valid report IDs provided', HttpStatus.BAD_REQUEST);
@@ -1118,6 +1157,47 @@ export class PostService {
                 const allRejected = allReportsForPost.every((r) => r.status === 'rejected');
                 if (allRejected) {
                     await this.postModel.findByIdAndUpdate(postId, { isHidden: false });
+                }
+            }
+        }
+
+        // Gửi thông báo đến người sở hữu bài viết khi admin xử lý báo cáo (bulk)
+        if (status === 'reviewed') {
+            const posts = await this.postModel
+                .find({ _id: { $in: uniquePostIds.map((id) => new Types.ObjectId(id)) } })
+                .populate('userId', 'username fullName avatarUrl')
+                .exec();
+
+            // Gửi thông báo cho từng bài viết (tránh gửi trùng cho cùng một user)
+            const notifiedUsers = new Set<string>();
+            
+            for (const post of posts) {
+                const postOwnerId = (post.userId as any)?._id?.toString() || (post.userId as any)?.toString();
+                
+                if (postOwnerId) {
+                    try {
+                        // Lấy caption của bài viết, truncate nếu quá dài
+                        const postCaption = post.caption || '';
+                        const truncatedCaption = postCaption.length > 50 
+                            ? postCaption.substring(0, 50) + '...' 
+                            : postCaption;
+                        
+                        // Tạo message với tên bài viết
+                        const postTitle = truncatedCaption || 'bài viết của bạn';
+                        const message = `Báo cáo về "${postTitle}" đã bị ẩn do vi phạm tiêu chuẩn cộng đồng`;
+                        
+                        // Gửi thông báo trong ứng dụng (gửi riêng cho từng bài viết)
+                        await this.notificationService.createAndEmit({
+                            receiver: postOwnerId,
+                            sender: undefined, // Admin không có sender
+                            type: NotificationType.POST_REPORT_REVIEWED,
+                            targetId: post._id.toString(),
+                            message: message,
+                            content: note || undefined,
+                        });
+                    } catch (error) {
+                        this.logger.error(`Failed to send notification for bulk post report update:`, error);
+                    }
                 }
             }
         }
