@@ -1,34 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
-import { User, UserDocument } from '../user/schemas/user.schema';
-import { Post, PostDocument } from '../post/schemas/post.schema';
-import { Story, StoryDocument } from '../story/schemas/story.schema';
-import { Comment, CommentDocument } from '../comment/schemas/comment.schema';
-import { ReactPost, ReactPostDocument } from '../react-post/schemas/react-post.schema';
-import { ReactStory, ReactStoryDocument } from '../react-story/schemas/react-story.schema';
-import { PostReport, PostReportDocument } from '../post/schemas/post-report.schema';
+import { Types } from 'mongoose';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AppEvents } from 'src/shared/enums/app-events.enum';
-import { plainToInstance } from 'class-transformer';
-import UserResponseDto from '../user/dto/user.response.dto';
-import { StoryResponseDto } from '../story/dto/story-response.dto';
-import { PostResponseDto } from '../post/dto/post-response.dto';
-import { omitBy, isUndefined } from 'lodash';
-import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
 
 @Injectable()
 export class AdminService {
   constructor(
-    @InjectModel(User.name) private userModel: Model<UserDocument>,
-    @InjectModel(Post.name) private postModel: Model<PostDocument>,
-    @InjectModel(Story.name) private storyModel: Model<StoryDocument>,
-    @InjectModel(Comment.name) private commentModel: Model<CommentDocument>,
-    @InjectModel(ReactPost.name) private reactPostModel: Model<ReactPostDocument>,
-    @InjectModel(ReactStory.name) private reactStoryModel: Model<ReactStoryDocument>,
-    @InjectModel(PostReport.name) private postReportModel: Model<PostReportDocument>,
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
@@ -42,193 +21,47 @@ export class AdminService {
     dateTo?: Date,
     nameInitial?: string,
   ) {
-    const skip = (page - 1) * limit;
-    const query: any = {};
-
-    // Mặc định loại bỏ admin khỏi danh sách người dùng
-    query.role = { $ne: 'admin' };
-
-    // Tìm kiếm theo email, username, fullName
-    if (search && search.trim()) {
-      query.$or = [
-        { email: { $regex: search.trim(), $options: 'i' } },
-        { username: { $regex: search.trim(), $options: 'i' } },
-        { fullName: { $regex: search.trim(), $options: 'i' } },
-      ];
-    }
-
-    // Lọc theo isActive
-    if (isActive !== undefined) {
-      query.isActive = isActive;
-    }
-
-    // Lọc theo thời gian tạo tài khoản
-    if (dateFrom || dateTo) {
-      query.createdAt = {};
-      if (dateFrom) {
-        query.createdAt.$gte = dateFrom;
-      }
-      if (dateTo) {
-        query.createdAt.$lte = dateTo;
-      }
-    }
-
-    const [users, total] = await Promise.all([
-      this.userModel
-        .find(query)
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit)
-        .lean()
-        .exec(),
-      this.userModel.countDocuments(query).exec(),
-    ]);
-
-    const userResponseDtos = users.map((user: any) =>
-      plainToInstance(UserResponseDto, user, {
-        excludeExtraneousValues: true,
-      }),
-    );
-
-    return {
-      data: userResponseDtos,
-      pagination: {
-        currentPage: page,
-        totalPages: Math.ceil(total / limit),
-        totalItems: total,
-        itemsPerPage: limit,
-        hasNextPage: page < Math.ceil(total / limit),
-        hasPrevPage: page > 1,
-      },
-    };
+    const [result] = await this.eventEmitter.emitAsync(AppEvents.ADMIN_USER_GET_ALL, {
+      page,
+      limit,
+      search,
+      isActive,
+      dateFrom,
+      dateTo,
+    });
+    return result;
   }
 
-  async getUserById(userId: string): Promise<UserResponseDto> {
-    if (!Types.ObjectId.isValid(userId)) {
-      throw new HttpException('Invalid userId', HttpStatus.BAD_REQUEST);
-    }
-
-    const user = await this.userModel.findById(userId).lean().exec();
-    if (!user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }
-
-    return plainToInstance(UserResponseDto, user, {
-      excludeExtraneousValues: true,
+  async getUserById(userId: string) {
+    const [result] = await this.eventEmitter.emitAsync(AppEvents.ADMIN_USER_GET_BY_ID, {
+      userId,
     });
+    return result;
   }
 
-  async createUser(createUserDto: CreateUserDto): Promise<UserResponseDto> {
-    const { confirmPassword, ...rest } = createUserDto;
-
-    const existingUserByEmail = await this.userModel.findOne({ email: rest.email }).exec();
-    if (existingUserByEmail) {
-      throw new HttpException('Email is already in use', HttpStatus.BAD_REQUEST);
-    }
-
-    const existingUserByUsername = await this.userModel.findOne({ username: rest.username }).exec();
-    if (existingUserByUsername) {
-      throw new HttpException('Username is already taken', HttpStatus.BAD_REQUEST);
-    }
-
-    const hashedPassword = await bcrypt.hash(rest.password, 10);
-
-    const newUser = new this.userModel({
-      ...rest,
-      password: hashedPassword,
-      role: 'user',
-      isActive: rest.isActive !== undefined ? rest.isActive : true, // Mặc định active
+  async createUser(createUserDto: CreateUserDto) {
+    const [result] = await this.eventEmitter.emitAsync(AppEvents.ADMIN_USER_CREATE, {
+      createUserDto,
     });
-
-    const savedUser = await newUser.save();
-
-    // Emit event để tạo privacy mặc định cho user mới
-    await this.eventEmitter.emitAsync(AppEvents.USER_CREATED, {
-      userId: (savedUser._id as Types.ObjectId).toString(),
-    });
-
-    return plainToInstance(UserResponseDto, savedUser.toObject(), {
-      excludeExtraneousValues: true,
-    });
+    return result;
   }
 
   async updateUser(
     userId: string,
     updateUserDto: UpdateUserAdminDto,
-  ): Promise<UserResponseDto> {
-    if (!Types.ObjectId.isValid(userId)) {
-      throw new HttpException('Invalid userId', HttpStatus.BAD_REQUEST);
-    }
-
-    const user = await this.userModel.findById(userId).exec();
-    if (!user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }
-
-    const { confirmPassword, ...restUpdate } = updateUserDto;
-
-    // Kiểm tra email nếu thay đổi
-    if (restUpdate.email && restUpdate.email !== user.email) {
-      const existingByEmail = await this.userModel
-        .findOne({
-          email: restUpdate.email,
-          _id: { $ne: userId },
-        })
-        .exec();
-      if (existingByEmail) {
-        throw new HttpException('Email is already in use', HttpStatus.BAD_REQUEST);
-      }
-    }
-
-    // Kiểm tra username nếu thay đổi
-    if (restUpdate.username && restUpdate.username !== user.username) {
-      const existingByUsername = await this.userModel
-        .findOne({
-          username: restUpdate.username,
-          _id: { $ne: userId },
-        })
-        .exec();
-      if (existingByUsername) {
-        throw new HttpException('Username is already taken', HttpStatus.BAD_REQUEST);
-      }
-    }
-
-    const updateData: any = { ...restUpdate };
-
-    // Hash password nếu có truyền lên
-    if (restUpdate.password) {
-      updateData.password = await bcrypt.hash(restUpdate.password, 10);
-    }
-
-    const updatedUser = await this.userModel
-      .findByIdAndUpdate(userId, updateData, { new: true })
-      .lean()
-      .exec();
-
-    if (!updatedUser) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }
-
-    return plainToInstance(UserResponseDto, updatedUser, {
-      excludeExtraneousValues: true,
+  ) {
+    const [result] = await this.eventEmitter.emitAsync(AppEvents.ADMIN_USER_UPDATE, {
+      userId,
+      updateUserDto,
     });
+    return result;
   }
 
-  async deleteUser(userId: string): Promise<{ message: string }> {
-    if (!Types.ObjectId.isValid(userId)) {
-      throw new HttpException('Invalid userId', HttpStatus.BAD_REQUEST);
-    }
-
-    const user = await this.userModel.findById(userId).exec();
-    if (!user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }
-
-    // Soft delete: set isActive = false
-    user.isActive = false;
-    await user.save();
-
-    return { message: 'User deleted successfully' };
+  async deleteUser(userId: string) {
+    const [result] = await this.eventEmitter.emitAsync(AppEvents.ADMIN_USER_DELETE, {
+      userId,
+    });
+    return result;
   }
 
   async getUserFriends(userId: string) {
@@ -236,7 +69,7 @@ export class AdminService {
       throw new HttpException('Invalid userId', HttpStatus.BAD_REQUEST);
     }
 
-    const userExists = await this.userModel.exists({ _id: userId }).exec();
+    const [userExists] = await this.eventEmitter.emitAsync(AppEvents.USER_CHECK_EXISTS, { userId });
     if (!userExists) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
@@ -254,49 +87,23 @@ export class AdminService {
       throw new HttpException('Invalid userId', HttpStatus.BAD_REQUEST);
     }
 
-    const userExists = await this.userModel.exists({ _id: userId }).exec();
+    const [userExists] = await this.eventEmitter.emitAsync(AppEvents.USER_CHECK_EXISTS, { userId });
     if (!userExists) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
 
-    // Lấy dữ liệu thô: posts, stories, comments, postReactions, storyReactions
-    const [postsResult, storiesResult, user, postReactionsRaw, storyReactionsRaw] =
+    const [postsResult, storiesResult, user, postReactionsRaw, storyReactionsRaw, userComments] =
       await Promise.all([
         this.eventEmitter.emitAsync(AppEvents.POST_GET_ALL_BY_USER, { ownerId: userId, viewerId: userId, page: 1, limit: 5 }),
         this.eventEmitter.emitAsync(AppEvents.STORY_GET, { ownerId: userId, viewerId: userId }),
-        this.userModel.findById(userId).select('updatedAt').lean().exec(),
-        this.reactPostModel
-          .find({ userId: new Types.ObjectId(userId) })
-          .sort({ createdAt: -1 })
-          .limit(10)
-          .populate('postId', 'caption')
-          .populate('emojiId', 'label icon')
-          .lean()
-          .exec(),
-        this.reactStoryModel
-          .find({ userId: new Types.ObjectId(userId) })
-          .sort({ createdAt: -1 })
-          .limit(10)
-          .populate('storyId')
-          .populate('emojiId', 'label icon')
-          .lean()
-          .exec(),
+        this.eventEmitter.emitAsync(AppEvents.USER_FIND_ONE, { userId }),
+        this.eventEmitter.emitAsync(AppEvents.ADMIN_REACT_POST_FIND_BY_USER, { userId }),
+        this.eventEmitter.emitAsync(AppEvents.ADMIN_REACT_STORY_FIND_BY_USER, { userId }),
+        this.eventEmitter.emitAsync(AppEvents.ADMIN_COMMENT_FIND_BY_USER, { userId }),
       ]);
 
-    // Transform reactions
     const postReactions = postReactionsRaw || [];
     const storyReactions = storyReactionsRaw || [];
-
-    // Lấy comments gần đây của user này
-    const userComments = await this.commentModel
-      .find({ userId: new Types.ObjectId(userId) })
-      .sort({ createdAt: -1 })
-      .limit(10)
-      .populate('postId', 'caption')
-      .populate('userId', 'username fullName avatarUrl')
-      .lean()
-      .exec();
-
     const posts = postsResult[0] || { data: [] };
     const stories = storiesResult[0] || [];
 
@@ -323,9 +130,9 @@ export class AdminService {
     }));
 
     const reactionActivities = [
-      ...postReactions.map((reaction) => ({
+      ...postReactions.map((reaction: any) => ({
         type: 'reaction',
-        id: reaction._id.toString(),
+        id: reaction._id?.toString() || reaction._id,
         createdAt: reaction.createdAt,
         payload: {
           targetType: 'post',
@@ -337,7 +144,7 @@ export class AdminService {
       })),
       ...storyReactions.map((reaction: any) => ({
         type: 'reaction',
-        id: reaction._id.toString(),
+        id: reaction._id?.toString() || reaction._id,
         createdAt: reaction.createdAt || reaction.updatedAt || new Date(),
         payload: {
           targetType: 'story',
@@ -364,6 +171,8 @@ export class AdminService {
         createdAt: new Date(activity.createdAt).toISOString(),
       }));
 
+    const userData = user && !(user as any).error ? (user as any) : null;
+
     return {
       posts: posts.data || [],
       stories: stories || [],
@@ -374,7 +183,7 @@ export class AdminService {
       },
       activity: activityTimeline,
       lastActive:
-        (user as any)?.updatedAt ||
+        (userData as any)?.updatedAt ||
         activityTimeline[0]?.createdAt ||
         null,
     };
@@ -386,87 +195,19 @@ export class AdminService {
     limit: number = 10,
     search?: string,
   ) {
-    const skip = (page - 1) * limit;
-    const query: any = {};
-
-    // Tìm kiếm theo caption
-    if (search && search.trim()) {
-      query.caption = { $regex: search.trim(), $options: 'i' };
-    }
-
-    const [posts, total] = await Promise.all([
-      this.postModel
-        .find(query)
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit)
-        .populate('userId', 'username fullName avatarUrl')
-        .populate({ path: 'urls', options: { sort: { order: 1 } } })
-        .lean()
-        .exec(),
-      this.postModel.countDocuments(query).exec(),
-    ]);
-
-    // Transform posts
-    const postResponseDtos = await Promise.all(
-      posts.map(async (post: any) => {
-        const userResponseDto: UserResponseDto = plainToInstance(
-          UserResponseDto,
-          post.userId,
-          {
-            excludeExtraneousValues: true,
-          },
-        );
-        const cleanedUser = omitBy(
-          userResponseDto,
-          isUndefined,
-        ) as UserResponseDto;
-
-        // Lấy reacts
-        const [reactsMap] = await this.eventEmitter.emitAsync(
-          AppEvents.REACT_POST_GET,
-          {
-            postIds: [post._id.toString()],
-            viewerId: post.userId._id.toString(),
-          },
-        );
-
-        // Lấy comments
-        const [commentsResult] = await this.eventEmitter.emitAsync(
-          AppEvents.COMMENT_FIND_BY_POST_ID,
-          { postId: post._id.toString() },
-        );
-        const comments = commentsResult || [];
-
-        return {
-          ...post,
-          userId: cleanedUser,
-          reacts: reactsMap[post._id.toString()] || [],
-          isReact: null,
-          comments: comments || [],
-        } as any;
-      }),
-    );
-
-    return {
-      data: postResponseDtos,
-      pagination: {
-        currentPage: page,
-        totalPages: Math.ceil(total / limit),
-        totalItems: total,
-        itemsPerPage: limit,
-        hasNextPage: page < Math.ceil(total / limit),
-        hasPrevPage: page > 1,
-      },
-    };
+    const [result] = await this.eventEmitter.emitAsync(AppEvents.ADMIN_POST_GET_ALL, {
+      page,
+      limit,
+      search,
+    });
+    return result;
   }
 
-  async getPostById(postId: string): Promise<PostResponseDto> {
+  async getPostById(postId: string) {
     if (!Types.ObjectId.isValid(postId)) {
       throw new HttpException('Invalid postId', HttpStatus.BAD_REQUEST);
     }
 
-    // Admin có thể xem post mà không cần userId
     const [postResult] = await this.eventEmitter.emitAsync(AppEvents.POST_GET_DETAIL, { postId, userId: postId });
     const [commentsResult] = await this.eventEmitter.emitAsync(AppEvents.COMMENT_FIND_BY_POST_ID, { postId });
     const post = postResult || {};
@@ -474,52 +215,19 @@ export class AdminService {
     return { ...post, comments } as any;
   }
 
-  async deletePost(postId: string): Promise<{ message: string }> {
-    if (!Types.ObjectId.isValid(postId)) {
-      throw new HttpException('Invalid postId', HttpStatus.BAD_REQUEST);
-    }
-
-    const post = await this.postModel.findById(postId).exec();
-    if (!post) {
-      throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
-    }
-
-    // Admin có quyền xóa bất kỳ post nào, không cần kiểm tra userId
-    await post.deleteOne();
-
-    return { message: 'Post deleted successfully' };
+  async deletePost(postId: string) {
+    const [result] = await this.eventEmitter.emitAsync(AppEvents.ADMIN_POST_DELETE, { postId });
+    return result;
   }
 
-  async hidePost(postId: string): Promise<{ message: string }> {
-    if (!Types.ObjectId.isValid(postId)) {
-      throw new HttpException('Invalid postId', HttpStatus.BAD_REQUEST);
-    }
-
-    const post = await this.postModel.findById(postId).exec();
-    if (!post) {
-      throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
-    }
-
-    post.isHidden = true;
-    await post.save();
-
-    return { message: 'Post hidden successfully' };
+  async hidePost(postId: string) {
+    const [result] = await this.eventEmitter.emitAsync(AppEvents.ADMIN_POST_HIDE, { postId });
+    return result;
   }
 
-  async unhidePost(postId: string): Promise<{ message: string }> {
-    if (!Types.ObjectId.isValid(postId)) {
-      throw new HttpException('Invalid postId', HttpStatus.BAD_REQUEST);
-    }
-
-    const post = await this.postModel.findById(postId).exec();
-    if (!post) {
-      throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
-    }
-
-    post.isHidden = false;
-    await post.save();
-
-    return { message: 'Post unhidden successfully' };
+  async unhidePost(postId: string) {
+    const [result] = await this.eventEmitter.emitAsync(AppEvents.ADMIN_POST_UNHIDE, { postId });
+    return result;
   }
 
   // ===== Story Management Methods =====
@@ -529,115 +237,42 @@ export class AdminService {
     dateFrom?: Date,
     dateTo?: Date,
   ) {
-    const skip = (page - 1) * limit;
-    const query: any = {};
-
-    // Lọc theo ngày
-    if (dateFrom || dateTo) {
-      query.createdAt = {};
-      if (dateFrom) {
-        query.createdAt.$gte = dateFrom;
-      }
-      if (dateTo) {
-        query.createdAt.$lte = dateTo;
-      }
-    }
-
-    const [stories, total] = await Promise.all([
-      this.storyModel
-        .find(query)
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit)
-        .populate('userId', 'username fullName avatarUrl')
-        .lean()
-        .exec(),
-      this.storyModel.countDocuments(query).exec(),
-    ]);
-
-    // Transform stories
-    const storyResponseDtos = stories.map((story: any) => {
-      const userResponseDto: UserResponseDto = plainToInstance(
-        UserResponseDto,
-        story.userId,
-        {
-          excludeExtraneousValues: true,
-        },
-      );
-      const cleanedUser = omitBy(userResponseDto, isUndefined) as UserResponseDto;
-
-      return plainToInstance(
-        StoryResponseDto,
-        {
-          ...story,
-          userId: cleanedUser,
-        },
-        { excludeExtraneousValues: true },
-      );
+    const [result] = await this.eventEmitter.emitAsync(AppEvents.ADMIN_STORY_GET_ALL, {
+      page,
+      limit,
+      dateFrom,
+      dateTo,
     });
-
-    return {
-      data: storyResponseDtos,
-      pagination: {
-        currentPage: page,
-        totalPages: Math.ceil(total / limit),
-        totalItems: total,
-        itemsPerPage: limit,
-        hasNextPage: page < Math.ceil(total / limit),
-        hasPrevPage: page > 1,
-      },
-    };
+    return result;
   }
 
-  async getStoryById(storyId: string): Promise<StoryResponseDto> {
+  async getStoryById(storyId: string) {
     if (!Types.ObjectId.isValid(storyId)) {
       throw new HttpException('Invalid storyId', HttpStatus.BAD_REQUEST);
     }
 
-    // Admin có thể xem story mà không cần kiểm tra quyền riêng tư
-    const story = await this.storyModel
-      .findById(storyId)
-      .populate('userId', 'username fullName avatarUrl')
-      .lean()
-      .exec();
+    const [storyResult] = await this.eventEmitter.emitAsync(AppEvents.STORY_GET, {
+      ownerId: storyId,
+      viewerId: storyId,
+    });
+    
+    if (!storyResult || (Array.isArray(storyResult) && storyResult.length === 0)) {
+      throw new HttpException('Story not found', HttpStatus.NOT_FOUND);
+    }
 
+    const stories = Array.isArray(storyResult) ? storyResult : [storyResult];
+    const story = stories.find((s: any) => s._id?.toString() === storyId || s.id === storyId);
+    
     if (!story) {
       throw new HttpException('Story not found', HttpStatus.NOT_FOUND);
     }
 
-    const userResponseDto: UserResponseDto = plainToInstance(
-      UserResponseDto,
-      story.userId,
-      {
-        excludeExtraneousValues: true,
-      },
-    );
-    const cleanedUser = omitBy(userResponseDto, isUndefined) as UserResponseDto;
-
-    return plainToInstance(
-      StoryResponseDto,
-      {
-        ...story,
-        userId: cleanedUser,
-      },
-      { excludeExtraneousValues: true },
-    );
+    return story;
   }
 
-  async deleteStory(storyId: string): Promise<{ message: string }> {
-    if (!Types.ObjectId.isValid(storyId)) {
-      throw new HttpException('Invalid storyId', HttpStatus.BAD_REQUEST);
-    }
-
-    const story = await this.storyModel.findById(storyId).exec();
-    if (!story) {
-      throw new HttpException('Story not found', HttpStatus.NOT_FOUND);
-    }
-
-    // Admin có quyền xóa bất kỳ story nào, không cần kiểm tra userId
-    await story.deleteOne();
-
-    return { message: 'Story deleted successfully' };
+  async deleteStory(storyId: string) {
+    const [result] = await this.eventEmitter.emitAsync(AppEvents.ADMIN_STORY_DELETE, { storyId });
+    return result;
   }
 
   // ===== Comment Management Methods =====
@@ -648,328 +283,43 @@ export class AdminService {
     postId?: string,
     userId?: string,
   ) {
-    const skip = (page - 1) * limit;
-    const query: any = {};
-
-    // Tìm kiếm theo content
-    if (search && search.trim()) {
-      query.content = { $regex: search.trim(), $options: 'i' };
-    }
-
-    // Lọc theo postId
-    if (postId && Types.ObjectId.isValid(postId)) {
-      query.postId = new Types.ObjectId(postId);
-    }
-
-    // Lọc theo userId
-    if (userId && Types.ObjectId.isValid(userId)) {
-      query.userId = new Types.ObjectId(userId);
-    }
-
-    const [comments, total] = await Promise.all([
-      this.commentModel
-        .find(query)
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit)
-        .populate('userId', 'username fullName avatarUrl email')
-        .populate('postId', 'caption')
-        .populate({
-          path: 'parentId',
-          select: 'content userId createdAt',
-          populate: {
-            path: 'userId',
-            select: 'username fullName avatarUrl',
-          },
-        })
-        .lean()
-        .exec(),
-      this.commentModel.countDocuments(query).exec(),
-    ]);
-
-    return {
-      data: comments,
-      pagination: {
-        currentPage: page,
-        totalPages: Math.ceil(total / limit),
-        totalItems: total,
-        itemsPerPage: limit,
-        hasNextPage: page < Math.ceil(total / limit),
-        hasPrevPage: page > 1,
-      },
-    };
+    const [result] = await this.eventEmitter.emitAsync(AppEvents.ADMIN_COMMENT_GET_ALL, {
+      page,
+      limit,
+      search,
+      postId,
+      userId,
+    });
+    return result;
   }
 
   async getCommentById(commentId: string) {
-    if (!Types.ObjectId.isValid(commentId)) {
-      throw new HttpException('Invalid commentId', HttpStatus.BAD_REQUEST);
-    }
-
-    const comment = await this.commentModel
-      .findById(commentId)
-      .populate('userId', 'username fullName avatarUrl email')
-      .populate('postId', 'caption')
-      .populate({
-        path: 'parentId',
-        select: 'content userId createdAt',
-        populate: {
-          path: 'userId',
-          select: 'username fullName avatarUrl',
-        },
-      })
-      .lean()
-      .exec();
-
-    if (!comment) {
-      throw new HttpException('Comment not found', HttpStatus.NOT_FOUND);
-    }
-
-    return comment;
+    const [result] = await this.eventEmitter.emitAsync(AppEvents.ADMIN_COMMENT_GET_BY_ID, { commentId });
+    return result;
   }
 
-  async deleteComment(commentId: string): Promise<{ message: string }> {
-    if (!Types.ObjectId.isValid(commentId)) {
-      throw new HttpException('Invalid commentId', HttpStatus.BAD_REQUEST);
-    }
-
-    const comment = await this.commentModel.findById(commentId).exec();
-    if (!comment) {
-      throw new HttpException('Comment not found', HttpStatus.NOT_FOUND);
-    }
-
-    // Admin có quyền xóa bất kỳ comment nào, không cần kiểm tra userId
-    await comment.deleteOne();
-
-    return { message: 'Comment deleted successfully' };
+  async deleteComment(commentId: string) {
+    const [result] = await this.eventEmitter.emitAsync(AppEvents.ADMIN_COMMENT_DELETE, { commentId });
+    return result;
   }
 
   // ===== Post Report Management Methods =====
-
   async getPostReports(
     page: number = 1,
     limit: number = 10,
     status?: 'pending' | 'reviewed' | 'rejected',
   ) {
-    const skip = (page - 1) * limit;
-    const matchQuery: any = {};
-
-    if (status) {
-      matchQuery.status = status;
-    }
-
-    // Sử dụng aggregation để group theo postId và lấy danh sách người báo cáo
-    const pipeline: any[] = [
-      {
-        $match: matchQuery,
-      },
-      {
-        $lookup: {
-          from: 'posts',
-          localField: 'postId',
-          foreignField: '_id',
-          as: 'postInfo',
-        },
-      },
-      {
-        $unwind: {
-          path: '$postInfo',
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      {
-        $lookup: {
-          from: 'users',
-          localField: 'postInfo.userId',
-          foreignField: '_id',
-          as: 'postOwner',
-        },
-      },
-      {
-        $unwind: {
-          path: '$postOwner',
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      {
-        $lookup: {
-          from: 'users',
-          localField: 'userId',
-          foreignField: '_id',
-          as: 'reporterInfo',
-        },
-      },
-      {
-        $unwind: {
-          path: '$reporterInfo',
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      {
-        $group: {
-          _id: '$postId',
-          postId: { 
-            $first: {
-              _id: '$postInfo._id',
-              caption: '$postInfo.caption',
-              userId: '$postInfo.userId',
-              urls: '$postInfo.urls',
-              layout: '$postInfo.layout',
-              privacy_type: '$postInfo.privacy_type',
-              isHidden: '$postInfo.isHidden',
-              createdAt: '$postInfo.createdAt',
-              updatedAt: '$postInfo.updatedAt',
-            }
-          },
-          postOwner: { $first: '$postOwner' },
-          reporters: {
-            $push: {
-              _id: '$_id',
-              userId: {
-                _id: '$reporterInfo._id',
-                fullName: '$reporterInfo.fullName',
-                username: '$reporterInfo.username',
-                avatarUrl: '$reporterInfo.avatarUrl',
-                email: '$reporterInfo.email',
-              },
-              reason: '$reason',
-              description: '$description',
-              status: '$status',
-              createdAt: '$createdAt',
-              updatedAt: '$updatedAt',
-            },
-          },
-          totalReports: { $sum: 1 },
-          pendingCount: {
-            $sum: { $cond: [{ $eq: ['$status', 'pending'] }, 1, 0] },
-          },
-          reviewedCount: {
-            $sum: { $cond: [{ $eq: ['$status', 'reviewed'] }, 1, 0] },
-          },
-          rejectedCount: {
-            $sum: { $cond: [{ $eq: ['$status', 'rejected'] }, 1, 0] },
-          },
-          latestReportDate: { $max: '$createdAt' },
-        },
-      },
-      {
-        $lookup: {
-          from: 'posturls',
-          let: { urlIds: '$postId.urls' },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $in: ['$_id', '$$urlIds'],
-                },
-              },
-            },
-            {
-              $sort: { order: 1 },
-            },
-          ],
-          as: 'postUrls',
-        },
-      },
-      {
-        $addFields: {
-          'postId.urls': '$postUrls',
-        },
-      },
-      {
-        $sort: { latestReportDate: -1 },
-      },
-      {
-        $skip: skip,
-      },
-      {
-        $limit: limit,
-      },
-    ];
-
-    // Đếm tổng số bài viết bị báo cáo (không phải số lượng báo cáo)
-    const countPipeline = [
-      {
-        $match: matchQuery,
-      },
-      {
-        $group: {
-          _id: '$postId',
-        },
-      },
-      {
-        $count: 'total',
-      },
-    ];
-
-    const [groupedReports, countResult] = await Promise.all([
-      this.postReportModel.aggregate(pipeline).exec(),
-      this.postReportModel.aggregate(countPipeline).exec(),
-    ]);
-
-    const total = countResult.length > 0 ? countResult[0].total : 0;
-
-    // Format lại dữ liệu
-    const formattedData = groupedReports.map((item: any) => {
-      const postId = item.postId?._id || item._id;
-      return {
-        postId: {
-          ...item.postId,
-          userId: item.postOwner,
-          urls: item.postUrls || [],
-        },
-        reporters: item.reporters || [],
-        reportCounts: {
-          total: item.totalReports,
-          pending: item.pendingCount,
-          reviewed: item.reviewedCount,
-          rejected: item.rejectedCount,
-        },
-        latestReportDate: item.latestReportDate,
-      };
+    const [result] = await this.eventEmitter.emitAsync(AppEvents.ADMIN_POST_REPORT_GET_ALL, {
+      page,
+      limit,
+      status,
     });
-
-    return {
-      data: formattedData,
-      pagination: {
-        currentPage: page,
-        totalPages: Math.ceil(total / limit),
-        totalItems: total,
-        itemsPerPage: limit,
-        hasNextPage: page < Math.ceil(total / limit),
-        hasPrevPage: page > 1,
-      },
-    };
+    return result;
   }
 
   async getPostReportById(reportId: string) {
-    if (!Types.ObjectId.isValid(reportId)) {
-      throw new HttpException('Invalid reportId', HttpStatus.BAD_REQUEST);
-    }
-
-    const report = await this.postReportModel
-      .findById(reportId)
-      .populate({
-        path: 'postId',
-        populate: [
-          {
-            path: 'userId',
-            select: 'username fullName avatarUrl',
-          },
-          {
-            path: 'urls',
-            options: { sort: { order: 1 } },
-          },
-        ],
-      })
-      .populate('userId', 'username fullName email avatarUrl')
-      .lean()
-      .exec();
-
-    if (!report) {
-      throw new HttpException('Post report not found', HttpStatus.NOT_FOUND);
-    }
-
-    return report;
+    const [result] = await this.eventEmitter.emitAsync(AppEvents.ADMIN_POST_REPORT_GET_BY_ID, { reportId });
+    return result;
   }
 
   async updatePostReportStatus(
@@ -977,33 +327,12 @@ export class AdminService {
     status: 'pending' | 'reviewed' | 'rejected',
     note?: string,
   ) {
-    if (!Types.ObjectId.isValid(reportId)) {
-      throw new HttpException('Invalid reportId', HttpStatus.BAD_REQUEST);
-    }
-
-    const report = await this.postReportModel.findById(reportId).exec();
-    if (!report) {
-      throw new HttpException('Post report not found', HttpStatus.NOT_FOUND);
-    }
-
-    report.status = status;
-    await report.save();
-
-    const post = await this.postModel.findById(report.postId).exec();
-    if (post) {
-      if (status === 'reviewed') {
-        post.isHidden = true;
-        await post.save();
-      } else if (status === 'rejected') {
-        post.isHidden = false;
-        await post.save();
-      }
-    }
-
-    return {
-      message: 'Post report status updated successfully',
-      status: report.status,
-    };
+    const [result] = await this.eventEmitter.emitAsync(AppEvents.ADMIN_POST_REPORT_UPDATE_STATUS, {
+      reportId,
+      status,
+      note,
+    });
+    return result;
   }
 
   async bulkUpdatePostReportStatus(
@@ -1011,185 +340,49 @@ export class AdminService {
     status: 'pending' | 'reviewed' | 'rejected',
     note?: string,
   ) {
-    // Validate all reportIds
-    const validReportIds = reportIds.filter((id) => Types.ObjectId.isValid(id));
-    if (validReportIds.length === 0) {
-      throw new HttpException('No valid report IDs provided', HttpStatus.BAD_REQUEST);
-    }
-
-    const objectIds = validReportIds.map((id) => new Types.ObjectId(id));
-
-    // Update all reports
-    const updateResult = await this.postReportModel.updateMany(
-      { _id: { $in: objectIds } },
-      { status },
-    );
-
-    if (updateResult.matchedCount === 0) {
-      throw new HttpException('No reports found', HttpStatus.NOT_FOUND);
-    }
-
-    // Get all affected posts
-    const reports = await this.postReportModel
-      .find({ _id: { $in: objectIds } })
-      .select('postId')
-      .lean()
-      .exec();
-
-    const uniquePostIds = [...new Set(reports.map((r) => r.postId.toString()))];
-
-    // Handle post visibility based on status
-    if (status === 'reviewed') {
-      // Hide all posts that have reviewed reports
-      await this.postModel.updateMany(
-        { _id: { $in: uniquePostIds.map((id) => new Types.ObjectId(id)) } },
-        { isHidden: true },
-      );
-    } else if (status === 'rejected') {
-      // Check each post - only unhide if all reports are rejected
-      for (const postId of uniquePostIds) {
-        const allReportsForPost = await this.postReportModel
-          .find({ postId: new Types.ObjectId(postId) })
-          .lean()
-          .exec();
-
-        const allRejected = allReportsForPost.every((r) => r.status === 'rejected');
-        if (allRejected) {
-          await this.postModel.findByIdAndUpdate(postId, { isHidden: false });
-        }
-      }
-    }
-
-    return {
-      message: `Successfully updated ${updateResult.modifiedCount} report(s)`,
-      updatedCount: updateResult.modifiedCount,
-      matchedCount: updateResult.matchedCount,
-    };
+    const [result] = await this.eventEmitter.emitAsync(AppEvents.ADMIN_POST_REPORT_BULK_UPDATE_STATUS, {
+      reportIds,
+      status,
+      note,
+    });
+    return result;
   }
 
   // ===== Dashboard Stats Methods =====
   async getDashboardStats() {
-    const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-
-    const [
-      totalUsers,
-      totalPosts,
-      totalStories,
-      totalComments,
-      newUsersThisMonth,
-      newPostsThisMonth,
-    ] = await Promise.all([
-      this.userModel.countDocuments({ role: { $ne: 'admin' } }).exec(),
-      this.postModel.countDocuments().exec(),
-      this.storyModel.countDocuments().exec(),
-      this.commentModel.countDocuments().exec(),
-      this.userModel
-        .countDocuments({ 
-          createdAt: { $gte: startOfMonth },
-          role: { $ne: 'admin' }
-        })
-        .exec(),
-      this.postModel
-        .countDocuments({ createdAt: { $gte: startOfMonth } })
-        .exec(),
+    const [userStats, postStats, storyStats, commentStats] = await Promise.all([
+      this.eventEmitter.emitAsync(AppEvents.ADMIN_DASHBOARD_STATS),
+      this.eventEmitter.emitAsync(AppEvents.ADMIN_DASHBOARD_STATS),
+      this.eventEmitter.emitAsync(AppEvents.ADMIN_DASHBOARD_STATS),
+      this.eventEmitter.emitAsync(AppEvents.ADMIN_DASHBOARD_STATS),
     ]);
 
+    const userData = userStats[0] || {};
+    const postData = postStats[0] || {};
+    const storyData = storyStats[0] || {};
+    const commentData = commentStats[0] || {};
+
     return {
-      totalUsers,
-      totalPosts,
-      totalStories,
-      totalComments,
-      newUsersThisMonth,
-      newPostsThisMonth,
+      totalUsers: userData.totalUsers || 0,
+      totalPosts: postData.totalPosts || 0,
+      totalStories: storyData.totalStories || 0,
+      totalComments: commentData.totalComments || 0,
+      newUsersThisMonth: userData.newUsersThisMonth || 0,
+      newPostsThisMonth: postData.newPostsThisMonth || 0,
     };
   }
 
   async getUsersGrowth(days: number = 30) {
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - days);
-
-    const users = await this.userModel
-      .aggregate([
-        {
-          $match: {
-            createdAt: {
-              $gte: startDate,
-              $lte: endDate,
-            },
-            role: { $ne: 'admin' },
-          },
-        },
-        {
-          $group: {
-            _id: {
-              $dateToString: {
-                format: '%Y-%m-%d',
-                date: '$createdAt',
-              },
-            },
-            count: { $sum: 1 },
-          },
-        },
-        {
-          $sort: { _id: 1 },
-        },
-        {
-          $project: {
-            date: '$_id',
-            count: 1,
-            _id: 0,
-          },
-        },
-      ])
-      .exec();
-
-    return users;
+    const [result] = await this.eventEmitter.emitAsync(AppEvents.ADMIN_USERS_GROWTH, { days });
+    return result;
   }
 
   async getPostsStats(groupBy: 'day' | 'month' = 'day', days: number = 30) {
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - days);
-
-    const format = groupBy === 'day' ? '%Y-%m-%d' : '%Y-%m';
-
-    const posts = await this.postModel
-      .aggregate([
-        {
-          $match: {
-            createdAt: {
-              $gte: startDate,
-              $lte: endDate,
-            },
-          },
-        },
-        {
-          $group: {
-            _id: {
-              $dateToString: {
-                format,
-                date: '$createdAt',
-              },
-            },
-            count: { $sum: 1 },
-          },
-        },
-        {
-          $sort: { _id: 1 },
-        },
-        {
-          $project: {
-            date: '$_id',
-            count: 1,
-            _id: 0,
-          },
-        },
-      ])
-      .exec();
-
-    return posts;
+    const [result] = await this.eventEmitter.emitAsync(AppEvents.ADMIN_POSTS_STATS, {
+      groupBy,
+      days,
+    });
+    return result;
   }
 
   async getPostReacts(postId: string) {

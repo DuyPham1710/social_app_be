@@ -235,4 +235,23 @@ export class ReactPostService {
     const { postId, viewerId } = payload;
     return await this.findByPost(postId, viewerId);
   }
+
+  // ===== ADMIN EVENT LISTENERS =====
+  @OnEvent(AppEvents.ADMIN_REACT_POST_FIND_BY_USER)
+  async handleAdminFindByUser({ userId }: { userId: string }) {
+    if (!Types.ObjectId.isValid(userId)) {
+      throw new NotFoundException('Invalid userId');
+    }
+
+    const reactions = await this.reactPostModel
+      .find({ userId: new Types.ObjectId(userId) })
+      .sort({ createdAt: -1 })
+      .limit(10)
+      .populate('postId', 'caption')
+      .populate('emojiId', 'label icon')
+      .lean()
+      .exec();
+
+    return reactions || [];
+  }
 }
