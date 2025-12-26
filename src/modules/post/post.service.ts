@@ -1072,13 +1072,12 @@ export class PostService {
             }
 
             // Gửi thông báo đến người sở hữu bài viết khi admin xử lý báo cáo
-            if (status === 'reviewed' || status === 'rejected') {
+            if (status === 'reviewed') {
                 const postOwnerId = (post.userId as any)?._id?.toString() || (post.userId as any)?.toString();
                 
                 if (postOwnerId) {
                     try {
-                        const statusText = status === 'reviewed' ? 'đã được xác nhận' : 'đã bị từ chối';
-                        
+
                         // Lấy caption của bài viết, truncate nếu quá dài
                         const postCaption = post.caption || '';
                         const truncatedCaption = postCaption.length > 50 
@@ -1087,7 +1086,7 @@ export class PostService {
                         
                         // Tạo message với tên bài viết
                         const postTitle = truncatedCaption || 'bài viết của bạn';
-                        const message = `Báo cáo về "${postTitle}" ${statusText}`;
+                        const message = `Báo cáo về "${postTitle}" đã bị ẩn do vi phạm tiêu chuẩn cộng đồng`;
                         
                         // Gửi thông báo trong ứng dụng
                         await this.notificationService.createAndEmit({
