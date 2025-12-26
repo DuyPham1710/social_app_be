@@ -596,6 +596,17 @@ export class PostService {
             });
         }
 
+        // Nếu có >= 100 báo cáo pending thì tự động ẩn bài viết
+        const pendingReportsCount = await this.postReportModel.countDocuments({
+            postId: postObjectId,
+            status: 'pending',
+        });
+
+        if (pendingReportsCount >= 100 && !post.isHidden) {
+            post.isHidden = true;
+            await post.save();
+        }
+
         return {
             message: 'Báo cáo bài viết thành công. Cảm ơn bạn đã đóng góp giúp cộng đồng an toàn hơn.',
         };

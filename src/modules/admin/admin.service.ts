@@ -751,39 +751,185 @@ export class AdminService {
     status?: 'pending' | 'reviewed' | 'rejected',
   ) {
     const skip = (page - 1) * limit;
-    const query: any = {};
+    const matchQuery: any = {};
 
     if (status) {
-      query.status = status;
+      matchQuery.status = status;
     }
 
-    const [reports, total] = await Promise.all([
-      this.postReportModel
-        .find(query)
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit)
-        .populate({
-          path: 'postId',
-          populate: [
+    // Sử dụng aggregation để group theo postId và lấy danh sách người báo cáo
+    const pipeline: any[] = [
+      {
+        $match: matchQuery,
+      },
+      {
+        $lookup: {
+          from: 'posts',
+          localField: 'postId',
+          foreignField: '_id',
+          as: 'postInfo',
+        },
+      },
+      {
+        $unwind: {
+          path: '$postInfo',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'postInfo.userId',
+          foreignField: '_id',
+          as: 'postOwner',
+        },
+      },
+      {
+        $unwind: {
+          path: '$postOwner',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'reporterInfo',
+        },
+      },
+      {
+        $unwind: {
+          path: '$reporterInfo',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $group: {
+          _id: '$postId',
+          postId: { 
+            $first: {
+              _id: '$postInfo._id',
+              caption: '$postInfo.caption',
+              userId: '$postInfo.userId',
+              urls: '$postInfo.urls',
+              layout: '$postInfo.layout',
+              privacy_type: '$postInfo.privacy_type',
+              isHidden: '$postInfo.isHidden',
+              createdAt: '$postInfo.createdAt',
+              updatedAt: '$postInfo.updatedAt',
+            }
+          },
+          postOwner: { $first: '$postOwner' },
+          reporters: {
+            $push: {
+              _id: '$_id',
+              userId: {
+                _id: '$reporterInfo._id',
+                fullName: '$reporterInfo.fullName',
+                username: '$reporterInfo.username',
+                avatarUrl: '$reporterInfo.avatarUrl',
+                email: '$reporterInfo.email',
+              },
+              reason: '$reason',
+              description: '$description',
+              status: '$status',
+              createdAt: '$createdAt',
+              updatedAt: '$updatedAt',
+            },
+          },
+          totalReports: { $sum: 1 },
+          pendingCount: {
+            $sum: { $cond: [{ $eq: ['$status', 'pending'] }, 1, 0] },
+          },
+          reviewedCount: {
+            $sum: { $cond: [{ $eq: ['$status', 'reviewed'] }, 1, 0] },
+          },
+          rejectedCount: {
+            $sum: { $cond: [{ $eq: ['$status', 'rejected'] }, 1, 0] },
+          },
+          latestReportDate: { $max: '$createdAt' },
+        },
+      },
+      {
+        $lookup: {
+          from: 'posturls',
+          let: { urlIds: '$postId.urls' },
+          pipeline: [
             {
-              path: 'userId',
-              select: 'username fullName avatarUrl',
+              $match: {
+                $expr: {
+                  $in: ['$_id', '$$urlIds'],
+                },
+              },
             },
             {
-              path: 'urls',
-              options: { sort: { order: 1 } },
+              $sort: { order: 1 },
             },
           ],
-        })
-        .populate('userId', 'username fullName email avatarUrl')
-        .lean()
-        .exec(),
-      this.postReportModel.countDocuments(query).exec(),
+          as: 'postUrls',
+        },
+      },
+      {
+        $addFields: {
+          'postId.urls': '$postUrls',
+        },
+      },
+      {
+        $sort: { latestReportDate: -1 },
+      },
+      {
+        $skip: skip,
+      },
+      {
+        $limit: limit,
+      },
+    ];
+
+    // Đếm tổng số bài viết bị báo cáo (không phải số lượng báo cáo)
+    const countPipeline = [
+      {
+        $match: matchQuery,
+      },
+      {
+        $group: {
+          _id: '$postId',
+        },
+      },
+      {
+        $count: 'total',
+      },
+    ];
+
+    const [groupedReports, countResult] = await Promise.all([
+      this.postReportModel.aggregate(pipeline).exec(),
+      this.postReportModel.aggregate(countPipeline).exec(),
     ]);
 
+    const total = countResult.length > 0 ? countResult[0].total : 0;
+
+    // Format lại dữ liệu
+    const formattedData = groupedReports.map((item: any) => {
+      const postId = item.postId?._id || item._id;
+      return {
+        postId: {
+          ...item.postId,
+          userId: item.postOwner,
+          urls: item.postUrls || [],
+        },
+        reporters: item.reporters || [],
+        reportCounts: {
+          total: item.totalReports,
+          pending: item.pendingCount,
+          reviewed: item.reviewedCount,
+          rejected: item.rejectedCount,
+        },
+        latestReportDate: item.latestReportDate,
+      };
+    });
+
     return {
-      data: reports,
+      data: formattedData,
       pagination: {
         currentPage: page,
         totalPages: Math.ceil(total / limit),
@@ -857,6 +1003,67 @@ export class AdminService {
     return {
       message: 'Post report status updated successfully',
       status: report.status,
+    };
+  }
+
+  async bulkUpdatePostReportStatus(
+    reportIds: string[],
+    status: 'pending' | 'reviewed' | 'rejected',
+    note?: string,
+  ) {
+    // Validate all reportIds
+    const validReportIds = reportIds.filter((id) => Types.ObjectId.isValid(id));
+    if (validReportIds.length === 0) {
+      throw new HttpException('No valid report IDs provided', HttpStatus.BAD_REQUEST);
+    }
+
+    const objectIds = validReportIds.map((id) => new Types.ObjectId(id));
+
+    // Update all reports
+    const updateResult = await this.postReportModel.updateMany(
+      { _id: { $in: objectIds } },
+      { status },
+    );
+
+    if (updateResult.matchedCount === 0) {
+      throw new HttpException('No reports found', HttpStatus.NOT_FOUND);
+    }
+
+    // Get all affected posts
+    const reports = await this.postReportModel
+      .find({ _id: { $in: objectIds } })
+      .select('postId')
+      .lean()
+      .exec();
+
+    const uniquePostIds = [...new Set(reports.map((r) => r.postId.toString()))];
+
+    // Handle post visibility based on status
+    if (status === 'reviewed') {
+      // Hide all posts that have reviewed reports
+      await this.postModel.updateMany(
+        { _id: { $in: uniquePostIds.map((id) => new Types.ObjectId(id)) } },
+        { isHidden: true },
+      );
+    } else if (status === 'rejected') {
+      // Check each post - only unhide if all reports are rejected
+      for (const postId of uniquePostIds) {
+        const allReportsForPost = await this.postReportModel
+          .find({ postId: new Types.ObjectId(postId) })
+          .lean()
+          .exec();
+
+        const allRejected = allReportsForPost.every((r) => r.status === 'rejected');
+        if (allRejected) {
+          await this.postModel.findByIdAndUpdate(postId, { isHidden: false });
+        }
+      }
+    }
+
+    return {
+      message: `Successfully updated ${updateResult.modifiedCount} report(s)`,
+      updatedCount: updateResult.modifiedCount,
+      matchedCount: updateResult.matchedCount,
     };
   }
 

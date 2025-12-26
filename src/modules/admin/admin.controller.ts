@@ -8,6 +8,7 @@ import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags, ApiBody } from '@nestjs
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
 import { UpdatePostReportStatusDto } from './dto/update-post-report-status.dto';
+import { BulkUpdatePostReportStatusDto } from './dto/bulk-update-post-report-status.dto';
 
 @ApiBearerAuth()
 @ApiTags('Admin')
@@ -267,6 +268,18 @@ export class AdminController {
   ) {
     return this.adminService.updatePostReportStatus(
       reportId,
+      body.status,
+      body.note,
+    );
+  }
+
+  @Put('post-reports/bulk-update')
+  @Roles(UserRole.ADMIN)
+  @ApiOperation({ summary: 'Cập nhật trạng thái xử lý của nhiều báo cáo cùng lúc' })
+  @ApiBody({ type: BulkUpdatePostReportStatusDto })
+  bulkUpdatePostReportStatus(@Body() body: BulkUpdatePostReportStatusDto) {
+    return this.adminService.bulkUpdatePostReportStatus(
+      body.reportIds,
       body.status,
       body.note,
     );
