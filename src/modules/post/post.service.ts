@@ -20,7 +20,7 @@ import { PostReport, PostReportDocument } from './schemas/post-report.schema';
 import { ReportPostDto } from './dto/report-post.dto';
 import { NotificationService } from '../notification/notification.service';
 import { NotificationType } from 'src/shared/enums/notification_type';
-//import { File } from 'multer';
+import { File } from 'multer';
 
 @Injectable()
 export class PostService {
@@ -278,7 +278,7 @@ export class PostService {
         return result;
     }
 
-    async createPost(createPostDto: CreatePostDto, userId: string, files?: Express.Multer.File[]): Promise<{ message: string }> {
+    async createPost(createPostDto: CreatePostDto, userId: string, files?: File[]): Promise<{ message: string }> {
         const { caption, titles = [], orders = [], layout, privacy_type, friends_except, friends_detail } = createPostDto;
 
         const post = await this.postModel.create({
