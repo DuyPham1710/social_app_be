@@ -60,7 +60,8 @@ export class CommentService {
             uniqueTaggedIds.forEach(async taggedId => {
                 if (taggedId.toString() !== userId) {
                     const canView = await this.eventEmitter.emitAsync(AppEvents.POST_CAN_VIEW, { postId: postId.toString(), viewerId: taggedId.toString() });
-                    if(canView){
+                    
+                    if(canView[0]){
                         this.eventEmitter.emit('comment.tagged', {
                         receiver: taggedId.toString(),
                         sender: userId,

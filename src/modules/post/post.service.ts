@@ -74,11 +74,8 @@ export class PostService {
         }
 
         // nếu là admin thì ko cần check privacy
-        console.log('viewerId before check admin:', viewerId);
         if(Types.ObjectId.isValid(viewerId)){
-            console.log('Checking admin for viewerId:', viewerId);
             const [isAdmin] = await this.eventEmitter.emitAsync(AppEvents.USER_IS_ADMIN, { userId: viewerId });
-            console.log('isAdmin result:', isAdmin);
             if (isAdmin) {
                 viewerId = ownerId;
             }

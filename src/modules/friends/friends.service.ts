@@ -101,6 +101,10 @@ export class FriendsService {
         friend_id: friendRequest.sender_id
       });
       await reverseFriendship.save();
+      this.eventEmitter.emit(AppEvents.DELETE_NOTIFICATION_FRIEND, {
+        user_id: friendRequest.sender_id.toString(),
+        friend_id: friendRequest.receiver_id.toString(),
+      });
     }
 
     await this.friendRequestModel.findByIdAndDelete(request_id);
@@ -120,6 +124,10 @@ export class FriendsService {
     }
 
     await this.friendRequestModel.findByIdAndDelete(requestId);
+    this.eventEmitter.emit(AppEvents.DELETE_NOTIFICATION_FRIEND, {
+      user_id: friendRequest.sender_id.toString(),
+      friend_id: friendRequest.receiver_id.toString(),
+    });
     return { message: 'Đã từ chối lời mời kết bạn thành công' };
   }
 

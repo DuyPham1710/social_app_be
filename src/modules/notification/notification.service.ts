@@ -209,4 +209,22 @@ async createAndEmit(dto: CreateNotificationDto) {
     }
   }
 
+  @OnEvent(AppEvents.DELETE_NOTIFICATION_FRIEND)
+  async handleDeleteNotificationFriend(payload: {user_id: string, friend_id: string }) {
+    const { user_id, friend_id } = payload;
+
+    // tìm thông báo có type FRIEND_REQUEST và có sender 
+    //xóa thông báo và emit đến user
+    const notifications = await this.notificationModel.find({
+      type: NotificationType.FRIEND_REQUEST,
+      sender: new Types.ObjectId(user_id),
+      receiver: new Types.ObjectId(friend_id),
+    });
+    console.log(`Deleting ${notifications.length} notifications for friend request from ${user_id} to ${friend_id}`);
+    for (const notification of notifications) {
+      await this.notificationModel.deleteOne({ _id: notification._id });
+      this.gateway.emitToUser(notification.receiver.toString(), 'notification:deleted', { id: notification._id.toString() });
+    }
+  }
+
 }
