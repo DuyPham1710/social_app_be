@@ -491,6 +491,22 @@ export class UserService {
     async handleGetBasicUserInfo({ userId }: { userId: string }): Promise<{ userId: string; username: string; fullName: string; avatarUrl?: string } | null> {
         return this.getBasicUserInfo(userId);
     }
+    @OnEvent(AppEvents.USER_IS_ADMIN)
+    async handleUserIsAdmin({ userId }: { userId: string }): Promise<boolean> {
+        const user = await this.userModel.findById(userId).lean().exec();
+        if (!user) {
+            return false;
+        }
+        return user.role === 'admin';
+    }
+
+    @OnEvent(AppEvents.GET_ADMIN_ID)
+    async handleGetAdminId(): Promise<string[]> {
+        const admins = await this.userModel.find({ role: 'admin' }).lean().exec();
+        const adminIds = admins.map(admin => (admin._id as Types.ObjectId).toString());
+        console.log('Admin IDs:', adminIds);
+        return adminIds;
+    }
 
     // ===== ADMIN EVENT LISTENERS =====
     @OnEvent(AppEvents.ADMIN_USER_GET_ALL)

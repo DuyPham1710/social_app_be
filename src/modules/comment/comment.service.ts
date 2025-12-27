@@ -57,9 +57,11 @@ export class CommentService {
         const user = populated.userId as any;
 
         if (uniqueTaggedIds.length > 0) {
-            uniqueTaggedIds.forEach(taggedId => {
+            uniqueTaggedIds.forEach(async taggedId => {
                 if (taggedId.toString() !== userId) {
-                    this.eventEmitter.emit('comment.tagged', {
+                    const canView = await this.eventEmitter.emitAsync(AppEvents.POST_CAN_VIEW, { postId: postId.toString(), viewerId: taggedId.toString() });
+                    if(canView){
+                        this.eventEmitter.emit('comment.tagged', {
                         receiver: taggedId.toString(),
                         sender: userId,
                         postId: postId,
@@ -72,6 +74,7 @@ export class CommentService {
                             avatarUrl: user.avatarUrl
                         }
                     });
+                    }
                 }
             });
         }

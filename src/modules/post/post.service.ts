@@ -36,37 +36,52 @@ export class PostService {
     ) { }
 
     async getPostDetail(postId: string, userId: string): Promise<PostResponseDto> {
-        if (!Types.ObjectId.isValid(postId)) {
-            throw new HttpException('Invalid postId', HttpStatus.BAD_REQUEST);
+        const canView = await this.canViewPost({ postId: postId.toString(), viewerId: userId.toString() });
+        if(canView){
+            if (!Types.ObjectId.isValid(postId)) {
+                throw new HttpException('Invalid postId', HttpStatus.BAD_REQUEST);
+            }
+
+            const postObjectId = new Types.ObjectId(postId);
+
+            const post = await this.postModel.findOne({ _id: postObjectId, isHidden: { $ne: true } }).populate('userId', 'username fullName avatarUrl').populate({ path: 'urls', options: { sort: { order: 1 } } }).exec();
+            if (!post) {
+                throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
+            }
+
+            const userResponseDto: UserResponseDto = plainToInstance(UserResponseDto, post.userId, {
+                excludeExtraneousValues: true
+            });
+            const cleanedUser = omitBy(userResponseDto, isUndefined) as UserResponseDto;
+
+            // Lấy danh sách react của từng post thông qua event emitter
+            const [reactsMap] = await this.eventEmitter.emitAsync(AppEvents.REACT_POST_GET, { postIds: [postId], viewerId: userId });
+            const [reactMap] = await this.eventEmitter.emitAsync(AppEvents.REACT_POST_FIND_BY_USER, { userId: userId, postIds: [postId] });
+
+            return {
+                ...post.toObject(),
+                userId: cleanedUser,
+                reacts: reactsMap[postId] || [],
+                isReact: reactMap[postId] || null
+            } as unknown as PostResponseDto;
         }
-
-        const postObjectId = new Types.ObjectId(postId);
-
-        const post = await this.postModel.findOne({ _id: postObjectId, isHidden: { $ne: true } }).populate('userId', 'username fullName avatarUrl').populate({ path: 'urls', options: { sort: { order: 1 } } }).exec();
-        if (!post) {
-            throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
-        }
-
-        const userResponseDto: UserResponseDto = plainToInstance(UserResponseDto, post.userId, {
-            excludeExtraneousValues: true
-        });
-        const cleanedUser = omitBy(userResponseDto, isUndefined) as UserResponseDto;
-
-        // Lấy danh sách react của từng post thông qua event emitter
-        const [reactsMap] = await this.eventEmitter.emitAsync(AppEvents.REACT_POST_GET, { postIds: [postId], viewerId: userId });
-        const [reactMap] = await this.eventEmitter.emitAsync(AppEvents.REACT_POST_FIND_BY_USER, { userId: userId, postIds: [postId] });
-
-        return {
-            ...post.toObject(),
-            userId: cleanedUser,
-            reacts: reactsMap[postId] || [],
-            isReact: reactMap[postId] || null
-        } as unknown as PostResponseDto;
+        return null as unknown as PostResponseDto;
     }
 
     async getAllPostsByUser(ownerId: string, viewerId: string, page: number = 1, limit: number = 5) {
         if (!Types.ObjectId.isValid(ownerId)) {
             throw new HttpException('Invalid ownerId', HttpStatus.BAD_REQUEST);
+        }
+
+        // nếu là admin thì ko cần check privacy
+        console.log('viewerId before check admin:', viewerId);
+        if(Types.ObjectId.isValid(viewerId)){
+            console.log('Checking admin for viewerId:', viewerId);
+            const [isAdmin] = await this.eventEmitter.emitAsync(AppEvents.USER_IS_ADMIN, { userId: viewerId });
+            console.log('isAdmin result:', isAdmin);
+            if (isAdmin) {
+                viewerId = ownerId;
+            }
         }
 
         // nếu không có viewerId thì mặc định viewer chính là owner
@@ -100,8 +115,6 @@ export class PostService {
             .lean()
             .exec();
 
-
-        console.log('>>Post\n', posts);
         // lọc theo quyền riêng tư
         // nếu ownerId === viewerId thì ko cần lọc
         let filteredPosts = posts;
@@ -131,7 +144,6 @@ export class PostService {
             return post;
         });
 
-        console.log('>>Filtered Post\n', filteredPosts);
         const hasNext = skip + filteredPosts.length < totalPosts;
 
         // Lấy danh sách react của từng post thông qua event emitter
@@ -1229,4 +1241,36 @@ export class PostService {
         };
     }
 
+    @OnEvent(AppEvents.POST_CAN_VIEW)
+    async canViewPost(payload: any): Promise<boolean> {
+        const post = await this.postModel.findById(payload.postId).lean();
+        if (!post) return false;
+        // kiểm tra có phải admin không
+        const [isAdmin] = await this.eventEmitter.emitAsync(AppEvents.USER_IS_ADMIN, { userId: payload.viewerId });
+        if (isAdmin) return true;
+        if (post.privacy_type === PrivacyType.PUBLIC) return true;
+        if (post.privacy_type === PrivacyType.PRIVATE) {
+            return post.userId.toString() === payload.viewerId;
+        }
+        if (post.privacy_type === PrivacyType.FRIENDS) {
+            const [friendsOfOwner] = await this.eventEmitter.emitAsync(AppEvents.FRIENDS_GET, { userId: post.userId.toString() });
+            const isFriend = friendsOfOwner.some((f: any) => f._id.toString() === payload.viewerId);
+            if (isFriend) return true;
+        }
+        if (post.privacy_type === PrivacyType.FRIENDS_EXCEPT) {
+            if (post.friends_except && post.friends_except.length > 0) {
+                const isExcepted = post.friends_except.some((id: Types.ObjectId) => id.toString() === payload.viewerId);
+                if (isExcepted) return false;
+            }
+            return true;
+        }
+        if (post.privacy_type === PrivacyType.FRIENDS_DETAIL) {
+            if (post.friends_detail && post.friends_detail.length > 0) {
+                const isAllowed = post.friends_detail.some((id: Types.ObjectId) => id.toString() === payload.viewerId);
+                return isAllowed;
+            }
+            return false;
+        }
+        return false;
+    }
 }

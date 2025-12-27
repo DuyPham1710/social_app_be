@@ -70,6 +70,12 @@ export class StoryService {
         if (!Types.ObjectId.isValid(viewerId)) {
             throw new HttpException('Invalid viewerId', HttpStatus.BAD_REQUEST);
         }
+        else{
+            const [isAdmin] = await this.eventEmitter.emitAsync(AppEvents.USER_IS_ADMIN, { userId: viewerId });
+            if (isAdmin){
+                viewerId = ownerId;
+            }
+        }
 
         const stories: StoryDocument[] = await this.storyModel
             .find({ userId: new Types.ObjectId(ownerId) })

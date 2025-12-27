@@ -99,4 +99,7 @@ export enum AppEvents {
     ADMIN_REACT_POST_FIND_BY_USER = 'admin.reactPost.findByUser',
     ADMIN_REACT_STORY_FIND_BY_USER = 'admin.reactStory.findByUser',
     COMMENT_GET_POST_ID = "COMMENT_GET_POST_ID",
+    POST_CAN_VIEW = "POST_CAN_VIEW",
+    USER_IS_ADMIN = "USER_IS_ADMIN",
+    GET_ADMIN_ID = "GET_ADMIN_ID",
 }

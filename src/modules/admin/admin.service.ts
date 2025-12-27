@@ -82,7 +82,7 @@ export class AdminService {
     return friends || [];
   }
 
-  async getUserActivity(userId: string) {
+  async getUserActivity(userId: string, adminId: string) {
     if (!Types.ObjectId.isValid(userId)) {
       throw new HttpException('Invalid userId', HttpStatus.BAD_REQUEST);
     }
@@ -94,8 +94,8 @@ export class AdminService {
 
     const [postsResult, storiesResult, user, postReactionsRaw, storyReactionsRaw, userComments] =
       await Promise.all([
-        this.eventEmitter.emitAsync(AppEvents.POST_GET_ALL_BY_USER, { ownerId: userId, viewerId: userId, page: 1, limit: 5 }),
-        this.eventEmitter.emitAsync(AppEvents.STORY_GET, { ownerId: userId, viewerId: userId }),
+        this.eventEmitter.emitAsync(AppEvents.POST_GET_ALL_BY_USER, { ownerId: userId, viewerId: adminId, page: 1, limit: 5 }),
+        this.eventEmitter.emitAsync(AppEvents.STORY_GET, { ownerId: userId, viewerId: adminId }),
         this.eventEmitter.emitAsync(AppEvents.USER_FIND_ONE, { userId }),
         this.eventEmitter.emitAsync(AppEvents.ADMIN_REACT_POST_FIND_BY_USER, { userId }),
         this.eventEmitter.emitAsync(AppEvents.ADMIN_REACT_STORY_FIND_BY_USER, { userId }),
@@ -133,7 +133,7 @@ export class AdminService {
       ...postReactions.map((reaction: any) => ({
         type: 'reaction',
         id: reaction._id?.toString() || reaction._id,
-        createdAt: reaction.createdAt,
+        createdAt: reaction.createdAt || reaction.updatedAt || new Date(),
         payload: {
           targetType: 'post',
           targetId:
@@ -166,10 +166,15 @@ export class AdminService {
         (a, b) =>
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
       )
-      .map((activity) => ({
-        ...activity,
-        createdAt: new Date(activity.createdAt).toISOString(),
-      }));
+      .map((activity) => {
+        const date = new Date(activity.createdAt);
+        return {
+          ...activity,
+          createdAt: isNaN(date.getTime()) ? new Date().toISOString() : date.toISOString(),
+        };
+      });
+
+    console.log('activityTimeline:', activityTimeline);
 
     const userData = user && !(user as any).error ? (user as any) : null;
 
@@ -207,8 +212,9 @@ export class AdminService {
     if (!Types.ObjectId.isValid(postId)) {
       throw new HttpException('Invalid postId', HttpStatus.BAD_REQUEST);
     }
+    const [adminUsers] = await this.eventEmitter.emitAsync(AppEvents.GET_ADMIN_ID, );
 
-    const [postResult] = await this.eventEmitter.emitAsync(AppEvents.POST_GET_DETAIL, { postId, userId: postId });
+    const [postResult] = await this.eventEmitter.emitAsync(AppEvents.POST_GET_DETAIL, { postId, userId: adminUsers[0].toString()});
     const [commentsResult] = await this.eventEmitter.emitAsync(AppEvents.COMMENT_FIND_BY_POST_ID, { postId });
     const post = postResult || {};
     const comments = commentsResult || [];

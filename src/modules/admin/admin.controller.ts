@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Param, Post, Put, Query, Body, UseGuards } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post, Put, Query, Body, UseGuards, Req } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
@@ -91,8 +91,9 @@ export class AdminController {
   @Get('users/:userId/activity')
   @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Lấy hoạt động gần đây của người dùng' })
-  getUserActivity(@Param('userId') userId: string) {
-    return this.adminService.getUserActivity(userId);
+  getUserActivity(@Param('userId') userId: string, @Req() req) {
+    const adminId = req.user?.userId.toString();
+    return this.adminService.getUserActivity(userId, adminId);
   }
 
   // ===== Post Management =====
