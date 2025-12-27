@@ -21,6 +21,7 @@ export enum AppEvents {
 
     // ===== FRIENDS =====
     FRIENDS_GET = 'friends.get',
+    USER_AGGREGATE = 'user.aggregate',
 
     // ===== POST =====
     POST_CREATED = 'post.created',
@@ -57,5 +58,45 @@ export enum AppEvents {
     COMMENT_GET_USER_ID = 'comment.getUserId',
     USER_GET_FCM_TOKEN = "USER_GET_FCM_TOKEN",
     COMMENT_FIND_BY_POST_ID = 'comment.findByPostId',
+
+    // ===== ADMIN =====
+    // Admin User
+    ADMIN_USER_GET_ALL = 'admin.user.getAll',
+    ADMIN_USER_GET_BY_ID = 'admin.user.getById',
+    ADMIN_USER_CREATE = 'admin.user.create',
+    ADMIN_USER_UPDATE = 'admin.user.update',
+    ADMIN_USER_DELETE = 'admin.user.delete',
+    ADMIN_USER_GET_ACTIVITY = 'admin.user.getActivity',
+    ADMIN_USERS_GROWTH = 'admin.users.growth',
+    
+    // Admin Post
+    ADMIN_POST_GET_ALL = 'admin.post.getAll',
+    ADMIN_POST_DELETE = 'admin.post.delete',
+    ADMIN_POST_HIDE = 'admin.post.hide',
+    ADMIN_POST_UNHIDE = 'admin.post.unhide',
+    ADMIN_POSTS_STATS = 'admin.posts.stats',
+    
+    // Admin Story
+    ADMIN_STORY_GET_ALL = 'admin.story.getAll',
+    ADMIN_STORY_DELETE = 'admin.story.delete',
+    
+    // Admin Comment
+    ADMIN_COMMENT_GET_ALL = 'admin.comment.getAll',
+    ADMIN_COMMENT_GET_BY_ID = 'admin.comment.getById',
+    ADMIN_COMMENT_DELETE = 'admin.comment.delete',
+    ADMIN_COMMENT_FIND_BY_USER = 'admin.comment.findByUser',
+    
+    // Admin Post Report
+    ADMIN_POST_REPORT_GET_ALL = 'admin.postReport.getAll',
+    ADMIN_POST_REPORT_GET_BY_ID = 'admin.postReport.getById',
+    ADMIN_POST_REPORT_UPDATE_STATUS = 'admin.postReport.updateStatus',
+    ADMIN_POST_REPORT_BULK_UPDATE_STATUS = 'admin.postReport.bulkUpdateStatus',
+    
+    // Admin Dashboard
+    ADMIN_DASHBOARD_STATS = 'admin.dashboard.stats',
+    
+    // Admin React
+    ADMIN_REACT_POST_FIND_BY_USER = 'admin.reactPost.findByUser',
+    ADMIN_REACT_STORY_FIND_BY_USER = 'admin.reactStory.findByUser',
     COMMENT_GET_POST_ID = "COMMENT_GET_POST_ID",
 }

@@ -10,14 +10,12 @@ import { SearchFriendsDto } from './dto/search-friends.dto';
 import { FriendSuggestionsDto } from './dto/friend-suggestions.dto';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { AppEvents } from 'src/shared/enums/app-events.enum';
-import { User, UserDocument } from '../user/schemas/user.schema';
 
 @Injectable()
 export class FriendsService {
   constructor(
     @InjectModel(Friend.name) private readonly friendModel: Model<FriendDocument>,
     @InjectModel(FriendRequest.name) private readonly friendRequestModel: Model<FriendRequestDocument>,
-    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
     private readonly eventEmitter: EventEmitter2,
   ) { }
 
@@ -511,10 +509,11 @@ export class FriendsService {
     const skip = (page - 1) * limit;
 
     // Lấy thông tin user hiện tại
-    const currentUser = await this.userModel.findById(userId).lean();
-    if (!currentUser) {
+    const [userResult] = await this.eventEmitter.emitAsync(AppEvents.USER_FIND_ONE, { userId });
+    if (!userResult || (userResult as any).error) {
       throw new HttpException('Không tìm thấy người dùng', HttpStatus.NOT_FOUND);
     }
+    const currentUser = userResult as any;
 
     // Lấy danh sách ID của bạn bè hiện tại và lời mời đã gửi/nhận
     const [friends, sentRequests, receivedRequests] = await Promise.all([
@@ -626,10 +625,13 @@ export class FriendsService {
     // Tạo pipeline với phân trang
     const paginatedPipeline = [...pipeline, { $skip: skip }, { $limit: limit }];
 
-    const [suggestionsRaw, countResult] = await Promise.all([
-      this.userModel.aggregate(paginatedPipeline),
-      this.userModel.aggregate(countPipeline)
+    const [suggestionsRawResult, countResult] = await Promise.all([
+      this.eventEmitter.emitAsync(AppEvents.USER_AGGREGATE, { pipeline: paginatedPipeline }),
+      this.eventEmitter.emitAsync(AppEvents.USER_AGGREGATE, { pipeline: countPipeline })
     ]);
+
+    const suggestionsRaw = suggestionsRawResult[0] || [];
+    const countData = countResult[0] || [];
 
     // Tính điểm số dựa trên các tiêu chí sau khi aggregation
     const suggestions = suggestionsRaw.map((user: any) => {
@@ -677,7 +679,7 @@ export class FriendsService {
     // Sắp xếp lại theo điểm số sau khi tính toán
     suggestions.sort((a: any, b: any) => b.suggestionScore - a.suggestionScore);
 
-    const total = countResult.length > 0 ? countResult[0].total : 0;
+    const total = countData.length > 0 ? countData[0].total : 0;
     const totalPages = Math.ceil(total / limit);
 
     return {

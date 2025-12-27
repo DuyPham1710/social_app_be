@@ -13,6 +13,7 @@ import UserResponseDto from '../user/dto/user.response.dto';
 import { StoryResponseDto } from './dto/story-response.dto';
 import { ReactStoryResponseDto } from '../react-story/dto/react-story-response.dto';
 import { uploadAudioFromUrl } from './helpers/upload-audio.helper';
+import { omitBy, isUndefined } from 'lodash';
 import { File } from 'multer';
 
 @Injectable()
@@ -328,5 +329,96 @@ export class StoryService {
     async handleGetStories(payload: { ownerId: string, viewerId: string }) {
         const { ownerId, viewerId } = payload;
         return await this.getStories(ownerId, viewerId);
+    }
+
+    // ===== ADMIN EVENT LISTENERS =====
+    @OnEvent(AppEvents.ADMIN_STORY_GET_ALL)
+    async handleAdminGetAllStories(payload: {
+        page?: number;
+        limit?: number;
+        dateFrom?: Date;
+        dateTo?: Date;
+    }) {
+        const { page = 1, limit = 10, dateFrom, dateTo } = payload;
+        const skip = (page - 1) * limit;
+        const query: any = {};
+
+        if (dateFrom || dateTo) {
+            query.createdAt = {};
+            if (dateFrom) {
+                query.createdAt.$gte = dateFrom;
+            }
+            if (dateTo) {
+                query.createdAt.$lte = dateTo;
+            }
+        }
+
+        const [stories, total] = await Promise.all([
+            this.storyModel
+                .find(query)
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
+                .populate('userId', 'username fullName avatarUrl')
+                .lean()
+                .exec(),
+            this.storyModel.countDocuments(query).exec(),
+        ]);
+
+        const storyResponseDtos = stories.map((story: any) => {
+            const userResponseDto: any = plainToInstance(
+                UserResponseDto,
+                story.userId,
+                {
+                    excludeExtraneousValues: true,
+                },
+            );
+            const cleanedUser = omitBy(userResponseDto, isUndefined) as UserResponseDto;
+
+            return plainToInstance(
+                StoryResponseDto,
+                {
+                    ...story,
+                    userId: cleanedUser,
+                },
+                { excludeExtraneousValues: true },
+            );
+        });
+
+        return {
+            data: storyResponseDtos,
+            pagination: {
+                currentPage: page,
+                totalPages: Math.ceil(total / limit),
+                totalItems: total,
+                itemsPerPage: limit,
+                hasNextPage: page < Math.ceil(total / limit),
+                hasPrevPage: page > 1,
+            },
+        };
+    }
+
+    @OnEvent(AppEvents.ADMIN_STORY_DELETE)
+    async handleAdminDeleteStory({ storyId }: { storyId: string }) {
+        if (!Types.ObjectId.isValid(storyId)) {
+            throw new HttpException('Invalid storyId', HttpStatus.BAD_REQUEST);
+        }
+
+        const story = await this.storyModel.findById(storyId).exec();
+        if (!story) {
+            throw new HttpException('Story not found', HttpStatus.NOT_FOUND);
+        }
+
+        await story.deleteOne();
+
+        return { message: 'Story deleted successfully' };
+    }
+
+    @OnEvent(AppEvents.ADMIN_DASHBOARD_STATS)
+    async handleAdminDashboardStats() {
+        const totalStories = await this.storyModel.countDocuments().exec();
+        return {
+            totalStories,
+        };
     }
 }

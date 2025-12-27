@@ -492,6 +492,271 @@ export class UserService {
         return this.getBasicUserInfo(userId);
     }
 
+    // ===== ADMIN EVENT LISTENERS =====
+    @OnEvent(AppEvents.ADMIN_USER_GET_ALL)
+    async handleAdminGetAllUsers(payload: {
+        page?: number;
+        limit?: number;
+        search?: string;
+        isActive?: boolean;
+        dateFrom?: Date;
+        dateTo?: Date;
+    }) {
+        const { page = 1, limit = 10, search, isActive, dateFrom, dateTo } = payload;
+        const skip = (page - 1) * limit;
+        const query: any = {};
+
+        query.role = { $ne: 'admin' };
+
+        if (search && search.trim()) {
+            query.$or = [
+                { email: { $regex: search.trim(), $options: 'i' } },
+                { username: { $regex: search.trim(), $options: 'i' } },
+                { fullName: { $regex: search.trim(), $options: 'i' } },
+            ];
+        }
+
+        if (isActive !== undefined) {
+            query.isActive = isActive;
+        }
+
+        if (dateFrom || dateTo) {
+            query.createdAt = {};
+            if (dateFrom) {
+                query.createdAt.$gte = dateFrom;
+            }
+            if (dateTo) {
+                query.createdAt.$lte = dateTo;
+            }
+        }
+
+        const [users, total] = await Promise.all([
+            this.userModel
+                .find(query)
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
+                .lean()
+                .exec(),
+            this.userModel.countDocuments(query).exec(),
+        ]);
+
+        const userResponseDtos = users.map((user: any) =>
+            plainToInstance(UserResponseDto, user, {
+                excludeExtraneousValues: true,
+            }),
+        );
+
+        return {
+            data: userResponseDtos,
+            pagination: {
+                currentPage: page,
+                totalPages: Math.ceil(total / limit),
+                totalItems: total,
+                itemsPerPage: limit,
+                hasNextPage: page < Math.ceil(total / limit),
+                hasPrevPage: page > 1,
+            },
+        };
+    }
+
+    @OnEvent(AppEvents.ADMIN_USER_GET_BY_ID)
+    async handleAdminGetUserById({ userId }: { userId: string }) {
+        if (!Types.ObjectId.isValid(userId)) {
+            throw new HttpException('Invalid userId', HttpStatus.BAD_REQUEST);
+        }
+
+        const user = await this.userModel.findById(userId).lean().exec();
+        if (!user) {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        }
+
+        return plainToInstance(UserResponseDto, user, {
+            excludeExtraneousValues: true,
+        });
+    }
+
+    @OnEvent(AppEvents.ADMIN_USER_CREATE)
+    async handleAdminCreateUser(payload: { createUserDto: any }) {
+        const { createUserDto } = payload;
+        const { confirmPassword, ...rest } = createUserDto;
+
+        const existingUserByEmail = await this.userModel.findOne({ email: rest.email }).exec();
+        if (existingUserByEmail) {
+            throw new HttpException('Email is already in use', HttpStatus.BAD_REQUEST);
+        }
+
+        const existingUserByUsername = await this.userModel.findOne({ username: rest.username }).exec();
+        if (existingUserByUsername) {
+            throw new HttpException('Username is already taken', HttpStatus.BAD_REQUEST);
+        }
+
+        const hashedPassword = await bcrypt.hash(rest.password, 10);
+
+        const newUser = new this.userModel({
+            ...rest,
+            password: hashedPassword,
+            role: 'user',
+            isActive: rest.isActive !== undefined ? rest.isActive : true,
+        });
+
+        const savedUser = await newUser.save();
+
+        await this.eventEmitter.emitAsync(AppEvents.USER_CREATED, {
+            userId: (savedUser._id as Types.ObjectId).toString(),
+        });
+
+        return plainToInstance(UserResponseDto, savedUser.toObject(), {
+            excludeExtraneousValues: true,
+        });
+    }
+
+    @OnEvent(AppEvents.ADMIN_USER_UPDATE)
+    async handleAdminUpdateUser(payload: { userId: string; updateUserDto: any }) {
+        const { userId, updateUserDto } = payload;
+        if (!Types.ObjectId.isValid(userId)) {
+            throw new HttpException('Invalid userId', HttpStatus.BAD_REQUEST);
+        }
+
+        const user = await this.userModel.findById(userId).exec();
+        if (!user) {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        }
+
+        const { confirmPassword, ...restUpdate } = updateUserDto;
+
+        if (restUpdate.email && restUpdate.email !== user.email) {
+            const existingByEmail = await this.userModel
+                .findOne({
+                    email: restUpdate.email,
+                    _id: { $ne: userId },
+                })
+                .exec();
+            if (existingByEmail) {
+                throw new HttpException('Email is already in use', HttpStatus.BAD_REQUEST);
+            }
+        }
+
+        if (restUpdate.username && restUpdate.username !== user.username) {
+            const existingByUsername = await this.userModel
+                .findOne({
+                    username: restUpdate.username,
+                    _id: { $ne: userId },
+                })
+                .exec();
+            if (existingByUsername) {
+                throw new HttpException('Username is already taken', HttpStatus.BAD_REQUEST);
+            }
+        }
+
+        const updateData: any = { ...restUpdate };
+
+        if (restUpdate.password) {
+            updateData.password = await bcrypt.hash(restUpdate.password, 10);
+        }
+
+        const updatedUser = await this.userModel
+            .findByIdAndUpdate(userId, updateData, { new: true })
+            .lean()
+            .exec();
+
+        if (!updatedUser) {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        }
+
+        return plainToInstance(UserResponseDto, updatedUser, {
+            excludeExtraneousValues: true,
+        });
+    }
+
+    @OnEvent(AppEvents.ADMIN_USER_DELETE)
+    async handleAdminDeleteUser({ userId }: { userId: string }) {
+        if (!Types.ObjectId.isValid(userId)) {
+            throw new HttpException('Invalid userId', HttpStatus.BAD_REQUEST);
+        }
+
+        const user = await this.userModel.findById(userId).exec();
+        if (!user) {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        }
+
+        user.isActive = false;
+        await user.save();
+
+        return { message: 'User deleted successfully' };
+    }
+
+    @OnEvent(AppEvents.ADMIN_USERS_GROWTH)
+    async handleAdminUsersGrowth({ days = 30 }: { days?: number }) {
+        const endDate = new Date();
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - days);
+
+        const users = await this.userModel
+            .aggregate([
+                {
+                    $match: {
+                        createdAt: {
+                            $gte: startDate,
+                            $lte: endDate,
+                        },
+                        role: { $ne: 'admin' },
+                    },
+                },
+                {
+                    $group: {
+                        _id: {
+                            $dateToString: {
+                                format: '%Y-%m-%d',
+                                date: '$createdAt',
+                            },
+                        },
+                        count: { $sum: 1 },
+                    },
+                },
+                {
+                    $sort: { _id: 1 },
+                },
+                {
+                    $project: {
+                        date: '$_id',
+                        count: 1,
+                        _id: 0,
+                    },
+                },
+            ])
+            .exec();
+
+        return users;
+    }
+
+    @OnEvent(AppEvents.ADMIN_DASHBOARD_STATS)
+    async handleAdminDashboardStats() {
+        const now = new Date();
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+        const [totalUsers, newUsersThisMonth] = await Promise.all([
+            this.userModel.countDocuments({ role: { $ne: 'admin' } }).exec(),
+            this.userModel
+                .countDocuments({
+                    createdAt: { $gte: startOfMonth },
+                    role: { $ne: 'admin' }
+                })
+                .exec(),
+        ]);
+
+        return {
+            totalUsers,
+            newUsersThisMonth,
+        };
+    }
+
+    @OnEvent(AppEvents.USER_AGGREGATE)
+    async handleUserAggregate(payload: { pipeline: any[] }) {
+        const { pipeline } = payload;
+        return await this.userModel.aggregate(pipeline).exec();
+    }
+
     @OnEvent(AppEvents.USER_GET_FCM_TOKEN)
     async handleGetFcmToken({ userId }: { userId: string }): Promise<UserDocument> {
         const user = await this.userModel.findById(userId).select('fcmToken');

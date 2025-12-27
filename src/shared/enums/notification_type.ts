@@ -6,5 +6,6 @@ export enum NotificationType {
   POST_COMMENT = 'POST_COMMENT',            // Ai đó bình luận bài bạn
   MENTION = 'MENTION',                       // Ai đó nhắc tới bạn
   STORY_REACTION = "STORY_REACTION",
-  COMMENT_REACTION = "COMMENT_REACTION"
+  COMMENT_REACTION = "COMMENT_REACTION",
+  POST_REPORT_REVIEWED = 'POST_REPORT_REVIEWED', // Admin đã xử lý báo cáo bài viết của bạn
 }

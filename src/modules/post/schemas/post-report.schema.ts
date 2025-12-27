@@ -31,3 +31,4 @@ export class PostReport {
 export const PostReportSchema = SchemaFactory.createForClass(PostReport);
 
 
+PostReportSchema.index({ postId: 1, userId: 1 }, { unique: true });

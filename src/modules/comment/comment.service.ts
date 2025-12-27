@@ -280,4 +280,133 @@ export class CommentService {
         const { postId, viewerId } = payload;
         return await this.findByPostId(postId, viewerId);
     }
+
+    // ===== ADMIN EVENT LISTENERS =====
+    @OnEvent(AppEvents.ADMIN_COMMENT_GET_ALL)
+    async handleAdminGetAllComments(payload: {
+        page?: number;
+        limit?: number;
+        search?: string;
+        postId?: string;
+        userId?: string;
+    }) {
+        const { page = 1, limit = 10, search, postId, userId } = payload;
+        const skip = (page - 1) * limit;
+        const query: any = {};
+
+        if (search && search.trim()) {
+            query.content = { $regex: search.trim(), $options: 'i' };
+        }
+
+        if (postId && Types.ObjectId.isValid(postId)) {
+            query.postId = new Types.ObjectId(postId);
+        }
+
+        if (userId && Types.ObjectId.isValid(userId)) {
+            query.userId = new Types.ObjectId(userId);
+        }
+
+        const [comments, total] = await Promise.all([
+            this.commentModel
+                .find(query)
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
+                .populate('userId', 'username fullName avatarUrl email')
+                .populate('postId', 'caption')
+                .populate({
+                    path: 'parentId',
+                    select: 'content userId createdAt',
+                    populate: {
+                        path: 'userId',
+                        select: 'username fullName avatarUrl',
+                    },
+                })
+                .lean()
+                .exec(),
+            this.commentModel.countDocuments(query).exec(),
+        ]);
+
+        return {
+            data: comments,
+            pagination: {
+                currentPage: page,
+                totalPages: Math.ceil(total / limit),
+                totalItems: total,
+                itemsPerPage: limit,
+                hasNextPage: page < Math.ceil(total / limit),
+                hasPrevPage: page > 1,
+            },
+        };
+    }
+
+    @OnEvent(AppEvents.ADMIN_COMMENT_GET_BY_ID)
+    async handleAdminGetCommentById({ commentId }: { commentId: string }) {
+        if (!Types.ObjectId.isValid(commentId)) {
+            throw new NotFoundException('Invalid commentId');
+        }
+
+        const comment = await this.commentModel
+            .findById(commentId)
+            .populate('userId', 'username fullName avatarUrl email')
+            .populate('postId', 'caption')
+            .populate({
+                path: 'parentId',
+                select: 'content userId createdAt',
+                populate: {
+                    path: 'userId',
+                    select: 'username fullName avatarUrl',
+                },
+            })
+            .lean()
+            .exec();
+
+        if (!comment) {
+            throw new NotFoundException('Comment not found');
+        }
+
+        return comment;
+    }
+
+    @OnEvent(AppEvents.ADMIN_COMMENT_DELETE)
+    async handleAdminDeleteComment({ commentId }: { commentId: string }) {
+        if (!Types.ObjectId.isValid(commentId)) {
+            throw new NotFoundException('Invalid commentId');
+        }
+
+        const comment = await this.commentModel.findById(commentId).exec();
+        if (!comment) {
+            throw new NotFoundException('Comment not found');
+        }
+
+        await comment.deleteOne();
+
+        return { message: 'Comment deleted successfully' };
+    }
+
+    @OnEvent(AppEvents.ADMIN_COMMENT_FIND_BY_USER)
+    async handleAdminFindCommentsByUser({ userId }: { userId: string }) {
+        if (!Types.ObjectId.isValid(userId)) {
+            throw new NotFoundException('Invalid userId');
+        }
+
+        const comments = await this.commentModel
+            .find({ userId: new Types.ObjectId(userId) })
+            .sort({ createdAt: -1 })
+            .limit(10)
+            .populate('postId', 'caption')
+            .populate('userId', 'username fullName avatarUrl')
+            .lean()
+            .exec();
+
+        return comments || [];
+    }
+
+    @OnEvent(AppEvents.ADMIN_DASHBOARD_STATS)
+    async handleAdminDashboardStats() {
+        const totalComments = await this.commentModel.countDocuments().exec();
+        return {
+            totalComments,
+        };
+    }
 }

@@ -1,4 +1,4 @@
-import { ForbiddenException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ForbiddenException, HttpException, HttpStatus, Injectable, Inject, forwardRef, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Post, PostDocument } from './schemas/post.schema';
 import { PostUrl, PostUrlDocument } from './schemas/post-url.schema';
@@ -18,15 +18,21 @@ import { omitBy, isUndefined } from 'lodash';
 import { v2 as cloudinary } from 'cloudinary';
 import { PostReport, PostReportDocument } from './schemas/post-report.schema';
 import { ReportPostDto } from './dto/report-post.dto';
-import { File } from 'multer';
+import { NotificationService } from '../notification/notification.service';
+import { NotificationType } from 'src/shared/enums/notification_type';
+//import { File } from 'multer';
 
 @Injectable()
 export class PostService {
+    private readonly logger = new Logger(PostService.name);
+
     constructor(
         @InjectModel(Post.name) private postModel: Model<PostDocument>,
         @InjectModel(PostUrl.name) private postUrlModel: Model<PostUrlDocument>,
         @InjectModel(PostReport.name) private postReportModel: Model<PostReportDocument>,
         private readonly eventEmitter: EventEmitter2,
+        @Inject(forwardRef(() => NotificationService))
+        private readonly notificationService: NotificationService,
     ) { }
 
     async getPostDetail(postId: string, userId: string): Promise<PostResponseDto> {
@@ -596,6 +602,17 @@ export class PostService {
             });
         }
 
+        // Nếu có >= 100 báo cáo pending thì tự động ẩn bài viết
+        const pendingReportsCount = await this.postReportModel.countDocuments({
+            postId: postObjectId,
+            status: 'pending',
+        });
+
+        if (pendingReportsCount >= 100 && !post.isHidden) {
+            post.isHidden = true;
+            await post.save();
+        }
+
         return {
             message: 'Báo cáo bài viết thành công. Cảm ơn bạn đã đóng góp giúp cộng đồng an toàn hơn.',
         };
@@ -620,6 +637,596 @@ export class PostService {
     async handleGetPostDetail(payload: { postId: string, userId: string }) {
         const { postId, userId } = payload;
         return await this.getPostDetail(postId, userId);
+    }
+
+    // ===== ADMIN EVENT LISTENERS =====
+    @OnEvent(AppEvents.ADMIN_POST_GET_ALL)
+    async handleAdminGetAllPosts(payload: {
+        page?: number;
+        limit?: number;
+        search?: string;
+    }) {
+        const { page = 1, limit = 10, search } = payload;
+        const skip = (page - 1) * limit;
+        const query: any = {};
+
+        if (search && search.trim()) {
+            query.caption = { $regex: search.trim(), $options: 'i' };
+        }
+
+        const [posts, total] = await Promise.all([
+            this.postModel
+                .find(query)
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
+                .populate('userId', 'username fullName avatarUrl')
+                .populate({ path: 'urls', options: { sort: { order: 1 } } })
+                .lean()
+                .exec(),
+            this.postModel.countDocuments(query).exec(),
+        ]);
+
+        const postResponseDtos = await Promise.all(
+            posts.map(async (post: any) => {
+                const userResponseDto: any = plainToInstance(
+                    UserResponseDto,
+                    post.userId,
+                    {
+                        excludeExtraneousValues: true,
+                    },
+                );
+                const cleanedUser = omitBy(
+                    userResponseDto,
+                    isUndefined,
+                ) as UserResponseDto;
+
+                const [reactsMap] = await this.eventEmitter.emitAsync(
+                    AppEvents.REACT_POST_GET,
+                    {
+                        postIds: [post._id.toString()],
+                        viewerId: post.userId._id.toString(),
+                    },
+                );
+
+                const [commentsResult] = await this.eventEmitter.emitAsync(
+                    AppEvents.COMMENT_FIND_BY_POST_ID,
+                    { postId: post._id.toString() },
+                );
+                const comments = commentsResult || [];
+
+                return {
+                    ...post,
+                    userId: cleanedUser,
+                    reacts: reactsMap[post._id.toString()] || [],
+                    isReact: null,
+                    comments: comments || [],
+                } as any;
+            }),
+        );
+
+        return {
+            data: postResponseDtos,
+            pagination: {
+                currentPage: page,
+                totalPages: Math.ceil(total / limit),
+                totalItems: total,
+                itemsPerPage: limit,
+                hasNextPage: page < Math.ceil(total / limit),
+                hasPrevPage: page > 1,
+            },
+        };
+    }
+
+    @OnEvent(AppEvents.ADMIN_POST_DELETE)
+    async handleAdminDeletePost({ postId }: { postId: string }) {
+        if (!Types.ObjectId.isValid(postId)) {
+            throw new HttpException('Invalid postId', HttpStatus.BAD_REQUEST);
+        }
+
+        const post = await this.postModel.findById(postId).exec();
+        if (!post) {
+            throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
+        }
+
+        await post.deleteOne();
+
+        return { message: 'Post deleted successfully' };
+    }
+
+    @OnEvent(AppEvents.ADMIN_POST_HIDE)
+    async handleAdminHidePost({ postId }: { postId: string }) {
+        if (!Types.ObjectId.isValid(postId)) {
+            throw new HttpException('Invalid postId', HttpStatus.BAD_REQUEST);
+        }
+
+        const post = await this.postModel.findById(postId).exec();
+        if (!post) {
+            throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
+        }
+
+        post.isHidden = true;
+        await post.save();
+
+        return { message: 'Post hidden successfully' };
+    }
+
+    @OnEvent(AppEvents.ADMIN_POST_UNHIDE)
+    async handleAdminUnhidePost({ postId }: { postId: string }) {
+        if (!Types.ObjectId.isValid(postId)) {
+            throw new HttpException('Invalid postId', HttpStatus.BAD_REQUEST);
+        }
+
+        const post = await this.postModel.findById(postId).exec();
+        if (!post) {
+            throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
+        }
+
+        post.isHidden = false;
+        await post.save();
+
+        return { message: 'Post unhidden successfully' };
+    }
+
+    @OnEvent(AppEvents.ADMIN_POSTS_STATS)
+    async handleAdminPostsStats(payload: {
+        groupBy?: 'day' | 'month';
+        days?: number;
+    }) {
+        const { groupBy = 'day', days = 30 } = payload;
+        const endDate = new Date();
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - days);
+
+        const format = groupBy === 'day' ? '%Y-%m-%d' : '%Y-%m';
+
+        const posts = await this.postModel
+            .aggregate([
+                {
+                    $match: {
+                        createdAt: {
+                            $gte: startDate,
+                            $lte: endDate,
+                        },
+                    },
+                },
+                {
+                    $group: {
+                        _id: {
+                            $dateToString: {
+                                format,
+                                date: '$createdAt',
+                            },
+                        },
+                        count: { $sum: 1 },
+                    },
+                },
+                {
+                    $sort: { _id: 1 },
+                },
+                {
+                    $project: {
+                        date: '$_id',
+                        count: 1,
+                        _id: 0,
+                    },
+                },
+            ])
+            .exec();
+
+        return posts;
+    }
+
+    // ===== ADMIN POST REPORT EVENT LISTENERS =====
+    @OnEvent(AppEvents.ADMIN_POST_REPORT_GET_ALL)
+    async handleAdminGetPostReports(payload: {
+        page?: number;
+        limit?: number;
+        status?: 'pending' | 'reviewed' | 'rejected';
+    }) {
+        const { page = 1, limit = 10, status } = payload;
+        const skip = (page - 1) * limit;
+        const matchQuery: any = {};
+
+        if (status) {
+            matchQuery.status = status;
+        }
+
+        const pipeline: any[] = [
+            {
+                $match: matchQuery,
+            },
+            {
+                $lookup: {
+                    from: 'posts',
+                    localField: 'postId',
+                    foreignField: '_id',
+                    as: 'postInfo',
+                },
+            },
+            {
+                $unwind: {
+                    path: '$postInfo',
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'postInfo.userId',
+                    foreignField: '_id',
+                    as: 'postOwner',
+                },
+            },
+            {
+                $unwind: {
+                    path: '$postOwner',
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'userId',
+                    foreignField: '_id',
+                    as: 'reporterInfo',
+                },
+            },
+            {
+                $unwind: {
+                    path: '$reporterInfo',
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
+            {
+                $group: {
+                    _id: '$postId',
+                    postId: {
+                        $first: {
+                            _id: '$postInfo._id',
+                            caption: '$postInfo.caption',
+                            userId: '$postInfo.userId',
+                            urls: '$postInfo.urls',
+                            layout: '$postInfo.layout',
+                            privacy_type: '$postInfo.privacy_type',
+                            isHidden: '$postInfo.isHidden',
+                            createdAt: '$postInfo.createdAt',
+                            updatedAt: '$postInfo.updatedAt',
+                        }
+                    },
+                    postOwner: { $first: '$postOwner' },
+                    reporters: {
+                        $push: {
+                            _id: '$_id',
+                            userId: {
+                                _id: '$reporterInfo._id',
+                                fullName: '$reporterInfo.fullName',
+                                username: '$reporterInfo.username',
+                                avatarUrl: '$reporterInfo.avatarUrl',
+                                email: '$reporterInfo.email',
+                            },
+                            reason: '$reason',
+                            description: '$description',
+                            status: '$status',
+                            createdAt: '$createdAt',
+                            updatedAt: '$updatedAt',
+                        },
+                    },
+                    totalReports: { $sum: 1 },
+                    pendingCount: {
+                        $sum: { $cond: [{ $eq: ['$status', 'pending'] }, 1, 0] },
+                    },
+                    reviewedCount: {
+                        $sum: { $cond: [{ $eq: ['$status', 'reviewed'] }, 1, 0] },
+                    },
+                    rejectedCount: {
+                        $sum: { $cond: [{ $eq: ['$status', 'rejected'] }, 1, 0] },
+                    },
+                    latestReportDate: { $max: '$createdAt' },
+                },
+            },
+            {
+                $lookup: {
+                    from: 'posturls',
+                    let: { urlIds: '$postId.urls' },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $in: ['$_id', '$$urlIds'],
+                                },
+                            },
+                        },
+                        {
+                            $sort: { order: 1 },
+                        },
+                    ],
+                    as: 'postUrls',
+                },
+            },
+            {
+                $addFields: {
+                    'postId.urls': '$postUrls',
+                },
+            },
+            {
+                $sort: { latestReportDate: -1 },
+            },
+            {
+                $skip: skip,
+            },
+            {
+                $limit: limit,
+            },
+        ];
+
+        const countPipeline = [
+            {
+                $match: matchQuery,
+            },
+            {
+                $group: {
+                    _id: '$postId',
+                },
+            },
+            {
+                $count: 'total',
+            },
+        ];
+
+        const [groupedReports, countResult] = await Promise.all([
+            this.postReportModel.aggregate(pipeline).exec(),
+            this.postReportModel.aggregate(countPipeline).exec(),
+        ]);
+
+        const total = countResult.length > 0 ? countResult[0].total : 0;
+
+        const formattedData = groupedReports.map((item: any) => {
+            const postId = item.postId?._id || item._id;
+            return {
+                postId: {
+                    ...item.postId,
+                    userId: item.postOwner,
+                    urls: item.postUrls || [],
+                },
+                reporters: item.reporters || [],
+                reportCounts: {
+                    total: item.totalReports,
+                    pending: item.pendingCount,
+                    reviewed: item.reviewedCount,
+                    rejected: item.rejectedCount,
+                },
+                latestReportDate: item.latestReportDate,
+            };
+        });
+
+        return {
+            data: formattedData,
+            pagination: {
+                currentPage: page,
+                totalPages: Math.ceil(total / limit),
+                totalItems: total,
+                itemsPerPage: limit,
+                hasNextPage: page < Math.ceil(total / limit),
+                hasPrevPage: page > 1,
+            },
+        };
+    }
+
+    @OnEvent(AppEvents.ADMIN_POST_REPORT_GET_BY_ID)
+    async handleAdminGetPostReportById({ reportId }: { reportId: string }) {
+        if (!Types.ObjectId.isValid(reportId)) {
+            throw new HttpException('Invalid reportId', HttpStatus.BAD_REQUEST);
+        }
+
+        const report = await this.postReportModel
+            .findById(reportId)
+            .populate({
+                path: 'postId',
+                populate: [
+                    {
+                        path: 'userId',
+                        select: 'username fullName avatarUrl',
+                    },
+                    {
+                        path: 'urls',
+                        options: { sort: { order: 1 } },
+                    },
+                ],
+            })
+            .populate('userId', 'username fullName email avatarUrl')
+            .lean()
+            .exec();
+
+        if (!report) {
+            throw new HttpException('Post report not found', HttpStatus.NOT_FOUND);
+        }
+
+        return report;
+    }
+
+    @OnEvent(AppEvents.ADMIN_POST_REPORT_UPDATE_STATUS)
+    async handleAdminUpdatePostReportStatus(payload: {
+        reportId: string;
+        status: 'pending' | 'reviewed' | 'rejected';
+        note?: string;
+    }) {
+        const { reportId, status, note } = payload;
+        if (!Types.ObjectId.isValid(reportId)) {
+            throw new HttpException('Invalid reportId', HttpStatus.BAD_REQUEST);
+        }
+
+        const report = await this.postReportModel.findById(reportId).exec();
+        if (!report) {
+            throw new HttpException('Post report not found', HttpStatus.NOT_FOUND);
+        }
+
+        report.status = status;
+        await report.save();
+
+        const post = await this.postModel.findById(report.postId).populate('userId', 'username fullName avatarUrl').exec();
+        if (post) {
+            if (status === 'reviewed') {
+                post.isHidden = true;
+                await post.save();
+            } else if (status === 'rejected') {
+                post.isHidden = false;
+                await post.save();
+            }
+
+            // Gửi thông báo đến người sở hữu bài viết khi admin xử lý báo cáo
+            if (status === 'reviewed') {
+                const postOwnerId = (post.userId as any)?._id?.toString() || (post.userId as any)?.toString();
+                
+                if (postOwnerId) {
+                    try {
+
+                        // Lấy caption của bài viết, truncate nếu quá dài
+                        const postCaption = post.caption || '';
+                        const truncatedCaption = postCaption.length > 50 
+                            ? postCaption.substring(0, 50) + '...' 
+                            : postCaption;
+                        
+                        // Tạo message với tên bài viết
+                        const postTitle = truncatedCaption || 'bài viết của bạn';
+                        const message = `Báo cáo về "${postTitle}" đã bị ẩn do vi phạm tiêu chuẩn cộng đồng`;
+                        
+                        // Gửi thông báo trong ứng dụng
+                        await this.notificationService.createAndEmit({
+                            receiver: postOwnerId,
+                            sender: undefined, // Admin không có sender
+                            type: NotificationType.POST_REPORT_REVIEWED,
+                            targetId: post._id.toString(),
+                            message: message,
+                            content: note || undefined,
+                        });
+                    } catch (error) {
+                        this.logger.error(`Failed to send notification for post report ${reportId}:`, error);
+                    }
+                }
+            }
+        }
+
+        return {
+            message: 'Post report status updated successfully',
+            status: report.status,
+        };
+    }
+
+    @OnEvent(AppEvents.ADMIN_POST_REPORT_BULK_UPDATE_STATUS)
+    async handleAdminBulkUpdatePostReportStatus(payload: {
+        reportIds: string[];
+        status: 'pending' | 'reviewed' | 'rejected';
+        note?: string;
+    }) {
+        const { reportIds, status, note } = payload;
+        const validReportIds = reportIds.filter((id) => Types.ObjectId.isValid(id));
+        if (validReportIds.length === 0) {
+            throw new HttpException('No valid report IDs provided', HttpStatus.BAD_REQUEST);
+        }
+
+        const objectIds = validReportIds.map((id) => new Types.ObjectId(id));
+
+        const updateResult = await this.postReportModel.updateMany(
+            { _id: { $in: objectIds } },
+            { status },
+        );
+
+        if (updateResult.matchedCount === 0) {
+            throw new HttpException('No reports found', HttpStatus.NOT_FOUND);
+        }
+
+        const reports = await this.postReportModel
+            .find({ _id: { $in: objectIds } })
+            .select('postId')
+            .lean()
+            .exec();
+
+        const uniquePostIds = [...new Set(reports.map((r) => r.postId.toString()))];
+
+        if (status === 'reviewed') {
+            await this.postModel.updateMany(
+                { _id: { $in: uniquePostIds.map((id) => new Types.ObjectId(id)) } },
+                { isHidden: true },
+            );
+        } else if (status === 'rejected') {
+            for (const postId of uniquePostIds) {
+                const allReportsForPost = await this.postReportModel
+                    .find({ postId: new Types.ObjectId(postId) })
+                    .lean()
+                    .exec();
+
+                const allRejected = allReportsForPost.every((r) => r.status === 'rejected');
+                if (allRejected) {
+                    await this.postModel.findByIdAndUpdate(postId, { isHidden: false });
+                }
+            }
+        }
+
+        // Gửi thông báo đến người sở hữu bài viết khi admin xử lý báo cáo (bulk)
+        if (status === 'reviewed') {
+            const posts = await this.postModel
+                .find({ _id: { $in: uniquePostIds.map((id) => new Types.ObjectId(id)) } })
+                .populate('userId', 'username fullName avatarUrl')
+                .exec();
+
+            // Gửi thông báo cho từng bài viết (tránh gửi trùng cho cùng một user)
+            const notifiedUsers = new Set<string>();
+            
+            for (const post of posts) {
+                const postOwnerId = (post.userId as any)?._id?.toString() || (post.userId as any)?.toString();
+                
+                if (postOwnerId) {
+                    try {
+                        // Lấy caption của bài viết, truncate nếu quá dài
+                        const postCaption = post.caption || '';
+                        const truncatedCaption = postCaption.length > 50 
+                            ? postCaption.substring(0, 50) + '...' 
+                            : postCaption;
+                        
+                        // Tạo message với tên bài viết
+                        const postTitle = truncatedCaption || 'bài viết của bạn';
+                        const message = `Báo cáo về "${postTitle}" đã bị ẩn do vi phạm tiêu chuẩn cộng đồng`;
+                        
+                        // Gửi thông báo trong ứng dụng (gửi riêng cho từng bài viết)
+                        await this.notificationService.createAndEmit({
+                            receiver: postOwnerId,
+                            sender: undefined, // Admin không có sender
+                            type: NotificationType.POST_REPORT_REVIEWED,
+                            targetId: post._id.toString(),
+                            message: message,
+                            content: note || undefined,
+                        });
+                    } catch (error) {
+                        this.logger.error(`Failed to send notification for bulk post report update:`, error);
+                    }
+                }
+            }
+        }
+
+        return {
+            message: `Successfully updated ${updateResult.modifiedCount} report(s)`,
+            updatedCount: updateResult.modifiedCount,
+            matchedCount: updateResult.matchedCount,
+        };
+    }
+
+    @OnEvent(AppEvents.ADMIN_DASHBOARD_STATS)
+    async handleAdminDashboardStats() {
+        const now = new Date();
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+        const [totalPosts, newPostsThisMonth] = await Promise.all([
+            this.postModel.countDocuments().exec(),
+            this.postModel
+                .countDocuments({ createdAt: { $gte: startOfMonth } })
+                .exec(),
+        ]);
+
+        return {
+            totalPosts,
+            newPostsThisMonth,
+        };
     }
 
 }

@@ -238,4 +238,23 @@ export class ReactStoryService {
     const { storyId, viewerId } = payload;
     return await this.findByStory(storyId, viewerId);
   }
+
+  // ===== ADMIN EVENT LISTENERS =====
+  @OnEvent(AppEvents.ADMIN_REACT_STORY_FIND_BY_USER)
+  async handleAdminFindByUser({ userId }: { userId: string }) {
+    if (!Types.ObjectId.isValid(userId)) {
+      throw new NotFoundException('Invalid userId');
+    }
+
+    const reactions = await this.reactStoryModel
+      .find({ userId: new Types.ObjectId(userId) })
+      .sort({ createdAt: -1 })
+      .limit(10)
+      .populate('storyId')
+      .populate('emojiId', 'label icon')
+      .lean()
+      .exec();
+
+    return reactions || [];
+  }
 }
