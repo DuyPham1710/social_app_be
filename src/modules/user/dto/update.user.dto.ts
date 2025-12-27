@@ -13,7 +13,7 @@ export default class UpdateUserDto {
     @ApiPropertyOptional({ description: 'User ID', example: '12345' })
     @IsOptional()
     @IsString()
-    userId?: string;
+    _id?: string;
 
     @ApiPropertyOptional({ description: 'Full name', example: 'Nguyen Van A' })
     @IsOptional()
