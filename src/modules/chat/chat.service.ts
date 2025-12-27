@@ -14,6 +14,7 @@ import {
     PaginatedResponseDto,
     SendMessageDto,
     UpdateMessageDto,
+    UpdateConversationDto,
     DeleteMessageDto,
     AttachmentDto,
 } from './dto';
@@ -240,6 +241,153 @@ export class ChatService {
 
         const conversationWithUnread = {
             ...conversation,
+            unreadCount,
+            firstUnreadMessageIndex,
+        };
+
+        const conversationForTransform = {
+            ...conversationWithUnread,
+            _id: conversationWithUnread._id.toString(),
+            lastMessageId: conversationWithUnread.lastMessageId ? {
+                ...conversationWithUnread.lastMessageId,
+                _id: conversationWithUnread.lastMessageId._id.toString()
+            } : null
+        };
+
+        return plainToInstance(ConversationResponseDto, conversationForTransform, {
+            excludeExtraneousValues: true,
+        });
+    }
+
+    // Cập nhật thông tin conversation (tên, avatar, người tạo, thêm thành viên)
+    async updateConversation(
+        conversationId: string,
+        userId: string,
+        updateConversationDto: UpdateConversationDto,
+    ): Promise<ConversationResponseDto> {
+        if (!Types.ObjectId.isValid(conversationId)) {
+            throw new HttpException('Invalid conversation ID', HttpStatus.BAD_REQUEST);
+        }
+
+        // Kiểm tra user có trong cuộc hội thoại không
+        const conversation = await this.conversationModel
+            .findOne({
+                _id: new Types.ObjectId(conversationId),
+                participants: new Types.ObjectId(userId),
+            })
+            .exec();
+
+        if (!conversation) {
+            throw new HttpException(
+                'Conversation not found or you are not a participant',
+                HttpStatus.FORBIDDEN,
+            );
+        }
+
+        // Chỉ cho phép update group conversation
+        if (!conversation.isGroup) {
+            throw new HttpException(
+                'Cannot update non-group conversation',
+                HttpStatus.BAD_REQUEST,
+            );
+        }
+
+        // Chuẩn bị object update
+        const updateData: any = {
+            updatedAt: new Date(),
+        };
+
+        if (updateConversationDto.name !== undefined) {
+            updateData.name = updateConversationDto.name;
+        }
+
+        if (updateConversationDto.avatar !== undefined) {
+            updateData.avatar = updateConversationDto.avatar;
+        }
+
+        if (updateConversationDto.createdBy !== undefined) {
+            if (!Types.ObjectId.isValid(updateConversationDto.createdBy)) {
+                throw new HttpException('Invalid createdBy user ID', HttpStatus.BAD_REQUEST);
+            }
+            // Kiểm tra user được chỉ định có trong participants không
+            const newCreatedBy = new Types.ObjectId(updateConversationDto.createdBy);
+            if (!conversation.participants.some(p => p.equals(newCreatedBy))) {
+                throw new HttpException(
+                    'CreatedBy user must be a participant',
+                    HttpStatus.BAD_REQUEST,
+                );
+            }
+            updateData.createdBy = newCreatedBy;
+        }
+
+        // Thêm thành viên mới nếu có
+        if (updateConversationDto.participantIds && updateConversationDto.participantIds.length > 0) {
+            const newParticipantIds = updateConversationDto.participantIds.map(
+                id => new Types.ObjectId(id)
+            );
+
+            // Validate tất cả participant IDs
+            for (const id of updateConversationDto.participantIds) {
+                if (!Types.ObjectId.isValid(id)) {
+                    throw new HttpException(`Invalid participant ID: ${id}`, HttpStatus.BAD_REQUEST);
+                }
+            }
+
+            // Thêm participants mới vào danh sách (tránh trùng lặp)
+            const existingParticipantIds = conversation.participants.map(p => p.toString());
+            const uniqueNewParticipants = newParticipantIds.filter(
+                id => !existingParticipantIds.includes(id.toString())
+            );
+
+            if (uniqueNewParticipants.length > 0) {
+                updateData.$addToSet = {
+                    participants: { $each: uniqueNewParticipants }
+                };
+            }
+        }
+
+        // Cập nhật conversation
+        const updatedConversation = await this.conversationModel
+            .findByIdAndUpdate(
+                conversationId,
+                updateData,
+                { new: true }
+            )
+            .populate('participants', 'username fullName avatarUrl')
+            .populate({
+                path: 'lastMessageId',
+                select: 'text createdAt senderId attachments',
+                populate: {
+                    path: 'senderId',
+                    select: 'username fullName avatarUrl'
+                }
+            })
+            .populate('createdBy', 'username fullName avatarUrl')
+            .lean()
+            .exec();
+
+        if (!updatedConversation) {
+            throw new HttpException('Failed to update conversation', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // Tính unreadCount cho user
+        const userIdObjectId = new Types.ObjectId(userId);
+        const unreadCount = await this.messageModel.countDocuments({
+            conversationId: updatedConversation._id,
+            senderId: { $ne: userIdObjectId },
+            'seenBy.userId': { $ne: userIdObjectId },
+            deletedFor: { $nin: [userIdObjectId] },
+        });
+
+        // Tính toán index của tin nhắn chưa đọc đầu tiên
+        const firstUnreadMessageIndex = await this.calculateFirstUnreadMessageIndex(
+            conversationId,
+            userId,
+            unreadCount,
+        );
+
+        const conversationWithUnread = {
+            ...updatedConversation,
             unreadCount,
             firstUnreadMessageIndex,
         };
