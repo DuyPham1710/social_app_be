@@ -9,7 +9,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
-import { SendMessageDto, MarkAsReadDto, CreateConversationDto, UpdateMessageDto, ReactMessageDto, DeleteMessageDto } from './dto';
+import { SendMessageDto, MarkAsReadDto, CreateConversationDto, UpdateMessageDto, UpdateConversationDto, ReactMessageDto, DeleteMessageDto } from './dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AppEvents } from 'src/shared/enums/app-events.enum';
 import { FcmService } from 'src/shared/services/fcm.service';
@@ -199,6 +199,55 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     } catch (error) {
       console.error('Create conversation error:', error);
       return { error: 'Failed to create conversation' };
+    }
+  }
+
+  @SubscribeMessage('conversation:update')
+  async handleUpdateConversation(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { userId: string; conversationId: string } & UpdateConversationDto,
+  ) {
+    try {
+      const { userId, conversationId, ...updateConversationDto } = data;
+
+      if (!userId || !conversationId) {
+        client.emit('error', {
+          message: 'userId and conversationId are required',
+          event: 'conversation:update'
+        });
+        return;
+      }
+
+      // Kiểm tra có ít nhất một trường để update không
+      if (!updateConversationDto.name &&
+        !updateConversationDto.avatar &&
+        !updateConversationDto.createdBy &&
+        (!updateConversationDto.participantIds || updateConversationDto.participantIds.length === 0)) {
+        client.emit('error', {
+          message: 'At least one field (name, avatar, createdBy, participantIds) must be provided',
+          event: 'conversation:update'
+        });
+        return;
+      }
+
+      // Cập nhật conversation trong database
+      const updatedConversation = await this.chatService.updateConversation(
+        conversationId,
+        userId,
+        updateConversationDto,
+      );
+
+      // Emit conversation:updated cho tất cả participants
+      await this.sendUpdatedConversation(conversationId, userId);
+
+      return { success: true, conversation: updatedConversation };
+    } catch (error) {
+      console.error('Update conversation error:', error);
+      client.emit('error', {
+        message: error?.message || 'Failed to update conversation',
+        event: 'conversation:update'
+      });
+      return { error: error?.message || 'Failed to update conversation' };
     }
   }
 
