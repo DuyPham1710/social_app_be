@@ -20,7 +20,7 @@ import { PostReport, PostReportDocument } from './schemas/post-report.schema';
 import { ReportPostDto } from './dto/report-post.dto';
 import { NotificationService } from '../notification/notification.service';
 import { NotificationType } from 'src/shared/enums/notification_type';
-//import { File } from 'multer';
+import { File } from 'multer';
 
 @Injectable()
 export class PostService {
@@ -278,7 +278,7 @@ export class PostService {
         return result;
     }
 
-    async createPost(createPostDto: CreatePostDto, userId: string, files?: Express.Multer.File[]): Promise<{ message: string }> {
+    async createPost(createPostDto: CreatePostDto, userId: string, files?: File[]): Promise<{ message: string }> {
         const { caption, titles = [], orders = [], layout, privacy_type, friends_except, friends_detail } = createPostDto;
 
         const post = await this.postModel.create({
@@ -1077,20 +1077,20 @@ export class PostService {
             // Gửi thông báo đến người sở hữu bài viết khi admin xử lý báo cáo
             if (status === 'reviewed') {
                 const postOwnerId = (post.userId as any)?._id?.toString() || (post.userId as any)?.toString();
-                
+
                 if (postOwnerId) {
                     try {
 
                         // Lấy caption của bài viết, truncate nếu quá dài
                         const postCaption = post.caption || '';
-                        const truncatedCaption = postCaption.length > 50 
-                            ? postCaption.substring(0, 50) + '...' 
+                        const truncatedCaption = postCaption.length > 50
+                            ? postCaption.substring(0, 50) + '...'
                             : postCaption;
-                        
+
                         // Tạo message với tên bài viết
                         const postTitle = truncatedCaption || 'bài viết của bạn';
                         const message = `Báo cáo về "${postTitle}" đã bị ẩn do vi phạm tiêu chuẩn cộng đồng`;
-                        
+
                         // Gửi thông báo trong ứng dụng
                         await this.notificationService.createAndEmit({
                             receiver: postOwnerId,
@@ -1172,22 +1172,22 @@ export class PostService {
 
             // Gửi thông báo cho từng bài viết (tránh gửi trùng cho cùng một user)
             const notifiedUsers = new Set<string>();
-            
+
             for (const post of posts) {
                 const postOwnerId = (post.userId as any)?._id?.toString() || (post.userId as any)?.toString();
-                
+
                 if (postOwnerId) {
                     try {
                         // Lấy caption của bài viết, truncate nếu quá dài
                         const postCaption = post.caption || '';
-                        const truncatedCaption = postCaption.length > 50 
-                            ? postCaption.substring(0, 50) + '...' 
+                        const truncatedCaption = postCaption.length > 50
+                            ? postCaption.substring(0, 50) + '...'
                             : postCaption;
-                        
+
                         // Tạo message với tên bài viết
                         const postTitle = truncatedCaption || 'bài viết của bạn';
                         const message = `Báo cáo về "${postTitle}" đã bị ẩn do vi phạm tiêu chuẩn cộng đồng`;
-                        
+
                         // Gửi thông báo trong ứng dụng (gửi riêng cho từng bài viết)
                         await this.notificationService.createAndEmit({
                             receiver: postOwnerId,

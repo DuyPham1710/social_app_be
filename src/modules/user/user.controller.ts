@@ -166,7 +166,7 @@ export class UserController {
   updatePersonalInfo(@Body() updateUserDto: UpdateUserDto): Promise<UserResponseDto> {
     updateUserDto.avatarUrl = '';
     updateUserDto.coverUrl = '';
-    return this.userService.update(updateUserDto.userId!, updateUserDto);
+    return this.userService.update(updateUserDto._id ?? '', updateUserDto);
   }
 
   @Post('fcm-token')
