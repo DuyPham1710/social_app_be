@@ -7,6 +7,7 @@ export * from './message-response.dto';
 export * from './pagination-response.dto';
 export * from './mark-as-read.dto';
 export * from './update-message.dto';
+export * from './update-conversation.dto';
 export * from './react-message.dto';
 export * from './delete-message.dto';
 export * from './message-edit-log-response.dto';
