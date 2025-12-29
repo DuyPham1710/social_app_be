@@ -92,7 +92,7 @@ export class AdminService {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
 
-    const [postsResult, storiesResult, user, postReactionsRaw, storyReactionsRaw, userComments] =
+    const [postsResult, storiesResult, user, postReactionsRaw, storyReactionsRaw, userCommentsRaw] =
       await Promise.all([
         this.eventEmitter.emitAsync(AppEvents.POST_GET_ALL_BY_USER, { ownerId: userId, viewerId: adminId, page: 1, limit: 5 }),
         this.eventEmitter.emitAsync(AppEvents.STORY_GET, { ownerId: userId, viewerId: adminId }),
@@ -102,58 +102,102 @@ export class AdminService {
         this.eventEmitter.emitAsync(AppEvents.ADMIN_COMMENT_FIND_BY_USER, { userId }),
       ]);
 
-    const postReactions = postReactionsRaw || [];
-    const storyReactions = storyReactionsRaw || [];
+    // Lấy phần tử đầu tiên từ mảng kết quả của emitAsync
+    // emitAsync trả về mảng, nếu phần tử đầu tiên là mảng thì lấy nó, nếu không thì lấy chính kết quả đó
+    const getFirstResult = (result: any) => {
+      if (Array.isArray(result) && result.length > 0) {
+        // Nếu phần tử đầu tiên là mảng, lấy nó; nếu không, lấy chính phần tử đó
+        return Array.isArray(result[0]) ? result[0] : result[0];
+      }
+      // Nếu không phải mảng hoặc mảng rỗng, trả về chính nó hoặc mảng rỗng
+      return Array.isArray(result) ? result : [];
+    };
+
+    const postReactions = getFirstResult(postReactionsRaw) || [];
+    const storyReactions = getFirstResult(storyReactionsRaw) || [];
+    const userComments = getFirstResult(userCommentsRaw) || [];
     const posts = postsResult[0] || { data: [] };
     const stories = storiesResult[0] || [];
 
-    const postActivities =
-      (posts.data || []).map((post: any) => ({
+    // Tạo post activities và filter các items không hợp lệ
+    const postActivities = (posts.data || [])
+      .filter((post: any) => post && (post._id || post.id))
+      .map((post: any) => ({
         type: 'post',
-        id: post._id?.toString() || post.id,
+        id: post._id?.toString() || post.id?.toString(),
         createdAt: post.createdAt || post.updatedAt || new Date(),
         payload: post,
-      })) || [];
+      }));
 
-    const storyActivities = (stories || []).map((story: any) => ({
-      type: 'story',
-      id: story._id?.toString() || story.id,
-      createdAt: story.createdAt || story.updatedAt || new Date(),
-      payload: story,
-    }));
+    // Tạo story activities và filter các items không hợp lệ
+    const storyActivities = (stories || [])
+      .filter((story: any) => story && (story._id || story.id))
+      .map((story: any) => ({
+        type: 'story',
+        id: story._id?.toString() || story.id?.toString(),
+        createdAt: story.createdAt || story.updatedAt || new Date(),
+        payload: story,
+      }));
 
-    const commentActivities = (userComments || []).map((comment: any) => ({
-      type: 'comment',
-      id: comment._id?.toString(),
-      createdAt: comment.createdAt || comment.updatedAt || new Date(),
-      payload: comment,
-    }));
+    // Tạo comment activities và filter các items không hợp lệ, đảm bảo có postId
+    const commentActivities = (Array.isArray(userComments) ? userComments : [])
+      .filter((comment: any) => {
+        // Filter các comment hợp lệ: phải có _id và postId
+        if (!comment || !comment._id) return false;
+        const postId = comment.postId?._id || comment.postId?.id || comment.postId;
+        return !!postId;
+      })
+      .map((comment: any) => ({
+        type: 'comment',
+        id: comment._id?.toString(),
+        createdAt: comment.createdAt || comment.updatedAt || new Date(),
+        payload: comment,
+      }));
 
+    // Tạo reaction activities và filter các items không hợp lệ, đảm bảo có targetId
     const reactionActivities = [
-      ...postReactions.map((reaction: any) => ({
-        type: 'reaction',
-        id: reaction._id?.toString() || reaction._id,
-        createdAt: reaction.createdAt || reaction.updatedAt || new Date(),
-        payload: {
-          targetType: 'post',
-          targetId:
-            reaction.postId?._id?.toString() ?? reaction.postId?.toString(),
-          emoji: reaction.emojiId,
-          target: reaction.postId,
-        },
-      })),
-      ...storyReactions.map((reaction: any) => ({
-        type: 'reaction',
-        id: reaction._id?.toString() || reaction._id,
-        createdAt: reaction.createdAt || reaction.updatedAt || new Date(),
-        payload: {
-          targetType: 'story',
-          targetId:
-            reaction.storyId?._id?.toString() ?? reaction.storyId?.toString(),
-          emoji: reaction.emojiId,
-          target: reaction.storyId,
-        },
-      })),
+      ...(Array.isArray(postReactions) ? postReactions : [])
+        .filter((reaction: any) => {
+          // Filter các reaction hợp lệ: phải có _id và postId
+          if (!reaction || !reaction._id) return false;
+          const postId = reaction.postId?._id || reaction.postId?.id || reaction.postId;
+          return !!postId;
+        })
+        .map((reaction: any) => {
+          const postId = reaction.postId?._id || reaction.postId?.id || reaction.postId;
+          return {
+            type: 'reaction',
+            id: reaction._id?.toString(),
+            createdAt: reaction.createdAt || reaction.updatedAt || new Date(),
+            payload: {
+              targetType: 'post',
+              targetId: postId?.toString(),
+              emoji: reaction.emojiId,
+              target: reaction.postId,
+            },
+          };
+        }),
+      ...(Array.isArray(storyReactions) ? storyReactions : [])
+        .filter((reaction: any) => {
+          // Filter các reaction hợp lệ: phải có _id và storyId
+          if (!reaction || !reaction._id) return false;
+          const storyId = reaction.storyId?._id || reaction.storyId?.id || reaction.storyId;
+          return !!storyId;
+        })
+        .map((reaction: any) => {
+          const storyId = reaction.storyId?._id || reaction.storyId?.id || reaction.storyId;
+          return {
+            type: 'reaction',
+            id: reaction._id?.toString(),
+            createdAt: reaction.createdAt || reaction.updatedAt || new Date(),
+            payload: {
+              targetType: 'story',
+              targetId: storyId?.toString(),
+              emoji: reaction.emojiId,
+              target: reaction.storyId,
+            },
+          };
+        }),
     ];
 
     const activityTimeline = [
@@ -181,10 +225,10 @@ export class AdminService {
     return {
       posts: posts.data || [],
       stories: stories || [],
-      comments: userComments || [],
+      comments: Array.isArray(userComments) ? userComments : [],
       reactions: {
-        posts: postReactions,
-        stories: storyReactions,
+        posts: Array.isArray(postReactions) ? postReactions : [],
+        stories: Array.isArray(storyReactions) ? storyReactions : [],
       },
       activity: activityTimeline,
       lastActive:
