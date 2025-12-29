@@ -1,0 +1,931 @@
+[{
+  "_id": {
+    "$oid": "694ec04429e8584a376f1f17"
+  },
+  "content": "mèo đáng yêu quá ta",
+  "userId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "postId": {
+    "$oid": "693fe433c5174f26aba0cf7c"
+  },
+  "parentId": null,
+  "taggedUserIds": [],
+  "createdAt": {
+    "$date": "2025-12-26T17:05:08.626Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T17:05:08.626Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694ec0d529e8584a376f227d"
+  },
+  "content": "Đi Đà Lạt không cậu",
+  "userId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "postId": {
+    "$oid": "69370d1685b361bbd65bb0aa"
+  },
+  "parentId": null,
+  "taggedUserIds": [],
+  "createdAt": {
+    "$date": "2025-12-26T17:07:33.721Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T17:07:33.721Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694ec14229e8584a376f24c5"
+  },
+  "content": "@[Nguyễn Hữu Ngọc Lam](691c8e727bf4590336b82c50) dứt nuôn nào",
+  "userId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "postId": {
+    "$oid": "69370d1685b361bbd65bb0aa"
+  },
+  "parentId": {
+    "$oid": "694ec0d529e8584a376f227d"
+  },
+  "taggedUserIds": [
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-26T17:09:22.042Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T17:09:22.042Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6950098a87579629e72ec4ba"
+  },
+  "content": "@[Nguyễn Văn Luân](68db9745315196ebcc79a941) vậy cuối tuần sau nhé",
+  "userId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "postId": {
+    "$oid": "69370d1685b361bbd65bb0aa"
+  },
+  "parentId": {
+    "$oid": "694ec0d529e8584a376f227d"
+  },
+  "taggedUserIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-27T16:30:02.842Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T16:30:02.842Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69500f5bac8e7c88e0f86bd0"
+  },
+  "content": "@[Nguyễn Văn Luân](68db9745315196ebcc79a941) nào mua con nuôi nào",
+  "userId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "postId": {
+    "$oid": "693fe433c5174f26aba0cf7c"
+  },
+  "parentId": null,
+  "taggedUserIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-27T16:54:51.871Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T16:54:51.871Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69501bdeac8e7c88e0f87f37"
+  },
+  "content": "@[Nguyễn Văn Luân](68db9745315196ebcc79a941) mèo kìa :))",
+  "userId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "postId": {
+    "$oid": "693fe433c5174f26aba0cf7c"
+  },
+  "parentId": null,
+  "taggedUserIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-27T17:48:14.586Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T17:48:14.586Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69501c1fac8e7c88e0f87f6c"
+  },
+  "content": "haha",
+  "userId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "postId": {
+    "$oid": "693fe433c5174f26aba0cf7c"
+  },
+  "parentId": null,
+  "taggedUserIds": [],
+  "createdAt": {
+    "$date": "2025-12-27T17:49:19.680Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T17:49:19.680Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69501c29ac8e7c88e0f87f7c"
+  },
+  "content": "@[Nguyễn Hữu Ngọc Lam](691c8e727bf4590336b82c50) haha",
+  "userId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "postId": {
+    "$oid": "693fe433c5174f26aba0cf7c"
+  },
+  "parentId": {
+    "$oid": "694ec04429e8584a376f1f17"
+  },
+  "taggedUserIds": [
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-27T17:49:29.133Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T17:49:29.133Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69501c84ac8e7c88e0f8809e"
+  },
+  "content": "@[Bùi Thị Hồng Nhung](692eb012ea14ed134931f6a0) sao lại haha",
+  "userId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "postId": {
+    "$oid": "693fe433c5174f26aba0cf7c"
+  },
+  "parentId": {
+    "$oid": "694ec04429e8584a376f1f17"
+  },
+  "taggedUserIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-27T17:51:00.667Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T17:51:00.667Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69501ca2ac8e7c88e0f88179"
+  },
+  "content": "úuuu",
+  "userId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "postId": {
+    "$oid": "693fe433c5174f26aba0cf7c"
+  },
+  "parentId": null,
+  "taggedUserIds": [],
+  "createdAt": {
+    "$date": "2025-12-27T17:51:30.217Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T17:51:30.217Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69501cdbac8e7c88e0f8824f"
+  },
+  "content": "@[Nguyễn Hữu Ngọc Lam](691c8e727bf4590336b82c50) :))",
+  "userId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "postId": {
+    "$oid": "693fe433c5174f26aba0cf7c"
+  },
+  "parentId": null,
+  "taggedUserIds": [
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-27T17:52:27.099Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T17:52:27.099Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695022b7ac8e7c88e0f8983f"
+  },
+  "content": "@[Nguyễn Văn Luân](68db9745315196ebcc79a941) ",
+  "userId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "postId": {
+    "$oid": "695022a3ac8e7c88e0f89516"
+  },
+  "parentId": null,
+  "taggedUserIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-27T18:17:27.603Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T18:17:27.603Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695029d5943039f6a3926073"
+  },
+  "content": "@[Nguyễn Văn Luân](68db9745315196ebcc79a941) ",
+  "userId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "postId": {
+    "$oid": "695022a3ac8e7c88e0f89516"
+  },
+  "parentId": null,
+  "taggedUserIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-27T18:47:49.423Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T18:47:49.423Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695029f8943039f6a39260bb"
+  },
+  "content": "@[Nguyễn Văn Luân](68db9745315196ebcc79a941) đi chơi không",
+  "userId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "postId": {
+    "$oid": "695022a3ac8e7c88e0f89516"
+  },
+  "parentId": null,
+  "taggedUserIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-27T18:48:24.636Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T18:48:24.636Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69502b2912779dd7670a406a"
+  },
+  "content": "@[Nguyễn Văn Luân](68db9745315196ebcc79a941) đi chơi nhé",
+  "userId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "postId": {
+    "$oid": "695022a3ac8e7c88e0f89516"
+  },
+  "parentId": null,
+  "taggedUserIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-27T18:53:29.676Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T18:53:29.676Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69502c28a7779dc28f6d116c"
+  },
+  "content": "@[Nguyễn Văn Luân](68db9745315196ebcc79a941) hi",
+  "userId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "postId": {
+    "$oid": "695022a3ac8e7c88e0f89516"
+  },
+  "parentId": null,
+  "taggedUserIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-27T18:57:44.225Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T18:57:44.225Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69502e4d401e4a54089c0b11"
+  },
+  "content": "@[Nguyễn Văn Luân](68db9745315196ebcc79a941) ",
+  "userId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "postId": {
+    "$oid": "695022a3ac8e7c88e0f89516"
+  },
+  "parentId": null,
+  "taggedUserIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-27T19:06:53.758Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T19:06:53.758Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69502e5f401e4a54089c0b65"
+  },
+  "content": "@[Nguyễn Văn Luân](68db9745315196ebcc79a941) ",
+  "userId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "postId": {
+    "$oid": "695022a3ac8e7c88e0f89516"
+  },
+  "parentId": null,
+  "taggedUserIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-27T19:07:11.129Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T19:07:11.129Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69502e8c401e4a54089c0e03"
+  },
+  "content": "@[Nguyễn Văn Luân](68db9745315196ebcc79a941) ",
+  "userId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "postId": {
+    "$oid": "695022a3ac8e7c88e0f89516"
+  },
+  "parentId": null,
+  "taggedUserIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-27T19:07:56.200Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T19:07:56.200Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69502f5b401e4a54089c127c"
+  },
+  "content": "@[Nguyễn Văn Luân](68db9745315196ebcc79a941) ",
+  "userId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "postId": {
+    "$oid": "695022a3ac8e7c88e0f89516"
+  },
+  "parentId": null,
+  "taggedUserIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-27T19:11:23.382Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T19:11:23.382Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69502fb2401e4a54089c136b"
+  },
+  "content": "@[Bùi Thị Hồng Nhung](692eb012ea14ed134931f6a0) ",
+  "userId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "postId": {
+    "$oid": "695022a3ac8e7c88e0f89516"
+  },
+  "parentId": null,
+  "taggedUserIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-27T19:12:50.450Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T19:12:50.450Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69503046482d3ecc94007631"
+  },
+  "content": "@[Phạm Ngọc Duy](68e9d3fa7ae32fe700d1d3cc) ",
+  "userId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "postId": {
+    "$oid": "695022a3ac8e7c88e0f89516"
+  },
+  "parentId": null,
+  "taggedUserIds": [
+    {
+      "$oid": "68e9d3fa7ae32fe700d1d3cc"
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-27T19:15:18.975Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T19:15:18.975Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69503197482d3ecc94007a39"
+  },
+  "content": "@[Nguyễn Văn Luân](68db9745315196ebcc79a941) ",
+  "userId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "postId": {
+    "$oid": "695022a3ac8e7c88e0f89516"
+  },
+  "parentId": null,
+  "taggedUserIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-27T19:20:55.770Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T19:20:55.770Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695031b5482d3ecc94007b48"
+  },
+  "content": "@[Nguyễn Văn Luân](68db9745315196ebcc79a941) ",
+  "userId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "postId": {
+    "$oid": "695022a3ac8e7c88e0f89516"
+  },
+  "parentId": null,
+  "taggedUserIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-27T19:21:25.326Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T19:21:25.326Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6950325d1aaf444e91d13fd8"
+  },
+  "content": "@[Nguyễn Văn Luân](68db9745315196ebcc79a941) ",
+  "userId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "postId": {
+    "$oid": "695022a3ac8e7c88e0f89516"
+  },
+  "parentId": null,
+  "taggedUserIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-27T19:24:13.134Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T19:24:13.134Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6950361ffd2b8f435945ade9"
+  },
+  "content": "@[Nguyễn Văn Luân](68db9745315196ebcc79a941) ",
+  "userId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "postId": {
+    "$oid": "695022a3ac8e7c88e0f89516"
+  },
+  "parentId": null,
+  "taggedUserIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-27T19:40:15.075Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T19:40:15.075Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69503b444848533dea3af806"
+  },
+  "content": "@[Nguyễn Văn Luân](68db9745315196ebcc79a941) ",
+  "userId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "postId": {
+    "$oid": "693fe3c4c5174f26aba0ca58"
+  },
+  "parentId": null,
+  "taggedUserIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-27T20:02:12.339Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T20:02:12.339Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695053f56539418f3536c97b"
+  },
+  "content": "Cũng ước được tặng ",
+  "userId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "postId": {
+    "$oid": "695050a2c979a3a9d7c0cc4a"
+  },
+  "parentId": null,
+  "taggedUserIds": [],
+  "createdAt": {
+    "$date": "2025-12-27T21:47:33.552Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T21:47:33.552Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695056b76539418f3536dc5c"
+  },
+  "content": "@[Nguyễn Văn Luân](68db9745315196ebcc79a941) &££¥",
+  "userId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "postId": {
+    "$oid": "695022a3ac8e7c88e0f89516"
+  },
+  "parentId": null,
+  "taggedUserIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-27T21:59:19.334Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T21:59:19.334Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695056f66539418f3536dd86"
+  },
+  "content": "@[Nguyễn Văn Luân](68db9745315196ebcc79a941) ",
+  "userId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "postId": {
+    "$oid": "695022a3ac8e7c88e0f89516"
+  },
+  "parentId": null,
+  "taggedUserIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-27T22:00:22.318Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:00:22.318Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695057a51df799fd520e6620"
+  },
+  "content": "@[Nguyễn Văn Luân](68db9745315196ebcc79a941) ",
+  "userId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "postId": {
+    "$oid": "695022a3ac8e7c88e0f89516"
+  },
+  "parentId": null,
+  "taggedUserIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-27T22:03:17.329Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:03:17.329Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695057bf1df799fd520e677a"
+  },
+  "content": "@[Nguyễn Văn Luân](68db9745315196ebcc79a941) ",
+  "userId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "postId": {
+    "$oid": "695022a3ac8e7c88e0f89516"
+  },
+  "parentId": null,
+  "taggedUserIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-27T22:03:43.303Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:03:43.303Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695058941df799fd520e6a27"
+  },
+  "content": "@[Nguyễn Hữu Ngọc Lam](691c8e727bf4590336b82c50) @[Bùi Thị Hồng Nhung](692eb012ea14ed134931f6a0) ",
+  "userId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "postId": {
+    "$oid": "695058791df799fd520e69be"
+  },
+  "parentId": null,
+  "taggedUserIds": [
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-27T22:07:16.872Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:07:16.872Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69505b111da39833d02c4a60"
+  },
+  "content": "😭😭",
+  "userId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "postId": {
+    "$oid": "695050a2c979a3a9d7c0cc4a"
+  },
+  "parentId": null,
+  "taggedUserIds": [],
+  "createdAt": {
+    "$date": "2025-12-27T22:17:53.603Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:17:53.603Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69528b4da9f7d97aeaaa0245"
+  },
+  "content": "good time",
+  "userId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "postId": {
+    "$oid": "693fe3c4c5174f26aba0ca58"
+  },
+  "parentId": null,
+  "taggedUserIds": [],
+  "createdAt": {
+    "$date": "2025-12-29T14:08:13.945Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T14:08:13.945Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69528b4fa9f7d97aeaaa0255"
+  },
+  "content": "Hoàng hôn ở quê hả\nĐẹp quá",
+  "userId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "postId": {
+    "$oid": "693fe3c4c5174f26aba0ca58"
+  },
+  "parentId": null,
+  "taggedUserIds": [],
+  "createdAt": {
+    "$date": "2025-12-29T14:08:15.411Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T14:08:15.411Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69529480a9f7d97aeaaa04cb"
+  },
+  "content": "@[Nguyễn Hữu Ngọc Lam](691c8e727bf4590336b82c50)   đẹp quá vậy ta 2",
+  "userId": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "postId": {
+    "$oid": "695050a2c979a3a9d7c0cc4a"
+  },
+  "parentId": null,
+  "taggedUserIds": [
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-29T14:47:28.557Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T14:53:00.417Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695294bfa9f7d97aeaaa0558"
+  },
+  "content": "@[Phạm Ngọc Duy](68e9d3fa7ae32fe700d1d3cc) tất nhiên rồi",
+  "userId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "postId": {
+    "$oid": "695050a2c979a3a9d7c0cc4a"
+  },
+  "parentId": {
+    "$oid": "69529480a9f7d97aeaaa04cb"
+  },
+  "taggedUserIds": [
+    {
+      "$oid": "68e9d3fa7ae32fe700d1d3cc"
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-12-29T14:48:31.943Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T14:48:31.943Z"
+  },
+  "__v": 0
+}]

@@ -1,0 +1,9804 @@
+[{
+  "_id": {
+    "$oid": "693ef5b2333695dfc36a0d25"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1765733810523_ilqdna",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-14T17:36:50.528Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-14T17:36:58.878Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-14T17:36:58.875Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693ef5c0333695dfc36a0d69"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1765733824436_pxed31",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-14T17:37:04.438Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-14T17:37:37.982Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-14T17:37:06.301Z"
+  },
+  "duration": 31,
+  "endedAt": {
+    "$date": "2025-12-14T17:37:37.980Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693ef5f7333695dfc36a0dc7"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1765733879734_bw8xdc",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-14T17:37:59.735Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-14T17:38:44.921Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-14T17:38:05.987Z"
+  },
+  "duration": 38,
+  "endedAt": {
+    "$date": "2025-12-14T17:38:44.920Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693ef631333695dfc36a0df6"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1765733937077_flbwka",
+  "callType": "audio",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-14T17:38:57.078Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-14T17:39:16.155Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-14T17:39:16.154Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693ef69b333695dfc36a0f49"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1765734043152_be0rnk",
+  "callType": "audio",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-14T17:40:43.153Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-14T17:41:04.741Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-14T17:40:45.751Z"
+  },
+  "duration": 18,
+  "endedAt": {
+    "$date": "2025-12-14T17:41:04.740Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693fe469c5174f26aba0d032"
+  },
+  "callerId": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "participantIds": [
+    {
+      "$oid": "68e9d3fa7ae32fe700d1d3cc"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1765794921445_hrj04n",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69371a2985b361bbd65bcbb3"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-15T10:35:21.449Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-15T10:36:06.816Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-15T10:35:23.880Z"
+  },
+  "duration": 42,
+  "endedAt": {
+    "$date": "2025-12-15T10:36:06.814Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693fe4c5c5174f26aba0d082"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "68e9d3fa7ae32fe700d1d3cc"
+    }
+  ],
+  "channelId": "call_1765795013374_mkl3tq",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69371a2985b361bbd65bcbb3"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-15T10:36:53.375Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-15T10:37:38.861Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-15T10:36:56.380Z"
+  },
+  "duration": 42,
+  "endedAt": {
+    "$date": "2025-12-15T10:37:38.859Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693fe515c5174f26aba0d0c9"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "68e9d3fa7ae32fe700d1d3cc"
+    }
+  ],
+  "channelId": "call_1765795093630_401ra",
+  "callType": "audio",
+  "conversationId": {
+    "$oid": "69371a2985b361bbd65bcbb3"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-15T10:38:13.631Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-15T10:38:28.643Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-15T10:38:15.898Z"
+  },
+  "duration": 12,
+  "endedAt": {
+    "$date": "2025-12-15T10:38:28.642Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693fe915c5174f26aba0dfe7"
+  },
+  "callerId": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "participantIds": [
+    {
+      "$oid": "68e9d3fa7ae32fe700d1d3cc"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1765796117585_3jkb4j",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "6937180385b361bbd65bb6b8"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-15T10:55:17.587Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-15T10:55:33.987Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-15T10:55:20.419Z"
+  },
+  "duration": 13,
+  "endedAt": {
+    "$date": "2025-12-15T10:55:33.986Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693fe931c5174f26aba0e029"
+  },
+  "callerId": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "participantIds": [
+    {
+      "$oid": "68e9d3fa7ae32fe700d1d3cc"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1765796145493_pnxb1b",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "6937180385b361bbd65bb6b8"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-15T10:55:45.494Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-15T10:55:53.816Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-15T10:55:46.778Z"
+  },
+  "duration": 7,
+  "endedAt": {
+    "$date": "2025-12-15T10:55:53.814Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693fe9e5c5174f26aba0e16a"
+  },
+  "callerId": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "participantIds": [
+    {
+      "$oid": "68e9d3fa7ae32fe700d1d3cc"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1765796325617_velxk",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "6937180385b361bbd65bb6b8"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-15T10:58:45.618Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-15T11:06:27.001Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-15T11:06:27.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693fea0ac5174f26aba0e1ac"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "68e9d3fa7ae32fe700d1d3cc"
+    }
+  ],
+  "channelId": "call_1765796362212_njgujj",
+  "callType": "audio",
+  "conversationId": {
+    "$oid": "6937180385b361bbd65bb6b8"
+  },
+  "status": "rejected",
+  "createdAt": {
+    "$date": "2025-12-15T10:59:22.213Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-15T10:59:27.628Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "693fea5dc5174f26aba0e1ec"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "68e9d3fa7ae32fe700d1d3cc"
+    }
+  ],
+  "channelId": "call_1765796445849_bi111",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "6937180385b361bbd65bb6b8"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-15T11:00:45.850Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-15T11:01:31.119Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-15T11:00:50.481Z"
+  },
+  "duration": 40,
+  "endedAt": {
+    "$date": "2025-12-15T11:01:31.118Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693feb3bc5174f26aba0e2c6"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "68e9d3fa7ae32fe700d1d3cc"
+    }
+  ],
+  "channelId": "call_1765796667081_12hrgv",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69371a2985b361bbd65bcbb3"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-15T11:04:27.082Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-15T11:04:40.400Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-15T11:04:40.399Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693feb76c5174f26aba0e30f"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1765796726781_79f57",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-15T11:05:26.782Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-15T11:05:42.836Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-15T11:05:28.931Z"
+  },
+  "duration": 13,
+  "endedAt": {
+    "$date": "2025-12-15T11:05:42.835Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693febe0c5174f26aba0e410"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1765796832235_wfelth",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-15T11:07:12.236Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-15T11:07:21.966Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-15T11:07:21.965Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "693febf9c5174f26aba0e443"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1765796857359_7mruh",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-15T11:07:37.360Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-15T11:08:03.216Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-15T11:07:39.733Z"
+  },
+  "duration": 23,
+  "endedAt": {
+    "$date": "2025-12-15T11:08:03.215Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694013b6c20fa3d5f7d0cd74"
+  },
+  "callerId": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "participantIds": [
+    {
+      "$oid": "68e9d3fa7ae32fe700d1d3cc"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1765807030752_5xffpj",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69371a2985b361bbd65bcbb3"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-15T13:57:10.758Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-15T13:57:35.524Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-15T13:57:35.519Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694032f4c20fa3d5f7d0d399"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1765815028504_p4l9h",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69371ce885b361bbd65bdcc2"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-15T16:10:28.510Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-15T16:11:13.702Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-15T16:11:13.698Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69403329c20fa3d5f7d0d42b"
+  },
+  "callerId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "participantIds": [
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1765815081883_az01dt",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69371ce885b361bbd65bdcc2"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-15T16:11:21.885Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-15T16:11:44.694Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-15T16:11:33.359Z"
+  },
+  "duration": 11,
+  "endedAt": {
+    "$date": "2025-12-15T16:11:44.693Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6940334ec20fa3d5f7d0d46e"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1765815118195_jugag9",
+  "callType": "audio",
+  "conversationId": {
+    "$oid": "69371ce885b361bbd65bdcc2"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-15T16:11:58.196Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-15T16:13:23.138Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-15T16:13:23.133Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69403362c20fa3d5f7d0d4ea"
+  },
+  "callerId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "participantIds": [
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1765815138634_jmocel",
+  "callType": "audio",
+  "conversationId": {
+    "$oid": "69371ce885b361bbd65bdcc2"
+  },
+  "status": "rejected",
+  "createdAt": {
+    "$date": "2025-12-15T16:12:18.635Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-15T16:12:41.078Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694179dfb07005f422967cc2"
+  },
+  "callerId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "participantIds": [
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1765898719969_r7u958",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69371ce885b361bbd65bdcc2"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-16T15:25:19.974Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-16T16:51:57.703Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-16T16:51:57.685Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694181c4b07005f4229684d4"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1765900740419_tvus77",
+  "callType": "audio",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-16T15:59:00.422Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-16T15:59:24.287Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-16T15:59:24.283Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694181ebb07005f4229685e9"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1765900779499_n5q8o",
+  "callType": "audio",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-16T15:59:39.500Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-16T16:00:06.162Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-16T15:59:43.261Z"
+  },
+  "duration": 22,
+  "endedAt": {
+    "$date": "2025-12-16T16:00:06.161Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69418213b07005f42296862b"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1765900819413_ph0wgj",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-16T16:00:19.413Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-16T16:00:44.263Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-16T16:00:22.832Z"
+  },
+  "duration": 21,
+  "endedAt": {
+    "$date": "2025-12-16T16:00:44.262Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69418234b07005f42296866d"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1765900852171_9623mk",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-16T16:00:52.171Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-16T16:01:40.095Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-16T16:00:54.115Z"
+  },
+  "duration": 45,
+  "endedAt": {
+    "$date": "2025-12-16T16:01:40.067Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6941830bb07005f422968b06"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1765901067150_51mn6",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418309b07005f422968aed"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-16T16:04:27.151Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-16T16:05:04.800Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-16T16:05:04.798Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6941833db07005f422968bd5"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1765901117278_3qhj3p",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418309b07005f422968aed"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-16T16:05:17.279Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-16T16:06:08.603Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-16T16:05:19.002Z"
+  },
+  "duration": 49,
+  "endedAt": {
+    "$date": "2025-12-16T16:06:08.601Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69418397b07005f422968c30"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1765901207290_ux4tln",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418309b07005f422968aed"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-16T16:06:47.291Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-16T16:08:04.952Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-16T16:06:49.070Z"
+  },
+  "duration": 75,
+  "endedAt": {
+    "$date": "2025-12-16T16:08:04.950Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6942cf3ad34b8d7fecf01b98"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1765986106061_g1gf18",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418309b07005f422968aed"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-17T15:41:46.068Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-17T15:41:58.085Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-17T15:41:58.081Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6942cf4ad34b8d7fecf01bdf"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1765986122274_6pixy7",
+  "callType": "audio",
+  "conversationId": {
+    "$oid": "69418309b07005f422968aed"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-17T15:42:02.275Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-17T15:42:13.505Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-17T15:42:05.107Z"
+  },
+  "duration": 8,
+  "endedAt": {
+    "$date": "2025-12-17T15:42:13.504Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694653d6d4ab4789f6167fa7"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766216662761_7sujxr",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418309b07005f422968aed"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T07:44:22.765Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T07:44:33.717Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T07:44:33.715Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694653e3d4ab4789f6167fed"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766216675502_au10xp",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418309b07005f422968aed"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T07:44:35.503Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T07:44:45.346Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T07:44:37.289Z"
+  },
+  "duration": 8,
+  "endedAt": {
+    "$date": "2025-12-20T07:44:45.343Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694653efd4ab4789f616802f"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766216687635_6tc9u3",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418309b07005f422968aed"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T07:44:47.635Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T07:44:49.257Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T07:44:48.885Z"
+  },
+  "duration": 0,
+  "endedAt": {
+    "$date": "2025-12-20T07:44:49.256Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694653f2d4ab4789f6168071"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766216690668_8x8dza",
+  "callType": "audio",
+  "conversationId": {
+    "$oid": "69418309b07005f422968aed"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T07:44:50.669Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T07:44:52.013Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T07:44:52.011Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694653f4d4ab4789f61680b2"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766216692975_my2klr",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418309b07005f422968aed"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T07:44:52.977Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T07:44:56.649Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T07:44:54.239Z"
+  },
+  "duration": 2,
+  "endedAt": {
+    "$date": "2025-12-20T07:44:56.647Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694653fdd4ab4789f61680f5"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766216701340_3vzj6d",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418309b07005f422968aed"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T07:45:01.341Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T07:45:12.156Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T07:45:02.520Z"
+  },
+  "duration": 9,
+  "endedAt": {
+    "$date": "2025-12-20T07:45:12.155Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69465412d4ab4789f6168137"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766216722048_4dks32",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418309b07005f422968aed"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T07:45:22.049Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T07:45:29.068Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T07:45:29.065Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946541ad4ab4789f616817e"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766216730600_60dwrc",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418309b07005f422968aed"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T07:45:30.601Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T07:45:40.608Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T07:45:31.983Z"
+  },
+  "duration": 8,
+  "endedAt": {
+    "$date": "2025-12-20T07:45:40.607Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694656eed4ab4789f6169546"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766217454620_v7yn6h",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418309b07005f422968aed"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T07:57:34.621Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T07:57:43.966Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T07:57:43.964Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69467566060652a8383c448f"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766225254695_yr392u",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T10:07:34.714Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:08:03.970Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T10:07:47.269Z"
+  },
+  "duration": 16,
+  "endedAt": {
+    "$date": "2025-12-20T10:08:03.967Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69467587060652a8383c44f4"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766225287852_xia05r",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "rejected",
+  "createdAt": {
+    "$date": "2025-12-20T10:08:07.854Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:08:14.484Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6946759c060652a8383c4522"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766225308844_oxk4un",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "rejected",
+  "createdAt": {
+    "$date": "2025-12-20T10:08:28.846Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:08:33.783Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694675a5060652a8383c4550"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766225317103_3m2si6",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "rejected",
+  "createdAt": {
+    "$date": "2025-12-20T10:08:37.105Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:08:41.648Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694675ad060652a8383c457e"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766225325003_gnogy",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "rejected",
+  "createdAt": {
+    "$date": "2025-12-20T10:08:45.007Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:08:49.884Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694675c5060652a8383c45ac"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766225349233_9mtt8e",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T10:09:09.235Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:09:28.894Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T10:09:28.890Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694675d9060652a8383c460f"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766225369127_g3h5",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T10:09:29.128Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:09:38.756Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T10:09:38.752Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694675e5060652a8383c46c3"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766225381146_nf0c41",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T10:09:41.150Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:09:49.699Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T10:09:49.696Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694675e5060652a8383c46c4"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766225381148_ihcfko",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T10:09:41.150Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:10:00.389Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T10:10:00.386Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694675ef060652a8383c46f6"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766225391328_12vgwt",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T10:09:51.330Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:10:00.393Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T10:10:00.391Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694675fc060652a8383c4891"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766225404863_48ucfp",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T10:10:04.866Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:10:24.156Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T10:10:24.153Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946761b060652a8383c4a0d"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766225435625_l80exr",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T10:10:35.626Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:10:51.498Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T10:10:51.497Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946763d060652a8383c4a5d"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766225469367_ykzyyw",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T10:11:09.367Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:11:15.016Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T10:11:15.015Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69467647060652a8383c4afc"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766225479049_38lxz",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T10:11:19.050Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:11:31.387Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T10:11:31.385Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69467660060652a8383c4e5f"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766225504526_erf569",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T10:11:44.528Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:11:51.223Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T10:11:51.220Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69467673060652a8383c4eb2"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766225523568_rdwx2r",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T10:12:03.571Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:12:33.484Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T10:12:22.116Z"
+  },
+  "duration": 11,
+  "endedAt": {
+    "$date": "2025-12-20T10:12:33.482Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69467697060652a8383c5006"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766225559748_cx98fb",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "rejected",
+  "createdAt": {
+    "$date": "2025-12-20T10:12:39.749Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:12:48.842Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694676a7060652a8383c508d"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766225575213_zk6sv9",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T10:12:55.215Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:12:59.862Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T10:12:59.861Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694676b3060652a8383c5095"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766225587827_7fz8l",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T10:13:07.828Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:13:35.231Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T10:13:35.225Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694676d2060652a8383c5335"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766225618122_v4xt7",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T10:13:38.123Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:13:48.807Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T10:13:43.522Z"
+  },
+  "duration": 5,
+  "endedAt": {
+    "$date": "2025-12-20T10:13:48.804Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694676e1060652a8383c5367"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766225633002_hvuwt",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "rejected",
+  "createdAt": {
+    "$date": "2025-12-20T10:13:53.005Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:13:58.149Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694676ea060652a8383c5423"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766225642489_oqh1tb",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T10:14:02.490Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:14:13.731Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T10:14:13.727Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694676fe060652a8383c55e2"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766225662028_suj8px",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T10:14:22.029Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:14:36.204Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T10:14:36.202Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694678c6060652a8383c569f"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766226118882_z2274l",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T10:21:58.884Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:22:04.031Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T10:22:04.030Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694678ea060652a8383c56d2"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766226154185_ragntn",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T10:22:34.187Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:23:18.734Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T10:23:18.730Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946796a060652a8383c593c"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766226282178_1mzwp7",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T10:24:42.181Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:25:12.399Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T10:25:12.396Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946798d060652a8383c59ee"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766226317952_w2jg7h",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T10:25:17.954Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:25:26.836Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T10:25:26.833Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946799d060652a8383c5a29"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766226333116_eq0sja",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T10:25:33.118Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:25:45.076Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T10:25:42.426Z"
+  },
+  "duration": 2,
+  "endedAt": {
+    "$date": "2025-12-20T10:25:45.073Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694679ae060652a8383c5a5d"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766226350118_5xon6",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T10:25:50.119Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:25:57.222Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T10:25:54.930Z"
+  },
+  "duration": 2,
+  "endedAt": {
+    "$date": "2025-12-20T10:25:57.219Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694679ba060652a8383c5a91"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766226362792_6hxn2i",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T10:26:02.793Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:26:29.991Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T10:26:29.988Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694679d7060652a8383c5af9"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766226391427_jw59gg",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T10:26:31.429Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:26:36.713Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T10:26:36.709Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694679df060652a8383c5b2a"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766226399460_thszlk",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T10:26:39.461Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:26:54.213Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T10:26:54.202Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694679ee060652a8383c5b66"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766226414204_3ti31",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T10:26:54.206Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:27:24.589Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T10:27:24.587Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694679ee060652a8383c5b65"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766226414202_2i7a8p",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T10:26:54.206Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:27:27.886Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T10:26:59.241Z"
+  },
+  "duration": 28,
+  "endedAt": {
+    "$date": "2025-12-20T10:27:27.883Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69467a13060652a8383c5bf7"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766226451162_kein1",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T10:27:31.164Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:27:41.832Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T10:27:35.662Z"
+  },
+  "duration": 6,
+  "endedAt": {
+    "$date": "2025-12-20T10:27:41.829Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69467a22060652a8383c5c2b"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766226466086_2ja6ta",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T10:27:46.088Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:27:56.272Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T10:27:53.116Z"
+  },
+  "duration": 3,
+  "endedAt": {
+    "$date": "2025-12-20T10:27:56.269Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69467a31060652a8383c5c5f"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766226481313_j0ts8",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T10:28:01.315Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T10:28:05.245Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T10:28:05.242Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f298d6c741c98b1a90e5"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766257304910_0v4gs8",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:01:44.918Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:02:02.193Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:01:57.574Z"
+  },
+  "duration": 4,
+  "endedAt": {
+    "$date": "2025-12-20T19:02:02.191Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f2aed6c741c98b1a914a"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766257326776_ojcvg",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:02:06.777Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:02:15.638Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:02:12.164Z"
+  },
+  "duration": 3,
+  "endedAt": {
+    "$date": "2025-12-20T19:02:15.636Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f2bdd6c741c98b1a917b"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766257341221_6ydck",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:02:21.221Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:02:36.667Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T19:02:36.666Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f2d9d6c741c98b1a91aa"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766257369849_utblus",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:02:49.850Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:03:11.058Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T19:03:11.056Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f2f0d6c741c98b1a920d"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766257392685_7huboi",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:03:12.687Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:03:16.677Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T19:03:16.674Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f2fcd6c741c98b1a9260"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766257404973_l043zr",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:03:24.974Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:03:43.485Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:03:38.153Z"
+  },
+  "duration": 5,
+  "endedAt": {
+    "$date": "2025-12-20T19:03:43.483Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f318d6c741c98b1a930d"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766257432365_z77tal",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "rejected",
+  "createdAt": {
+    "$date": "2025-12-20T19:03:52.368Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:03:59.756Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6946f324d6c741c98b1a933b"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766257444625_tr74o",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "rejected",
+  "createdAt": {
+    "$date": "2025-12-20T19:04:04.627Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:04:12.397Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6946f332d6c741c98b1a9369"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766257458621_znwebl",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:04:18.622Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:04:33.475Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:04:29.659Z"
+  },
+  "duration": 3,
+  "endedAt": {
+    "$date": "2025-12-20T19:04:33.473Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f347d6c741c98b1a9416"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766257479242_lr1f8a",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:04:39.244Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:04:53.766Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:04:48.760Z"
+  },
+  "duration": 5,
+  "endedAt": {
+    "$date": "2025-12-20T19:04:53.763Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f4eed6c741c98b1a959d"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766257902215_tqqx9l",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:11:42.219Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:12:02.579Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:11:57.968Z"
+  },
+  "duration": 4,
+  "endedAt": {
+    "$date": "2025-12-20T19:12:02.577Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f507d6c741c98b1a9602"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766257927238_1er1jkh",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "rejected",
+  "createdAt": {
+    "$date": "2025-12-20T19:12:07.239Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:12:17.372Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6946f515d6c741c98b1a9630"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766257941559_muh3sk",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:12:21.560Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:12:30.213Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:12:27.729Z"
+  },
+  "duration": 2,
+  "endedAt": {
+    "$date": "2025-12-20T19:12:30.212Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f525d6c741c98b1a9661"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766257957477_fy697",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:12:37.478Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:12:44.689Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T19:12:44.688Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f537d6c741c98b1a9690"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766257975801_kdd8lj",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:12:55.802Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:13:09.353Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T19:13:09.350Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f546d6c741c98b1a96f3"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766257990320_65j9ul",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:13:10.321Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:13:16.377Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T19:13:16.376Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f54fd6c741c98b1a96f9"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766257999667_lpje9g",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:13:19.668Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:13:34.122Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:13:30.223Z"
+  },
+  "duration": 3,
+  "endedAt": {
+    "$date": "2025-12-20T19:13:34.121Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f566d6c741c98b1a975e"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766258022795_rknnmw",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:13:42.796Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:13:56.238Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T19:13:56.235Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f580d6c741c98b1a97e5"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766258048343_4iwa8",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:14:08.344Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:14:25.466Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:14:22.177Z"
+  },
+  "duration": 3,
+  "endedAt": {
+    "$date": "2025-12-20T19:14:25.464Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f597d6c741c98b1a9892"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766258071494_x6l8m",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:14:31.496Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:14:43.528Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:14:40.173Z"
+  },
+  "duration": 3,
+  "endedAt": {
+    "$date": "2025-12-20T19:14:43.525Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f5a7d6c741c98b1a993f"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766258087573_7i8gvs",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:14:47.576Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:14:53.989Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:14:51.923Z"
+  },
+  "duration": 2,
+  "endedAt": {
+    "$date": "2025-12-20T19:14:53.987Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f5b1d6c741c98b1a9970"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766258097280_5prn",
+  "callType": "audio",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:14:57.280Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:15:04.293Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:15:01.708Z"
+  },
+  "duration": 2,
+  "endedAt": {
+    "$date": "2025-12-20T19:15:04.291Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f5bbd6c741c98b1a99a1"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766258107854_ztfnue",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:15:07.855Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:15:19.625Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:15:13.054Z"
+  },
+  "duration": 6,
+  "endedAt": {
+    "$date": "2025-12-20T19:15:19.623Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f5ccd6c741c98b1a99d2"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766258124252_vxvstb",
+  "callType": "audio",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:15:24.253Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:15:27.630Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T19:15:27.628Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f5d5d6c741c98b1a99d8"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766258133313_k8p1a8",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:15:33.314Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:15:44.764Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:15:41.638Z"
+  },
+  "duration": 3,
+  "endedAt": {
+    "$date": "2025-12-20T19:15:44.760Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f5e7d6c741c98b1a9b72"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766258151482_wl37ke",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:15:51.483Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:16:01.601Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:15:59.409Z"
+  },
+  "duration": 2,
+  "endedAt": {
+    "$date": "2025-12-20T19:16:01.600Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f5fcd6c741c98b1a9c43"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766258172602_sxgvy6",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:16:12.604Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:16:24.719Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:16:21.779Z"
+  },
+  "duration": 2,
+  "endedAt": {
+    "$date": "2025-12-20T19:16:24.716Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f60ed6c741c98b1a9ca8"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766258190465_ad2wmh",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:16:30.467Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:16:46.486Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T19:16:46.484Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f621d6c741c98b1a9cd7"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766258209271_vdgh7r",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:16:49.273Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:16:56.147Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T19:16:56.144Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f62ed6c741c98b1a9d19"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766258222128_woik2j",
+  "callType": "audio",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:17:02.130Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:17:32.328Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T19:17:32.327Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f6a6d6c741c98b1a9d4c"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766258342187_5sck2i",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:19:02.188Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:19:26.531Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T19:19:26.528Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f6bfd6c741c98b1a9d9c"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766258367794_lm8a9g",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:19:27.796Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:19:35.158Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T19:19:35.154Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f6dbd6c741c98b1a9e31"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766258395131_gqdubm",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:19:55.132Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:20:11.989Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:20:07.370Z"
+  },
+  "duration": 4,
+  "endedAt": {
+    "$date": "2025-12-20T19:20:11.987Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f6efd6c741c98b1a9e96"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766258415613_8qqxdb",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:20:15.615Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:20:27.708Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:20:21.302Z"
+  },
+  "duration": 6,
+  "endedAt": {
+    "$date": "2025-12-20T19:20:27.706Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f707d6c741c98b1a9ec7"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766258439197_uzp6s",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:20:39.198Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:20:46.701Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:20:44.289Z"
+  },
+  "duration": 2,
+  "endedAt": {
+    "$date": "2025-12-20T19:20:46.698Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f716d6c741c98b1a9ef8"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766258454011_cuev7b",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:20:54.013Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:21:15.000Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T19:21:14.998Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f731d6c741c98b1a9f5b"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766258481020_zk360h",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:21:21.022Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:21:26.214Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T19:21:26.213Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f73ad6c741c98b1a9f8f"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766258490876_4y1wds",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:21:30.878Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:21:35.075Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T19:21:35.072Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f74ad6c741c98b1aa0d2"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766258506446_svhe",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:21:46.447Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:21:59.902Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:21:56.494Z"
+  },
+  "duration": 3,
+  "endedAt": {
+    "$date": "2025-12-20T19:21:59.899Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f764d6c741c98b1aa142"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766258532771_o6fcft",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "rejected",
+  "createdAt": {
+    "$date": "2025-12-20T19:22:12.772Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:22:17.002Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6946f76cd6c741c98b1aa170"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766258540536_gh0jfl",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:22:20.538Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:22:40.303Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T19:22:40.300Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f80bd6c741c98b1aa1f7"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766258699429_67o3c6",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:24:59.431Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:25:15.097Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:25:09.791Z"
+  },
+  "duration": 5,
+  "endedAt": {
+    "$date": "2025-12-20T19:25:15.096Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f820d6c741c98b1aa2a4"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766258720521_9ccpna",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:25:20.522Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:25:28.281Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:25:26.708Z"
+  },
+  "duration": 1,
+  "endedAt": {
+    "$date": "2025-12-20T19:25:28.279Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f82cd6c741c98b1aa2d5"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766258732169_mjj2tg",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:25:32.170Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:25:44.308Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:25:41.182Z"
+  },
+  "duration": 3,
+  "endedAt": {
+    "$date": "2025-12-20T19:25:44.305Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f84bd6c741c98b1aa45f"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766258763907_30x9r5",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:26:03.908Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:26:15.089Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T19:26:15.088Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f85ed6c741c98b1aa48e"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766258782976_y2b6jm",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:26:22.978Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:26:30.018Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T19:26:30.017Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946f871d6c741c98b1aa504"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766258801273_f1yolk",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:26:41.275Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:26:56.376Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:26:51.770Z"
+  },
+  "duration": 4,
+  "endedAt": {
+    "$date": "2025-12-20T19:26:56.373Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946fa8fd6c741c98b1aa702"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766259343454_ht8jqo",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:35:43.458Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:36:01.434Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:35:57.245Z"
+  },
+  "duration": 4,
+  "endedAt": {
+    "$date": "2025-12-20T19:36:01.432Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946faa6d6c741c98b1aa767"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766259366065_mdj32g",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:36:06.067Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:36:14.375Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:36:11.984Z"
+  },
+  "duration": 2,
+  "endedAt": {
+    "$date": "2025-12-20T19:36:14.372Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946fab2d6c741c98b1aa798"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766259378420_thsk3m",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "rejected",
+  "createdAt": {
+    "$date": "2025-12-20T19:36:18.422Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:36:24.476Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6946fabed6c741c98b1aa7c6"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766259390035_brpjz",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:36:30.037Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:36:37.497Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:36:35.399Z"
+  },
+  "duration": 2,
+  "endedAt": {
+    "$date": "2025-12-20T19:36:37.495Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946fad2d6c741c98b1aa802"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766259410035_ym8y5l",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:36:50.037Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:36:55.015Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T19:36:55.013Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946fadcd6c741c98b1aa865"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766259420956_0k93at",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:37:00.957Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:37:05.608Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T19:37:05.605Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946faf0d6c741c98b1aa923"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766259440326_zzsnu",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:37:20.328Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:37:31.735Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:37:28.922Z"
+  },
+  "duration": 2,
+  "endedAt": {
+    "$date": "2025-12-20T19:37:31.733Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946faffd6c741c98b1aa988"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766259455829_zeg1pm",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:37:35.830Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:37:45.422Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:37:42.031Z"
+  },
+  "duration": 3,
+  "endedAt": {
+    "$date": "2025-12-20T19:37:45.421Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946fb0ed6c741c98b1aa9b9"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766259470098_46bad",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:37:50.099Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:37:59.039Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:37:56.645Z"
+  },
+  "duration": 2,
+  "endedAt": {
+    "$date": "2025-12-20T19:37:59.037Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946fb27d6c741c98b1aa9ea"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766259495065_9wqn5e",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:38:15.066Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:38:25.058Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:38:22.407Z"
+  },
+  "duration": 2,
+  "endedAt": {
+    "$date": "2025-12-20T19:38:25.055Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946fb39d6c741c98b1aaa1b"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766259513935_z0wd1o",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:38:33.937Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:38:49.416Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T19:38:49.414Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946fb60d6c741c98b1aaad9"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766259552510_asuo68",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:39:12.512Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:39:15.923Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T19:39:15.920Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946fb67d6c741c98b1aab3c"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766259559466_0zslxv",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:39:19.468Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:39:23.164Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T19:39:23.163Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946fb6fd6c741c98b1aab8f"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766259567357_ada38",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:39:27.358Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:39:41.301Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:39:36.811Z"
+  },
+  "duration": 4,
+  "endedAt": {
+    "$date": "2025-12-20T19:39:41.299Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946fb82d6c741c98b1aac3c"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766259586148_mloz0c",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "rejected",
+  "createdAt": {
+    "$date": "2025-12-20T19:39:46.149Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:39:50.810Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6946fb8ad6c741c98b1aac6a"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766259594905_1pvjp",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:39:54.906Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:40:06.558Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:40:03.549Z"
+  },
+  "duration": 3,
+  "endedAt": {
+    "$date": "2025-12-20T19:40:06.555Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946fb9ad6c741c98b1aad17"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766259610227_hmpiaw",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:40:10.227Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:40:16.832Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:40:15.197Z"
+  },
+  "duration": 1,
+  "endedAt": {
+    "$date": "2025-12-20T19:40:16.830Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946fba7d6c741c98b1aad48"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766259623868_elxpmwq",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:40:23.869Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:40:34.803Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:40:32.476Z"
+  },
+  "duration": 2,
+  "endedAt": {
+    "$date": "2025-12-20T19:40:34.802Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946fbbad6c741c98b1aadf5"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766259642400_ftq2l8",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:40:42.401Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:40:48.819Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T19:40:48.818Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946fbcdd6c741c98b1aae24"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766259661952_l5inlr",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:41:01.952Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:41:06.671Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T19:41:06.668Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946fbd3d6c741c98b1aae53"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766259667596_s6uufj",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:41:07.596Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:41:19.312Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:41:16.393Z"
+  },
+  "duration": 2,
+  "endedAt": {
+    "$date": "2025-12-20T19:41:19.310Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946fbefd6c741c98b1aafa0"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766259695463_vd4hv5",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:41:35.465Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:41:49.709Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:41:43.896Z"
+  },
+  "duration": 5,
+  "endedAt": {
+    "$date": "2025-12-20T19:41:49.708Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946fc06d6c741c98b1ab170"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766259718573_6c9m7f",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:41:58.574Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:42:15.024Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T19:42:15.021Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946fc09d6c741c98b1ab174"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766259721950_996dwf",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:42:01.950Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:42:12.169Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:42:08.468Z"
+  },
+  "duration": 3,
+  "endedAt": {
+    "$date": "2025-12-20T19:42:12.168Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946fc20d6c741c98b1ab1f7"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766259744774_64j9yf",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:42:24.775Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:42:31.548Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:42:29.460Z"
+  },
+  "duration": 2,
+  "endedAt": {
+    "$date": "2025-12-20T19:42:31.547Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946fc2ed6c741c98b1ab23c"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766259758615_36vctd",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:42:38.615Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:42:57.044Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T19:42:57.041Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946fc49d6c741c98b1ab2c3"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766259785076_clzacv",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:43:05.077Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:43:09.251Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T19:43:09.249Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946fc4fd6c741c98b1ab2c9"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766259791630_wdptpk",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:43:11.631Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:43:19.240Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-20T19:43:19.239Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946fc5cd6c741c98b1ab34b"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766259804692_hvj8ho6",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:43:24.694Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:43:37.415Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:43:33.578Z"
+  },
+  "duration": 3,
+  "endedAt": {
+    "$date": "2025-12-20T19:43:37.412Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946fc83d6c741c98b1ab41c"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766259843473_d6i605",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:44:03.474Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:44:14.535Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:44:11.418Z"
+  },
+  "duration": 3,
+  "endedAt": {
+    "$date": "2025-12-20T19:44:14.534Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6946fe9ad6c741c98b1ab4a3"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766260378507_lzjei9",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-20T19:52:58.508Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T19:53:08.215Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-20T19:53:04.842Z"
+  },
+  "duration": 3,
+  "endedAt": {
+    "$date": "2025-12-20T19:53:08.214Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69481b9f42e50143d397f84b"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766333343472_m59x8",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T16:09:03.474Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T16:09:12.439Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-21T16:09:12.437Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69481d8442e50143d397f988"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766333828735_xx18q",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T16:17:08.736Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T16:17:13.853Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-21T16:17:13.851Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69481dc242e50143d397fa8b"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766333890494_yx4pv",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "rejected",
+  "createdAt": {
+    "$date": "2025-12-21T16:18:10.495Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T16:18:16.152Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69481e2c42e50143d397fc7e"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766333996816_cq4ax",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T16:19:56.817Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T16:20:01.197Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-21T16:20:01.196Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69481e3a42e50143d397fcae"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766334010267_m9cwm8",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T16:20:10.269Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T16:20:30.878Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T16:20:21.251Z"
+  },
+  "duration": 9,
+  "endedAt": {
+    "$date": "2025-12-21T16:20:30.876Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69481e5442e50143d397fd04"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766334036854_q22h8e",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T16:20:36.855Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T16:20:45.980Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T16:20:41.642Z"
+  },
+  "duration": 4,
+  "endedAt": {
+    "$date": "2025-12-21T16:20:45.978Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69481e6442e50143d397fd3f"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766334052324_f93fm",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T16:20:52.325Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T16:21:06.856Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T16:21:01.926Z"
+  },
+  "duration": 4,
+  "endedAt": {
+    "$date": "2025-12-21T16:21:06.855Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69481e7a42e50143d397ffb6"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766334074970_ibs2ol",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T16:21:14.971Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T16:21:30.712Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T16:21:24.277Z"
+  },
+  "duration": 6,
+  "endedAt": {
+    "$date": "2025-12-21T16:21:30.711Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69481e9142e50143d398001a"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766334097292_q6r359",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T16:21:37.292Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T16:21:39.900Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-21T16:21:39.898Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69481e9942e50143d398003a"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766334105175_ysv2vj",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T16:21:45.176Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T16:21:58.045Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T16:21:55.109Z"
+  },
+  "duration": 2,
+  "endedAt": {
+    "$date": "2025-12-21T16:21:58.043Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694820be42e50143d3981449"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766334654059_e3uzb",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T16:30:54.061Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T16:31:03.256Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T16:30:59.313Z"
+  },
+  "duration": 3,
+  "endedAt": {
+    "$date": "2025-12-21T16:31:03.254Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6948210142e50143d39815e7"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766334721781_fyxab",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T16:32:01.783Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T16:32:03.850Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-21T16:32:03.849Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6948212542e50143d39816ee"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766334757667_ot67gt",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "rejected",
+  "createdAt": {
+    "$date": "2025-12-21T16:32:37.668Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T16:32:45.074Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694821d742e50143d398194d"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766334935177_4z7bq",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T16:35:35.178Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T16:37:31.757Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T16:35:48.341Z"
+  },
+  "duration": 103,
+  "endedAt": {
+    "$date": "2025-12-21T16:37:31.755Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6948224e42e50143d39819b6"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766335054519_cwoeko",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "rejected",
+  "createdAt": {
+    "$date": "2025-12-21T16:37:34.520Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T16:37:39.986Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6948225742e50143d39819e5"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766335063887_nrl62n",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T16:37:43.888Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T16:37:48.306Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T16:37:48.275Z"
+  },
+  "duration": 0,
+  "endedAt": {
+    "$date": "2025-12-21T16:37:48.305Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6948227142e50143d3981a2a"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766335089641_kljn7",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "rejected",
+  "createdAt": {
+    "$date": "2025-12-21T16:38:09.642Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T16:38:15.680Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-21T16:38:15.422Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694822af42e50143d3981c09"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766335151382_4obbzu",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T16:39:11.383Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T16:39:18.997Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-21T16:39:18.996Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6948237c42e50143d398230a"
+  },
+  "callerId": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "participantIds": [
+    {
+      "$oid": "68e9d3fa7ae32fe700d1d3cc"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766335356399_xzoal6",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "6937180385b361bbd65bb6b8"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T16:42:36.400Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T16:43:01.513Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T16:42:40.852Z"
+  },
+  "duration": 20,
+  "endedAt": {
+    "$date": "2025-12-21T16:43:01.511Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694825dd42e50143d39823a1"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "68e9d3fa7ae32fe700d1d3cc"
+    }
+  ],
+  "channelId": "call_1766335965822_7x90em",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "6937180385b361bbd65bb6b8"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T16:52:45.822Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T16:52:58.229Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-21T16:52:58.227Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69484756cc4a86fbed057c9a"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766344534094_2xjts",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T19:15:34.097Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T19:15:59.497Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T19:15:46.525Z"
+  },
+  "duration": 12,
+  "endedAt": {
+    "$date": "2025-12-21T19:15:59.495Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694869b6cc4a86fbed0580cf"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766353334492_1bryt",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T21:42:14.493Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T21:42:29.691Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T21:42:25.831Z"
+  },
+  "duration": 3,
+  "endedAt": {
+    "$date": "2025-12-21T21:42:29.689Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694869c9cc4a86fbed05815b"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766353353438_ymwvq8",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "rejected",
+  "createdAt": {
+    "$date": "2025-12-21T21:42:33.439Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T21:42:37.891Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694869d1cc4a86fbed05818d"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766353361429_myj5qn",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T21:42:41.430Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T21:42:43.426Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-21T21:42:43.424Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69486a78cc4a86fbed058431"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766353528303_8601tc",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69486a76cc4a86fbed05841a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T21:45:28.304Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T21:45:54.600Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T21:45:37.116Z"
+  },
+  "duration": 17,
+  "endedAt": {
+    "$date": "2025-12-21T21:45:54.596Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69486ac5cc4a86fbed0585ec"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766353605992_8w5ee",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69486a76cc4a86fbed05841a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T21:46:45.993Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T21:47:01.195Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-21T21:47:01.193Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69486ad8cc4a86fbed058770"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766353624032_m2ew1e",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69486a76cc4a86fbed05841a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T21:47:04.033Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T21:47:14.977Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-21T21:47:14.976Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69486aeccc4a86fbed0588f0"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766353644728_glvtjg",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "rejected",
+  "createdAt": {
+    "$date": "2025-12-21T21:47:24.730Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T21:47:26.875Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69486af9cc4a86fbed058922"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766353657744_9k7d6h",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T21:47:37.745Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T21:47:47.820Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T21:47:44.777Z"
+  },
+  "duration": 3,
+  "endedAt": {
+    "$date": "2025-12-21T21:47:47.817Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69486b06cc4a86fbed0589b3"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766353670942_unlnn",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "rejected",
+  "createdAt": {
+    "$date": "2025-12-21T21:47:50.943Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T21:47:55.640Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69486b0fcc4a86fbed058a12"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766353679326_jn59c9",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69486a76cc4a86fbed05841a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T21:47:59.327Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T21:48:09.706Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-21T21:48:09.704Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69486bb7cc4a86fbed058adb"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766353847567_7f9d5",
+  "callType": "audio",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "rejected",
+  "createdAt": {
+    "$date": "2025-12-21T21:50:47.568Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T21:50:54.653Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69486bd4cc4a86fbed058b49"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766353876954_qbdxdy",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69486a76cc4a86fbed05841a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T21:51:16.955Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T21:51:24.853Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-21T21:51:24.851Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69486be5cc4a86fbed058b7d"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766353893893_puxc73",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69486a76cc4a86fbed05841a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T21:51:33.894Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T21:51:52.503Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T21:51:48.450Z"
+  },
+  "duration": 4,
+  "endedAt": {
+    "$date": "2025-12-21T21:51:52.501Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69486c02cc4a86fbed058d33"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766353922723_njoul9",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69486a76cc4a86fbed05841a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T21:52:02.724Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T21:52:12.307Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T21:52:09.034Z"
+  },
+  "duration": 3,
+  "endedAt": {
+    "$date": "2025-12-21T21:52:12.305Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69486c0fcc4a86fbed058d98"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766353935859_6tv23",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69486a76cc4a86fbed05841a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T21:52:15.860Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T21:52:19.494Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-21T21:52:19.492Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69486c29cc4a86fbed058dcc"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766353961275_tsrfpf",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69486a76cc4a86fbed05841a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T21:52:41.276Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T21:52:47.207Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-21T21:52:47.205Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69486c3acc4a86fbed058e00"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766353978454_3rwttc",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69486a76cc4a86fbed05841a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T21:52:58.454Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T21:53:03.350Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-21T21:53:03.348Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69486ca5cc4a86fbed058ff7"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766354085154_3wubjs",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69486a76cc4a86fbed05841a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T21:54:45.155Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T21:54:50.398Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T21:54:47.605Z"
+  },
+  "duration": 2,
+  "endedAt": {
+    "$date": "2025-12-21T21:54:50.397Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69486cbdcc4a86fbed05909c"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766354109570_1lyye5",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T21:55:09.571Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T21:55:21.158Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T21:55:17.975Z"
+  },
+  "duration": 3,
+  "endedAt": {
+    "$date": "2025-12-21T21:55:21.156Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69486cf4cc4a86fbed0591ea"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766354164712_blnl1b",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69486a76cc4a86fbed05841a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T21:56:04.714Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T21:56:08.347Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T21:56:08.111Z"
+  },
+  "duration": 0,
+  "endedAt": {
+    "$date": "2025-12-21T21:56:08.345Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69486cfdcc4a86fbed059238"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766354173683_4hn6vj",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69486a76cc4a86fbed05841a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T21:56:13.683Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T21:56:24.372Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T21:56:20.216Z"
+  },
+  "duration": 4,
+  "endedAt": {
+    "$date": "2025-12-21T21:56:24.370Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69486d14cc4a86fbed0592ea"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766354196672_j7y6yo",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T21:56:36.673Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T21:56:42.666Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T21:56:40.968Z"
+  },
+  "duration": 1,
+  "endedAt": {
+    "$date": "2025-12-21T21:56:42.664Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69486d23cc4a86fbed059335"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766354211601_84qiik",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T21:56:51.601Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T21:56:57.753Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T21:56:53.850Z"
+  },
+  "duration": 3,
+  "endedAt": {
+    "$date": "2025-12-21T21:56:57.751Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69486d2ecc4a86fbed05937d"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766354222896_3rpvkk",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T21:57:02.897Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T21:57:09.380Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T21:57:07.516Z"
+  },
+  "duration": 1,
+  "endedAt": {
+    "$date": "2025-12-21T21:57:09.379Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69486d5dcc4a86fbed0594b9"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766354269541_fasp9g",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T21:57:49.542Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T21:57:57.949Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T21:57:54.523Z"
+  },
+  "duration": 3,
+  "endedAt": {
+    "$date": "2025-12-21T21:57:57.947Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69486d70cc4a86fbed0595ed"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766354288709_kkv7ub",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T21:58:08.710Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T21:58:14.686Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T21:58:12.281Z"
+  },
+  "duration": 2,
+  "endedAt": {
+    "$date": "2025-12-21T21:58:14.684Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69486d7fcc4a86fbed05967a"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766354303423_6wargr",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T21:58:23.424Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T21:58:30.549Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T21:58:27.998Z"
+  },
+  "duration": 2,
+  "endedAt": {
+    "$date": "2025-12-21T21:58:30.547Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69486d91cc4a86fbed0596c2"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766354321159_rfbbcp",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T21:58:41.160Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T21:58:48.542Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T21:58:45.300Z"
+  },
+  "duration": 3,
+  "endedAt": {
+    "$date": "2025-12-21T21:58:48.540Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69486da9cc4a86fbed059755"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766354345371_yzz8h",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T21:59:05.372Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T21:59:13.548Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T21:59:09.834Z"
+  },
+  "duration": 3,
+  "endedAt": {
+    "$date": "2025-12-21T21:59:13.546Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69486dbecc4a86fbed0597e2"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766354366631_wgma8s",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T21:59:26.632Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T21:59:36.417Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T21:59:31.046Z"
+  },
+  "duration": 5,
+  "endedAt": {
+    "$date": "2025-12-21T21:59:36.415Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69486dcdcc4a86fbed05986f"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766354381195_l0b5x",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T21:59:41.197Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T21:59:46.687Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T21:59:45.061Z"
+  },
+  "duration": 1,
+  "endedAt": {
+    "$date": "2025-12-21T21:59:46.685Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69486dd9cc4a86fbed0598b7"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766354393892_1k5f1d",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T21:59:53.893Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T22:00:08.200Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T22:00:04.210Z"
+  },
+  "duration": 3,
+  "endedAt": {
+    "$date": "2025-12-21T22:00:08.198Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69486e27cc4a86fbed059903"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766354471668_uw288b",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T22:01:11.670Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T22:01:22.434Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T22:01:18.862Z"
+  },
+  "duration": 3,
+  "endedAt": {
+    "$date": "2025-12-21T22:01:22.433Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69486e80cc4a86fbed05999b"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766354560449_rlpc9j",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T22:02:40.450Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T22:02:42.869Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-21T22:02:42.868Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69486e96cc4a86fbed059aa3"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766354582235_09r4tt",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T22:03:02.236Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T22:03:08.167Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T22:03:06.978Z"
+  },
+  "duration": 1,
+  "endedAt": {
+    "$date": "2025-12-21T22:03:08.166Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69486ea6cc4a86fbed059b21"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766354598142_4v9875",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T22:03:18.143Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T22:03:21.438Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-21T22:03:21.437Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69486ebdcc4a86fbed059c80"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766354621321_raf1b",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T22:03:41.322Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T22:03:54.220Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T22:03:50.430Z"
+  },
+  "duration": 3,
+  "endedAt": {
+    "$date": "2025-12-21T22:03:54.219Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69486edbcc4a86fbed059dc6"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766354651574_w3b9sk",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-21T22:04:11.575Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T22:04:16.532Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-21T22:04:14.197Z"
+  },
+  "duration": 2,
+  "endedAt": {
+    "$date": "2025-12-21T22:04:16.529Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6948b23c3bf6328c398604f0"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766371900480_5hma7l",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-22T02:51:40.497Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T02:51:44.076Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-22T02:51:44.070Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6948beeb3bf6328c39860e6a"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766375147697_lhd79",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-22T03:45:47.700Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T03:46:10.385Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-22T03:46:00.893Z"
+  },
+  "duration": 9,
+  "endedAt": {
+    "$date": "2025-12-22T03:46:10.384Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6948bf073bf6328c39860fdb"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766375175251_n8e1sh",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-22T03:46:15.251Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T03:46:24.280Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-22T03:46:19.768Z"
+  },
+  "duration": 4,
+  "endedAt": {
+    "$date": "2025-12-22T03:46:24.278Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6948bf133bf6328c3986104f"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766375187060_68jup9",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-22T03:46:27.060Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T03:46:38.331Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-22T03:46:32.183Z"
+  },
+  "duration": 6,
+  "endedAt": {
+    "$date": "2025-12-22T03:46:38.330Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6948bf503bf6328c3986114f"
+  },
+  "callerId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "participantIds": [
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766375248627_iol8cg",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69486a76cc4a86fbed05841a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-22T03:47:28.628Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T03:47:30.412Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-22T03:47:30.409Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6948bf6d3bf6328c398611f3"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766375277697_cwb7f",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69486a76cc4a86fbed05841a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-22T03:47:57.698Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T03:48:08.910Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-22T03:48:03.108Z"
+  },
+  "duration": 5,
+  "endedAt": {
+    "$date": "2025-12-22T03:48:08.907Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6948c1bf3bf6328c39861852"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766375871843_c0rbjn",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69486a76cc4a86fbed05841a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-22T03:57:51.846Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T03:59:37.284Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-22T03:59:37.281Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6948c28c3bf6328c39861890"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766376076981_jjy70j",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69486a76cc4a86fbed05841a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-22T04:01:16.982Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T04:01:25.036Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-22T04:01:25.029Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6948c2903bf6328c398618ab"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766376080543_00i82l",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69486a76cc4a86fbed05841a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-22T04:01:20.544Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T04:01:25.038Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-22T04:01:24.895Z"
+  },
+  "duration": 0,
+  "endedAt": {
+    "$date": "2025-12-22T04:01:25.037Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6948c29b3bf6328c39861938"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766376091678_fb4s3x",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69486a76cc4a86fbed05841a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-22T04:01:31.680Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T04:01:53.982Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-22T04:01:35.839Z"
+  },
+  "duration": 18,
+  "endedAt": {
+    "$date": "2025-12-22T04:01:53.981Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694903d07bba92403b2db87a"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766392784577_oea2pg",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69486a76cc4a86fbed05841a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-22T08:39:44.583Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T08:40:14.819Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-22T08:40:14.816Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694903f87bba92403b2db933"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766392824157_g1md3",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-22T08:40:24.158Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T08:40:45.932Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-22T08:40:38.018Z"
+  },
+  "duration": 7,
+  "endedAt": {
+    "$date": "2025-12-22T08:40:45.930Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694904147bba92403b2dba54"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766392852951_jx6hgj",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-22T08:40:52.953Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T08:41:03.100Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-22T08:40:58.836Z"
+  },
+  "duration": 4,
+  "endedAt": {
+    "$date": "2025-12-22T08:41:03.098Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694904297bba92403b2dba8a"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766392873915_ghi3bp",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-22T08:41:13.916Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T08:41:19.022Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-22T08:41:19.020Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6949043e7bba92403b2dbabe"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766392894382_rtq9oj",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-22T08:41:34.383Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T08:41:38.835Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-22T08:41:38.833Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6949044a7bba92403b2dbb6a"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766392906453_opzls",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-22T08:41:46.454Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T08:41:48.530Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-22T08:41:48.528Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6949044e7bba92403b2dbb9e"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766392910723_e3qkn",
+  "callType": "audio",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-22T08:41:50.725Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T08:41:52.952Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-22T08:41:52.950Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694904537bba92403b2dbbd2"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766392915976_2rm4t5",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-22T08:41:55.977Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T08:42:06.020Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-22T08:42:00.165Z"
+  },
+  "duration": 5,
+  "endedAt": {
+    "$date": "2025-12-22T08:42:06.018Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694904647bba92403b2dbc08"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766392932065_322cc",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-22T08:42:12.066Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T08:42:27.450Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-22T08:42:27.448Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694904b77bba92403b2dbc3c"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766393015690_2ntjqr",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-22T08:43:35.692Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T08:43:39.309Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-22T08:43:39.306Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694904c57bba92403b2dbc70"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "channelId": "call_1766393029790_b440h",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-22T08:43:49.792Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T08:44:01.241Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-22T08:43:57.250Z"
+  },
+  "duration": 3,
+  "endedAt": {
+    "$date": "2025-12-22T08:44:01.237Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694904de7bba92403b2dbdb9"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766393054205_moo0sg",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-22T08:44:14.207Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T08:44:18.263Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-22T08:44:18.259Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694904e77bba92403b2dbe00"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766393063484_2qb5b4",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-22T08:44:23.486Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T08:44:27.194Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-22T08:44:27.191Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694904ef7bba92403b2dbe47"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766393071447_hrg0u",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-22T08:44:31.448Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T08:44:36.913Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-22T08:44:36.911Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6949050c7bba92403b2dbe7b"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766393100797_7ob1fi",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-22T08:45:00.798Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T08:45:04.067Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-22T08:45:04.065Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694905167bba92403b2dbeaf"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766393110746_c533gl",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-22T08:45:10.748Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T08:45:22.697Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-22T08:45:18.249Z"
+  },
+  "duration": 4,
+  "endedAt": {
+    "$date": "2025-12-22T08:45:22.694Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694905297bba92403b2dbf2e"
+  },
+  "callerId": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766393129509_qteqqr",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-22T08:45:29.511Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T08:45:33.809Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-22T08:45:33.805Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694905967bba92403b2dc097"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766393238334_qpquec",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69486a76cc4a86fbed05841a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-22T08:47:18.337Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T08:47:34.607Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-22T08:47:28.387Z"
+  },
+  "duration": 6,
+  "endedAt": {
+    "$date": "2025-12-22T08:47:34.603Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694905d27bba92403b2dc260"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766393298607_6z2zxl",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69486a76cc4a86fbed05841a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-22T08:48:18.609Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T08:48:32.026Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-22T08:48:28.238Z"
+  },
+  "duration": 3,
+  "endedAt": {
+    "$date": "2025-12-22T08:48:32.024Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694905e97bba92403b2dc3c3"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766393321561_oyi0fi",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69486a76cc4a86fbed05841a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-22T08:48:41.563Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T08:48:45.794Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-22T08:48:45.793Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694906007bba92403b2dc4f6"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766393344859_njoh7g",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69486a76cc4a86fbed05841a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-22T08:49:04.861Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T08:49:12.387Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-22T08:49:12.383Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694908037bba92403b2dc9a2"
+  },
+  "callerId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "participantIds": [
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766393859223_76k8bc",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69371ce885b361bbd65bdcc2"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-22T08:57:39.225Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T15:19:26.563Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-22T15:19:26.329Z"
+  },
+  "duration": 0,
+  "endedAt": {
+    "$date": "2025-12-22T15:19:26.465Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694abb7ab6a87b42e2224433"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766505338828_r9uege",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69371ce885b361bbd65bdcc2"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-23T15:55:38.835Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-23T15:56:02.744Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-23T15:55:46.926Z"
+  },
+  "duration": 15,
+  "endedAt": {
+    "$date": "2025-12-23T15:56:02.742Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694c34ce966dcb0c5c20095e"
+  },
+  "callerId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "participantIds": [
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766601934861_osveps",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69371ce885b361bbd65bdcc2"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-24T18:45:34.866Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-24T18:46:05.132Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-24T18:46:05.127Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694d708ec1cad1f56404352c"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766682766773_ouzhmn",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69371ce885b361bbd65bdcc2"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-25T17:12:46.785Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-25T17:13:15.642Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-25T17:12:58.849Z"
+  },
+  "duration": 16,
+  "endedAt": {
+    "$date": "2025-12-25T17:13:15.638Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694d709bc1cad1f5640435a2"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766682779332_sf2qf",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69371ce885b361bbd65bdcc2"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-25T17:12:59.335Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-25T17:13:15.651Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-25T17:13:05.341Z"
+  },
+  "duration": 10,
+  "endedAt": {
+    "$date": "2025-12-25T17:13:15.646Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694d70a3c1cad1f5640435a8"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766682787569_xeh6ce",
+  "callType": "audio",
+  "conversationId": {
+    "$oid": "69371ce885b361bbd65bdcc2"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-25T17:13:07.573Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-25T17:13:15.659Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-25T17:13:11.979Z"
+  },
+  "duration": 3,
+  "endedAt": {
+    "$date": "2025-12-25T17:13:15.656Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694d70bfc1cad1f5640436fc"
+  },
+  "callerId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "participantIds": [
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766682815313_iw4koe",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69371ce885b361bbd65bdcc2"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-25T17:13:35.316Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-25T17:13:57.206Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-25T17:13:40.318Z"
+  },
+  "duration": 16,
+  "endedAt": {
+    "$date": "2025-12-25T17:13:57.200Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694d70dbc1cad1f56404375f"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766682843615_568aak",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69371ce885b361bbd65bdcc2"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-25T17:14:03.619Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-25T17:14:15.507Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-25T17:14:07.875Z"
+  },
+  "duration": 7,
+  "endedAt": {
+    "$date": "2025-12-25T17:14:15.503Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694d7114c1cad1f5640438aa"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766682900406_f0mwyf",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69371ce885b361bbd65bdcc2"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-25T17:15:00.409Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-25T17:15:25.386Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-25T17:15:07.515Z"
+  },
+  "duration": 17,
+  "endedAt": {
+    "$date": "2025-12-25T17:15:25.378Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694ea4b929e8584a376e8615"
+  },
+  "callerId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "participantIds": [
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766761657377_fhphhc",
+  "callType": "audio",
+  "conversationId": {
+    "$oid": "69371ce885b361bbd65bdcc2"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-26T15:07:37.381Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T15:08:31.505Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-26T15:08:15.778Z"
+  },
+  "duration": 15,
+  "endedAt": {
+    "$date": "2025-12-26T15:08:31.501Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694ebde729e8584a376f171d"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766768103294_7zkupi",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69371ce885b361bbd65bdcc2"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-26T16:55:03.306Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T16:55:29.742Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-26T16:55:29.737Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694ebe3229e8584a376f191b"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766768178067_ulv8oh",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69371ce885b361bbd65bdcc2"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-26T16:56:18.070Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T16:56:58.170Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-26T16:56:58.165Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694ebe8b29e8584a376f19a6"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766768267069_fyonj",
+  "callType": "audio",
+  "conversationId": {
+    "$oid": "69371ce885b361bbd65bdcc2"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-26T16:57:47.071Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T16:58:14.171Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-26T16:58:14.167Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694ebf5529e8584a376f1d66"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766768469696_aqvqhf",
+  "callType": "audio",
+  "conversationId": {
+    "$oid": "69371ce885b361bbd65bdcc2"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-26T17:01:09.699Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T17:01:48.564Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-26T17:01:48.560Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694ebf8029e8584a376f1d9a"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766768512019_xfa7gp",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69371ce885b361bbd65bdcc2"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-26T17:01:52.020Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T17:02:37.241Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-26T17:02:37.238Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694ec0f329e8584a376f232d"
+  },
+  "callerId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "participantIds": [
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766768883577_g4wvr2",
+  "callType": "audio",
+  "conversationId": {
+    "$oid": "69371ce885b361bbd65bdcc2"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-26T17:08:03.578Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T17:08:30.367Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-26T17:08:30.366Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694ec11929e8584a376f242b"
+  },
+  "callerId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "participantIds": [
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766768921369_7qek1p",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69371ce885b361bbd65bdcc2"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-26T17:08:41.370Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T17:09:16.789Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-26T17:09:16.788Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694ec1a229e8584a376f26ad"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766769058269_o7hzxk",
+  "callType": "audio",
+  "conversationId": {
+    "$oid": "69371ce885b361bbd65bdcc2"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-26T17:10:58.271Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T17:11:18.492Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-26T17:11:18.489Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "694ec3f729e8584a376f348a"
+  },
+  "callerId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "participantIds": [
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766769655012_lbztab",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69371ce885b361bbd65bdcc2"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-26T17:20:55.014Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T17:21:34.168Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-26T17:21:34.167Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69500f9aac8e7c88e0f86cc4"
+  },
+  "callerId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "participantIds": [
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766854554188_l3zija",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69486a76cc4a86fbed05841a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-27T16:55:54.200Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T16:56:34.746Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-27T16:56:13.668Z"
+  },
+  "duration": 21,
+  "endedAt": {
+    "$date": "2025-12-27T16:56:34.739Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69502f51401e4a54089c11a5"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766862673172_ht0bwg",
+  "callType": "audio",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-27T19:11:13.174Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T19:11:41.509Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-27T19:11:23.378Z"
+  },
+  "duration": 18,
+  "endedAt": {
+    "$date": "2025-12-27T19:11:41.506Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69502f71401e4a54089c12cd"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766862705562_4mbfdmh",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-27T19:11:45.564Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T19:12:01.452Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-27T19:11:51.774Z"
+  },
+  "duration": 9,
+  "endedAt": {
+    "$date": "2025-12-27T19:12:01.451Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69502f89401e4a54089c1302"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766862729162_vg9hxj",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-27T19:12:09.163Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T19:12:25.757Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-27T19:12:17.076Z"
+  },
+  "duration": 8,
+  "endedAt": {
+    "$date": "2025-12-27T19:12:25.756Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69502fa6401e4a54089c1337"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766862758233_qq9pmj",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-27T19:12:38.234Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T19:12:42.240Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-27T19:12:42.238Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69502fb5401e4a54089c13d6"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766862773930_gqj4t",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "rejected",
+  "createdAt": {
+    "$date": "2025-12-27T19:12:53.931Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T19:12:57.975Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69502fbf401e4a54089c1432"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766862783629_vr50fs",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "rejected",
+  "createdAt": {
+    "$date": "2025-12-27T19:13:03.629Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T19:13:09.082Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69502fda401e4a54089c1476"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766862810464_8hprb",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "rejected",
+  "createdAt": {
+    "$date": "2025-12-27T19:13:30.465Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T19:13:35.036Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69502fe1401e4a54089c14bb"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766862817709_t11ddq",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-27T19:13:37.710Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T19:14:22.927Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-27T19:14:22.925Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69503100482d3ecc94007950"
+  },
+  "callerId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "participantIds": [
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766863104580_1zcqh9",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "6950307f482d3ecc94007668"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-27T19:18:24.581Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T19:18:27.823Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-27T19:18:27.822Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69504e91115c911efb7b1d03"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766870673062_mbie5",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-27T21:24:33.071Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T21:25:05.052Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-27T21:25:05.049Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69504eb7115c911efb7b1d93"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766870711922_peetdp",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69486a76cc4a86fbed05841a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-27T21:25:11.924Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T21:25:13.618Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-27T21:25:13.616Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69504ebb115c911efb7b1e39"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766870715997_3o7cip",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69486a76cc4a86fbed05841a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-27T21:25:15.998Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T21:25:35.212Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-27T21:25:35.210Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69504ece115c911efb7b1e8d"
+  },
+  "callerId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "participantIds": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766870734458_z8ez4t",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-27T21:25:34.459Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T21:26:09.615Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-27T21:25:39.894Z"
+  },
+  "duration": 29,
+  "endedAt": {
+    "$date": "2025-12-27T21:26:09.613Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69504f6cd08bf76511226833"
+  },
+  "callerId": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "participantIds": [
+    {
+      "$oid": "68e9d3fa7ae32fe700d1d3cc"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766870892444_azezgr",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "6937180385b361bbd65bb6b8"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-27T21:28:12.448Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T21:28:37.206Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-27T21:28:37.204Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "695050e0c979a3a9d7c0cd4e"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "channelId": "call_1766871264324_dtmyya",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69486a76cc4a86fbed05841a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-27T21:34:24.326Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T21:34:41.007Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-27T21:34:35.807Z"
+  },
+  "duration": 5,
+  "endedAt": {
+    "$date": "2025-12-27T21:34:41.005Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69505f6e12a3e4c73285fd41"
+  },
+  "callerId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "participantIds": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1766874990058_6zwzvw",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-27T22:36:30.060Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:37:15.255Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-27T22:37:13.789Z"
+  },
+  "duration": 1,
+  "endedAt": {
+    "$date": "2025-12-27T22:37:15.251Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69505f8c12a3e4c73285fe13"
+  },
+  "callerId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "participantIds": [
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766875020104_54kxlg",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69486a76cc4a86fbed05841a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-27T22:37:00.105Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:37:43.080Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-27T22:37:43.079Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69505fc112a3e4c73285ff7c"
+  },
+  "callerId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "participantIds": [
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1766875073127_un5duc",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69486a76cc4a86fbed05841a"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-27T22:37:53.128Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:38:23.296Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-27T22:37:56.903Z"
+  },
+  "duration": 26,
+  "endedAt": {
+    "$date": "2025-12-27T22:38:23.295Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69528990a9f7d97aeaa9f1f5"
+  },
+  "callerId": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "participantIds": [
+    {
+      "$oid": "68e9d3fa7ae32fe700d1d3cc"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1767016848512_i2ewrj",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69371a2985b361bbd65bcbb3"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-29T14:00:48.517Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T14:01:12.037Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-29T14:01:12.034Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "695289b9a9f7d97aeaa9f28b"
+  },
+  "callerId": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "participantIds": [
+    {
+      "$oid": "68e9d3fa7ae32fe700d1d3cc"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "channelId": "call_1767016889097_p1a56z",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "6937180385b361bbd65bb6b8"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-29T14:01:29.098Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T14:02:04.857Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-29T14:01:40.909Z"
+  },
+  "duration": 23,
+  "endedAt": {
+    "$date": "2025-12-29T14:02:04.855Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69529e0ea9f7d97aeaaa2465"
+  },
+  "callerId": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "participantIds": [
+    {
+      "$oid": "68e9d3fa7ae32fe700d1d3cc"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1767022094136_k27vfq",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69371a2985b361bbd65bcbb3"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-29T15:28:14.140Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T15:28:32.040Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-29T15:28:25.248Z"
+  },
+  "duration": 6,
+  "endedAt": {
+    "$date": "2025-12-29T15:28:32.038Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69529fc6a9f7d97aeaaa275b"
+  },
+  "callerId": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "participantIds": [
+    {
+      "$oid": "68e9d3fa7ae32fe700d1d3cc"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1767022534381_hdgs4i",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69371a2985b361bbd65bcbb3"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-29T15:35:34.382Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T15:35:51.925Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-29T15:35:51.922Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69529fdaa9f7d97aeaaa278f"
+  },
+  "callerId": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "participantIds": [
+    {
+      "$oid": "68e9d3fa7ae32fe700d1d3cc"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1767022554040_wpp01o",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69371a2985b361bbd65bcbb3"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-29T15:35:54.041Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T15:36:47.466Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-29T15:36:02.545Z"
+  },
+  "duration": 44,
+  "endedAt": {
+    "$date": "2025-12-29T15:36:47.464Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6952a022a9f7d97aeaaa283b"
+  },
+  "callerId": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "participantIds": [
+    {
+      "$oid": "68e9d3fa7ae32fe700d1d3cc"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1767022626719_bd1wqm",
+  "callType": "audio",
+  "conversationId": {
+    "$oid": "69371a2985b361bbd65bcbb3"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-29T15:37:06.721Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T15:37:17.349Z"
+  },
+  "__v": 0,
+  "startedAt": {
+    "$date": "2025-12-29T15:37:13.519Z"
+  },
+  "duration": 3,
+  "endedAt": {
+    "$date": "2025-12-29T15:37:17.346Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6952a03ba9f7d97aeaaa2871"
+  },
+  "callerId": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "participantIds": [
+    {
+      "$oid": "68e9d3fa7ae32fe700d1d3cc"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "channelId": "call_1767022651263_yxrim",
+  "callType": "video",
+  "conversationId": {
+    "$oid": "69371a2985b361bbd65bcbb3"
+  },
+  "status": "ended",
+  "createdAt": {
+    "$date": "2025-12-29T15:37:31.264Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T15:37:35.223Z"
+  },
+  "__v": 0,
+  "endedAt": {
+    "$date": "2025-12-29T15:37:35.221Z"
+  }
+}]

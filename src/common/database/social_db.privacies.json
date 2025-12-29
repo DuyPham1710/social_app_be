@@ -1,0 +1,270 @@
+[{
+  "_id": {
+    "$oid": "691c8e727bf4590336b82c53"
+  },
+  "userId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "defaultPrivacy": "public",
+  "friends_except": [],
+  "friends_detail": [],
+  "createdAt": {
+    "$date": "2025-11-18T15:19:14.675Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-18T15:19:14.675Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "693702f685b361bbd65ba289"
+  },
+  "userId": {
+    "$oid": "692eaf8aea14ed134931f69d"
+  },
+  "defaultPrivacy": "friends",
+  "friends_except": [],
+  "friends_detail": [],
+  "createdAt": {
+    "$date": "2025-12-08T16:55:18.060Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-08T16:55:18.060Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6943c06a2560fb60982c787c"
+  },
+  "userId": {
+    "$oid": "6943c06a2560fb60982c7879"
+  },
+  "defaultPrivacy": "public",
+  "friends_except": [],
+  "friends_detail": [],
+  "createdAt": {
+    "$date": "2025-12-18T08:50:50.880Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-18T08:50:50.880Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6947b9bc5c8c5e292cf80c11"
+  },
+  "userId": {
+    "$oid": "6947b9bc5c8c5e292cf80c0e"
+  },
+  "defaultPrivacy": "public",
+  "friends_except": [],
+  "friends_detail": [],
+  "createdAt": {
+    "$date": "2025-12-21T09:11:24.887Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T09:11:24.887Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6948172442e50143d397f594"
+  },
+  "userId": {
+    "$oid": "6948172442e50143d397f591"
+  },
+  "defaultPrivacy": "public",
+  "friends_except": [],
+  "friends_detail": [],
+  "createdAt": {
+    "$date": "2025-12-21T15:49:56.781Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T15:49:56.781Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695013e0ac8e7c88e0f87068"
+  },
+  "userId": {
+    "$oid": "695013e0ac8e7c88e0f87065"
+  },
+  "defaultPrivacy": "public",
+  "friends_except": [],
+  "friends_detail": [],
+  "createdAt": {
+    "$date": "2025-12-27T17:14:08.958Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T17:14:08.958Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695014e9ac8e7c88e0f870df"
+  },
+  "userId": {
+    "$oid": "695014e9ac8e7c88e0f870dc"
+  },
+  "defaultPrivacy": "public",
+  "friends_except": [],
+  "friends_detail": [],
+  "createdAt": {
+    "$date": "2025-12-27T17:18:33.268Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T17:18:33.268Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695014faac8e7c88e0f870eb"
+  },
+  "userId": {
+    "$oid": "695014faac8e7c88e0f870e8"
+  },
+  "defaultPrivacy": "public",
+  "friends_except": [],
+  "friends_detail": [],
+  "createdAt": {
+    "$date": "2025-12-27T17:18:50.237Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T17:18:50.237Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695014fcac8e7c88e0f870f0"
+  },
+  "userId": {
+    "$oid": "695014fcac8e7c88e0f870ed"
+  },
+  "defaultPrivacy": "public",
+  "friends_except": [],
+  "friends_detail": [],
+  "createdAt": {
+    "$date": "2025-12-27T17:18:52.214Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T17:18:52.214Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6950228cac8e7c88e0f8950c"
+  },
+  "userId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "defaultPrivacy": "private",
+  "friends_except": [],
+  "friends_detail": [],
+  "createdAt": {
+    "$date": "2025-12-27T18:16:44.741Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T18:16:56.793Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695053d56539418f3536c847"
+  },
+  "userId": {
+    "$oid": "695053d56539418f3536c844"
+  },
+  "defaultPrivacy": "public",
+  "friends_except": [],
+  "friends_detail": [],
+  "createdAt": {
+    "$date": "2025-12-27T21:47:01.434Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T21:47:01.434Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69528c23a9f7d97aeaaa026e"
+  },
+  "userId": {
+    "$oid": "69528c23a9f7d97aeaaa026b"
+  },
+  "defaultPrivacy": "public",
+  "friends_except": [],
+  "friends_detail": [],
+  "createdAt": {
+    "$date": "2025-12-29T14:11:47.068Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T14:11:47.068Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69528dc1a9f7d97aeaaa02d9"
+  },
+  "userId": {
+    "$oid": "69528dc1a9f7d97aeaaa02d6"
+  },
+  "defaultPrivacy": "public",
+  "friends_except": [],
+  "friends_detail": [],
+  "createdAt": {
+    "$date": "2025-12-29T14:18:41.355Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T14:18:41.355Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69529381a9f7d97aeaaa0304"
+  },
+  "userId": {
+    "$oid": "69529381a9f7d97aeaaa0301"
+  },
+  "defaultPrivacy": "public",
+  "friends_except": [],
+  "friends_detail": [],
+  "createdAt": {
+    "$date": "2025-12-29T14:43:13.991Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T14:43:13.991Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69529928a9f7d97aeaaa1812"
+  },
+  "userId": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "defaultPrivacy": "private",
+  "friends_except": [],
+  "friends_detail": [],
+  "createdAt": {
+    "$date": "2025-12-29T15:07:20.836Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T15:07:20.836Z"
+  },
+  "__v": 0
+}]

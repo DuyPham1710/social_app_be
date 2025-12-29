@@ -1,0 +1,190 @@
+[{
+  "_id": {
+    "$oid": "695288f4a9f7d97aeaa9edba"
+  },
+  "privacy_type": "friends",
+  "friends_except": [],
+  "friends_detail": [],
+  "userId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "mediaUrl": "https://res.cloudinary.com/dfqf9wjji/image/upload/v1767016687/uploads/ijugu4yx1gnk1i5e9oni.jpg",
+  "mediaType": "image",
+  "music": {
+    "id": 1499903112,
+    "title": "Độ Tộc 2",
+    "preview": "https://res.cloudinary.com/dfqf9wjji/video/upload/v1767016693/story/695288f4a9f7d97aeaa9edba/file_uj5f1b.mp3",
+    "artist": {
+      "id": 146111702,
+      "name": "Do Mixi",
+      "picture": "https://api.deezer.com/artist/146111702/image"
+    },
+    "album": {
+      "id": 260278552,
+      "title": "Độ Tộc 2",
+      "cover": "https://api.deezer.com/album/260278552/image"
+    }
+  },
+  "expireAt": {
+    "$date": "2025-12-30T13:38:52.234Z"
+  },
+  "createdAt": {
+    "$date": "2025-12-29T13:58:12.346Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T13:58:14.276Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69528959a9f7d97aeaa9eefa"
+  },
+  "privacy_type": "friends",
+  "friends_except": [],
+  "friends_detail": [],
+  "userId": {
+    "$oid": "692eaf8aea14ed134931f69d"
+  },
+  "mediaUrl": "https://res.cloudinary.com/dfqf9wjji/image/upload/v1767016792/uploads/prft9iufzpfikp9zzqsg.jpg",
+  "mediaType": "image",
+  "music": {
+    "id": 3698144822,
+    "title": "CHỜ ANH VỀ",
+    "preview": "https://res.cloudinary.com/dfqf9wjji/video/upload/v1767016794/story/69528959a9f7d97aeaa9eefa/file_xeu1ll.mp3",
+    "artist": {
+      "id": 268609862,
+      "name": "ANH TRAI \"SAY HI\"",
+      "picture": "https://api.deezer.com/artist/268609862/image"
+    },
+    "album": {
+      "id": 870984152,
+      "title": "ANH TRAI \"SAY HI\" 2025, TẬP 13",
+      "cover": "https://api.deezer.com/album/870984152/image"
+    }
+  },
+  "expireAt": {
+    "$date": "2025-12-30T13:38:52.234Z"
+  },
+  "createdAt": {
+    "$date": "2025-12-29T13:59:53.163Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T13:59:55.121Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6952896ea9f7d97aeaa9ef4f"
+  },
+  "privacy_type": "public",
+  "friends_except": [],
+  "friends_detail": [],
+  "userId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "mediaUrl": "https://res.cloudinary.com/dfqf9wjji/image/upload/v1767016813/uploads/i6qbhvopijgdkoxhlqct.jpg",
+  "mediaType": "image",
+  "music": {
+    "id": 3718021332,
+    "title": "Chất Gây Hại",
+    "preview": "https://res.cloudinary.com/dfqf9wjji/video/upload/v1767016815/story/6952896ea9f7d97aeaa9ef4f/file_f3hgvr.mp3",
+    "artist": {
+      "id": 76312232,
+      "name": "Quang Hùng MasterD",
+      "picture": "https://api.deezer.com/artist/76312232/image"
+    },
+    "album": {
+      "id": 877913512,
+      "title": "Chất Gây Hại",
+      "cover": "https://api.deezer.com/album/877913512/image"
+    }
+  },
+  "expireAt": {
+    "$date": "2025-12-30T13:38:52.234Z"
+  },
+  "createdAt": {
+    "$date": "2025-12-29T14:00:14.470Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T14:00:17.247Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69528a42a9f7d97aeaa9f5bd"
+  },
+  "privacy_type": "friends",
+  "friends_except": [],
+  "friends_detail": [],
+  "userId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "mediaUrl": "https://res.cloudinary.com/dfqf9wjji/image/upload/v1767017026/uploads/gqxqd00se0txc6vhm2yf.jpg",
+  "mediaType": "image",
+  "music": {
+    "id": 67503808,
+    "title": "We Are The Champions (Remastered 2011)",
+    "preview": "https://res.cloudinary.com/dfqf9wjji/video/upload/v1767017028/story/69528a42a9f7d97aeaa9f5bd/file_crlgh5.mp3",
+    "artist": {
+      "id": 412,
+      "name": "Queen",
+      "picture": "https://api.deezer.com/artist/412/image"
+    },
+    "album": {
+      "id": 6605779,
+      "title": "Greatest Hits (Remastered)",
+      "cover": "https://api.deezer.com/album/6605779/image"
+    }
+  },
+  "expireAt": {
+    "$date": "2025-12-30T13:38:52.234Z"
+  },
+  "createdAt": {
+    "$date": "2025-12-29T14:03:46.986Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T14:03:48.684Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69529b76a9f7d97aeaaa1b92"
+  },
+  "privacy_type": "public",
+  "friends_except": [],
+  "friends_detail": [],
+  "userId": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "mediaUrl": "https://res.cloudinary.com/dfqf9wjji/image/upload/v1767021429/uploads/bjy3uup2vb8lwas4qoov.jpg",
+  "mediaType": "image",
+  "music": {
+    "id": 62710442,
+    "title": "All I Want for Christmas Is You",
+    "preview": "https://res.cloudinary.com/dfqf9wjji/video/upload/v1767021431/story/69529b76a9f7d97aeaaa1b92/file_l4ausr.mp3",
+    "artist": {
+      "id": 65,
+      "name": "Mariah Carey",
+      "picture": "https://api.deezer.com/artist/65/image"
+    },
+    "album": {
+      "id": 6155526,
+      "title": "Merry Christmas",
+      "cover": "https://api.deezer.com/album/6155526/image"
+    }
+  },
+  "expireAt": {
+    "$date": "2025-12-30T13:38:52.234Z"
+  },
+  "createdAt": {
+    "$date": "2025-12-29T15:17:10.938Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T15:17:14.356Z"
+  },
+  "__v": 0
+}]

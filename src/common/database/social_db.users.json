@@ -1,0 +1,2198 @@
+[{
+  "_id": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "email": "luan@gmail.com",
+  "username": "luan",
+  "password": "$2b$10$l6UH5/KsGjdx6sPWluszyuoKVaRfS1d07SAdPSzuf4VP4.HAyVsJq",
+  "isActive": true,
+  "otp": "519072",
+  "otpGeneratedTime": {
+    "$date": "2025-12-21T16:21:44.116Z"
+  },
+  "createdAt": {
+    "$date": "2025-09-30T08:39:33.060Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T15:10:02.480Z"
+  },
+  "__v": 0,
+  "refreshToken": "$2b$10$WdHByXomw.o556mYus8WVucbIX73tmXw0BAlrWOeeaNznDFke7FK6",
+  "avatarUrl": "https://res.cloudinary.com/dfqf9wjji/image/upload/v1765208103/uploads/hdvlz2f6wrwo7zkdhkng.jpg",
+  "bio": "🐼",
+  "dateOfBirth": "2000-01-01",
+  "fullName": "Nguyễn Văn Luân",
+  "gender": "female",
+  "phoneNumber": "0987654321",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "currentCity": "TPHCM",
+  "hometown": "Bình Thuận",
+  "relationshipStatus": "Đang hẹn hò",
+  "school": "Trường ĐH Công nghệ Kỹ thuật TPHCM",
+  "workplace": "TPHCM",
+  "fcmToken": "d03cI9U_R0SkUkpB1Es-OX:APA91bGgM_agkqFIGITiMu3Jbo7454_0q1vI3YJhqsrUnHT9s0bWHdoWAbLPSkCJ9O8TwJDBPz_d-qWuVJR1oz2lLLddzKWYyBqy7YiXIHgXI41PYcawRck",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "email": "duy@gmail.com",
+  "username": "duy",
+  "password": "$2b$10$.deIAFBKribFZqY9WvhKYeY3zPt4n3MyHngMtcB9jNnOJDEt26BRy",
+  "isActive": true,
+  "otp": "652436",
+  "otpGeneratedTime": {
+    "$date": "2025-10-11T03:52:00.683Z"
+  },
+  "createdAt": {
+    "$date": "2025-10-11T03:50:18.745Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T15:48:38.221Z"
+  },
+  "__v": 0,
+  "refreshToken": "$2b$10$kHSgKbfASPJhCAALBffuaeVkTloAyfY/NB5x5EK4Osw8KSRpCkC42",
+  "avatarUrl": "https://res.cloudinary.com/dfqf9wjji/image/upload/v1764231953/uploads/jcpehch151fvvvhg06qz.jpg",
+  "bio": "No gays",
+  "dateOfBirth": "2004-07-10",
+  "fullName": "Phạm Ngọc Duy",
+  "gender": "male",
+  "phoneNumber": "0909090909",
+  "currentCity": "Hồ Chí Minh",
+  "hometown": "Đồng Nai",
+  "relationshipStatus": "Độc thân",
+  "school": "Trường Đại học sư phạm kỹ Thuật TP.Hồ Chí Minh",
+  "workplace": "Hitachi",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "fcmToken": ""
+},
+{
+  "_id": {
+    "$oid": "691b3a224d553bd331c52568"
+  },
+  "fullName": "Administrator",
+  "email": "admin@gmail.com",
+  "username": "admin",
+  "password": "$2b$10$cz7yj.IxhxTQZGDU6hpJ9OeGodQN8cABwHA/IOxGbgwr2Q3dEPtkG",
+  "isActive": true,
+  "role": "admin",
+  "createdAt": {
+    "$date": "2025-11-17T15:07:14.470Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T13:52:43.736Z"
+  },
+  "__v": 0,
+  "refreshToken": "$2b$10$GUI4ZfpuPqV9RlGSCj80y.mEoI4t0Fl.X5jIx5QUL5o/Twl3Dd79O",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "fcmToken": ""
+},
+{
+  "_id": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "email": "lam@gmail.com",
+  "username": "lam",
+  "password": "$2b$10$Zg70EEf15jZ3Rhz7nkzQXO4zF4dNNVsJpxWJecrR6yWjrj7ZGlX2u",
+  "isActive": true,
+  "otp": "851216",
+  "otpGeneratedTime": {
+    "$date": "2025-12-21T09:00:09.052Z"
+  },
+  "role": "user",
+  "createdAt": {
+    "$date": "2025-11-18T15:19:14.663Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T17:08:54.350Z"
+  },
+  "__v": 0,
+  "avatarUrl": "https://res.cloudinary.com/dfqf9wjji/image/upload/v1764921748/uploads/gtdluun86a31ypdc3jdc.jpg",
+  "bio": "No pain no gain",
+  "dateOfBirth": "2005-11-17",
+  "fullName": "Nguyễn Hữu Ngọc Lam",
+  "gender": "Female",
+  "phoneNumber": "1234567890",
+  "refreshToken": "$2b$10$vEZw1KddhscXuuf2iHoPW.K7zVIIJ/.3vdG.m.mfI6.F7pYhf.KNu",
+  "currentCity": "Hồ Chí Minh",
+  "hometown": "Hà Tĩnh",
+  "relationshipStatus": "Hẹn hò",
+  "school": "Lý Tự Trọng",
+  "workplace": "Xóm đời",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "fcmToken": "fa3GQbWDQTyn3ixWrEK5UF:APA91bF-2pURytaoPk-E8og89cZU292Xzz30AHjTsTFXN10B_xMXsUqQdqy8ytrJU8ED2QZk7djB5Pu8U6fg3ul9zt67Lnq4v-UqHX2KCm8YLT-sACQIxpY"
+},
+{
+  "_id": {
+    "$oid": "692e8533ea14ed134931f699"
+  },
+  "email": "ngoclam@gmail.com",
+  "username": "lam1234",
+  "password": "$2b$10$2/Q9UZc8Z.skE/2GJ3frQux2kyYHjWvBxOsQzD4nf1KexDHhtkRSe",
+  "isActive": true,
+  "otp": "827720",
+  "otpGeneratedTime": {
+    "$date": "2025-09-30T08:39:33.054Z"
+  },
+  "createdAt": {
+    "$date": "2025-09-30T08:39:33.060Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-05T08:22:29.120Z"
+  },
+  "__v": 0,
+  "refreshToken": "$2b$10$wUQiETMtoAGesgsJ3pq0UO/6Vua9HD3ZwfEE.ky7xxv2P9PqPuYf2",
+  "avatarUrl": "https://res.cloudinary.com/dfqf9wjji/image/upload/v1764922948/uploads/p2dgjss3uiihcsq883p6.jpg",
+  "bio": "Sigma boy",
+  "dateOfBirth": "2000-01-01",
+  "fullName": "Phạm Danh Hưởng",
+  "gender": "male",
+  "phoneNumber": "0987654521",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg"
+},
+{
+  "_id": {
+    "$oid": "692eaf8aea14ed134931f69d"
+  },
+  "email": "user1@gmail.com",
+  "username": "user1",
+  "password": "$2b$10$2/Q9UZc8Z.skE/2GJ3frQux2kyYHjWvBxOsQzD4nf1KexDHhtkRSe",
+  "isActive": true,
+  "otp": "827720",
+  "otpGeneratedTime": {
+    "$date": "2025-09-30T08:39:33.054Z"
+  },
+  "createdAt": {
+    "$date": "2025-09-30T08:39:33.060Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T15:48:51.800Z"
+  },
+  "__v": 0,
+  "refreshToken": "$2b$10$.ehOasyAPGWOAdlN.V15iObiBCtslSz1PFW4h3HUXzv5jov9HRJl.",
+  "avatarUrl": "https://res.cloudinary.com/dfqf9wjji/image/upload/v1765193652/uploads/w7hg2s3wryffrkgmvczn.jpg",
+  "bio": "Call me \" nấm\"🍄🍄🍄nCheese 🧀a",
+  "dateOfBirth": "2000-01-01",
+  "fullName": "Nguyễn Thị Linh Chi",
+  "gender": "female",
+  "phoneNumber": "0987654021",
+  "currentCity": "Hue",
+  "hometown": "Ha Tinh",
+  "relationshipStatus": "Mối quan hệ mở",
+  "school": "Huflish",
+  "workplace": "Giao vien",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "fcmToken": "f8g3EaqoSjyo6gRvxva5j1:APA91bEcxZUdX7omQfObsWSKKqtIgkWgSB8MLMQz7VxxNCqHNAurnnC2dmRibqN0ID-YW9uhZO6fD4Hqv-UbVj9Y5GGPfbk810_CNNitT2WsNLNQ8LoltN8"
+},
+{
+  "_id": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "email": "user2@gmail.com",
+  "username": "user2",
+  "password": "$2b$10$2/Q9UZc8Z.skE/2GJ3frQux2kyYHjWvBxOsQzD4nf1KexDHhtkRSe",
+  "isActive": true,
+  "otp": "827720",
+  "otpGeneratedTime": {
+    "$date": "2025-09-30T08:39:33.054Z"
+  },
+  "createdAt": {
+    "$date": "2025-09-30T08:39:33.060Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T16:49:40.965Z"
+  },
+  "__v": 0,
+  "refreshToken": "$2b$10$ZLqdB5IR3Qg9wKu3qS6vau7lOtnGAjRbqTpmbZNjhUaoc2tIsaUKW",
+  "avatarUrl": "https://res.cloudinary.com/dfqf9wjji/image/upload/v1766854179/uploads/yjsvrg0tqzvtfhc4axr7.jpg",
+  "bio": "a",
+  "dateOfBirth": "2000-01-01",
+  "fullName": "Lê Đăng Hiếu",
+  "gender": "male",
+  "phoneNumber": "0957654021",
+  "fcmToken": "daMtCcj7Q-uNzRmATMSR6u:APA91bGL5iJg7w_tDWI00O7NpA6FJeTMmKAyZDPIsQf52GSAIOk4_KP9KDZQgeiWkZYWyM4s1m82Lu47f22_il9g5ItUuiTG76HW_SzrN_vaCohda8JbyUM",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg"
+},
+{
+  "_id": {
+    "$oid": "692eafdaea14ed134931f69f"
+  },
+  "email": "user3@gmail.com",
+  "username": "user3",
+  "password": "$2b$10$2/Q9UZc8Z.skE/2GJ3frQux2kyYHjWvBxOsQzD4nf1KexDHhtkRSe",
+  "isActive": true,
+  "otp": "827720",
+  "otpGeneratedTime": {
+    "$date": "2025-09-30T08:39:33.054Z"
+  },
+  "createdAt": {
+    "$date": "2025-09-30T08:39:33.060Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T21:54:31.626Z"
+  },
+  "__v": 0,
+  "refreshToken": "$2b$10$knDdIm1rChkOynBPPRkdmO7YiVl7hezCPtAPQI97fbPCMRgBVasZi",
+  "avatarUrl": "https://res.cloudinary.com/dfqf9wjji/image/upload/v1764922227/uploads/t8p1wbhw5oogaralacfp.jpg",
+  "bio": "Khanh nè",
+  "dateOfBirth": "2000-01-01",
+  "fullName": "Trần Vũ Khanh",
+  "gender": "male",
+  "phoneNumber": "0954654021",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "fcmToken": ""
+},
+{
+  "_id": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "email": "user4@gmail.com",
+  "username": "user4",
+  "password": "$2b$10$voMvJep.NlZEln6uH9a1bue6lDD978XEDIC/7VlXgaEb.O4kDvKRu",
+  "isActive": true,
+  "otp": "392208",
+  "otpGeneratedTime": {
+    "$date": "2025-12-27T17:12:29.792Z"
+  },
+  "createdAt": {
+    "$date": "2025-09-30T08:39:33.060Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T15:39:24.054Z"
+  },
+  "__v": 0,
+  "refreshToken": "$2b$10$dWZmY7jqPX.7uYqW3bt2iecYO8o8GF3zuMfFB/L1th65wbc60VsmS",
+  "avatarUrl": "https://res.cloudinary.com/dfqf9wjji/image/upload/v1764922466/uploads/dgaxggqorn4qnk8swjg0.jpg",
+  "bio": "Bé Nhung nè mấy ní",
+  "dateOfBirth": "2000-01-01",
+  "fullName": "Bùi Thị Hồng Nhung",
+  "gender": "female",
+  "phoneNumber": "0954653021",
+  "fcmToken": "cM22_monTca3qfnaoSPDLg:APA91bG8rF6gnz-9iYJv15TLS1qNDBPT78J-4m95EDKJ1FWpNXnPvOzZRnLnEi6Z6D_-WH8EC4KeBR7EiUzRUg0DWH_XiXbKzFNmR9l6snmt5iYbl9Eed0Q",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "role": "user",
+  "currentCity": "",
+  "hometown": "",
+  "relationshipStatus": "Độc thân",
+  "school": "",
+  "workplace": ""
+},
+{
+  "_id": {
+    "$oid": "68bf3005f3c2c3be11b55c05"
+  },
+  "fullName": "Vũ Thành Công",
+  "email": "vuthanhcong@gmail.com",
+  "username": "vuthanhcong",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "908322",
+  "otpGeneratedTime": {
+    "$date": "2025-02-14T15:00:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-02-14T15:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-04T15:00:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Tôi thích đọc sách",
+  "dateOfBirth": "1997",
+  "gender": "Nam",
+  "phoneNumber": "0912000005",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Mở Hà Nội",
+  "currentCity": "Hà Nội",
+  "hometown": "Bắc Ninh",
+  "workplace": "Shopee",
+  "relationshipStatus": "Đã kết hôn",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf3006f3c2c3be11b55c06"
+  },
+  "fullName": "Nguyễn Thị Mai",
+  "email": "nguyenthimai@gmail.com",
+  "username": "nguyenthimai",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "456789",
+  "otpGeneratedTime": {
+    "$date": "2025-01-15T09:30:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-01-15T09:30:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-20T14:15:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Yêu thích du lịch và nhiếp ảnh",
+  "dateOfBirth": "1995",
+  "gender": "Nữ",
+  "phoneNumber": "0912000006",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Kinh tế Quốc dân",
+  "currentCity": "Hồ Chí Minh",
+  "hometown": "Đà Nẵng",
+  "workplace": "Tiki",
+  "relationshipStatus": "Độc thân",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf3007f3c2c3be11b55c07"
+  },
+  "fullName": "Trần Văn Đức",
+  "email": "tranvanduc@gmail.com",
+  "username": "tranvanduc",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "789123",
+  "otpGeneratedTime": {
+    "$date": "2025-01-20T11:00:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-01-20T11:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-25T16:30:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Lập trình viên full-stack",
+  "dateOfBirth": "1998",
+  "gender": "Nam",
+  "phoneNumber": "0912000007",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Bách khoa TP.HCM",
+  "currentCity": "Hồ Chí Minh",
+  "hometown": "Cần Thơ",
+  "workplace": "FPT Software",
+  "relationshipStatus": "Đang hẹn hò",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf3008f3c2c3be11b55c08"
+  },
+  "fullName": "Lê Thị Hương",
+  "email": "lethihuong@gmail.com",
+  "username": "lethihuong",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "234567",
+  "otpGeneratedTime": {
+    "$date": "2025-01-10T08:00:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-01-10T08:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-15T10:20:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Giáo viên tiểu học",
+  "dateOfBirth": "1996",
+  "gender": "Nữ",
+  "phoneNumber": "0912000008",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Sư phạm Hà Nội",
+  "currentCity": "Hà Nội",
+  "hometown": "Nam Định",
+  "workplace": "Trường Tiểu học Nguyễn Du",
+  "relationshipStatus": "Đã kết hôn",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf3009f3c2c3be11b55c09"
+  },
+  "fullName": "Phạm Minh Tuấn",
+  "email": "phamminhtuan@gmail.com",
+  "username": "phamminhtuan",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "567890",
+  "otpGeneratedTime": {
+    "$date": "2025-01-25T13:45:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-01-25T13:45:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-01T09:10:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Thích chơi game và xem phim",
+  "dateOfBirth": "1999",
+  "gender": "Nam",
+  "phoneNumber": "0912000009",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Công nghệ Thông tin",
+  "currentCity": "Đà Nẵng",
+  "hometown": "Quảng Nam",
+  "workplace": "Viettel",
+  "relationshipStatus": "Độc thân",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf300af3c2c3be11b55c0a"
+  },
+  "fullName": "Hoàng Thị Lan",
+  "email": "hoangthilan@gmail.com",
+  "username": "hoangthilan",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "345678",
+  "otpGeneratedTime": {
+    "$date": "2025-02-01T10:15:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-02-01T10:15:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-18T11:30:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Designer và nghệ sĩ tự do",
+  "dateOfBirth": "1994",
+  "gender": "Nữ",
+  "phoneNumber": "0912000010",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Mỹ thuật Công nghiệp",
+  "currentCity": "Hà Nội",
+  "hometown": "Hải Dương",
+  "workplace": "Freelance",
+  "relationshipStatus": "Độc thân",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf300bf3c2c3be11b55c0b"
+  },
+  "fullName": "Đỗ Văn Hùng",
+  "email": "dovanhung@gmail.com",
+  "username": "dovanhung",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "890123",
+  "otpGeneratedTime": {
+    "$date": "2025-01-05T14:20:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-01-05T14:20:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-10T15:45:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Kỹ sư xây dựng",
+  "dateOfBirth": "1993",
+  "gender": "Nam",
+  "phoneNumber": "0912000011",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Xây dựng",
+  "currentCity": "Hà Nội",
+  "hometown": "Thái Bình",
+  "workplace": "Công ty Xây dựng Sông Hồng",
+  "relationshipStatus": "Đã kết hôn",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf300cf3c2c3be11b55c0c"
+  },
+  "fullName": "Bùi Thị Linh",
+  "email": "buithilinh@gmail.com",
+  "username": "buithilinh",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "123456",
+  "otpGeneratedTime": {
+    "$date": "2025-01-12T07:30:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-01-12T07:30:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-22T12:00:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Bác sĩ đa khoa",
+  "dateOfBirth": "1992",
+  "gender": "Nữ",
+  "phoneNumber": "0912000012",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Y Hà Nội",
+  "currentCity": "Hà Nội",
+  "hometown": "Hưng Yên",
+  "workplace": "Bệnh viện Bạch Mai",
+  "relationshipStatus": "Đang hẹn hò",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf300df3c2c3be11b55c0d"
+  },
+  "fullName": "Võ Minh Khang",
+  "email": "vominhkhang@gmail.com",
+  "username": "vominhkhang",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "678901",
+  "otpGeneratedTime": {
+    "$date": "2025-01-18T16:00:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-01-18T16:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-28T13:20:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Nhà báo và phóng viên",
+  "dateOfBirth": "1996",
+  "gender": "Nam",
+  "phoneNumber": "0912000013",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Học viện Báo chí và Tuyên truyền",
+  "currentCity": "Hồ Chí Minh",
+  "hometown": "Bình Dương",
+  "workplace": "VnExpress",
+  "relationshipStatus": "Độc thân",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf300ef3c2c3be11b55c0e"
+  },
+  "fullName": "Ngô Thị Nga",
+  "email": "ngothinga@gmail.com",
+  "username": "ngothinga",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "456123",
+  "otpGeneratedTime": {
+    "$date": "2025-01-22T09:00:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-01-22T09:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-02T10:40:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Kế toán viên",
+  "dateOfBirth": "1997",
+  "gender": "Nữ",
+  "phoneNumber": "0912000014",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Kinh tế TP.HCM",
+  "currentCity": "Hồ Chí Minh",
+  "hometown": "Long An",
+  "workplace": "Deloitte",
+  "relationshipStatus": "Đã kết hôn",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf300ff3c2c3be11b55c0f"
+  },
+  "fullName": "Đinh Văn Long",
+  "email": "dinhvanlong@gmail.com",
+  "username": "dinhvanlong",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "789456",
+  "otpGeneratedTime": {
+    "$date": "2025-01-08T11:30:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-01-08T11:30:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-12T14:50:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Đầu bếp chuyên nghiệp",
+  "dateOfBirth": "1995",
+  "gender": "Nam",
+  "phoneNumber": "0912000015",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Trường Cao đẳng Du lịch Hà Nội",
+  "currentCity": "Hà Nội",
+  "hometown": "Hà Nam",
+  "workplace": "Nhà hàng La Verticale",
+  "relationshipStatus": "Đang hẹn hò",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf3010f3c2c3be11b55c10"
+  },
+  "fullName": "Lý Thị Hoa",
+  "email": "lythihoa@gmail.com",
+  "username": "lythihoa",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "234890",
+  "otpGeneratedTime": {
+    "$date": "2025-01-30T12:15:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-01-30T12:15:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-26T09:25:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Nhân viên marketing",
+  "dateOfBirth": "1998",
+  "gender": "Nữ",
+  "phoneNumber": "0912000016",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Thương mại",
+  "currentCity": "Hà Nội",
+  "hometown": "Vĩnh Phúc",
+  "workplace": "Lazada",
+  "relationshipStatus": "Độc thân",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf3011f3c2c3be11b55c11"
+  },
+  "fullName": "Phan Văn Quang",
+  "email": "phanvanquang@gmail.com",
+  "username": "phanvanquang",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "567234",
+  "otpGeneratedTime": {
+    "$date": "2025-02-05T08:45:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-02-05T08:45:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-19T16:10:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Thợ chụp ảnh cưới",
+  "dateOfBirth": "1994",
+  "gender": "Nam",
+  "phoneNumber": "0912000017",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Văn hóa Nghệ thuật",
+  "currentCity": "Đà Nẵng",
+  "hometown": "Quảng Ngãi",
+  "workplace": "Studio Ánh Dương",
+  "relationshipStatus": "Đã kết hôn",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf3012f3c2c3be11b55c12"
+  },
+  "fullName": "Trương Thị Thảo",
+  "email": "truongthithao@gmail.com",
+  "username": "truongthithao",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "890567",
+  "otpGeneratedTime": {
+    "$date": "2025-01-14T15:20:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-01-14T15:20:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-24T11:15:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Luật sư",
+  "dateOfBirth": "1993",
+  "gender": "Nữ",
+  "phoneNumber": "0912000018",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Luật Hà Nội",
+  "currentCity": "Hà Nội",
+  "hometown": "Hải Phòng",
+  "workplace": "Văn phòng Luật sư Đông Á",
+  "relationshipStatus": "Độc thân",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf3013f3c2c3be11b55c13"
+  },
+  "fullName": "Dương Văn Nam",
+  "email": "duongvannam@gmail.com",
+  "username": "duongvannam",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "123789",
+  "otpGeneratedTime": {
+    "$date": "2025-01-28T10:00:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-01-28T10:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-03T12:30:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Nhạc sĩ và ca sĩ",
+  "dateOfBirth": "1999",
+  "gender": "Nam",
+  "phoneNumber": "0912000019",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Học viện Âm nhạc Quốc gia",
+  "currentCity": "Hồ Chí Minh",
+  "hometown": "An Giang",
+  "workplace": "Sony Music",
+  "relationshipStatus": "Đang hẹn hò",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf3014f3c2c3be11b55c14"
+  },
+  "fullName": "Vương Thị Phương",
+  "email": "vuongthiphuong@gmail.com",
+  "username": "vuongthiphuong",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "456890",
+  "otpGeneratedTime": {
+    "$date": "2025-02-08T13:30:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-02-08T13:30:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-21T15:00:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Giảng viên đại học",
+  "dateOfBirth": "1991",
+  "gender": "Nữ",
+  "phoneNumber": "0912000020",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Quốc gia Hà Nội",
+  "currentCity": "Hà Nội",
+  "hometown": "Thanh Hóa",
+  "workplace": "Đại học Bách khoa Hà Nội",
+  "relationshipStatus": "Đã kết hôn",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf3015f3c2c3be11b55c15"
+  },
+  "fullName": "Tạ Văn Bình",
+  "email": "tavanbinh@gmail.com",
+  "username": "tavanbinh",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "789012",
+  "otpGeneratedTime": {
+    "$date": "2025-01-16T14:00:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-01-16T14:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-27T10:50:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Kỹ sư điện",
+  "dateOfBirth": "1997",
+  "gender": "Nam",
+  "phoneNumber": "0912000021",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Điện lực",
+  "currentCity": "Hà Nội",
+  "hometown": "Hải Dương",
+  "workplace": "Tập đoàn Điện lực Việt Nam",
+  "relationshipStatus": "Độc thân",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf3016f3c2c3be11b55c16"
+  },
+  "fullName": "Cao Thị Yến",
+  "email": "caothiyen@gmail.com",
+  "username": "caothiyen",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "234567",
+  "otpGeneratedTime": {
+    "$date": "2025-01-24T09:15:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-01-24T09:15:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-16T13:40:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Nhân viên ngân hàng",
+  "dateOfBirth": "1996",
+  "gender": "Nữ",
+  "phoneNumber": "0912000022",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Ngân hàng TP.HCM",
+  "currentCity": "Hồ Chí Minh",
+  "hometown": "Tiền Giang",
+  "workplace": "Vietcombank",
+  "relationshipStatus": "Đang hẹn hò",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf3017f3c2c3be11b55c17"
+  },
+  "fullName": "Lưu Văn Thắng",
+  "email": "luuvanthang@gmail.com",
+  "username": "luuvanthang",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "567123",
+  "otpGeneratedTime": {
+    "$date": "2025-02-03T11:20:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-02-03T11:20:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-17T14:25:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Tài xế Grab",
+  "dateOfBirth": "1995",
+  "gender": "Nam",
+  "phoneNumber": "0912000023",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Trường Trung cấp Giao thông",
+  "currentCity": "Hồ Chí Minh",
+  "hometown": "Bến Tre",
+  "workplace": "Grab",
+  "relationshipStatus": "Đã kết hôn",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf3018f3c2c3be11b55c18"
+  },
+  "fullName": "Hồ Thị Trang",
+  "email": "hothitrang@gmail.com",
+  "username": "hothitrang",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "890345",
+  "otpGeneratedTime": {
+    "$date": "2025-01-19T08:30:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-01-19T08:30:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-23T16:00:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Youtuber và streamer",
+  "dateOfBirth": "2000",
+  "gender": "Nữ",
+  "phoneNumber": "0912000024",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Khoa học Xã hội và Nhân văn",
+  "currentCity": "Hà Nội",
+  "hometown": "Nghệ An",
+  "workplace": "YouTube",
+  "relationshipStatus": "Độc thân",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf3019f3c2c3be11b55c19"
+  },
+  "fullName": "Nguyễn Văn Anh",
+  "email": "nguyenvananh@gmail.com",
+  "username": "nguyenvananh",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "123456",
+  "otpGeneratedTime": {
+    "$date": "2025-01-11T12:45:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-01-11T12:45:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-13T11:20:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Thợ sửa điện thoại",
+  "dateOfBirth": "1998",
+  "gender": "Nam",
+  "phoneNumber": "0912000025",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Trường Trung cấp Kỹ thuật",
+  "currentCity": "Đà Nẵng",
+  "hometown": "Quảng Bình",
+  "workplace": "Cửa hàng Sửa chữa Điện thoại Anh",
+  "relationshipStatus": "Đang hẹn hò",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf301af3c2c3be11b55c1a"
+  },
+  "fullName": "Trần Thị Dung",
+  "email": "tranthidung@gmail.com",
+  "username": "tranthidung",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "456789",
+  "otpGeneratedTime": {
+    "$date": "2025-02-10T10:00:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-02-10T10:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-01T09:30:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Nhân viên bán hàng",
+  "dateOfBirth": "1997",
+  "gender": "Nữ",
+  "phoneNumber": "0912000026",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Trường Trung cấp Thương mại",
+  "currentCity": "Hồ Chí Minh",
+  "hometown": "Đồng Tháp",
+  "workplace": "VinMart",
+  "relationshipStatus": "Độc thân",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf301bf3c2c3be11b55c1b"
+  },
+  "fullName": "Lê Văn Sơn",
+  "email": "levanson@gmail.com",
+  "username": "levanson",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "789234",
+  "otpGeneratedTime": {
+    "$date": "2025-01-26T13:00:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-01-26T13:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-14T15:35:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Huấn luyện viên thể hình",
+  "dateOfBirth": "1994",
+  "gender": "Nam",
+  "phoneNumber": "0912000027",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Thể dục Thể thao",
+  "currentCity": "Hà Nội",
+  "hometown": "Bắc Giang",
+  "workplace": "Phòng Gym California",
+  "relationshipStatus": "Đã kết hôn",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf301cf3c2c3be11b55c1c"
+  },
+  "fullName": "Phạm Thị Loan",
+  "email": "phamthiloan@gmail.com",
+  "username": "phamthiloan",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "234678",
+  "otpGeneratedTime": {
+    "$date": "2025-02-12T14:30:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-02-12T14:30:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-02T10:15:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Dược sĩ",
+  "dateOfBirth": "1996",
+  "gender": "Nữ",
+  "phoneNumber": "0912000028",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Dược Hà Nội",
+  "currentCity": "Hà Nội",
+  "hometown": "Hà Tĩnh",
+  "workplace": "Nhà thuốc Long Châu",
+  "relationshipStatus": "Đang hẹn hò",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf301df3c2c3be11b55c1d"
+  },
+  "fullName": "Hoàng Văn Đạt",
+  "email": "hoangvandat@gmail.com",
+  "username": "hoangvandat",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "567890",
+  "otpGeneratedTime": {
+    "$date": "2025-01-13T15:45:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-01-13T15:45:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-11T12:00:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Nhà thiết kế đồ họa",
+  "dateOfBirth": "1999",
+  "gender": "Nam",
+  "phoneNumber": "0912000029",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Kiến trúc Hà Nội",
+  "currentCity": "Hà Nội",
+  "hometown": "Phú Thọ",
+  "workplace": "Agency Creative",
+  "relationshipStatus": "Độc thân",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf301ef3c2c3be11b55c1e"
+  },
+  "fullName": "Đỗ Thị Hạnh",
+  "email": "dothihanh@gmail.com",
+  "username": "dothihanh",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "890123",
+  "otpGeneratedTime": {
+    "$date": "2025-01-27T09:00:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-01-27T09:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-26T14:45:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Nhân viên chăm sóc khách hàng",
+  "dateOfBirth": "1998",
+  "gender": "Nữ",
+  "phoneNumber": "0912000030",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Kinh tế Quốc dân",
+  "currentCity": "Hồ Chí Minh",
+  "hometown": "Bình Phước",
+  "workplace": "Viettel",
+  "relationshipStatus": "Đã kết hôn",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf301ff3c2c3be11b55c1f"
+  },
+  "fullName": "Bùi Văn Hải",
+  "email": "buivanhai@gmail.com",
+  "username": "buivanhai",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "123567",
+  "otpGeneratedTime": {
+    "$date": "2025-02-06T11:10:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-02-06T11:10:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-20T13:50:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Thợ cắt tóc",
+  "dateOfBirth": "1995",
+  "gender": "Nam",
+  "phoneNumber": "0912000031",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Trường Trung cấp Thẩm mỹ",
+  "currentCity": "Hồ Chí Minh",
+  "hometown": "Cà Mau",
+  "workplace": "Salon Tóc Đẹp",
+  "relationshipStatus": "Độc thân",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf3020f3c2c3be11b55c20"
+  },
+  "fullName": "Võ Thị Nhung",
+  "email": "vothinhung@gmail.com",
+  "username": "vothinhung",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "456234",
+  "otpGeneratedTime": {
+    "$date": "2025-01-21T12:00:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-01-21T12:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-25T08:20:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Nhân viên tư vấn bất động sản",
+  "dateOfBirth": "1997",
+  "gender": "Nữ",
+  "phoneNumber": "0912000032",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Kinh tế TP.HCM",
+  "currentCity": "Hồ Chí Minh",
+  "hometown": "Kiên Giang",
+  "workplace": "Công ty Bất động sản Đất Xanh",
+  "relationshipStatus": "Đang hẹn hò",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf3021f3c2c3be11b55c21"
+  },
+  "fullName": "Ngô Văn Tùng",
+  "email": "ngovantung@gmail.com",
+  "username": "ngovantung",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "789345",
+  "otpGeneratedTime": {
+    "$date": "2025-02-07T10:30:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-02-07T10:30:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-18T16:40:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Pilot",
+  "dateOfBirth": "1992",
+  "gender": "Nam",
+  "phoneNumber": "0912000033",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Học viện Hàng không Việt Nam",
+  "currentCity": "Hà Nội",
+  "hometown": "Hải Phòng",
+  "workplace": "Vietnam Airlines",
+  "relationshipStatus": "Đã kết hôn",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf3022f3c2c3be11b55c22"
+  },
+  "fullName": "Đinh Thị Hồng",
+  "email": "dinhthihong@gmail.com",
+  "username": "dinhthihong",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "234012",
+  "otpGeneratedTime": {
+    "$date": "2025-01-17T13:15:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-01-17T13:15:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-19T11:05:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Nhà báo thể thao",
+  "dateOfBirth": "1996",
+  "gender": "Nữ",
+  "phoneNumber": "0912000034",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Học viện Báo chí và Tuyên truyền",
+  "currentCity": "Hà Nội",
+  "hometown": "Ninh Bình",
+  "workplace": "VTV",
+  "relationshipStatus": "Độc thân",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf3023f3c2c3be11b55c23"
+  },
+  "fullName": "Lý Văn Thành",
+  "email": "lyvanthanh@gmail.com",
+  "username": "lyvanthanh",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "567456",
+  "otpGeneratedTime": {
+    "$date": "2025-02-09T08:20:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-02-09T08:20:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-24T15:55:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Kỹ sư phần mềm",
+  "dateOfBirth": "1998",
+  "gender": "Nam",
+  "phoneNumber": "0912000035",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Công nghệ",
+  "currentCity": "Hà Nội",
+  "hometown": "Hà Nam",
+  "workplace": "Zalo",
+  "relationshipStatus": "Đang hẹn hò",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf3024f3c2c3be11b55c24"
+  },
+  "fullName": "Trương Văn Đức",
+  "email": "truongvanduc@gmail.com",
+  "username": "truongvanduc",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "890678",
+  "otpGeneratedTime": {
+    "$date": "2025-01-29T14:00:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-01-29T14:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-28T10:30:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Nhà văn tự do",
+  "dateOfBirth": "1993",
+  "gender": "Nam",
+  "phoneNumber": "0912000036",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Văn hóa Hà Nội",
+  "currentCity": "Hà Nội",
+  "hometown": "Thái Nguyên",
+  "workplace": "Nhà xuất bản Trẻ",
+  "relationshipStatus": "Độc thân",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf3025f3c2c3be11b55c25"
+  },
+  "fullName": "Dương Thị Hương",
+  "email": "duongthihuong@gmail.com",
+  "username": "duongthihuong",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "123890",
+  "otpGeneratedTime": {
+    "$date": "2025-02-11T09:45:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-02-11T09:45:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-27T14:20:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Kiến trúc sư",
+  "dateOfBirth": "1995",
+  "gender": "Nữ",
+  "phoneNumber": "0912000037",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Kiến trúc TP.HCM",
+  "currentCity": "Hồ Chí Minh",
+  "hometown": "Bà Rịa - Vũng Tàu",
+  "workplace": "Công ty Kiến trúc Xanh",
+  "relationshipStatus": "Đang hẹn hò",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf3026f3c2c3be11b55c26"
+  },
+  "fullName": "Vương Văn Minh",
+  "email": "vuongvanminh@gmail.com",
+  "username": "vuongvanminh",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "456012",
+  "otpGeneratedTime": {
+    "$date": "2025-01-23T11:20:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-01-23T11:20:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-23T16:01:58.970Z"
+  },
+  "__v": 0,
+  "refreshToken": "$2b$10$ISvOlSsVcE/AR4yg7qx0Y.9XTqNTVhXE6oNsZ8Pb7YHjdAqrkhk5m",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Nhà nghiên cứu khoa học",
+  "dateOfBirth": "1991",
+  "gender": "Nam",
+  "phoneNumber": "0912000038",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Khoa học Tự nhiên",
+  "currentCity": "Hà Nội",
+  "hometown": "Hòa Bình",
+  "workplace": "Viện Hàn lâm Khoa học",
+  "relationshipStatus": "Đã kết hôn",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf3027f3c2c3be11b55c27"
+  },
+  "fullName": "Tạ Thị Lan Anh",
+  "email": "tathilananh@gmail.com",
+  "username": "tathilananh",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "789567",
+  "otpGeneratedTime": {
+    "$date": "2025-02-13T15:30:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-02-13T15:30:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-01T11:45:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Nhà tâm lý học",
+  "dateOfBirth": "1994",
+  "gender": "Nữ",
+  "phoneNumber": "0912000039",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Khoa học Xã hội và Nhân văn",
+  "currentCity": "Hồ Chí Minh",
+  "hometown": "Đồng Nai",
+  "workplace": "Trung tâm Tư vấn Tâm lý",
+  "relationshipStatus": "Độc thân",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf3028f3c2c3be11b55c28"
+  },
+  "fullName": "Cao Văn Thịnh",
+  "email": "caovanthinh@gmail.com",
+  "username": "caovanthinh",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "234123",
+  "otpGeneratedTime": {
+    "$date": "2025-01-31T10:15:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-01-31T10:15:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-22T13:25:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Chuyên viên tài chính",
+  "dateOfBirth": "1997",
+  "gender": "Nam",
+  "phoneNumber": "0912000040",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Ngoại thương",
+  "currentCity": "Hà Nội",
+  "hometown": "Quảng Ninh",
+  "workplace": "HSBC Bank",
+  "relationshipStatus": "Đang hẹn hò",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf3029f3c2c3be11b55c29"
+  },
+  "fullName": "Lưu Thị Mai Linh",
+  "email": "luuthimailinh@gmail.com",
+  "username": "luuthimailinh",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "567789",
+  "otpGeneratedTime": {
+    "$date": "2025-02-02T12:00:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-02-02T12:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-23T15:15:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Nhà thiết kế thời trang",
+  "dateOfBirth": "1999",
+  "gender": "Nữ",
+  "phoneNumber": "0912000041",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Mỹ thuật Công nghiệp",
+  "currentCity": "Hà Nội",
+  "hometown": "Hải Dương",
+  "workplace": "Thương hiệu Thời trang Việt",
+  "relationshipStatus": "Độc thân",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf302af3c2c3be11b55c2a"
+  },
+  "fullName": "Hồ Văn Tuấn Anh",
+  "email": "hovantuananh@gmail.com",
+  "username": "hovantuananh",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "890234",
+  "otpGeneratedTime": {
+    "$date": "2025-01-07T16:30:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-01-07T16:30:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-12T10:40:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Bác sĩ thú y",
+  "dateOfBirth": "1996",
+  "gender": "Nam",
+  "phoneNumber": "0912000042",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Học viện Nông nghiệp Việt Nam",
+  "currentCity": "Hà Nội",
+  "hometown": "Hưng Yên",
+  "workplace": "Phòng khám Thú y PetCare",
+  "relationshipStatus": "Đã kết hôn",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf302bf3c2c3be11b55c2b"
+  },
+  "fullName": "Nguyễn Thị Thanh Hương",
+  "email": "nguyenthithanhhuong@gmail.com",
+  "username": "nguyenthithanhhuong",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "123345",
+  "otpGeneratedTime": {
+    "$date": "2025-02-15T08:00:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-02-15T08:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-01T12:50:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Nhà báo môi trường",
+  "dateOfBirth": "1995",
+  "gender": "Nữ",
+  "phoneNumber": "0912000043",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Học viện Báo chí và Tuyên truyền",
+  "currentCity": "Hà Nội",
+  "hometown": "Lào Cai",
+  "workplace": "Báo Môi trường",
+  "relationshipStatus": "Đang hẹn hò",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf302cf3c2c3be11b55c2c"
+  },
+  "fullName": "Trần Văn Hoàng",
+  "email": "tranvanhoang@gmail.com",
+  "username": "tranvanhoang",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "456456",
+  "otpGeneratedTime": {
+    "$date": "2025-01-09T13:45:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-01-09T13:45:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-14T11:30:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Đầu bếp sushi",
+  "dateOfBirth": "1998",
+  "gender": "Nam",
+  "phoneNumber": "0912000044",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Trường Cao đẳng Du lịch TP.HCM",
+  "currentCity": "Hồ Chí Minh",
+  "hometown": "Bình Dương",
+  "workplace": "Nhà hàng Sushi Hokkaido",
+  "relationshipStatus": "Độc thân",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf302df3c2c3be11b55c2d"
+  },
+  "fullName": "Lê Thị Kim Oanh",
+  "email": "lethikimoanh@gmail.com",
+  "username": "lethikimoanh",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "789789",
+  "otpGeneratedTime": {
+    "$date": "2025-02-04T09:20:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-02-04T09:20:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-26T14:00:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Nhân viên hành chính",
+  "dateOfBirth": "1997",
+  "gender": "Nữ",
+  "phoneNumber": "0912000045",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Kinh tế Quốc dân",
+  "currentCity": "Hà Nội",
+  "hometown": "Nam Định",
+  "workplace": "Công ty TNHH ABC",
+  "relationshipStatus": "Đã kết hôn",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf302ef3c2c3be11b55c2e"
+  },
+  "fullName": "Phạm Văn Quyết",
+  "email": "phamvanquyet@gmail.com",
+  "username": "phamvanquyet",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "234234",
+  "otpGeneratedTime": {
+    "$date": "1970-01-01T00:00:00.000Z"
+  },
+  "createdAt": {
+    "$date": "1970-01-01T00:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-08T16:47:57.165Z"
+  },
+  "__v": 0,
+  "refreshToken": "$2b$10$pdquC3FqoeCE0ADLCA73yeOfL/BMmxE4mAH2UoDQ0Ar.R9gM3DiBa",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Thợ làm bánh",
+  "dateOfBirth": "1994",
+  "gender": "Nam",
+  "phoneNumber": "0912000046",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Trường Trung cấp Nghề",
+  "currentCity": "Đà Nẵng",
+  "hometown": "Quảng Nam",
+  "workplace": "Tiệm bánh Sweet Dreams",
+  "relationshipStatus": "Độc thân",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf302ff3c2c3be11b55c2f"
+  },
+  "fullName": "Hoàng Thị Thu Thảo",
+  "email": "hoangthithuthao@gmail.com",
+  "username": "hoangthithuthao",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "567567",
+  "otpGeneratedTime": {
+    "$date": "1970-01-01T00:00:00.000Z"
+  },
+  "createdAt": {
+    "$date": "1970-01-01T00:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-20T09:50:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Nhà vật lý học",
+  "dateOfBirth": "1993",
+  "gender": "Nữ",
+  "phoneNumber": "0912000047",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Khoa học Tự nhiên",
+  "currentCity": "Hà Nội",
+  "hometown": "Vĩnh Phúc",
+  "workplace": "Viện Vật lý",
+  "relationshipStatus": "Đang hẹn hò",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf3030f3c2c3be11b55c30"
+  },
+  "fullName": "Đỗ Văn Thành",
+  "email": "dovanthanh@gmail.com",
+  "username": "dovanthanh",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "890890",
+  "otpGeneratedTime": {
+    "$date": "2025-02-16T10:00:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-02-16T10:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-02T13:15:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Nhà sản xuất phim",
+  "dateOfBirth": "1996",
+  "gender": "Nam",
+  "phoneNumber": "0912000048",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Sân khấu Điện ảnh",
+  "currentCity": "Hồ Chí Minh",
+  "hometown": "Cần Thơ",
+  "workplace": "Công ty Sản xuất Phim Việt",
+  "relationshipStatus": "Đã kết hôn",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf3031f3c2c3be11b55c31"
+  },
+  "fullName": "Bùi Thị Ngọc Anh",
+  "email": "buithingocanh@gmail.com",
+  "username": "buithingocanh",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "123012",
+  "otpGeneratedTime": {
+    "$date": "1970-01-01T00:00:00.000Z"
+  },
+  "createdAt": {
+    "$date": "1970-01-01T00:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-25T10:25:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Nhà sinh học biển",
+  "dateOfBirth": "1995",
+  "gender": "Nữ",
+  "phoneNumber": "0912000049",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Khoa học Tự nhiên",
+  "currentCity": "Nha Trang",
+  "hometown": "Khánh Hòa",
+  "workplace": "Viện Hải dương học",
+  "relationshipStatus": "Độc thân",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf3032f3c2c3be11b55c32"
+  },
+  "fullName": "Võ Văn Huy",
+  "email": "vovanhuy@gmail.com",
+  "username": "vovanhuy",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "456345",
+  "otpGeneratedTime": {
+    "$date": "2025-02-17T15:45:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-02-17T15:45:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-02T11:00:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Kỹ sư cơ khí",
+  "dateOfBirth": "1997",
+  "gender": "Nam",
+  "phoneNumber": "0912000050",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Bách khoa Đà Nẵng",
+  "currentCity": "Đà Nẵng",
+  "hometown": "Quảng Ngãi",
+  "workplace": "Công ty Cơ khí Đông Á",
+  "relationshipStatus": "Đang hẹn hò",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf3033f3c2c3be11b55c33"
+  },
+  "fullName": "Ngô Thị Thanh Mai",
+  "email": "ngothithanhmai@gmail.com",
+  "username": "ngothithanhmai",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "789012",
+  "otpGeneratedTime": {
+    "$date": "1970-01-01T00:00:00.000Z"
+  },
+  "createdAt": {
+    "$date": "1970-01-01T00:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-18T14:40:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Nhà ngôn ngữ học",
+  "dateOfBirth": "1994",
+  "gender": "Nữ",
+  "phoneNumber": "0912000051",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Khoa học Xã hội và Nhân văn",
+  "currentCity": "Hà Nội",
+  "hometown": "Hà Tĩnh",
+  "workplace": "Viện Ngôn ngữ học",
+  "relationshipStatus": "Độc thân",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf3034f3c2c3be11b55c34"
+  },
+  "fullName": "Đinh Văn Phúc",
+  "email": "dinhvanphuc@gmail.com",
+  "username": "dinhvanphuc",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "234567",
+  "otpGeneratedTime": {
+    "$date": "2025-02-18T13:20:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-02-18T13:20:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-03T15:30:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Nhà địa chất học",
+  "dateOfBirth": "1998",
+  "gender": "Nam",
+  "phoneNumber": "0912000052",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Mỏ - Địa chất",
+  "currentCity": "Hà Nội",
+  "hometown": "Lạng Sơn",
+  "workplace": "Tổng cục Địa chất",
+  "relationshipStatus": "Đã kết hôn",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf3035f3c2c3be11b55c35"
+  },
+  "fullName": "Lý Thị Bích Ngọc",
+  "email": "lythibichngoc@gmail.com",
+  "username": "lythibichngoc",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "567234",
+  "otpGeneratedTime": {
+    "$date": "1970-01-01T00:00:00.000Z"
+  },
+  "createdAt": {
+    "$date": "1970-01-01T00:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-19T12:10:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Nhà hóa học",
+  "dateOfBirth": "1996",
+  "gender": "Nữ",
+  "phoneNumber": "0912000053",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Khoa học Tự nhiên",
+  "currentCity": "Hồ Chí Minh",
+  "hometown": "Bến Tre",
+  "workplace": "Viện Hóa học",
+  "relationshipStatus": "Đang hẹn hò",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf3036f3c2c3be11b55c36"
+  },
+  "fullName": "Trương Văn Đông",
+  "email": "truongvandong@gmail.com",
+  "username": "truongvandong",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "890123",
+  "otpGeneratedTime": {
+    "$date": "2025-02-19T11:30:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2025-02-19T11:30:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-03T09:20:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Nhà khảo cổ học",
+  "dateOfBirth": "1993",
+  "gender": "Nam",
+  "phoneNumber": "0912000054",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Khoa học Xã hội và Nhân văn",
+  "currentCity": "Hà Nội",
+  "hometown": "Nghệ An",
+  "workplace": "Viện Khảo cổ học",
+  "relationshipStatus": "Độc thân",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "68bf3037f3c2c3be11b55c37"
+  },
+  "fullName": "Dương Thị Hồng Nhung",
+  "email": "duongthihongnhung@gmail.com",
+  "username": "duongthihongnhung",
+  "password": "$2b$10$aHf2xQG9EBEV1kTNyOasketoIEWRHYsv2B9ivqXsEyqOXs3pxs02W",
+  "isActive": true,
+  "otp": "123456",
+  "otpGeneratedTime": {
+    "$date": "1970-01-01T00:00:00.000Z"
+  },
+  "createdAt": {
+    "$date": "1970-01-01T00:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-21T10:15:00.000Z"
+  },
+  "__v": 0,
+  "refreshToken": "",
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Nhà toán học",
+  "dateOfBirth": "1995",
+  "gender": "Nữ",
+  "phoneNumber": "0912000055",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "school": "Đại học Khoa học Tự nhiên",
+  "currentCity": "Hà Nội",
+  "hometown": "Thái Bình",
+  "workplace": "Viện Toán học",
+  "relationshipStatus": "Đã kết hôn",
+  "role": "user"
+},
+{
+  "_id": {
+    "$oid": "6943c06a2560fb60982c7879"
+  },
+  "email": "namlinhchi25072004@gmail.com",
+  "username": "linhchi2507",
+  "password": "$2b$10$F.CkRaPe.jziQr0MJH.52uyVnYt/8x52ZIQUA/hsN1ESN4/IJ34zq",
+  "isActive": true,
+  "otp": "948104",
+  "otpGeneratedTime": {
+    "$date": "2025-12-18T08:50:50.838Z"
+  },
+  "role": "user",
+  "createdAt": {
+    "$date": "2025-12-18T08:50:50.851Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-19T18:27:31.337Z"
+  },
+  "__v": 0,
+  "avatarUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1766304547/avt_bnegko.jpg",
+  "bio": "Hi",
+  "coverUrl": "https://res.cloudinary.com/dk7ypst5k/image/upload/v1744336768/samples/balloons.jpg",
+  "dateOfBirth": "2004-12-9",
+  "fullName": "Nguyễn Thị Linh Chi",
+  "gender": "Female",
+  "phoneNumber": "0987896544",
+  "refreshToken": "$2b$10$X1wFqWz/MtUk9hAkoIh/W.O1aLaFf2Tt2uwjeVXeFyOkYdQscwVpy"
+},
+{
+  "_id": {
+    "$oid": "6947b9bc5c8c5e292cf80c0e"
+  },
+  "email": "ngoclam123agl@gmail.com",
+  "username": "user1637",
+  "password": "$2b$10$XWAvec7QDzGOv7xR2wZpaODUK7R7fPb4uIbpBuUVLlY7meUPwBKjG",
+  "isActive": true,
+  "otp": "049570",
+  "otpGeneratedTime": {
+    "$date": "2025-12-21T09:11:24.879Z"
+  },
+  "fcmToken": "",
+  "role": "user",
+  "createdAt": {
+    "$date": "2025-12-21T09:11:24.882Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T09:14:20.181Z"
+  },
+  "__v": 0,
+  "avatarUrl": "",
+  "bio": "Test",
+  "coverUrl": "",
+  "dateOfBirth": "1994-12-21",
+  "fullName": "Nguyễn Trường Giang",
+  "gender": "Male",
+  "phoneNumber": "0987654329"
+},
+{
+  "_id": {
+    "$oid": "6948172442e50143d397f591"
+  },
+  "email": "h@gmail.com",
+  "username": "h",
+  "password": "$2b$10$atBTFvpJq8fi6unplb08cu.Nz35rNkRl24xIv1kQCIBbLXocZQymu",
+  "isActive": false,
+  "otp": "629976",
+  "otpGeneratedTime": {
+    "$date": "2025-12-21T15:49:56.760Z"
+  },
+  "fcmToken": "",
+  "role": "user",
+  "createdAt": {
+    "$date": "2025-12-21T15:49:56.764Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T18:15:13.772Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695014e9ac8e7c88e0f870dc"
+  },
+  "email": "user9@gmail.com",
+  "username": "user9",
+  "password": "$2b$10$x.vh.sdKsk1i8YATNaEuz.STPws8Z4Q/UalZVFcYh.t2UOQ4xQEvS",
+  "isActive": true,
+  "otp": "361512",
+  "otpGeneratedTime": {
+    "$date": "2025-12-27T17:18:33.258Z"
+  },
+  "fcmToken": "",
+  "role": "user",
+  "createdAt": {
+    "$date": "2025-12-27T17:18:33.260Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T17:18:49.773Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695014faac8e7c88e0f870e8"
+  },
+  "email": "vanluannguyen2004@gmail.com",
+  "username": "vanluan",
+  "password": "$2b$10$U1OQdPe0fswTI0x3rPFGDecaLwQpHLthNbhPg4PhbzwDufBUCcYCa",
+  "isActive": true,
+  "otp": "194061",
+  "otpGeneratedTime": {
+    "$date": "2025-12-27T17:18:50.228Z"
+  },
+  "fcmToken": "",
+  "role": "user",
+  "createdAt": {
+    "$date": "2025-12-27T17:18:50.230Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T17:19:10.483Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695053d56539418f3536c844"
+  },
+  "email": "test@gmail.com",
+  "username": "test",
+  "password": "$2b$10$dIIE2MtWr1R1xjIXk/8.pONg32UcnTMdmoZYeTgxl1KSEMIdrsq/K",
+  "isActive": true,
+  "otp": "064138",
+  "otpGeneratedTime": {
+    "$date": "2025-12-27T21:47:01.424Z"
+  },
+  "fcmToken": "",
+  "role": "user",
+  "createdAt": {
+    "$date": "2025-12-27T21:47:01.427Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T21:51:48.491Z"
+  },
+  "__v": 0,
+  "avatarUrl": "",
+  "bio": "hêllo",
+  "coverUrl": "",
+  "dateOfBirth": "2004-10-17",
+  "fullName": "test user",
+  "gender": "Nam",
+  "phoneNumber": "0794163966",
+  "refreshToken": "$2b$10$q2LQd30cRQG2DJ05ZdOsgeMJYIT4Xme7SMuRG8mpxo.NIZgKrFgru"
+},
+{
+  "_id": {
+    "$oid": "69529381a9f7d97aeaaa0301"
+  },
+  "email": "22110297@student.hcmute.edu.vn",
+  "username": "duypham123",
+  "password": "$2b$10$8BpZwevlAmE8GDHTnLEjWOwzUl0p617P4AmtGzzp6m4XZu4RfmkJq",
+  "isActive": true,
+  "otp": "794669",
+  "otpGeneratedTime": {
+    "$date": "2025-12-29T14:44:38.900Z"
+  },
+  "fcmToken": "",
+  "role": "user",
+  "createdAt": {
+    "$date": "2025-12-29T14:43:13.988Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T14:45:40.971Z"
+  },
+  "__v": 0,
+  "avatarUrl": "",
+  "bio": "hello",
+  "coverUrl": "",
+  "dateOfBirth": "2004-12-24",
+  "fullName": "pham ngoc duyyy",
+  "gender": "Nam",
+  "phoneNumber": "0974821298",
+  "refreshToken": "$2b$10$b2V6956xciWHqNPzqX11NOO3Z2zivhYu4ellNQNHwI9l9Cj7ZNrc."
+}]

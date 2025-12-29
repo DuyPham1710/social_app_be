@@ -1,0 +1,69 @@
+[{
+  "_id": {
+    "$oid": "6937183685b361bbd65bb88d"
+  },
+  "messageId": {
+    "$oid": "6937182b85b361bbd65bb851"
+  },
+  "oldText": "a",
+  "newText": "b",
+  "editedBy": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "editedAt": {
+    "$date": "2025-12-08T18:25:58.328Z"
+  },
+  "createdAt": {
+    "$date": "2025-12-08T18:25:58.328Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-08T18:25:58.328Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6950602812a3e4c73286020c"
+  },
+  "messageId": {
+    "$oid": "6950600712a3e4c732860193"
+  },
+  "oldText": "chào buồi sabgs",
+  "newText": "chào buổi sabgs",
+  "editedBy": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "editedAt": {
+    "$date": "2025-12-27T22:39:36.835Z"
+  },
+  "createdAt": {
+    "$date": "2025-12-27T22:39:36.835Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:39:36.835Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69529efaa9f7d97aeaaa2657"
+  },
+  "messageId": {
+    "$oid": "69529ec7a9f7d97aeaaa2610"
+  },
+  "oldText": "hii",
+  "newText": "sao á",
+  "editedBy": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "editedAt": {
+    "$date": "2025-12-29T15:32:10.294Z"
+  },
+  "createdAt": {
+    "$date": "2025-12-29T15:32:10.295Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T15:32:10.295Z"
+  },
+  "__v": 0
+}]

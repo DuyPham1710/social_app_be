@@ -1,0 +1,457 @@
+[{
+  "_id": {
+    "$oid": "6937016485b361bbd65b9ddc"
+  },
+  "participants": [
+    {
+      "$oid": "68bf302ef3c2c3be11b55c2e"
+    },
+    {
+      "$oid": "68bf3012f3c2c3be11b55c12"
+    }
+  ],
+  "isGroup": false,
+  "createdBy": {
+    "$oid": "68bf302ef3c2c3be11b55c2e"
+  },
+  "avatar": null,
+  "lastMessageId": {
+    "$oid": "6937016d85b361bbd65b9def"
+  },
+  "createdAt": {
+    "$date": "2025-12-08T16:48:36.695Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-08T16:48:45.683Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "693701e385b361bbd65b9efa"
+  },
+  "participants": [
+    {
+      "$oid": "692eaf8aea14ed134931f69d"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "isGroup": false,
+  "createdBy": {
+    "$oid": "692eaf8aea14ed134931f69d"
+  },
+  "avatar": null,
+  "lastMessageId": {
+    "$oid": "6937029685b361bbd65ba170"
+  },
+  "createdAt": {
+    "$date": "2025-12-08T16:50:43.942Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-08T16:53:42.349Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "693717d485b361bbd65bb63e"
+  },
+  "participants": [
+    {
+      "$oid": "68e9d3fa7ae32fe700d1d3cc"
+    },
+    {
+      "$oid": "692e8533ea14ed134931f699"
+    }
+  ],
+  "isGroup": false,
+  "createdBy": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "avatar": null,
+  "lastMessageId": {
+    "$oid": "6937187685b361bbd65bbd4c"
+  },
+  "createdAt": {
+    "$date": "2025-12-08T18:24:20.728Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-08T18:27:02.027Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "693717fb85b361bbd65bb6a4"
+  },
+  "participants": [
+    {
+      "$oid": "68e9d3fa7ae32fe700d1d3cc"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "isGroup": false,
+  "createdBy": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "avatar": null,
+  "lastMessageId": {
+    "$oid": "69465f06d4ab4789f616b171"
+  },
+  "createdAt": {
+    "$date": "2025-12-08T18:24:59.985Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-20T08:32:06.337Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6937180385b361bbd65bb6b8"
+  },
+  "participants": [
+    {
+      "$oid": "68e9d3fa7ae32fe700d1d3cc"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "isGroup": false,
+  "createdBy": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "avatar": null,
+  "lastMessageId": {
+    "$oid": "695289dda9f7d97aeaa9f32c"
+  },
+  "createdAt": {
+    "$date": "2025-12-08T18:25:07.587Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T14:02:05.030Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6937188f85b361bbd65bbd95"
+  },
+  "participants": [
+    {
+      "$oid": "68e9d3fa7ae32fe700d1d3cc"
+    },
+    {
+      "$oid": "692eaf8aea14ed134931f69d"
+    }
+  ],
+  "isGroup": false,
+  "createdBy": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "avatar": null,
+  "lastMessageId": {
+    "$oid": "693db346bfb78d7105c332da"
+  },
+  "createdAt": {
+    "$date": "2025-12-08T18:27:27.849Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-13T18:41:10.931Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6937189f85b361bbd65bbdd6"
+  },
+  "participants": [
+    {
+      "$oid": "68e9d3fa7ae32fe700d1d3cc"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "isGroup": false,
+  "createdBy": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "avatar": null,
+  "lastMessageId": {
+    "$oid": "693718ab85b361bbd65bbe21"
+  },
+  "createdAt": {
+    "$date": "2025-12-08T18:27:43.865Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-08T18:27:55.962Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69371a2985b361bbd65bcbb3"
+  },
+  "participants": [
+    {
+      "$oid": "68e9d3fa7ae32fe700d1d3cc"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    }
+  ],
+  "isGroup": false,
+  "createdBy": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "avatar": null,
+  "lastMessageId": {
+    "$oid": "6952a03fa9f7d97aeaaa2879"
+  },
+  "createdAt": {
+    "$date": "2025-12-08T18:34:17.884Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T15:37:35.438Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69371ce885b361bbd65bdcc2"
+  },
+  "participants": [
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "isGroup": false,
+  "createdBy": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "avatar": null,
+  "lastMessageId": {
+    "$oid": "694ec4dc29e8584a376f3b2a"
+  },
+  "createdAt": {
+    "$date": "2025-12-08T18:46:00.874Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T17:24:44.842Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "693ef5a1333695dfc36a0cff"
+  },
+  "participants": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "isGroup": false,
+  "createdBy": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "avatar": null,
+  "lastMessageId": {
+    "$oid": "69505fe312a3e4c73285ffb8"
+  },
+  "createdAt": {
+    "$date": "2025-12-14T17:36:33.581Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:38:27.688Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69418309b07005f422968aed"
+  },
+  "participants": [
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "isGroup": false,
+  "createdBy": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "avatar": null,
+  "lastMessageId": {
+    "$oid": "694846c7cc4a86fbed0577af"
+  },
+  "createdAt": {
+    "$date": "2025-12-16T16:04:25.898Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T19:13:11.949Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69418317b07005f422968b4a"
+  },
+  "participants": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    }
+  ],
+  "isGroup": false,
+  "createdBy": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "avatar": null,
+  "lastMessageId": {
+    "$oid": "6949052d7bba92403b2dbf36"
+  },
+  "createdAt": {
+    "$date": "2025-12-16T16:04:39.665Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-22T08:45:33.914Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694820e742e50143d39815b1"
+  },
+  "participants": [
+    {
+      "$oid": "692eafbcea14ed134931f69e"
+    },
+    {
+      "$oid": "692eaf8aea14ed134931f69d"
+    }
+  ],
+  "isGroup": false,
+  "createdBy": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "avatar": null,
+  "lastMessageId": null,
+  "createdAt": {
+    "$date": "2025-12-21T16:31:35.624Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T16:31:35.624Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69486a76cc4a86fbed05841a"
+  },
+  "participants": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    }
+  ],
+  "isGroup": false,
+  "createdBy": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "avatar": null,
+  "lastMessageId": {
+    "$oid": "69505fdf12a3e4c73285ff86"
+  },
+  "createdAt": {
+    "$date": "2025-12-21T21:45:26.442Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:38:23.476Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6950307f482d3ecc94007668"
+  },
+  "participants": [
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "isGroup": true,
+  "createdBy": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "avatar": null,
+  "lastMessageId": {
+    "$oid": "695060f112a3e4c732860b05"
+  },
+  "createdAt": {
+    "$date": "2025-12-27T19:16:15.332Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:42:57.539Z"
+  },
+  "__v": 0,
+  "name": "TLCN"
+},
+{
+  "_id": {
+    "$oid": "6952a08aa9f7d97aeaaa29c3"
+  },
+  "participants": [
+    {
+      "$oid": "68e9d3fa7ae32fe700d1d3cc"
+    },
+    {
+      "$oid": "691c8e727bf4590336b82c50"
+    },
+    {
+      "$oid": "692eb012ea14ed134931f6a0"
+    },
+    {
+      "$oid": "68db9745315196ebcc79a941"
+    }
+  ],
+  "isGroup": true,
+  "name": "TLCN Nhóm 3",
+  "createdBy": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "avatar": null,
+  "lastMessageId": {
+    "$oid": "6952a0d4a9f7d97aeaaa2d23"
+  },
+  "createdAt": {
+    "$date": "2025-12-29T15:38:50.803Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T15:40:28.277Z"
+  },
+  "__v": 0
+}]

@@ -1,0 +1,40 @@
+[{
+  "_id": {
+    "$oid": "695295c3a9f7d97aeaaa0708"
+  },
+  "commentId": {
+    "$oid": "69529480a9f7d97aeaaa04cb"
+  },
+  "oldContent": "@[Nguyễn Hữu Ngọc Lam](691c8e727bf4590336b82c50) đẹp quá vậy",
+  "newContent": "@[Nguyễn Hữu Ngọc Lam](691c8e727bf4590336b82c50)  đẹp quá vậy ta 1",
+  "editedBy": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "createdAt": {
+    "$date": "2025-12-29T14:52:51.392Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T14:52:51.392Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695295cca9f7d97aeaaa0725"
+  },
+  "commentId": {
+    "$oid": "69529480a9f7d97aeaaa04cb"
+  },
+  "oldContent": "@[Nguyễn Hữu Ngọc Lam](691c8e727bf4590336b82c50)  đẹp quá vậy ta 1",
+  "newContent": "@[Nguyễn Hữu Ngọc Lam](691c8e727bf4590336b82c50)   đẹp quá vậy ta 2",
+  "editedBy": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "createdAt": {
+    "$date": "2025-12-29T14:53:00.419Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T14:53:00.419Z"
+  },
+  "__v": 0
+}]

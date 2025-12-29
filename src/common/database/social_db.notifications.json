@@ -1,0 +1,2876 @@
+[{
+  "_id": {
+    "$oid": "694ec04429e8584a376f1f1b"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "694ec04429e8584a376f1f17"
+  },
+  "message": " đã bình luận về bài viết của bạn: \"mèo đáng yêu quá ta\"",
+  "content": "693fe433c5174f26aba0cf7c",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-26T17:05:08.637Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T17:30:54.728Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694ec0d529e8584a376f2281"
+  },
+  "receiver": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "694ec0d529e8584a376f227d"
+  },
+  "message": " đã bình luận về bài viết của bạn: \"Đi Đà Lạt không cậu\"",
+  "content": "69370d1685b361bbd65bb0aa",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-26T17:07:33.730Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T17:09:28.026Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694ec13529e8584a376f2491"
+  },
+  "receiver": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "sender": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "type": "COMMENT_REACTION",
+  "targetId": {
+    "$oid": "694ec0d529e8584a376f227d"
+  },
+  "message": "đã thả cảm xúc về bình luận của bạn: \"haha\"",
+  "content": "69370d1685b361bbd65bb0aa",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-26T17:09:09.459Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T17:09:40.101Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694ec14229e8584a376f24cc"
+  },
+  "receiver": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "sender": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "694ec14229e8584a376f24c5"
+  },
+  "message": "đã nhắc đến bạn trong một bình luận: \"@[Nguyễn Hữu Ngọc Lam](691c8e727bf4590336b82c50) dứt nuôn nào\"",
+  "content": "69370d1685b361bbd65bb0aa",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-26T17:09:22.054Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-26T17:09:40.101Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6950098a87579629e72ec4c1"
+  },
+  "receiver": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "6950098a87579629e72ec4ba"
+  },
+  "message": "đã nhắc đến bạn trong một bình luận: \"@[Nguyễn Văn Luân](68db9745315196ebcc79a941) vậy cuối tuần sau nhé\"",
+  "content": "69370d1685b361bbd65bb0aa",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T16:30:02.890Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T16:54:09.372Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6950099887579629e72ec4db"
+  },
+  "receiver": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "COMMENT_REACTION",
+  "targetId": {
+    "$oid": "694ec14229e8584a376f24c5"
+  },
+  "message": "đã thả cảm xúc về bình luận của bạn: \"love\"",
+  "content": "69370d1685b361bbd65bb0aa",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T16:30:16.986Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T16:54:09.372Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695009bc87579629e72ec720"
+  },
+  "receiver": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "POST_REPORT_REVIEWED",
+  "targetId": {
+    "$oid": "694ea81f29e8584a376ede90"
+  },
+  "message": "Báo cáo về \"🔴 Tin rất tích cực từ Liverpool |\n\n🩺 Đội ngũ y t...\" đã bị ẩn do vi phạm tiêu chuẩn cộng đồng",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T16:30:52.987Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T16:31:56.147Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695009d187579629e72ec743"
+  },
+  "receiver": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "COMMENT_REACTION",
+  "targetId": {
+    "$oid": "694ec14229e8584a376f24c5"
+  },
+  "message": "đã thả cảm xúc về bình luận của bạn: \"love\"",
+  "content": "69370d1685b361bbd65bb0aa",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T16:31:13.522Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T16:54:09.372Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69500a4c87579629e72ec9d5"
+  },
+  "receiver": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "POST_REPORT_REVIEWED",
+  "targetId": {
+    "$oid": "693dad37037a7ccec0d44761"
+  },
+  "message": "Báo cáo về \"1 ngày đẹp trời\" đã bị ẩn do vi phạm tiêu chuẩn cộng đồng",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T16:33:16.151Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T16:33:25.587Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69500f5bac8e7c88e0f86bd5"
+  },
+  "receiver": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "69500f5bac8e7c88e0f86bd0"
+  },
+  "message": "đã nhắc đến bạn trong một bình luận: \"@[Nguyễn Văn Luân](68db9745315196ebcc79a941) nào mua con nuôi nào\"",
+  "content": "693fe433c5174f26aba0cf7c",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T16:54:51.902Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T16:56:10.193Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695019daac8e7c88e0f87f0a"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "type": "POST_REPORT_REVIEWED",
+  "targetId": {
+    "$oid": "693fe433c5174f26aba0cf7c"
+  },
+  "message": "Báo cáo về \"mèo xinh\" đã bị ẩn do vi phạm tiêu chuẩn cộng đồng",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T17:39:38.437Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T17:56:30.951Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69501c29ac8e7c88e0f87f83"
+  },
+  "receiver": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "sender": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "69501c29ac8e7c88e0f87f7c"
+  },
+  "message": "đã nhắc đến bạn trong một bình luận: \"@[Nguyễn Hữu Ngọc Lam](691c8e727bf4590336b82c50) haha\"",
+  "content": "693fe433c5174f26aba0cf7c",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T17:49:29.138Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T17:55:38.667Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69501c68ac8e7c88e0f87f9e"
+  },
+  "receiver": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "sender": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "type": "COMMENT_REACTION",
+  "targetId": {
+    "$oid": "694ec04429e8584a376f1f17"
+  },
+  "message": "đã thả cảm xúc về bình luận của bạn: \"haha\"",
+  "content": "693fe433c5174f26aba0cf7c",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T17:50:32.009Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T17:55:38.667Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69501c84ac8e7c88e0f880a5"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "69501c84ac8e7c88e0f8809e"
+  },
+  "message": "đã nhắc đến bạn trong một bình luận: \"@[Bùi Thị Hồng Nhung](692eb012ea14ed134931f6a0) sao lại haha\"",
+  "content": "693fe433c5174f26aba0cf7c",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T17:51:00.678Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T17:56:30.951Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69501ca2ac8e7c88e0f8817d"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "69501ca2ac8e7c88e0f88179"
+  },
+  "message": " đã bình luận về bài viết của bạn: \"úuuu\"",
+  "content": "693fe433c5174f26aba0cf7c",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T17:51:30.224Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T17:56:30.951Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69501ca6ac8e7c88e0f8819f"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "COMMENT_REACTION",
+  "targetId": {
+    "$oid": "69501c29ac8e7c88e0f87f7c"
+  },
+  "message": "đã thả cảm xúc về bình luận của bạn: \"haha\"",
+  "content": "693fe433c5174f26aba0cf7c",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T17:51:34.089Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T17:56:30.951Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69501ca6ac8e7c88e0f881aa"
+  },
+  "receiver": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "sender": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "type": "COMMENT_REACTION",
+  "targetId": {
+    "$oid": "69501ca2ac8e7c88e0f88179"
+  },
+  "message": "đã thả cảm xúc về bình luận của bạn: \"angry\"",
+  "content": "693fe433c5174f26aba0cf7c",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T17:51:34.648Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T17:55:36.650Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69501cc3ac8e7c88e0f88205"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "type": "POST_REACTION",
+  "targetId": {
+    "$oid": "693fe433c5174f26aba0cf7c"
+  },
+  "message": " đã bày tỏ cảm xúc về bài viết của bạn: \"love\"",
+  "content": "love",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T17:52:03.273Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T17:56:30.951Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69501cc5ac8e7c88e0f8821f"
+  },
+  "receiver": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "sender": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "type": "COMMENT_REACTION",
+  "targetId": {
+    "$oid": "69501ca2ac8e7c88e0f88179"
+  },
+  "message": "đã thả cảm xúc về bình luận của bạn: \"angry\"",
+  "content": "693fe433c5174f26aba0cf7c",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T17:52:05.492Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T17:55:36.650Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69501d45ac8e7c88e0f883de"
+  },
+  "receiver": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "sender": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "type": "POST_REACTION",
+  "targetId": {
+    "$oid": "69370d1685b361bbd65bb0aa"
+  },
+  "message": " đã bày tỏ cảm xúc về bài viết của bạn: \"like\"",
+  "content": "like",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T17:54:13.829Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T17:55:36.650Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69501d53ac8e7c88e0f88409"
+  },
+  "receiver": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "sender": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "type": "POST_REACTION",
+  "targetId": {
+    "$oid": "69370d1685b361bbd65bb0aa"
+  },
+  "message": " đã bày tỏ cảm xúc về bài viết của bạn: \"like\"",
+  "content": "like",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T17:54:27.111Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T17:55:36.650Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69501d74ac8e7c88e0f885aa"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "type": "POST_REACTION",
+  "targetId": {
+    "$oid": "693fe433c5174f26aba0cf7c"
+  },
+  "message": " đã bày tỏ cảm xúc về bài viết của bạn: \"haha\"",
+  "content": "haha",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T17:55:00.823Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T17:56:30.951Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69501ddeac8e7c88e0f887c8"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "POST_REACTION",
+  "targetId": {
+    "$oid": "693fe433c5174f26aba0cf7c"
+  },
+  "message": " đã bày tỏ cảm xúc về bài viết của bạn: \"like\"",
+  "content": "like",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T17:56:46.657Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T17:57:15.826Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69501eb3ac8e7c88e0f889f8"
+  },
+  "receiver": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "POST_REPORT_REVIEWED",
+  "targetId": {
+    "$oid": "69500c29ac8e7c88e0f862b2"
+  },
+  "message": "Báo cáo về \"Thông báo 🥳Đúng 0h ngày 1/1/2026 tại TP Mới Bình ...\" đã bị ẩn do vi phạm tiêu chuẩn cộng đồng",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T18:00:19.834Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T18:00:29.982Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69502092ac8e7c88e0f88bb9"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "6950207aac8e7c88e0f88afd"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"love\"",
+  "content": "love",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T18:08:18.228Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T18:08:46.074Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69502096ac8e7c88e0f88bf0"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "6950207aac8e7c88e0f88afd"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"love\"",
+  "content": "love",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T18:08:22.083Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T18:08:46.074Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69502096ac8e7c88e0f88c2c"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "6950207aac8e7c88e0f88afd"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"love\"",
+  "content": "love",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T18:08:22.649Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T18:08:46.074Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69502096ac8e7c88e0f88c3c"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "6950207aac8e7c88e0f88afd"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"love\"",
+  "content": "love",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T18:08:22.798Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T18:08:46.074Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69502097ac8e7c88e0f88cb2"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "6950207aac8e7c88e0f88afd"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"love\"",
+  "content": "love",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T18:08:23.395Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T18:08:46.074Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6950209dac8e7c88e0f88d4b"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "6950207aac8e7c88e0f88afd"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"love\"",
+  "content": "love",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T18:08:29.094Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T18:08:46.074Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695022b2ac8e7c88e0f897f2"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "POST_REACTION",
+  "targetId": {
+    "$oid": "695022a3ac8e7c88e0f89516"
+  },
+  "message": " đã bày tỏ cảm xúc về bài viết của bạn: \"like\"",
+  "content": "like",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T18:17:22.488Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T18:36:18.672Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695022b7ac8e7c88e0f89844"
+  },
+  "receiver": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "695022b7ac8e7c88e0f8983f"
+  },
+  "message": "đã nhắc đến bạn trong một bình luận: \"@[Nguyễn Văn Luân](68db9745315196ebcc79a941) \"",
+  "content": "695022a3ac8e7c88e0f89516",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T18:17:27.607Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T18:20:14.038Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695027dbac8e7c88e0f8a569"
+  },
+  "receiver": {
+    "$oid": "692eaf8aea14ed134931f69d"
+  },
+  "sender": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "type": "FRIEND_REQUEST",
+  "targetId": {
+    "$oid": "695027dbac8e7c88e0f8a567"
+  },
+  "message": "Bạn có lời mời kết bạn mới",
+  "content": "",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T18:39:23.558Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T21:52:09.788Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695027dbac8e7c88e0f8a577"
+  },
+  "receiver": {
+    "$oid": "692e8533ea14ed134931f699"
+  },
+  "sender": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "type": "FRIEND_REQUEST",
+  "targetId": {
+    "$oid": "695027dbac8e7c88e0f8a575"
+  },
+  "message": "Bạn có lời mời kết bạn mới",
+  "content": "",
+  "isRead": false,
+  "createdAt": {
+    "$date": "2025-12-27T18:39:23.905Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T18:39:23.905Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695029d5943039f6a3926078"
+  },
+  "receiver": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "695029d5943039f6a3926073"
+  },
+  "message": "đã nhắc đến bạn trong một bình luận: \"@[Nguyễn Văn Luân](68db9745315196ebcc79a941) \"",
+  "content": "695022a3ac8e7c88e0f89516",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T18:47:49.439Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T18:48:13.138Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695029f8943039f6a39260c0"
+  },
+  "receiver": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "695029f8943039f6a39260bb"
+  },
+  "message": "đã nhắc đến bạn trong một bình luận: \"@[Nguyễn Văn Luân](68db9745315196ebcc79a941) đi chơi không\"",
+  "content": "695022a3ac8e7c88e0f89516",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T18:48:24.641Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T19:07:35.891Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69502b2912779dd7670a4070"
+  },
+  "receiver": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "69502b2912779dd7670a406a"
+  },
+  "message": "đã nhắc đến bạn trong một bình luận: \"@[Nguyễn Văn Luân](68db9745315196ebcc79a941) đi chơi nhé\"",
+  "content": "695022a3ac8e7c88e0f89516",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T18:53:29.691Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T19:07:35.891Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69502c28a7779dc28f6d1172"
+  },
+  "receiver": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "69502c28a7779dc28f6d116c"
+  },
+  "message": "đã nhắc đến bạn trong một bình luận: \"@[Nguyễn Văn Luân](68db9745315196ebcc79a941) hi\"",
+  "content": "695022a3ac8e7c88e0f89516",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T18:57:44.241Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T19:07:35.891Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69502cd6a7779dc28f6d1442"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "POST_REACTION",
+  "targetId": {
+    "$oid": "695022a3ac8e7c88e0f89516"
+  },
+  "message": " đã bày tỏ cảm xúc về bài viết của bạn: \"like\"",
+  "content": "like",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T19:00:38.788Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T19:00:44.177Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69502cfca7779dc28f6d15f6"
+  },
+  "receiver": {
+    "$oid": "692eaf8aea14ed134931f69d"
+  },
+  "sender": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "type": "FRIEND_REQUEST",
+  "targetId": {
+    "$oid": "69502cfca7779dc28f6d15f4"
+  },
+  "message": "Bạn có lời mời kết bạn mới",
+  "content": "",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T19:01:16.544Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T21:52:09.788Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69502e4d401e4a54089c0b1c"
+  },
+  "receiver": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "69502e4d401e4a54089c0b11"
+  },
+  "message": "đã nhắc đến bạn trong một bình luận: \"@[Nguyễn Văn Luân](68db9745315196ebcc79a941) \"",
+  "content": "695022a3ac8e7c88e0f89516",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T19:06:53.779Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T19:07:35.891Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69502e5f401e4a54089c0b70"
+  },
+  "receiver": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "69502e5f401e4a54089c0b65"
+  },
+  "message": "đã nhắc đến bạn trong một bình luận: \"@[Nguyễn Văn Luân](68db9745315196ebcc79a941) \"",
+  "content": "695022a3ac8e7c88e0f89516",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T19:07:11.141Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T19:07:35.891Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69502e8c401e4a54089c0e0e"
+  },
+  "receiver": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "69502e8c401e4a54089c0e03"
+  },
+  "message": "đã nhắc đến bạn trong một bình luận: \"@[Nguyễn Văn Luân](68db9745315196ebcc79a941) \"",
+  "content": "695022a3ac8e7c88e0f89516",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T19:07:56.210Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T19:40:28.102Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69502f5b401e4a54089c1288"
+  },
+  "receiver": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "69502f5b401e4a54089c127c"
+  },
+  "message": "đã nhắc đến bạn trong một bình luận: \"@[Nguyễn Văn Luân](68db9745315196ebcc79a941) \"",
+  "content": "695022a3ac8e7c88e0f89516",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T19:11:23.398Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T19:40:28.102Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69502fb2401e4a54089c1376"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "69502fb2401e4a54089c136b"
+  },
+  "message": "đã nhắc đến bạn trong một bình luận: \"@[Bùi Thị Hồng Nhung](692eb012ea14ed134931f6a0) \"",
+  "content": "695022a3ac8e7c88e0f89516",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T19:12:50.461Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T19:27:25.551Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69503046482d3ecc9400763c"
+  },
+  "receiver": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "69503046482d3ecc94007631"
+  },
+  "message": "đã nhắc đến bạn trong một bình luận: \"@[Phạm Ngọc Duy](68e9d3fa7ae32fe700d1d3cc) \"",
+  "content": "695022a3ac8e7c88e0f89516",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T19:15:18.995Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T21:50:16.197Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69503197482d3ecc94007a44"
+  },
+  "receiver": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "69503197482d3ecc94007a39"
+  },
+  "message": "đã nhắc đến bạn trong một bình luận: \"@[Nguyễn Văn Luân](68db9745315196ebcc79a941) \"",
+  "content": "695022a3ac8e7c88e0f89516",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T19:20:55.785Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T19:40:28.102Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695031b5482d3ecc94007b53"
+  },
+  "receiver": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "695031b5482d3ecc94007b48"
+  },
+  "message": "đã nhắc đến bạn trong một bình luận: \"@[Nguyễn Văn Luân](68db9745315196ebcc79a941) \"",
+  "content": "695022a3ac8e7c88e0f89516",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T19:21:25.337Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T19:40:28.102Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69503a0e20ac9875a237ed52"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "POST_REACTION",
+  "targetId": {
+    "$oid": "693fe433c5174f26aba0cf7c"
+  },
+  "message": " đã bày tỏ cảm xúc về bài viết của bạn: \"like\"",
+  "content": "like",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T19:57:02.945Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T21:31:34.005Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69503b444848533dea3af810"
+  },
+  "receiver": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "69503b444848533dea3af806"
+  },
+  "message": "đã nhắc đến bạn trong một bình luận: \"@[Nguyễn Văn Luân](68db9745315196ebcc79a941) \"",
+  "content": "693fe3c4c5174f26aba0ca58",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T20:02:12.354Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T21:45:37.027Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6950500fd08bf76511226d4e"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "type": "POST_REACTION",
+  "targetId": {
+    "$oid": "695022a3ac8e7c88e0f89516"
+  },
+  "message": " đã bày tỏ cảm xúc về bài viết của bạn: \"like\"",
+  "content": "like",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T21:30:55.462Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T21:31:34.005Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69505022d08bf76511226dc0"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "type": "POST_REACTION",
+  "targetId": {
+    "$oid": "695022a3ac8e7c88e0f89516"
+  },
+  "message": " đã bày tỏ cảm xúc về bài viết của bạn: \"like\"",
+  "content": "like",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T21:31:14.681Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T21:31:34.005Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69505031d08bf76511226e32"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "type": "POST_REACTION",
+  "targetId": {
+    "$oid": "695022a3ac8e7c88e0f89516"
+  },
+  "message": " đã bày tỏ cảm xúc về bài viết của bạn: \"like\"",
+  "content": "like",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T21:31:29.264Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T21:31:34.005Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6950503ad08bf76511226e83"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "type": "POST_REACTION",
+  "targetId": {
+    "$oid": "695022a3ac8e7c88e0f89516"
+  },
+  "message": " đã bày tỏ cảm xúc về bài viết của bạn: \"like\"",
+  "content": "like",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T21:31:38.308Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T21:31:47.382Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695053166539418f3536c28a"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "type": "POST_REACTION",
+  "targetId": {
+    "$oid": "695050a2c979a3a9d7c0cc4a"
+  },
+  "message": " đã bày tỏ cảm xúc về bài viết của bạn: \"angry\"",
+  "content": "angry",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T21:43:50.530Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T21:44:10.196Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695053d76539418f3536c850"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "POST_REACTION",
+  "targetId": {
+    "$oid": "695050a2c979a3a9d7c0cc4a"
+  },
+  "message": " đã bày tỏ cảm xúc về bài viết của bạn: \"sad\"",
+  "content": "sad",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T21:47:03.423Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T21:55:06.280Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695053f56539418f3536c97f"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "695053f56539418f3536c97b"
+  },
+  "message": " đã bình luận về bài viết của bạn: \"Cũng ước được tặng \"",
+  "content": "695050a2c979a3a9d7c0cc4a",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T21:47:33.557Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T21:55:06.280Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695054576539418f3536cd14"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "type": "POST_REACTION",
+  "targetId": {
+    "$oid": "695050a2c979a3a9d7c0cc4a"
+  },
+  "message": " đã bày tỏ cảm xúc về bài viết của bạn: \"like\"",
+  "content": "like",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T21:49:11.619Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T21:55:06.280Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695054f36539418f3536d171"
+  },
+  "receiver": {
+    "$oid": "695053d56539418f3536c844"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "FRIEND_REQUEST",
+  "targetId": {
+    "$oid": "695054f36539418f3536d16f"
+  },
+  "message": "Bạn có lời mời kết bạn mới",
+  "content": "",
+  "isRead": false,
+  "createdAt": {
+    "$date": "2025-12-27T21:51:47.216Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T21:51:47.216Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695055276539418f3536d3a1"
+  },
+  "receiver": {
+    "$oid": "692eafdaea14ed134931f69f"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "FRIEND_REQUEST",
+  "targetId": {
+    "$oid": "695055276539418f3536d39f"
+  },
+  "message": "Bạn có lời mời kết bạn mới",
+  "content": "",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T21:52:39.927Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T21:53:21.547Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6950552b6539418f3536d3e1"
+  },
+  "receiver": {
+    "$oid": "692eafdaea14ed134931f69f"
+  },
+  "sender": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "type": "FRIEND_REQUEST",
+  "targetId": {
+    "$oid": "6950552b6539418f3536d3df"
+  },
+  "message": "Bạn có lời mời kết bạn mới",
+  "content": "",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T21:52:43.728Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T21:53:21.547Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695055356539418f3536d3fb"
+  },
+  "receiver": {
+    "$oid": "692eafdaea14ed134931f69f"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "FRIEND_REQUEST",
+  "targetId": {
+    "$oid": "695055356539418f3536d3f9"
+  },
+  "message": "Bạn có lời mời kết bạn mới",
+  "content": "",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T21:52:53.732Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T21:53:21.547Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6950554d6539418f3536d507"
+  },
+  "receiver": {
+    "$oid": "692eafdaea14ed134931f69f"
+  },
+  "sender": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "type": "FRIEND_REQUEST",
+  "targetId": {
+    "$oid": "6950554d6539418f3536d505"
+  },
+  "message": "Bạn có lời mời kết bạn mới",
+  "content": "",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T21:53:17.162Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T21:53:21.547Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695055b06539418f3536d648"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "type": "POST_REACTION",
+  "targetId": {
+    "$oid": "695050a2c979a3a9d7c0cc4a"
+  },
+  "message": " đã bày tỏ cảm xúc về bài viết của bạn: \"haha\"",
+  "content": "haha",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T21:54:56.792Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T21:55:06.280Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695056b76539418f3536dc66"
+  },
+  "receiver": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "sender": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "695056b76539418f3536dc5c"
+  },
+  "message": "đã nhắc đến bạn trong một bình luận: \"@[Nguyễn Văn Luân](68db9745315196ebcc79a941) &££¥\"",
+  "content": "695022a3ac8e7c88e0f89516",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T21:59:19.340Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:00:11.189Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695056f66539418f3536dd90"
+  },
+  "receiver": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "695056f66539418f3536dd86"
+  },
+  "message": "đã nhắc đến bạn trong một bình luận: \"@[Nguyễn Văn Luân](68db9745315196ebcc79a941) \"",
+  "content": "695022a3ac8e7c88e0f89516",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:00:22.327Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:05:16.345Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695057826539418f3536de47"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "type": "POST_REPORT_REVIEWED",
+  "targetId": {
+    "$oid": "693fe433c5174f26aba0cf7c"
+  },
+  "message": "Báo cáo về \"mèo xinh\" đã bị ẩn do vi phạm tiêu chuẩn cộng đồng",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:02:42.070Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:25:30.326Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695058941df799fd520e6a33"
+  },
+  "receiver": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "sender": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "695058941df799fd520e6a27"
+  },
+  "message": "đã nhắc đến bạn trong một bình luận: \"@[Nguyễn Hữu Ngọc Lam](691c8e727bf4590336b82c50) @[Bùi Thị Hồng Nhung](692eb012ea14ed134931f6a0) \"",
+  "content": "695058791df799fd520e69be",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:07:16.886Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:17:29.402Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695058941df799fd520e6a35"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "695058941df799fd520e6a27"
+  },
+  "message": "đã nhắc đến bạn trong một bình luận: \"@[Nguyễn Hữu Ngọc Lam](691c8e727bf4590336b82c50) @[Bùi Thị Hồng Nhung](692eb012ea14ed134931f6a0) \"",
+  "content": "695058791df799fd520e69be",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:07:16.888Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:25:30.326Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69505b111da39833d02c4a64"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "69505b111da39833d02c4a60"
+  },
+  "message": " đã bình luận về bài viết của bạn: \"😭😭\"",
+  "content": "695050a2c979a3a9d7c0cc4a",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:17:53.608Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:25:30.326Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69505b211da39833d02c4aad"
+  },
+  "receiver": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "sender": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "type": "COMMENT_REACTION",
+  "targetId": {
+    "$oid": "69505b111da39833d02c4a60"
+  },
+  "message": "đã thả cảm xúc về bình luận của bạn: \"sad\"",
+  "content": "695050a2c979a3a9d7c0cc4a",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:18:09.058Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:18:33.043Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69505ecb12a3e4c73285f558"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "69505eb112a3e4c73285f40e"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"angry\"",
+  "content": "angry",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:33:47.287Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:34:49.021Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69505ece12a3e4c73285f598"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "69505eb112a3e4c73285f40e"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"angry\"",
+  "content": "angry",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:33:50.002Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:34:49.021Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69505ece12a3e4c73285f5a3"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "69505eb112a3e4c73285f40e"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"love\"",
+  "content": "love",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:33:50.066Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:34:49.021Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69505ece12a3e4c73285f5e5"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "69505eb112a3e4c73285f40e"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"angry\"",
+  "content": "angry",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:33:50.508Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:34:49.021Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69505ed712a3e4c73285f67b"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "69505eb112a3e4c73285f40e"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"love\"",
+  "content": "love",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:33:59.251Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:34:49.021Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69505ed712a3e4c73285f6d5"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "69505eb112a3e4c73285f40e"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"love\"",
+  "content": "love",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:33:59.651Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:34:49.021Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69505edb12a3e4c73285f790"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "69505eb112a3e4c73285f40e"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"like\"",
+  "content": "like",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:34:03.737Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:34:49.021Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69505edc12a3e4c73285f7d4"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "69505eb112a3e4c73285f40e"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"like\"",
+  "content": "like",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:34:04.133Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:34:49.021Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69505edc12a3e4c73285f7df"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "69505eb112a3e4c73285f40e"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"love\"",
+  "content": "love",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:34:04.234Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:34:49.021Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69505edc12a3e4c73285f844"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "69505eb112a3e4c73285f40e"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"love\"",
+  "content": "love",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:34:04.586Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:34:49.021Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69505edc12a3e4c73285f8c1"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "69505eb112a3e4c73285f40e"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"love\"",
+  "content": "love",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:34:04.905Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:34:49.021Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69505edd12a3e4c73285f8fa"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "69505eb112a3e4c73285f40e"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"love\"",
+  "content": "love",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:34:05.153Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:34:49.021Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69505edd12a3e4c73285f913"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "69505eb112a3e4c73285f40e"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"like\"",
+  "content": "like",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:34:05.344Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:34:49.021Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69505edd12a3e4c73285f94d"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "69505eb112a3e4c73285f40e"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"love\"",
+  "content": "love",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:34:05.615Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:34:49.021Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69505edd12a3e4c73285f97e"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "69505eb112a3e4c73285f40e"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"love\"",
+  "content": "love",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:34:05.695Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:34:49.021Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69505edd12a3e4c73285f98d"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "69505eb112a3e4c73285f40e"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"like\"",
+  "content": "like",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:34:05.713Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:34:49.021Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69505ede12a3e4c73285fa02"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "69505eb112a3e4c73285f40e"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"love\"",
+  "content": "love",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:34:06.055Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:34:49.021Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69505ede12a3e4c73285fa5e"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "69505eb112a3e4c73285f40e"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"love\"",
+  "content": "love",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:34:06.295Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:34:49.021Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69505ede12a3e4c73285fa9b"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "69505eb112a3e4c73285f40e"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"love\"",
+  "content": "love",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:34:06.701Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:34:49.021Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69505edf12a3e4c73285faab"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "69505eb112a3e4c73285f40e"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"love\"",
+  "content": "love",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:34:07.013Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:34:49.021Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69505edf12a3e4c73285faf2"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "69505eb112a3e4c73285f40e"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"love\"",
+  "content": "love",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:34:07.354Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:34:49.021Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69505edf12a3e4c73285fb36"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "69505eb112a3e4c73285f40e"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"love\"",
+  "content": "love",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:34:07.465Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:34:49.021Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69505ef012a3e4c73285fbd2"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "69505eb112a3e4c73285f40e"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"like\"",
+  "content": "like",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:34:24.595Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:34:49.021Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69505ef112a3e4c73285fbf9"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "69505eb112a3e4c73285f40e"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"like\"",
+  "content": "like",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:34:25.077Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:34:49.021Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69505ef112a3e4c73285fc40"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "69505eb112a3e4c73285f40e"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"like\"",
+  "content": "like",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:34:25.721Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:34:49.021Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69505ef212a3e4c73285fc85"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "69505eb112a3e4c73285f40e"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"like\"",
+  "content": "like",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:34:26.203Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:34:49.021Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69505ef612a3e4c73285fcb3"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "69505eb112a3e4c73285f40e"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"like\"",
+  "content": "like",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-27T22:34:30.452Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:34:49.021Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69528b1da9f7d97aeaaa0002"
+  },
+  "receiver": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "sender": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "type": "POST_REACTION",
+  "targetId": {
+    "$oid": "69500c29ac8e7c88e0f862b2"
+  },
+  "message": " đã bày tỏ cảm xúc về bài viết của bạn: \"love\"",
+  "content": "love",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-29T14:07:25.332Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T14:07:38.052Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69528b1ea9f7d97aeaaa001b"
+  },
+  "receiver": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "POST_REACTION",
+  "targetId": {
+    "$oid": "6936f556c056d11975827167"
+  },
+  "message": " đã bày tỏ cảm xúc về bài viết của bạn: \"like\"",
+  "content": "like",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-29T14:07:26.646Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T15:40:15.166Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69528b33a9f7d97aeaaa0190"
+  },
+  "receiver": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "sender": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "type": "POST_REACTION",
+  "targetId": {
+    "$oid": "693fe3c4c5174f26aba0ca58"
+  },
+  "message": " đã bày tỏ cảm xúc về bài viết của bạn: \"haha\"",
+  "content": "haha",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-29T14:07:47.856Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T14:55:48.022Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69528b4da9f7d97aeaaa0249"
+  },
+  "receiver": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "sender": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "69528b4da9f7d97aeaaa0245"
+  },
+  "message": " đã bình luận về bài viết của bạn: \"good time\"",
+  "content": "693fe3c4c5174f26aba0ca58",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-29T14:08:13.953Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T14:55:48.022Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69528b4fa9f7d97aeaaa0259"
+  },
+  "receiver": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "69528b4fa9f7d97aeaaa0255"
+  },
+  "message": " đã bình luận về bài viết của bạn: \"Hoàng hôn ở quê hả\nĐẹp quá\"",
+  "content": "693fe3c4c5174f26aba0ca58",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-29T14:08:15.416Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T14:55:48.022Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69529441a9f7d97aeaaa048e"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "type": "POST_REACTION",
+  "targetId": {
+    "$oid": "695050a2c979a3a9d7c0cc4a"
+  },
+  "message": " đã bày tỏ cảm xúc về bài viết của bạn: \"haha\"",
+  "content": "haha",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-29T14:46:25.256Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T15:09:59.597Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69529480a9f7d97aeaaa04d5"
+  },
+  "receiver": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "sender": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "69529480a9f7d97aeaaa04cb"
+  },
+  "message": "đã nhắc đến bạn trong một bình luận: \"@[Nguyễn Hữu Ngọc Lam](691c8e727bf4590336b82c50) đẹp quá vậy\"",
+  "content": "695050a2c979a3a9d7c0cc4a",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-29T14:47:28.573Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T14:54:34.332Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6952948ca9f7d97aeaaa0525"
+  },
+  "receiver": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "COMMENT_REACTION",
+  "targetId": {
+    "$oid": "69529480a9f7d97aeaaa04cb"
+  },
+  "message": "đã thả cảm xúc về bình luận của bạn: \"love\"",
+  "content": "695050a2c979a3a9d7c0cc4a",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-29T14:47:40.006Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T14:55:48.022Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695294a2a9f7d97aeaaa0545"
+  },
+  "receiver": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "sender": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "695294a2a9f7d97aeaaa053b"
+  },
+  "message": "đã nhắc đến bạn trong một bình luận: \"@[Nguyễn Hữu Ngọc Lam](691c8e727bf4590336b82c50) ghe chưa\"",
+  "content": "695050a2c979a3a9d7c0cc4a",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-29T14:48:02.877Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T14:54:34.332Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695294bfa9f7d97aeaaa0565"
+  },
+  "receiver": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "sender": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "695294bfa9f7d97aeaaa0558"
+  },
+  "message": "đã nhắc đến bạn trong một bình luận: \"@[Phạm Ngọc Duy](68e9d3fa7ae32fe700d1d3cc) tất nhiên rồi\"",
+  "content": "695050a2c979a3a9d7c0cc4a",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-29T14:48:31.958Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T14:55:48.022Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695294e1a9f7d97aeaaa05c4"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "type": "COMMENT_REACTION",
+  "targetId": {
+    "$oid": "695294bfa9f7d97aeaaa0558"
+  },
+  "message": "đã thả cảm xúc về bình luận của bạn: \"love\"",
+  "content": "695050a2c979a3a9d7c0cc4a",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-29T14:49:05.691Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T15:09:59.597Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69529583a9f7d97aeaaa06ae"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "type": "POST_COMMENT",
+  "targetId": {
+    "$oid": "69529583a9f7d97aeaaa06aa"
+  },
+  "message": " đã bình luận về bài viết của bạn: \"a\"",
+  "content": "695050a2c979a3a9d7c0cc4a",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-29T14:51:47.747Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T15:09:59.597Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695299bba9f7d97aeaaa1896"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "695289d5a9f7d97aeaa9f325"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"like\"",
+  "content": "like",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-29T15:09:47.659Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T15:09:59.597Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695299e6a9f7d97aeaaa1a09"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "695289d5a9f7d97aeaa9f325"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"love\"",
+  "content": "love",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-29T15:10:30.209Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T15:10:38.086Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69529af8a9f7d97aeaaa1a49"
+  },
+  "receiver": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "sender": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "695289d5a9f7d97aeaa9f325"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"wow\"",
+  "content": "wow",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-29T15:15:04.530Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T15:15:23.805Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69529b87a9f7d97aeaaa1c08"
+  },
+  "receiver": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "sender": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "type": "STORY_REACTION",
+  "targetId": {
+    "$oid": "69529b76a9f7d97aeaaa1b92"
+  },
+  "message": " đã bày tỏ cảm xúc về tin của bạn của bạn: \"love\"",
+  "content": "love",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-29T15:17:27.604Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T15:17:34.434Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69529c2aa9f7d97aeaaa1e60"
+  },
+  "receiver": {
+    "$oid": "692eafbcea14ed134931f69e"
+  },
+  "sender": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "type": "FRIEND_REQUEST",
+  "targetId": {
+    "$oid": "69529c2aa9f7d97aeaaa1e5e"
+  },
+  "message": "Bạn có lời mời kết bạn mới",
+  "content": "",
+  "isRead": false,
+  "createdAt": {
+    "$date": "2025-12-29T15:20:10.234Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T15:20:10.234Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6952a2caa9f7d97aeaaa342f"
+  },
+  "receiver": {
+    "$oid": "692eaf8aea14ed134931f69d"
+  },
+  "type": "POST_REPORT_REVIEWED",
+  "targetId": {
+    "$oid": "69370e8685b361bbd65bb3fe"
+  },
+  "message": "Báo cáo về \"Một buổi tối xem phim ấm cúng. 🍿\" đã bị ẩn do vi phạm tiêu chuẩn cộng đồng",
+  "isRead": true,
+  "createdAt": {
+    "$date": "2025-12-29T15:48:26.598Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T15:50:57.368Z"
+  },
+  "__v": 0
+}]

@@ -1,0 +1,141 @@
+[{
+  "_id": {
+    "$oid": "6948392715df6270d4113207"
+  },
+  "postId": {
+    "$oid": "6937155085b361bbd65bb58a"
+  },
+  "userId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "reason": "Thông tin sai lệch",
+  "status": "reviewed",
+  "createdAt": {
+    "$date": "2025-12-21T18:15:03.117Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-21T18:16:26.714Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695009a387579629e72ec585"
+  },
+  "postId": {
+    "$oid": "694ea81f29e8584a376ede90"
+  },
+  "userId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "reason": "Thông tin sai lệch",
+  "status": "rejected",
+  "createdAt": {
+    "$date": "2025-12-27T16:30:27.714Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T16:32:10.266Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69500a3b87579629e72ec965"
+  },
+  "postId": {
+    "$oid": "693dad37037a7ccec0d44761"
+  },
+  "userId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "reason": "Thông tin sai lệch",
+  "status": "rejected",
+  "createdAt": {
+    "$date": "2025-12-27T16:32:59.906Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T16:34:32.919Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695017f1ac8e7c88e0f87c60"
+  },
+  "postId": {
+    "$oid": "693fe433c5174f26aba0cf7c"
+  },
+  "userId": {
+    "$oid": "68db9745315196ebcc79a941"
+  },
+  "reason": "Thông tin sai lệch",
+  "status": "reviewed",
+  "createdAt": {
+    "$date": "2025-12-27T17:31:29.675Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:02:42.063Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69501e9fac8e7c88e0f889ec"
+  },
+  "postId": {
+    "$oid": "69500c29ac8e7c88e0f862b2"
+  },
+  "userId": {
+    "$oid": "692eb012ea14ed134931f6a0"
+  },
+  "reason": "Thông tin sai lệch",
+  "description": "hôm nay có rồi mà nói 1/1",
+  "status": "rejected",
+  "createdAt": {
+    "$date": "2025-12-27T17:59:59.767Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T18:00:54.569Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69501ee9ac8e7c88e0f88a20"
+  },
+  "postId": {
+    "$oid": "693fe433c5174f26aba0cf7c"
+  },
+  "userId": {
+    "$oid": "691c8e727bf4590336b82c50"
+  },
+  "reason": "Bạo lực / thù hằn",
+  "status": "reviewed",
+  "createdAt": {
+    "$date": "2025-12-27T18:01:13.133Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-27T22:02:42.063Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695296b8a9f7d97aeaaa0d39"
+  },
+  "postId": {
+    "$oid": "69370e8685b361bbd65bb3fe"
+  },
+  "userId": {
+    "$oid": "68e9d3fa7ae32fe700d1d3cc"
+  },
+  "reason": "Nội dung phản cảm",
+  "status": "rejected",
+  "createdAt": {
+    "$date": "2025-12-29T14:56:56.012Z"
+  },
+  "updatedAt": {
+    "$date": "2025-12-29T15:48:36.756Z"
+  },
+  "__v": 0
+}]
