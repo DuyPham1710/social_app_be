@@ -37,7 +37,7 @@ export class PostService {
 
     async getPostDetail(postId: string, userId: string): Promise<PostResponseDto> {
         const canView = await this.canViewPost({ postId: postId.toString(), viewerId: userId.toString() });
-        if(canView){
+        if (canView) {
             if (!Types.ObjectId.isValid(postId)) {
                 throw new HttpException('Invalid postId', HttpStatus.BAD_REQUEST);
             }
@@ -74,7 +74,7 @@ export class PostService {
         }
 
         // nếu là admin thì ko cần check privacy
-        if(Types.ObjectId.isValid(viewerId)){
+        if (Types.ObjectId.isValid(viewerId)) {
             const [isAdmin] = await this.eventEmitter.emitAsync(AppEvents.USER_IS_ADMIN, { userId: viewerId });
             if (isAdmin) {
                 viewerId = ownerId;
@@ -237,6 +237,12 @@ export class PostService {
             allPosts = [...allPosts, ...publicPosts];
             // Sắp xếp lại sau khi thêm public posts
             //    allPosts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        }
+
+        // Random shuffle array sử dụng Fisher-Yates algorithm
+        for (let i = allPosts.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [allPosts[i], allPosts[j]] = [allPosts[j], allPosts[i]];
         }
 
         // Lấy posts cho trang hiện tại (limit + 1 để check hasNext)
