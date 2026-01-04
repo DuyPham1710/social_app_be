@@ -294,7 +294,9 @@ export class StoryService {
         const story = await this.storyModel.findById(storyId).lean();
         if (!story) return false;
 
-        // Lấy danh sách bạn bè của chủ post
+        const [isAdmin] = await this.eventEmitter.emitAsync(AppEvents.USER_IS_ADMIN, { userId: viewerId });
+        if (isAdmin) return true;
+
         const [friendsOfOwner] = await this.eventEmitter.emitAsync(AppEvents.FRIENDS_GET, { userId: story.userId.toString() });
         //  const friendsOfOwner = await this.friendService.getFriends(story.userId.toString());
 
@@ -302,6 +304,47 @@ export class StoryService {
             new Types.ObjectId(viewerId),
             story,
             friendsOfOwner.map(f => new Types.ObjectId(f._id)),
+        );
+    }
+
+    async getStoryDetail(storyId: string, viewerId: string) {
+        const canView = await this.canUserViewStory(storyId, viewerId);
+        if (!canView) {
+            throw new HttpException('Story not found', HttpStatus.NOT_FOUND);
+        }
+
+        if (!Types.ObjectId.isValid(storyId)) {
+            throw new HttpException('Invalid storyId', HttpStatus.BAD_REQUEST);
+        }
+
+        const storyObjectId = new Types.ObjectId(storyId);
+
+        const story = await this.storyModel
+            .findOne({ _id: storyObjectId })
+            .populate('userId', 'username fullName avatarUrl')
+            .lean()
+            .exec();
+
+        if (!story) {
+            throw new HttpException('Story not found', HttpStatus.NOT_FOUND);
+        }
+
+        const userResponseDto: any = plainToInstance(
+            UserResponseDto,
+            story.userId,
+            {
+                excludeExtraneousValues: true,
+            },
+        );
+        const cleanedUser = omitBy(userResponseDto, isUndefined) as UserResponseDto;
+
+        return plainToInstance(
+            StoryResponseDto,
+            {
+                ...story,
+                userId: cleanedUser,
+            },
+            { excludeExtraneousValues: true },
         );
     }
 
@@ -332,8 +375,15 @@ export class StoryService {
     }
 
     @OnEvent(AppEvents.STORY_GET)
-    async handleGetStories(payload: { ownerId: string, viewerId: string }) {
-        const { ownerId, viewerId } = payload;
+    async handleGetStories(payload: { ownerId: string, viewerId: string, storyId?: string }) {
+        const { ownerId, viewerId, storyId } = payload;
+        
+        // Nếu có storyId, trả về story cụ thể đó
+        if (storyId) {
+            return await this.getStoryDetail(storyId, viewerId);
+        }
+        
+        // Nếu không có storyId, trả về danh sách stories của ownerId
         return await this.getStories(ownerId, viewerId);
     }
 

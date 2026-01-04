@@ -301,23 +301,27 @@ export class AdminService {
       throw new HttpException('Invalid storyId', HttpStatus.BAD_REQUEST);
     }
 
+    const [adminUsers] = await this.eventEmitter.emitAsync(AppEvents.GET_ADMIN_ID);
+    const adminId = adminUsers[0].toString();
+
+    const [storyInfo] = await this.eventEmitter.emitAsync(AppEvents.STORY_GET_USER_ID, { storyId });
+    if (!storyInfo) {
+      throw new HttpException('Story not found', HttpStatus.NOT_FOUND);
+    }
+
+    const ownerId = storyInfo.userId.toString();
+
     const [storyResult] = await this.eventEmitter.emitAsync(AppEvents.STORY_GET, {
-      ownerId: storyId,
-      viewerId: storyId,
+      ownerId,
+      viewerId: adminId,
+      storyId,
     });
     
-    if (!storyResult || (Array.isArray(storyResult) && storyResult.length === 0)) {
+    if (!storyResult) {
       throw new HttpException('Story not found', HttpStatus.NOT_FOUND);
     }
 
-    const stories = Array.isArray(storyResult) ? storyResult : [storyResult];
-    const story = stories.find((s: any) => s._id?.toString() === storyId || s.id === storyId);
-    
-    if (!story) {
-      throw new HttpException('Story not found', HttpStatus.NOT_FOUND);
-    }
-
-    return story;
+    return storyResult;
   }
 
   async deleteStory(storyId: string) {
