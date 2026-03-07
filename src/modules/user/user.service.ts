@@ -116,6 +116,13 @@ export class UserService {
         );
     }
 
+    async findOneWithRefreshToken(userId: string): Promise<UserDocument | null> {
+        if (!Types.ObjectId.isValid(userId)) {
+            return null;
+        }
+        return this.userModel.findById(userId).select('+refreshToken').exec();
+    }
+
     async updateFcmToken(userId: string, fcmToken: string): Promise<void> {
         if (!Types.ObjectId.isValid(userId)) {
             throw new HttpException('Invalid userId', HttpStatus.BAD_REQUEST);
@@ -456,6 +463,11 @@ export class UserService {
     @OnEvent(AppEvents.USER_UPDATE_REFRESH_TOKEN)
     async handleUpdateRefreshToken({ userId, refreshToken }: { userId: string, refreshToken: string }): Promise<void> {
         return this.updateRefreshToken(userId, refreshToken);
+    }
+
+    @OnEvent(AppEvents.USER_FIND_WITH_REFRESH_TOKEN)
+    async handleFindWithRefreshToken({ userId }: { userId: string }): Promise<UserDocument | null> {
+        return this.findOneWithRefreshToken(userId);
     }
 
     @OnEvent(AppEvents.USER_VALIDATE_BY_EMAIL)

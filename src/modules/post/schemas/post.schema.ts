@@ -25,6 +25,18 @@ export class Post extends PrivacyBase {
     })
     layout: LayoutType;
 
+    // @Prop({ default: 0 })
+    // reactCount: number;
+
+    // @Prop({ default: 0 })
+    // commentCount: number;
+
+    // @Prop({ default: 0 })
+    // shareCount: number;
+
+    // @Prop({ default: 0 })
+    // viewCount: number;
+
     @Prop({ type: Boolean, default: false })
     isHidden?: boolean;
 }

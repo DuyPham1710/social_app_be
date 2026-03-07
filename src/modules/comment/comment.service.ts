@@ -29,11 +29,11 @@ export class CommentService {
             userId: new Types.ObjectId(userId),
             postId: new Types.ObjectId(postId),
             parentId: parentId ? new Types.ObjectId(parentId) : null,
-            taggedUserIds: uniqueTaggedIds, 
+            taggedUserIds: uniqueTaggedIds,
         });
 
         const saved = await comment.save();
-        const [post] = await this.eventEmitter.emitAsync(AppEvents.POST_GET_USER_ID, { postId: createCommentDto.postId  });
+        const [post] = await this.eventEmitter.emitAsync(AppEvents.POST_GET_USER_ID, { postId: createCommentDto.postId });
         const postOwnerId = post?.userId;
         const populated = await saved.populate([
             {
@@ -48,9 +48,9 @@ export class CommentService {
                     select: 'username fullName avatarUrl'
                 }
             },
-            { 
+            {
                 path: 'taggedUserIds',
-                select: 'username fullName avatarUrl _id' 
+                select: 'username fullName avatarUrl _id'
             }
         ]);
 
@@ -60,26 +60,26 @@ export class CommentService {
             uniqueTaggedIds.forEach(async taggedId => {
                 if (taggedId.toString() !== userId) {
                     const canView = await this.eventEmitter.emitAsync(AppEvents.POST_CAN_VIEW, { postId: postId.toString(), viewerId: taggedId.toString() });
-                    
-                    if(canView[0]){
+
+                    if (canView[0]) {
                         this.eventEmitter.emit('comment.tagged', {
-                        receiver: taggedId.toString(),
-                        sender: userId,
-                        postId: postId,
-                        commentId: saved._id,
-                        content: saved.content,
-                        type: NotificationType.MENTION,
-                        user: {
-                            fullName: user.fullName,
-                            username: user.username,
-                            avatarUrl: user.avatarUrl
-                        }
-                    });
+                            receiver: taggedId.toString(),
+                            sender: userId,
+                            postId: postId,
+                            commentId: saved._id,
+                            content: saved.content,
+                            type: NotificationType.MENTION,
+                            user: {
+                                fullName: user.fullName,
+                                username: user.username,
+                                avatarUrl: user.avatarUrl
+                            }
+                        });
                     }
                 }
             });
         }
-        else{
+        else {
             if (postOwnerId && postOwnerId.toString() !== userId) {
                 this.eventEmitter.emit('comment.created', {
                     receiver: postOwnerId.toString(),
@@ -195,10 +195,10 @@ export class CommentService {
                 comment.taggedUserIds = comment.taggedUserIds.map((u: any) => {
                     if (u && u._id) {
                         return {
-                        userId: u._id,
-                        fullName: u.fullName,
-                        avatarUrl: u.avatarUrl,
-                        username: u.username,
+                            userId: u._id,
+                            fullName: u.fullName,
+                            avatarUrl: u.avatarUrl,
+                            username: u.username,
                         };
                     }
                     return u;

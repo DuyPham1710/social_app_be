@@ -9,6 +9,7 @@ export enum AppEvents {
     USER_CREATED = 'user.created',
     USER_UPDATE = 'user.update',
     USER_UPDATE_REFRESH_TOKEN = 'user.updateRefreshToken',
+    USER_FIND_WITH_REFRESH_TOKEN = 'user.findWithRefreshToken',
     USER_VALIDATE_BY_EMAIL = 'user.validateByEmail',
     USER_CHECK_EXISTS = 'user.checkExists',
     USER_GET_BASIC_INFO = 'user.getBasicInfo',

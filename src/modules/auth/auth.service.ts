@@ -153,4 +153,55 @@ export class AuthService {
         }
         throw new BadRequestException('Password and confirm password do not match. Please try again!');
     }
+
+    async refreshToken(user: any) {
+        const { sub: userId, refreshToken } = user;
+
+        // Lấy user từ DB kèm refreshToken field
+        const [userFromDb] = await this.eventEmitter.emitAsync(AppEvents.USER_FIND_WITH_REFRESH_TOKEN, { userId });
+
+        if (!userFromDb) {
+            throw new UnauthorizedException('User not found');
+        }
+
+        if (!userFromDb.refreshToken) {
+            throw new UnauthorizedException('Invalid refresh token');
+        }
+
+        // So sánh refresh token với hash trong DB
+        const isRefreshTokenValid = await bcrypt.compare(refreshToken, userFromDb.refreshToken);
+
+        if (!isRefreshTokenValid) {
+            throw new UnauthorizedException('Invalid refresh token');
+        }
+
+        // Tạo payload mới
+        const payload = {
+            email: userFromDb.email,
+            sub: userFromDb._id.toString(),
+            role: userFromDb.role
+        };
+
+        // Tạo refresh token mới
+        const newRefreshToken = this.jwtService.sign(payload, {
+            expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRE
+        });
+
+        // Cập nhật refresh token mới vào DB
+        await this.eventEmitter.emitAsync(AppEvents.USER_UPDATE_REFRESH_TOKEN, {
+            userId: userFromDb._id.toString(),
+            refreshToken: newRefreshToken
+        });
+
+        // Tạo UserResponseDto để trả về
+        const userResponse = plainToInstance(UserResponseDto, userFromDb.toObject(), {
+            excludeExtraneousValues: true,
+        });
+
+        return {
+            accessToken: this.jwtService.sign(payload),
+            refreshToken: newRefreshToken,
+            user: userResponse
+        };
+    }
 }

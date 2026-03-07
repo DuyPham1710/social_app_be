@@ -8,6 +8,7 @@ import { LocalAuthGuard } from 'src/common/guards/local-auth.guard';
 import { VerifyAccountDto } from './dto/verify.account';
 import { EmailDto } from './dto/email.dto';
 import ResetPasswordDto from './dto/reset_password.dto';
+import { JwtRefreshAuthGuard } from 'src/common/guards/jwt-refresh-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -38,6 +39,12 @@ export class AuthController {
   @Patch('reset-password')
   resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
     return this.authService.resetPassword(resetPasswordDto);
+  }
+
+  @UseGuards(JwtRefreshAuthGuard)
+  @Post('refresh')
+  refreshToken(@Req() req: any) {
+    return this.authService.refreshToken(req.user);
   }
 
 }

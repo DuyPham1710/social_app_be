@@ -1,4 +1,4 @@
-import { ForbiddenException, HttpException, HttpStatus, Injectable, Inject, forwardRef, Logger } from '@nestjs/common';
+import { ForbiddenException, HttpException, HttpStatus, Injectable, Inject, forwardRef, Logger, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Post, PostDocument } from './schemas/post.schema';
 import { PostUrl, PostUrlDocument } from './schemas/post-url.schema';
@@ -21,6 +21,9 @@ import { ReportPostDto } from './dto/report-post.dto';
 import { NotificationService } from '../notification/notification.service';
 import { NotificationType } from 'src/shared/enums/notification_type';
 import { File } from 'multer';
+import { HttpService } from '@nestjs/axios';
+import * as FormData from 'form-data';
+import * as fs from 'fs'; // Để đọc file từ path
 
 @Injectable()
 export class PostService {
@@ -33,6 +36,7 @@ export class PostService {
         private readonly eventEmitter: EventEmitter2,
         @Inject(forwardRef(() => NotificationService))
         private readonly notificationService: NotificationService,
+        private readonly httpService: HttpService,
     ) { }
 
     async getPostDetail(postId: string, userId: string): Promise<PostResponseDto> {
@@ -295,6 +299,36 @@ export class PostService {
 
     async createPost(createPostDto: CreatePostDto, userId: string, files?: File[]): Promise<{ message: string }> {
         const { caption, titles = [], orders = [], layout, privacy_type, friends_except, friends_detail } = createPostDto;
+
+        // Kiểm duyệt bài đăng trước
+        // if (files && files.length > 0) {
+        //     for (const file of files) {
+        //         // Chỉ kiểm tra nếu là hình ảnh
+        //         if (file.mimetype?.startsWith('image/')) {
+        //             const formData = new FormData();
+        //             // Vì bạn đang dùng file.path (multer lưu tạm), ta đọc file từ đó gửi sang Python
+        //             formData.append('file', fs.createReadStream(file.path));
+
+        //             try {
+        //                 const aiResponse = await this.httpService.axiosRef.post(
+        //                     'http://localhost:8000/check-image', // URL của Python FastAPI
+        //                     formData,
+        //                     { headers: formData.getHeaders() }
+        //                 );
+
+        //                 if (!aiResponse.data.is_safe) {
+        //                     // Nếu AI báo không an toàn, xóa file tạm và báo lỗi ngay
+        //                     // Bạn nên loop xóa hết files tạm ở đây nếu cần thiết
+        //                     throw new BadRequestException(`Hình ảnh ${file.originalname} vi phạm tiêu chuẩn cộng đồng!`);
+        //                 }
+        //             } catch (error) {
+        //                 if (error instanceof BadRequestException) throw error;
+        //                 // Nếu server Python sập, bạn có thể chọn cho qua hoặc chặn tùy độ quan trọng
+        //                 console.error('AI Service Error:', error.message);
+        //             }
+        //         }
+        //     }
+        // }
 
         const post = await this.postModel.create({
             caption,
