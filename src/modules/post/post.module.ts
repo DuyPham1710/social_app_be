@@ -6,10 +6,11 @@ import { Post, PostSchema } from './schemas/post.schema';
 import { PostUrl, PostUrlSchema } from './schemas/post-url.schema';
 import { PostReport, PostReportSchema } from './schemas/post-report.schema';
 import { NotificationModule } from '../notification/notification.module';
+import { GoogleTranslationService } from 'src/shared/translation/google-translation.service';
 
 @Module({
   controllers: [PostController],
-  providers: [PostService],
+  providers: [PostService, GoogleTranslationService],
   imports: [
     MongooseModule.forFeature([
       { name: Post.name, schema: PostSchema },

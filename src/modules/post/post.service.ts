@@ -20,6 +20,7 @@ import { PostReport, PostReportDocument } from './schemas/post-report.schema';
 import { ReportPostDto } from './dto/report-post.dto';
 import { NotificationService } from '../notification/notification.service';
 import { NotificationType } from 'src/shared/enums/notification_type';
+import { GoogleTranslationService } from 'src/shared/translation/google-translation.service';
 import { File } from 'multer';
 
 @Injectable()
@@ -33,6 +34,7 @@ export class PostService {
         private readonly eventEmitter: EventEmitter2,
         @Inject(forwardRef(() => NotificationService))
         private readonly notificationService: NotificationService,
+        private readonly googleTranslationService: GoogleTranslationService,
     ) { }
 
     async getPostDetail(postId: string, userId: string): Promise<PostResponseDto> {
@@ -631,6 +633,45 @@ export class PostService {
         return {
             message: 'Báo cáo bài viết thành công. Cảm ơn bạn đã đóng góp giúp cộng đồng an toàn hơn.',
         };
+    }
+
+    async translateCaption(postId: string, targetLang: string = 'vi') {
+        if (!Types.ObjectId.isValid(postId)) {
+            throw new HttpException('Invalid postId', HttpStatus.BAD_REQUEST);
+        }
+
+        const postObjectId = new Types.ObjectId(postId);
+        const post = await this.postModel.findById(postObjectId).select('caption').lean();
+
+        if (!post) {
+            throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
+        }
+
+        const caption: string | undefined = (post as any).caption;
+
+        if (!caption || !caption.trim()) {
+            throw new HttpException('Post has no caption', HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            const result = await this.googleTranslationService.translate(caption, targetLang);
+
+            return {
+                originalCaption: caption,
+                translatedCaption: result.translatedText,
+                sourceLang: result.sourceLang,
+                targetLang: result.targetLang,
+            };
+        } catch (error) {
+            this.logger.error(
+                `Failed to translate caption for post ${postId}`,
+                error as any,
+            );
+            throw new HttpException(
+                'Failed to translate caption',
+                HttpStatus.BAD_GATEWAY,
+            );
+        }
     }
 
     @OnEvent(AppEvents.POST_GET_USER_ID)

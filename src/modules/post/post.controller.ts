@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { UpdatePrivacyDto } from 'src/common/dto/update-privacy.dto';
@@ -118,6 +118,21 @@ export class PostController {
     const canView = await this.postService.canUserViewPost(postId, viewerId);
 
     return { canView };
+  }
+
+  @Post(':postId/translate-caption')
+  @ApiOperation({ summary: 'Dịch caption bài viết sang tiếng Việt (Cloud Translation)' })
+  @ApiQuery({
+    name: 'targetLang',
+    required: false,
+    description: 'Mã ngôn ngữ đích, mặc định là vi',
+    example: 'vi',
+  })
+  async translateCaption(
+    @Param('postId') postId: string,
+    @Query('targetLang') targetLang: string = 'vi',
+  ) {
+    return this.postService.translateCaption(postId, targetLang || 'vi');
   }
 
 }
