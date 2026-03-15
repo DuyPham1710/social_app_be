@@ -22,6 +22,7 @@ import { NotificationModule } from './modules/notification/notification.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { VideoCallModule } from './modules/video-call/video-call.module';
 import { SharedModule } from './shared/shared.module';
+import { ReactionModule } from './modules/reaction/reaction.module';
 
 
 
@@ -50,6 +51,7 @@ import { SharedModule } from './shared/shared.module';
     NotificationModule,
     AdminModule,
     VideoCallModule,
+    ReactionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

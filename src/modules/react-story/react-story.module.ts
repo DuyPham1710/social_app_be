@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
 import { ReactStoryController } from './react-story.controller';
 import { ReactStoryService } from './react-story.service';
-import { ReactStory, ReactStorySchema } from './schemas/react-story.schema';
+import { ReactionModule } from '../reaction/reaction.module';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: ReactStory.name, schema: ReactStorySchema }])],
+  imports: [ReactionModule],
   controllers: [ReactStoryController],
   providers: [ReactStoryService],
   exports: [ReactStoryService],
