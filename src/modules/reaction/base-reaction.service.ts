@@ -8,7 +8,7 @@ import { ReactionDocument } from './schemas/reaction.schema';
 /**
  * BaseReactionService - Lớp cha chứa logic chung cho react-post, react-comment, react-story.
  * Sử dụng Reaction schema duy nhất, phân biệt loại bằng field `type`.
- * Field `postId` trong schema được dùng chung để lưu targetId (postId/commentId/storyId).
+ * Field `targetId` trong schema được dùng chung để lưu targetId (postId/commentId/storyId).
  */
 export abstract class BaseReactionService {
   constructor(
@@ -43,7 +43,7 @@ export abstract class BaseReactionService {
 
     const filter = {
       userId: userIdObjectId,
-      postId: targetObjectId,
+      targetId: targetObjectId,
       type: this.reactionType,
     };
 
@@ -64,7 +64,7 @@ export abstract class BaseReactionService {
     } else {
       const created = new this.reactionModel({
         userId: userIdObjectId,
-        postId: targetObjectId,
+        targetId: targetObjectId,
         emojiId: emojiObjectId,
         type: this.reactionType,
       });
@@ -88,7 +88,7 @@ export abstract class BaseReactionService {
 
     const targetObjectId = new Types.ObjectId(targetId);
     return this.reactionModel
-      .find({ postId: targetObjectId, type: this.reactionType })
+      .find({ targetId: targetObjectId, type: this.reactionType })
       .populate('userId', 'fullName username avatarUrl')
       .populate('emojiId', 'label icon');
   }
@@ -105,7 +105,7 @@ export abstract class BaseReactionService {
     const react = await this.reactionModel
       .findOne({
         userId: new Types.ObjectId(userId),
-        postId: new Types.ObjectId(targetId),
+        targetId: new Types.ObjectId(targetId),
         type: this.reactionType,
       })
       .populate('emojiId', 'label icon')
@@ -120,7 +120,7 @@ export abstract class BaseReactionService {
   protected async updateReaction(userId: string, targetId: string, emojiId: string) {
     const react = await this.reactionModel.findOne({
       userId,
-      postId: targetId,
+      targetId: targetId,
       type: this.reactionType,
     });
     if (!react) throw new NotFoundException('React not found');
@@ -133,7 +133,7 @@ export abstract class BaseReactionService {
   protected async removeReaction(userId: string, targetId: string) {
     const deleted = await this.reactionModel.findOneAndDelete({
       userId,
-      postId: targetId,
+      targetId: targetId,
       type: this.reactionType,
     });
     if (!deleted) throw new NotFoundException('React not found');
@@ -147,8 +147,8 @@ export abstract class BaseReactionService {
   protected mapToTargetField(doc: any): any {
     if (!doc) return doc;
     const obj = doc.toObject ? doc.toObject() : { ...doc };
-    if (this.targetIdField !== 'postId') {
-      obj[this.targetIdField] = obj.postId;
+    if (this.targetIdField !== 'targetId') {
+      obj[this.targetIdField] = obj.targetId;
     }
     return obj;
   }

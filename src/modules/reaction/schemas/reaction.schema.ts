@@ -9,8 +9,8 @@ export class Reaction {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   userId: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'Post', required: true })
-  postId: Types.ObjectId;
+  @Prop({ type: Types.ObjectId, required: true })
+  targetId: Types.ObjectId;
 
   @Prop({ type: Types.ObjectId, ref: 'Emoji', required: true })
   emojiId: Types.ObjectId;
@@ -29,4 +29,4 @@ export class Reaction {
 export const ReactionSchema = SchemaFactory.createForClass(Reaction);
 
 // Chống người dùng react nhiều lần 1 bài
-ReactionSchema.index({ userId: 1, postId: 1 }, { unique: true });
+ReactionSchema.index({ userId: 1, targetId: 1 }, { unique: true });
