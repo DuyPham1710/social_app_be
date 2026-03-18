@@ -22,9 +22,8 @@ import { NotificationService } from '../notification/notification.service';
 import { NotificationType } from 'src/shared/enums/notification_type';
 import { GoogleTranslationService } from 'src/shared/translation/google-translation.service';
 import { File } from 'multer';
-import { HttpService } from '@nestjs/axios';
-import * as FormData from 'form-data';
-import * as fs from 'fs'; // Để đọc file từ path
+import * as fs from 'fs';
+import { ImageModerationService } from '../../shared/services/image-moderation.service';
 
 @Injectable()
 export class PostService {
@@ -37,8 +36,8 @@ export class PostService {
         private readonly eventEmitter: EventEmitter2,
         @Inject(forwardRef(() => NotificationService))
         private readonly notificationService: NotificationService,
+        private readonly imageModerationService: ImageModerationService,
         private readonly googleTranslationService: GoogleTranslationService,
-        private readonly httpService: HttpService,
     ) { }
 
     async getPostDetail(postId: string, userId: string): Promise<PostResponseDto> {
@@ -302,36 +301,21 @@ export class PostService {
     async createPost(createPostDto: CreatePostDto, userId: string, files?: File[]): Promise<{ message: string }> {
         const { caption, titles = [], orders = [], layout, privacy_type, friends_except, friends_detail } = createPostDto;
 
-        // Kiểm duyệt bài đăng trước
-        // if (files && files.length > 0) {
-        //     for (const file of files) {
-        //         // Chỉ kiểm tra nếu là hình ảnh
-        //         if (file.mimetype?.startsWith('image/')) {
-        //             const formData = new FormData();
-        //             // Vì bạn đang dùng file.path (multer lưu tạm), ta đọc file từ đó gửi sang Python
-        //             formData.append('file', fs.createReadStream(file.path));
+        // Kiểm duyệt hình ảnh trước khi upload
+        if (files && files.length > 0) {
+            const moderationResults = await this.imageModerationService.checkImages(files);
+            const violatedImage = moderationResults.find(r => !r.is_safe);
 
-        //             try {
-        //                 const aiResponse = await this.httpService.axiosRef.post(
-        //                     'http://localhost:8000/check-image', // URL của Python FastAPI
-        //                     formData,
-        //                     { headers: formData.getHeaders() }
-        //                 );
+            if (violatedImage) {
+                // Xóa tất cả file tạm trên disk
+                this.cleanupTempFiles(files);
+                throw new BadRequestException(
+                    `Hình ảnh vi phạm tiêu chuẩn cộng đồng! Vui lòng chọn hình ảnh khác.`,
+                );
+            }
+        }
 
-        //                 if (!aiResponse.data.is_safe) {
-        //                     // Nếu AI báo không an toàn, xóa file tạm và báo lỗi ngay
-        //                     // Bạn nên loop xóa hết files tạm ở đây nếu cần thiết
-        //                     throw new BadRequestException(`Hình ảnh ${file.originalname} vi phạm tiêu chuẩn cộng đồng!`);
-        //                 }
-        //             } catch (error) {
-        //                 if (error instanceof BadRequestException) throw error;
-        //                 // Nếu server Python sập, bạn có thể chọn cho qua hoặc chặn tùy độ quan trọng
-        //                 console.error('AI Service Error:', error.message);
-        //             }
-        //         }
-        //     }
-        // }
-
+        // Tạo post trong database
         const post = await this.postModel.create({
             caption,
             userId: new Types.ObjectId(userId),
@@ -341,98 +325,90 @@ export class PostService {
             friends_detail: friends_detail ? friends_detail.map(id => new Types.ObjectId(id)) : undefined,
         });
 
-        // let postUrls: PostUrlDocument[] = [];
-        // if (urls && urls.length > 0) {
-        //     postUrls = await this.postUrlModel.insertMany(
-        //         urls.map((u, index) => ({
-        //             url: u.url,
-        //             title: u.title ?? '',
-        //             order: u.order ?? index,
-        //         })),
-
-        //     );
-        // }
-
-        // // update post urls
-        // post.urls = postUrls.map((url) => url._id as Types.ObjectId);
-        // await post.save();
+        // Upload file từ disk lên Cloudinary
         if (files && files.length > 0) {
+            try {
+                const postId = post._id.toString();
+                const uploadedUrls: any[] = [];
 
-            const postId = post._id.toString();
+                const uploadResults = await Promise.all(
+                    files.map((file, index) => {
+                        const isVideo = file.mimetype?.startsWith('video/');
+                        const isImage = file.mimetype?.startsWith('image/');
 
-            // Upload từng file lên Cloudinary trong folder riêng
-            const uploadedUrls: any[] = [];
+                        const allowedFormats = ['jpg', 'png', 'jpeg', 'gif', 'webp', 'mp4', 'mov', 'avi', 'webm', 'mkv', 'flv', 'wmv'];
 
-            const uploadResults = await Promise.all(
-                files.map((file, index) => {
-                    // Phân biệt hình ảnh và video
-                    const isVideo = file.mimetype?.startsWith('video/');
-                    const isImage = file.mimetype?.startsWith('image/');
+                        const uploadOptions: any = {
+                            folder: `uploads/${postId}`,
+                            allowed_formats: allowedFormats,
+                        };
 
-                    // Định dạng cho phép
-                    const allowedFormats = ['jpg', 'png', 'jpeg', 'gif', 'webp', 'mp4', 'mov', 'avi', 'webm', 'mkv', 'flv', 'wmv'];
+                        if (isVideo) {
+                            uploadOptions.resource_type = 'video';
+                            uploadOptions.transformation = [
+                                {
+                                    width: 1920,
+                                    height: 1080,
+                                    crop: 'limit',
+                                    quality: 'auto',
+                                    fetch_format: 'auto'
+                                }
+                            ];
+                        } else if (isImage) {
+                            uploadOptions.resource_type = 'image';
+                            uploadOptions.transformation = [
+                                { width: 1080, height: 1080, crop: 'limit' }
+                            ];
+                        } else {
+                            uploadOptions.resource_type = 'auto';
+                        }
 
-                    // Cấu hình upload dựa trên loại file
-                    const uploadOptions: any = {
-                        folder: `uploads/${postId}`,
-                        allowed_formats: allowedFormats,
-                    };
+                        return cloudinary.uploader.upload(file.path, uploadOptions)
+                            .then(result => ({
+                                url: result.secure_url,
+                                title: titles[index],
+                                order: orders[index] ?? index,
+                            }));
+                    })
+                );
 
-                    if (isVideo) {
-                        // Cấu hình cho video
-                        uploadOptions.resource_type = 'video';
-                        uploadOptions.transformation = [
-                            {
-                                width: 1920,
-                                height: 1080,
-                                crop: 'limit',
-                                quality: 'auto',
-                                fetch_format: 'auto'
-                            }
-                        ];
-                    } else if (isImage) {
-                        // Cấu hình cho hình ảnh
-                        uploadOptions.resource_type = 'image';
-                        uploadOptions.transformation = [
-                            { width: 1080, height: 1080, crop: 'limit' }
-                        ];
-                    } else {
-                        // Tự động phát hiện loại file
-                        uploadOptions.resource_type = 'auto';
-                    }
+                uploadedUrls.push(...uploadResults);
 
-                    return cloudinary.uploader.upload(file.path, uploadOptions)
-                        .then(result => ({
-                            url: result.secure_url,
-                            title: titles[index],
-                            order: orders[index] ?? index,
-                        }));
-                })
-            );
+                // Lưu URLs vào bảng post_urls
+                const postUrls = await this.postUrlModel.insertMany(
+                    uploadedUrls.map((u, index) => ({
+                        url: u.url,
+                        title: u.title,
+                        order: orders[index] ?? index,
+                    })),
+                );
 
-            uploadedUrls.push(...uploadResults);
-
-            // Lưu URLs vào bảng post_urls
-            const postUrls = await this.postUrlModel.insertMany(
-                uploadedUrls.map((u, index) => ({
-                    url: u.url,
-                    title: u.title,
-                    order: orders[index] ?? index,
-                })),
-            );
-
-            // Gán vào post
-            post.urls = postUrls.map((url) => url._id as Types.ObjectId);
-            await post.save();
+                // Gán vào post
+                post.urls = postUrls.map((url) => url._id as Types.ObjectId);
+                await post.save();
+            } finally {
+                // Luôn xóa file tạm sau khi upload xong (dù thành công hay thất bại)
+                this.cleanupTempFiles(files);
+            }
         }
 
-        // return {
-        //     ...post.toObject(),
-        //     urls: postUrls,
-        // };
         return {
             message: 'Đã tạo bài viết thành công',
         };
+    }
+
+    // Xóa các file tạm trên disk sau khi xử lý xong     
+    private cleanupTempFiles(files: File[]): void {
+        for (const file of files) {
+            try {
+                if (file.path && fs.existsSync(file.path)) {
+                    fs.unlinkSync(file.path);
+                    this.logger.debug(`Đã xóa file tạm: ${file.path}`);
+                }
+            } catch (error) {
+                this.logger.warn(`Không thể xóa file tạm ${file.path}: ${error.message}`);
+            }
+        }
     }
 
     async updatePost(updatePostDto: UpdatePostDto, userId: string) {

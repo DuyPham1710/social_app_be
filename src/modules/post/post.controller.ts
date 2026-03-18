@@ -5,7 +5,7 @@ import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiQuery } from '@ne
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { UpdatePrivacyDto } from 'src/common/dto/update-privacy.dto';
-import { storage } from '../cloudinary/cloudinary.storage';
+import { diskStorage } from '../cloudinary/multer-disk.storage';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ReportPostDto } from './dto/report-post.dto';
 
@@ -52,7 +52,7 @@ export class PostController {
 
   @Post()
   @ApiOperation({ summary: 'Tạo bài viết' })
-  @UseInterceptors(FilesInterceptor('files', 50, { storage }))
+  @UseInterceptors(FilesInterceptor('files', 50, { storage: diskStorage }))
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: CreatePostDto })
   createPost(

@@ -6,8 +6,8 @@ import { GroupedStoryListDto } from './dto/grouped-story-list.dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { UpdatePrivacyDto } from 'src/common/dto/update-privacy.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { storage } from '../cloudinary/cloudinary.storage';
 import { File } from 'multer';
+import { diskStorage } from '../cloudinary/multer-disk.storage';
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
@@ -17,7 +17,7 @@ export class StoryController {
 
   @Post()
   @ApiOperation({ summary: 'Tạo story' })
-  @UseInterceptors(FilesInterceptor('file', 1, { storage }))
+  @UseInterceptors(FilesInterceptor('file', 1, { storage: diskStorage }))
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: CreateStoryDto })
   createStory(

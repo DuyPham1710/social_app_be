@@ -50,6 +50,7 @@ firebase/serviceAccountKey.json
 # temp directory
 .temp
 .tmp
+tmp/
 
 # Runtime data
 pids

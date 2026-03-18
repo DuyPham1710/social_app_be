@@ -1,4 +1,4 @@
-import { ForbiddenException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { Story, StoryDocument } from './schemas/story.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
@@ -15,20 +15,65 @@ import { ReactStoryResponseDto } from '../react-story/dto/react-story-response.d
 import { uploadAudioFromUrl } from './helpers/upload-audio.helper';
 import { omitBy, isUndefined } from 'lodash';
 import { File } from 'multer';
+import { ImageModerationService } from 'src/shared/services/image-moderation.service';
+import { v2 as cloudinary } from 'cloudinary';
+import * as fs from 'fs';
 
 @Injectable()
 export class StoryService {
+    private readonly logger = new Logger(StoryService.name);
+
     constructor(
         @InjectModel(Story.name) private storyModel: Model<StoryDocument>,
         private readonly eventEmitter: EventEmitter2,
+        private readonly imageModerationService: ImageModerationService,
     ) { }
 
     async createStory(createStoryDto: CreateStoryDto, userId: string, file?: File) {
-        // Nếu có file, lấy mediaUrl từ file.path (CloudinaryStorage đã upload và trả về secure_url)
-        if (file && file.path) {
-            createStoryDto.mediaUrl = file.path;
+        // Kiểm duyệt hình ảnh bằng AI trước khi upload
+        if (file && file.mimetype?.startsWith('image/')) {
+            const moderationResults = await this.imageModerationService.checkImages([file]);
+            const violatedImage = moderationResults.find(r => !r.is_safe);
+
+            if (violatedImage) {
+                this.cleanupTempFile(file);
+                throw new BadRequestException(
+                    `Hình ảnh vi phạm tiêu chuẩn cộng đồng! Vui lòng chọn hình ảnh khác.`,
+                );
+            }
         }
 
+        // Upload file từ disk lên Cloudinary
+        if (file && file.path) {
+            try {
+                const isVideo = file.mimetype?.startsWith('video/');
+                const isImage = file.mimetype?.startsWith('image/');
+
+                const uploadOptions: any = {
+                    folder: 'stories',
+                };
+
+                if (isVideo) {
+                    uploadOptions.resource_type = 'video';
+                    uploadOptions.transformation = [
+                        { width: 1920, height: 1080, crop: 'limit', quality: 'auto', fetch_format: 'auto' }
+                    ];
+                } else if (isImage) {
+                    uploadOptions.resource_type = 'image';
+                    uploadOptions.transformation = [{ width: 1080, height: 1920, crop: 'limit' }];
+                } else {
+                    uploadOptions.resource_type = 'auto';
+                }
+
+                const result = await cloudinary.uploader.upload(file.path, uploadOptions);
+                createStoryDto.mediaUrl = result.secure_url;
+            } finally {
+                // Luôn xóa file tạm sau khi upload
+                this.cleanupTempFile(file);
+            }
+        }
+
+        // Tạo story trong database
         const story = new this.storyModel({
             ...createStoryDto,
             userId: new Types.ObjectId(userId),
@@ -55,12 +100,23 @@ export class StoryService {
             } catch (error) {
                 // Nếu upload thất bại, vẫn giữ nguyên preview link gốc
                 console.error('Failed to upload audio to Cloudinary:', error);
-                // Có thể throw error hoặc chỉ log và tiếp tục với preview link gốc
-                // throw new HttpException('Failed to upload audio', HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
 
         return savedStory;
+    }
+
+
+    // Xóa file tạm trên disk sau khi xử lý xong
+    private cleanupTempFile(file: File): void {
+        try {
+            if (file.path && fs.existsSync(file.path)) {
+                fs.unlinkSync(file.path);
+                this.logger.debug(`Đã xóa file tạm: ${file.path}`);
+            }
+        } catch (error) {
+            this.logger.warn(`Không thể xóa file tạm ${file.path}: ${error.message}`);
+        }
     }
 
     async getStories(ownerId: string, viewerId: string) {
@@ -70,9 +126,9 @@ export class StoryService {
         if (!Types.ObjectId.isValid(viewerId)) {
             throw new HttpException('Invalid viewerId', HttpStatus.BAD_REQUEST);
         }
-        else{
+        else {
             const [isAdmin] = await this.eventEmitter.emitAsync(AppEvents.USER_IS_ADMIN, { userId: viewerId });
-            if (isAdmin){
+            if (isAdmin) {
                 viewerId = ownerId;
             }
         }
@@ -162,10 +218,10 @@ export class StoryService {
 
                 // Convert to StoryResponseDto[]
                 const storyDtos = filteredStories.map(story => {
-                    const reacts = (reactsMap[story._id.toString()] || []).map((react: any) => 
+                    const reacts = (reactsMap[story._id.toString()] || []).map((react: any) =>
                         plainToInstance(ReactStoryResponseDto, react, { excludeExtraneousValues: true })
                     );
-                    
+
                     const storyObj = {
                         ...story,
                         id: story.id?.toString(),
@@ -214,10 +270,10 @@ export class StoryService {
 
                 // Convert to StoryResponseDto[]
                 const currentUserStoryDtos = currentUserStories.map(story => {
-                    const reacts = (currentUserReactsMap[story._id.toString()] || []).map((react: any) => 
+                    const reacts = (currentUserReactsMap[story._id.toString()] || []).map((react: any) =>
                         plainToInstance(ReactStoryResponseDto, react, { excludeExtraneousValues: true })
                     );
-                    
+
                     const storyObj = {
                         ...story,
                         id: story.id?.toString(),
@@ -377,12 +433,12 @@ export class StoryService {
     @OnEvent(AppEvents.STORY_GET)
     async handleGetStories(payload: { ownerId: string, viewerId: string, storyId?: string }) {
         const { ownerId, viewerId, storyId } = payload;
-        
+
         // Nếu có storyId, trả về story cụ thể đó
         if (storyId) {
             return await this.getStoryDetail(storyId, viewerId);
         }
-        
+
         // Nếu không có storyId, trả về danh sách stories của ownerId
         return await this.getStories(ownerId, viewerId);
     }

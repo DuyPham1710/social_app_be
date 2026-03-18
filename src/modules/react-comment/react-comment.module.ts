@@ -1,12 +1,10 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { ReactComment, ReactCommentSchema } from './schemas/react-comment.schema';
 import { ReactCommentController } from './react-comment.controller';
 import { ReactCommentService } from './react-comment.service';
-
+import { ReactionModule } from '../reaction/reaction.module';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: ReactComment.name, schema: ReactCommentSchema }])],
+  imports: [ReactionModule],
   controllers: [ReactCommentController],
   providers: [ReactCommentService],
   exports: [ReactCommentService],
