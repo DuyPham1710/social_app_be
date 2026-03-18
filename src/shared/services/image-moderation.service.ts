@@ -77,7 +77,7 @@ export class ImageModerationService {
         });
 
         const response = await this.httpService.axiosRef.post(
-            `${this.aiServiceUrl}/check-image`,
+            `${this.aiServiceUrl}/image-moderation/check`,
             formData,
             {
                 headers: formData.getHeaders(),
