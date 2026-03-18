@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Comment, CommentDocument } from './schemas/comment.schema';
@@ -7,6 +7,7 @@ import { CreateCommentDto } from './dto/create-comment.dto';
 import { NotificationType } from 'src/shared/enums/notification_type';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { AppEvents } from 'src/shared/enums/app-events.enum';
+import { TextModerationService } from 'src/shared/services/text-moderation.service';
 
 @Injectable()
 export class CommentService {
@@ -14,10 +15,25 @@ export class CommentService {
         @InjectModel(Comment.name) private readonly commentModel: Model<CommentDocument>,
         @InjectModel(CommentLog.name) private readonly commentLogModel: Model<CommentLogDocument>,
         private eventEmitter: EventEmitter2,
+        private readonly textModerationService: TextModerationService,
     ) { }
+
+    async checkCommentContent(content: string) {
+        if (content && content.trim().length > 0) {
+            const textResult = await this.textModerationService.checkText(content);
+            if (!textResult.is_safe) {
+                throw new BadRequestException(
+                    'Nội dung bình luận vi phạm tiêu chuẩn cộng đồng! Vui lòng chỉnh sửa nội dung.',
+                );
+            }
+        }
+    }
 
     async create(createCommentDto: CreateCommentDto, userId: string) {
         const { content, postId, parentId, taggedUserIds } = createCommentDto;
+
+        // Kiểm duyệt nội dung comment
+        await this.checkCommentContent(content);
 
         const uniqueTaggedIds = taggedUserIds
             ? [...new Set(taggedUserIds)].map(id => new Types.ObjectId(id))
@@ -109,6 +125,9 @@ export class CommentService {
         if (comment.userId.toString() !== userId) {
             throw new ForbiddenException('You are not allowed to edit this comment');
         }
+
+        // Kiểm duyệt nội dung comment
+        await this.checkCommentContent(content);
 
         // Lưu nội dung cũ trước khi cập nhật
         const oldContent = comment.content;
