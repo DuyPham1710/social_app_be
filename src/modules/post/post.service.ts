@@ -24,6 +24,7 @@ import { GoogleTranslationService } from 'src/shared/translation/google-translat
 import { File } from 'multer';
 import * as fs from 'fs';
 import { ImageModerationService } from '../../shared/services/image-moderation.service';
+import { TextModerationService } from '../../shared/services/text-moderation.service';
 
 @Injectable()
 export class PostService {
@@ -38,6 +39,7 @@ export class PostService {
         private readonly notificationService: NotificationService,
         private readonly imageModerationService: ImageModerationService,
         private readonly googleTranslationService: GoogleTranslationService,
+        private readonly textModerationService: TextModerationService,
     ) { }
 
     async getPostDetail(postId: string, userId: string): Promise<PostResponseDto> {
@@ -301,6 +303,20 @@ export class PostService {
     async createPost(createPostDto: CreatePostDto, userId: string, files?: File[]): Promise<{ message: string }> {
         const { caption, titles = [], orders = [], layout, privacy_type, friends_except, friends_detail } = createPostDto;
 
+        // Kiểm duyệt nội dung caption trước
+        if (caption && caption.trim().length > 0) {
+            const textResult = await this.textModerationService.checkText(caption);
+            if (!textResult.is_safe) {
+                // Xóa file tạm nếu có
+                if (files && files.length > 0) {
+                    this.cleanupTempFiles(files);
+                }
+                throw new BadRequestException(
+                    'Nội dung bài viết vi phạm tiêu chuẩn cộng đồng! Vui lòng chỉnh sửa nội dung.',
+                );
+            }
+        }
+
         // Kiểm duyệt hình ảnh trước khi upload
         if (files && files.length > 0) {
             const moderationResults = await this.imageModerationService.checkImages(files);
@@ -427,6 +443,15 @@ export class PostService {
         }
 
         if (updatePostDto.caption) {
+            // Kiểm tra nội dung vi phạm
+            const textResult = await this.textModerationService.checkText(updatePostDto.caption);
+
+            if (!textResult.is_safe) {
+                throw new BadRequestException(
+                    'Nội dung bài viết vi phạm tiêu chuẩn cộng đồng! Vui lòng chỉnh sửa nội dung.',
+                );
+            }
+
             post.caption = updatePostDto.caption;
         }
 

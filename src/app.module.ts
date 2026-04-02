@@ -23,6 +23,7 @@ import { AdminModule } from './modules/admin/admin.module';
 import { VideoCallModule } from './modules/video-call/video-call.module';
 import { SharedModule } from './shared/shared.module';
 import { ReactionModule } from './modules/reaction/reaction.module';
+import { SaveModule } from './modules/save/save.module';
 
 
 
@@ -52,6 +53,7 @@ import { ReactionModule } from './modules/reaction/reaction.module';
     AdminModule,
     VideoCallModule,
     ReactionModule,
+    SaveModule,
   ],
   controllers: [AppController],
   providers: [AppService],
