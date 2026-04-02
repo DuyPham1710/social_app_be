@@ -119,6 +119,16 @@ export class StoryService {
         }
     }
 
+    private async markExpiredStoriesArchived(): Promise<void> {
+        const now = new Date();
+        await this.storyModel
+            .updateMany(
+                { expireAt: { $lt: now }, isArchived: { $ne: true } },
+                { $set: { isArchived: true, archivedAt: now } },
+            )
+            .exec();
+    }
+
     async getStories(ownerId: string, viewerId: string) {
         if (!Types.ObjectId.isValid(ownerId)) {
             throw new HttpException('Invalid ownerId', HttpStatus.BAD_REQUEST);
@@ -132,6 +142,8 @@ export class StoryService {
                 viewerId = ownerId;
             }
         }
+
+        await this.markExpiredStoriesArchived();
 
         const stories: StoryDocument[] = await this.storyModel
             .find({ userId: new Types.ObjectId(ownerId) })
@@ -161,6 +173,8 @@ export class StoryService {
         if (!Types.ObjectId.isValid(viewerId)) {
             throw new HttpException('Invalid viewerId', HttpStatus.BAD_REQUEST);
         }
+
+        await this.markExpiredStoriesArchived();
 
         // Lấy danh sách bạn bè
         const emitResults = await this.eventEmitter.emitAsync(AppEvents.FRIENDS_GET, { userId: viewerId });
@@ -305,6 +319,141 @@ export class StoryService {
         };
     }
 
+    async getMyActiveStories(viewerId: string, page: number = 1, limit: number = 50): Promise<GroupedStoryListDto> {
+        if (!Types.ObjectId.isValid(viewerId)) {
+            throw new HttpException('Invalid viewerId', HttpStatus.BAD_REQUEST);
+        }
+
+        await this.markExpiredStoriesArchived();
+
+        const [currentUserResult] = await this.eventEmitter.emitAsync(AppEvents.USER_FIND_ONE, { userId: viewerId });
+        if (!currentUserResult || (currentUserResult as any).error) {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        }
+
+        const expireTime = new Date();
+
+        const query = {
+            userId: new Types.ObjectId(viewerId),
+            expireAt: { $gte: expireTime },
+            isArchived: { $ne: true },
+        };
+
+        const skip = (page - 1) * limit;
+
+        const [stories, total] = await Promise.all([
+            this.storyModel
+                .find(query)
+                .populate('userId', 'username fullName avatarUrl')
+                .sort({ createdAt: 1 })
+                .skip(skip)
+                .limit(limit)
+                .lean()
+                .exec(),
+            this.storyModel.countDocuments(query).exec(),
+        ]);
+
+        const storyIds = stories.map((s) => s._id.toString());
+        const [reactsMap] = await this.eventEmitter.emitAsync(AppEvents.REACT_STORY_GET, { storyIds, viewerId });
+        const [reactMap] = await this.eventEmitter.emitAsync(AppEvents.REACT_STORY_FIND_BY_USER, { userId: viewerId, storyIds });
+
+        const storyDtos = stories.map((story: any) => {
+            const reacts = ((reactsMap && reactsMap[story._id.toString()]) || []).map((react: any) =>
+                plainToInstance(ReactStoryResponseDto, react, { excludeExtraneousValues: true }),
+            );
+
+            const storyObj = {
+                ...story,
+                id: story.id?.toString(),
+                reacts,
+                isReact: (reactMap && reactMap[story._id.toString()]) || null,
+            };
+            return plainToInstance(StoryResponseDto, storyObj, { excludeExtraneousValues: true });
+        });
+
+        const currentUserDto = currentUserResult as UserResponseDto;
+
+        return {
+            users: [
+                {
+                    user: currentUserDto,
+                    stories: storyDtos as any,
+                },
+            ],
+            page,
+            limit,
+            total,
+            hasNext: page * limit < total,
+        };
+    }
+
+    async getMyArchivedStories(viewerId: string, page: number = 1, limit: number = 20): Promise<GroupedStoryListDto> {
+        if (!Types.ObjectId.isValid(viewerId)) {
+            throw new HttpException('Invalid viewerId', HttpStatus.BAD_REQUEST);
+        }
+
+        await this.markExpiredStoriesArchived();
+
+        const [currentUserResult] = await this.eventEmitter.emitAsync(AppEvents.USER_FIND_ONE, { userId: viewerId });
+        if (!currentUserResult || (currentUserResult as any).error) {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        }
+
+        const now = new Date();
+
+        const query: any = {
+            userId: new Types.ObjectId(viewerId),
+            $or: [{ expireAt: { $lt: now } }, { isArchived: true }],
+        };
+
+        const skip = (page - 1) * limit;
+
+        const [stories, total] = await Promise.all([
+            this.storyModel
+                .find(query)
+                .populate('userId', 'username fullName avatarUrl')
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
+                .lean()
+                .exec(),
+            this.storyModel.countDocuments(query).exec(),
+        ]);
+
+        const storyIds = stories.map((s) => s._id.toString());
+        const [reactsMap] = await this.eventEmitter.emitAsync(AppEvents.REACT_STORY_GET, { storyIds, viewerId });
+        const [reactMap] = await this.eventEmitter.emitAsync(AppEvents.REACT_STORY_FIND_BY_USER, { userId: viewerId, storyIds });
+
+        const storyDtos = stories.map((story: any) => {
+            const reacts = ((reactsMap && reactsMap[story._id.toString()]) || []).map((react: any) =>
+                plainToInstance(ReactStoryResponseDto, react, { excludeExtraneousValues: true }),
+            );
+
+            const storyObj = {
+                ...story,
+                id: story.id?.toString(),
+                reacts,
+                isReact: (reactMap && reactMap[story._id.toString()]) || null,
+            };
+            return plainToInstance(StoryResponseDto, storyObj, { excludeExtraneousValues: true });
+        });
+
+        const currentUserDto = currentUserResult as UserResponseDto;
+
+        return {
+            users: [
+                {
+                    user: currentUserDto,
+                    stories: storyDtos as any,
+                },
+            ],
+            page,
+            limit,
+            total,
+            hasNext: page * limit < total,
+        };
+    }
+
     async getStoryPrivacy(storyId: string) {
         if (!Types.ObjectId.isValid(storyId)) {
             throw new HttpException('Invalid storyId', HttpStatus.BAD_REQUEST);
@@ -364,6 +513,8 @@ export class StoryService {
     }
 
     async getStoryDetail(storyId: string, viewerId: string) {
+        await this.markExpiredStoriesArchived();
+
         const canView = await this.canUserViewStory(storyId, viewerId);
         if (!canView) {
             throw new HttpException('Story not found', HttpStatus.NOT_FOUND);
