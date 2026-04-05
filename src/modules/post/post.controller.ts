@@ -120,19 +120,38 @@ export class PostController {
     return { canView };
   }
 
-  @Post(':postId/translate-caption')
-  @ApiOperation({ summary: 'Dịch caption bài viết sang tiếng Việt (Cloud Translation)' })
+  @Get(':postId/caption-translation-eligibility')
+  @ApiOperation({
+    summary: 'Kiểm tra có cần dịch caption không',
+  })
   @ApiQuery({
     name: 'targetLang',
     required: false,
-    description: 'Mã ngôn ngữ đích, mặc định là vi',
+    description: 'Mã ngôn ngữ đích (thường là ngôn ngữ máy), mặc định en',
+    example: 'vi',
+  })
+  async getCaptionTranslationEligibility(
+    @Param('postId') postId: string,
+    @Query('targetLang') targetLang: string = 'en',
+  ) {
+    return this.postService.getCaptionTranslationEligibility(postId, targetLang || 'en');
+  }
+
+  @Post(':postId/translate-caption')
+  @ApiOperation({
+    summary: 'Dịch caption bài viết (Cloud Translation) theo targetLang (ngôn ngữ máy)',
+  })
+  @ApiQuery({
+    name: 'targetLang',
+    required: false,
+    description: 'Mã ngôn ngữ đích, mặc định en',
     example: 'vi',
   })
   async translateCaption(
     @Param('postId') postId: string,
-    @Query('targetLang') targetLang: string = 'vi',
+    @Query('targetLang') targetLang: string = 'en',
   ) {
-    return this.postService.translateCaption(postId, targetLang || 'vi');
+    return this.postService.translateCaption(postId, targetLang || 'en');
   }
 
 }
