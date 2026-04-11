@@ -4,21 +4,28 @@ import {
     Body,
     UseInterceptors,
     UploadedFiles,
+    UploadedFile,
     HttpException,
     HttpStatus,
     UseGuards,
     Req,
+    Res,
 } from '@nestjs/common';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { ChatService } from './chat.service';
+import { VoiceEffectService } from './helpers/voice-effect.service';
 import { SendMessageDto } from './dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { File } from 'multer';
+import { Response } from 'express';
 
 @Controller('chat')
 @UseGuards(JwtAuthGuard)
 export class ChatController {
-    constructor(private readonly chatService: ChatService) { }
+    constructor(
+        private readonly chatService: ChatService,
+        private readonly voiceEffectService: VoiceEffectService,
+    ) { }
 
     @Post('send-message')
     @UseInterceptors(FilesInterceptor('files', 10))
@@ -50,6 +57,50 @@ export class ChatController {
             console.error('Error sending message with files:', error);
             throw new HttpException(
                 error.message || 'Failed to send message',
+                error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
+
+    @Post('voice-effect')
+    @UseInterceptors(FileInterceptor('audio'))
+    async applyVoiceEffect(
+        @Req() req: any,
+        @UploadedFile() audio: File,
+        @Body('voicePreset') voicePreset: string,
+        @Res() res: Response,
+    ) {
+        try {
+            const userId = req.user.userId;
+            if (!userId) {
+                throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+            }
+
+            if (!audio) {
+                throw new HttpException('Audio file is required', HttpStatus.BAD_REQUEST);
+            }
+
+            if (!voicePreset) {
+                throw new HttpException('Voice preset is required', HttpStatus.BAD_REQUEST);
+            }
+
+            const convertedAudio = await this.voiceEffectService.convertVoice(
+                audio.buffer,
+                audio.originalname,
+                voicePreset,
+            );
+
+            res.set({
+                'Content-Type': 'audio/wav',
+                'Content-Disposition': `attachment; filename="voice_${voicePreset}.wav"`,
+                'Content-Length': convertedAudio.length,
+            });
+
+            return res.send(convertedAudio);
+        } catch (error) {
+            console.error('Error applying voice effect:', error);
+            throw new HttpException(
+                error.message || 'Failed to apply voice effect',
                 error.status || HttpStatus.INTERNAL_SERVER_ERROR,
             );
         }
