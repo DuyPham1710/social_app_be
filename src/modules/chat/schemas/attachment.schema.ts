@@ -14,6 +14,12 @@ export class Attachment {
 
     @Prop({ required: true })
     size: number;
+
+    @Prop({ required: false, max: 60 })
+    duration?: number;
+
+    @Prop({ type: [Number], required: false })
+    waveform?: number[];
 }
 
 export const AttachmentSchema = SchemaFactory.createForClass(Attachment);

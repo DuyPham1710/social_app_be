@@ -11,6 +11,12 @@ export class AttachmentDto {
 
     @Expose()
     size: number;
+
+    @Expose()
+    duration?: number;
+
+    @Expose()
+    waveform?: number[];
 }
 
 class ReactionDto {
