@@ -24,6 +24,7 @@ import { VideoCallModule } from './modules/video-call/video-call.module';
 import { SharedModule } from './shared/shared.module';
 import { ReactionModule } from './modules/reaction/reaction.module';
 import { SaveModule } from './modules/save/save.module';
+import { CommunityModule } from './modules/community/community.module';
 
 
 
@@ -54,6 +55,7 @@ import { SaveModule } from './modules/save/save.module';
     VideoCallModule,
     ReactionModule,
     SaveModule,
+    CommunityModule,
   ],
   controllers: [AppController],
   providers: [AppService],

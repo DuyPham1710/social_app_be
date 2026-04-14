@@ -150,4 +150,9 @@ export class CreatePostDto {
     })
     @ApiProperty({ example: ['1', '2', '3'], required: false })
     friends_detail?: string[];
+
+    @ApiProperty({ description: 'ID cộng đồng (nếu đăng bài vào cộng đồng)', required: false })
+    @IsOptional()
+    @IsString()
+    communityId?: string;
 }

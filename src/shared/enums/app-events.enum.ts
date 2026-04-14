@@ -105,4 +105,9 @@ export enum AppEvents {
     GET_ADMIN_ID = "GET_ADMIN_ID",
     DELETE_NOTIFICATION_FRIEND = "DELETE_NOTIFICATION_FRIEND",
     FRIEND_REQUEST_GET_BY_ID = "FRIEND_REQUEST_GET_BY_ID",
+
+    // ===== COMMUNITY =====
+    COMMUNITY_GET_APPROVED_POSTS = 'community.getApprovedPosts',
+    COMMUNITY_GET_PENDING_POSTS = 'community.getPendingPosts',
 }
+

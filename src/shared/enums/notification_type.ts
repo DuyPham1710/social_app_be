@@ -8,4 +8,12 @@ export enum NotificationType {
   STORY_REACTION = "STORY_REACTION",
   COMMENT_REACTION = "COMMENT_REACTION",
   POST_REPORT_REVIEWED = 'POST_REPORT_REVIEWED', // Admin đã xử lý báo cáo bài viết của bạn
+
+  // Community
+  COMMUNITY_JOIN_REQUEST = 'COMMUNITY_JOIN_REQUEST',   // Ai đó gửi yêu cầu vào cộng đồng
+  COMMUNITY_INVITE = 'COMMUNITY_INVITE',               // Được mời vào cộng đồng
+  COMMUNITY_JOIN_APPROVED = 'COMMUNITY_JOIN_APPROVED', // Yêu cầu tham gia được duyệt
+  COMMUNITY_JOIN_REJECTED = 'COMMUNITY_JOIN_REJECTED', // Yêu cầu tham gia bị từ chối
+  COMMUNITY_POST_APPROVED = 'COMMUNITY_POST_APPROVED', // Bài viết cộng đồng được duyệt
+  COMMUNITY_POST_REJECTED = 'COMMUNITY_POST_REJECTED', // Bài viết cộng đồng bị từ chối
 }

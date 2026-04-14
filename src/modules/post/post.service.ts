@@ -301,7 +301,7 @@ export class PostService {
     }
 
     async createPost(createPostDto: CreatePostDto, userId: string, files?: File[]): Promise<{ message: string }> {
-        const { caption, titles = [], orders = [], layout, privacy_type, friends_except, friends_detail } = createPostDto;
+        const { caption, titles = [], orders = [], layout, privacy_type, friends_except, friends_detail, communityId } = createPostDto;
 
         // Kiểm duyệt nội dung caption trước
         if (caption && caption.trim().length > 0) {
@@ -339,6 +339,11 @@ export class PostService {
             privacy_type,
             friends_except: friends_except ? friends_except.map(id => new Types.ObjectId(id)) : undefined,
             friends_detail: friends_detail ? friends_detail.map(id => new Types.ObjectId(id)) : undefined,
+            // Nếu có communityId thì set trạng thái pending cần duyệt
+            ...(communityId ? {
+                communityId: new Types.ObjectId(communityId),
+                communityStatus: 'pending',
+            } : {}),
         });
 
         // Upload file từ disk lên Cloudinary
@@ -1351,5 +1356,102 @@ export class PostService {
             return false;
         }
         return false;
+    }
+
+    // ===== COMMUNITY EVENT LISTENERS =====
+
+    @OnEvent(AppEvents.COMMUNITY_GET_APPROVED_POSTS)
+    async handleGetCommunityApprovedPosts(payload: {
+        communityId: string;
+        userId: string;
+        page: number;
+        limit: number;
+    }) {
+        const { communityId, userId, page = 1, limit = 10 } = payload;
+        const skip = (page - 1) * limit;
+        const communityObjectId = new Types.ObjectId(communityId);
+
+        const [posts, total] = await Promise.all([
+            this.postModel
+                .find({ communityId: communityObjectId, communityStatus: 'approved', isHidden: { $ne: true } })
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
+                .populate('userId', 'username fullName avatarUrl')
+                .populate({ path: 'urls', options: { sort: { order: 1 } } })
+                .lean()
+                .exec(),
+            this.postModel.countDocuments({ communityId: communityObjectId, communityStatus: 'approved', isHidden: { $ne: true } }),
+        ]);
+
+        // Lấy react info
+        const postIds = posts.map((p: any) => p._id.toString());
+        const [reactsMap] = await this.eventEmitter.emitAsync(AppEvents.REACT_POST_GET, { postIds, viewerId: userId });
+        const [reactMap] = await this.eventEmitter.emitAsync(AppEvents.REACT_POST_FIND_BY_USER, { userId, postIds });
+
+        const postsWithReacts = posts.map((post: any) => ({
+            ...post,
+            reacts: reactsMap?.[post._id.toString()] || [],
+            isReact: reactMap?.[post._id.toString()] || null,
+        }));
+
+        return {
+            data: postsWithReacts,
+            page,
+            limit,
+            total,
+            hasNext: skip + posts.length < total,
+        };
+    }
+
+    @OnEvent(AppEvents.COMMUNITY_GET_PENDING_POSTS)
+    async handleGetCommunityPendingPosts(payload: {
+        communityId: string;
+        page: number;
+        limit: number;
+    }) {
+        const { communityId, page = 1, limit = 10 } = payload;
+        const skip = (page - 1) * limit;
+        const communityObjectId = new Types.ObjectId(communityId);
+
+        const [posts, total] = await Promise.all([
+            this.postModel
+                .find({ communityId: communityObjectId, communityStatus: 'pending' })
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
+                .populate('userId', 'username fullName avatarUrl')
+                .populate({ path: 'urls', options: { sort: { order: 1 } } })
+                .lean()
+                .exec(),
+            this.postModel.countDocuments({ communityId: communityObjectId, communityStatus: 'pending' }),
+        ]);
+
+        return {
+            data: posts,
+            page,
+            limit,
+            total,
+            hasNext: skip + posts.length < total,
+        };
+    }
+
+    @OnEvent('community.post.updateStatus')
+    async handleCommunityPostUpdateStatus(payload: {
+        postId: string;
+        communityId: string;
+        status: string;
+    }) {
+        const { postId, communityId, status } = payload;
+        const post = await this.postModel.findOne({
+            _id: new Types.ObjectId(postId),
+            communityId: new Types.ObjectId(communityId),
+        });
+        if (!post) return null;
+
+        post.communityStatus = status as any;
+        await post.save();
+
+        return { userId: post.userId };
     }
 }
