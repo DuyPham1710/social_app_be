@@ -16,9 +16,10 @@ export async function uploadChatAttachmentFromFile(
     const mimetype = file.mimetype;
     const filename = file.originalname;
 
-    // Phân biệt hình ảnh và video
+    // Phân biệt hình ảnh, video và âm thanh
     const isVideo = mimetype?.startsWith('video/');
     const isImage = mimetype?.startsWith('image/');
+    const isAudio = mimetype?.startsWith('audio/');
 
     // Định dạng cho phép
     const allowedFormats = [
@@ -34,6 +35,12 @@ export async function uploadChatAttachmentFromFile(
         'mkv',
         'flv',
         'wmv',
+        // Audio formats
+        'mp3',
+        'wav',
+        'm4a',
+        'aac',
+        'ogg',
     ];
 
     // Cấu hình upload dựa trên loại file
@@ -60,6 +67,9 @@ export async function uploadChatAttachmentFromFile(
         uploadOptions.transformation = [
             { width: 1080, height: 1080, crop: 'limit' },
         ];
+    } else if (isAudio) {
+        // Cấu hình cho file audio (Cloudinary chung audio vào loại video)
+        uploadOptions.resource_type = 'video';
     } else {
         // Tự động phát hiện loại file
         uploadOptions.resource_type = 'auto';
@@ -75,9 +85,11 @@ export async function uploadChatAttachmentFromFile(
                     return;
                 }
 
-                // Xác định type dựa trên resource_type từ Cloudinary
+                // Xác định type dựa trên resource_type từ Cloudinary hoặc mimetype ban đầu
                 let attachmentType: AttachmentType;
-                if (result?.resource_type === 'video') {
+                if (isAudio) {
+                    attachmentType = AttachmentType.AUDIO;
+                } else if (result?.resource_type === 'video') {
                     attachmentType = AttachmentType.VIDEO;
                 } else if (result?.resource_type === 'image') {
                     attachmentType = AttachmentType.IMAGE;

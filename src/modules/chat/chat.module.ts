@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ChatService } from './chat.service';
 import { ChatGateway } from './chat.gateway';
 import { ChatController } from './chat.controller';
+import { VoiceEffectService } from './helpers/voice-effect.service';
 import { Conversation, ConversationSchema } from './schemas/conversation.schema';
 import { Message, MessageSchema } from './schemas/message.schema';
 import { MessageEditLog, MessageEditLogSchema } from './schemas/message-edit-log.schema';
@@ -16,7 +17,7 @@ import { MessageEditLog, MessageEditLogSchema } from './schemas/message-edit-log
     ]),
   ],
   controllers: [ChatController],
-  providers: [ChatGateway, ChatService],
+  providers: [ChatGateway, ChatService, VoiceEffectService],
   exports: [ChatService],
 })
 export class ChatModule { }

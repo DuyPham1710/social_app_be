@@ -331,6 +331,53 @@ export class PostService {
             }
         }
 
+        // Kiểm duyệt video và blur các đoạn vi phạm (nếu có)
+        const blurredVideoPaths: string[] = [];
+        if (files && files.length > 0) {
+            const videoFiles = files.filter(f => f.mimetype?.startsWith('video/'));
+            for (const videoFile of videoFiles) {
+                try {
+                    const videoResult = await this.imageModerationService.checkVideo(videoFile);
+                    
+                    if (!videoResult.is_safe) {
+                        // Nếu video bị chặn hoàn toàn (vi phạm > 90%)
+                        if (videoResult.block_completely) {
+                            this.logger.warn(`Video "${videoFile.originalname}" vi phạm hơn 90% nội dung. Chặn hoàn toàn!`);
+                            this.cleanupTempFiles(files);
+                            throw new BadRequestException(
+                                `Video của bạn vi phạm nghiêm trọng tiêu chuẩn cộng đồng! Vui lòng chọn video khác.`,
+                            );
+                        }
+
+                        if (videoResult.has_blurred_video && videoResult.blurred_video_path) {
+                            // Xóa ngay video gốc (vi phạm) để giải phóng bộ nhớ, tránh file rác vì ta đã có bản blur
+                            try {
+                                if (fs.existsSync(videoFile.path)) {
+                                    fs.unlinkSync(videoFile.path);
+                                    this.logger.debug(`Đã xóa file video gốc (vi phạm): ${videoFile.path}`);
+                                }
+                            } catch (err) {
+                                this.logger.warn(`Lỗi khi xóa video gốc: ${err.message}`);
+                            }
+
+                            // Thay thế đường dẫn file gốc bằng video đã blur
+                            this.logger.warn(
+                                `Video "${videoFile.originalname}" đã được blur do vi phạm tiêu chuẩn cộng đồng`,
+                            );
+                            (videoFile as any).path = videoResult.blurred_video_path;
+                            blurredVideoPaths.push(videoResult.blurred_video_path);
+                        }
+                    }
+                } catch (error) {
+                    if (error instanceof BadRequestException) {
+                        throw error; // Bắn thẳng lỗi này ra ngoài cho user biết
+                    }
+                    this.logger.error(`Lỗi kiểm duyệt video "${videoFile.originalname}": ${error.message}`);
+                    // Cho phép upload nếu AI service lỗi
+                }
+            }
+        }
+
         // Tạo post trong database
         const post = await this.postModel.create({
             caption,
@@ -410,6 +457,18 @@ export class PostService {
             } finally {
                 // Luôn xóa file tạm sau khi upload xong (dù thành công hay thất bại)
                 this.cleanupTempFiles(files);
+
+                // Xóa file video đã blur (nếu có)
+                for (const blurredPath of blurredVideoPaths) {
+                    try {
+                        if (fs.existsSync(blurredPath)) {
+                            fs.unlinkSync(blurredPath);
+                            this.logger.debug(`Đã xóa file video blur tạm: ${blurredPath}`);
+                        }
+                    } catch (err) {
+                        this.logger.warn(`Không thể xóa file video blur tạm ${blurredPath}: ${err.message}`);
+                    }
+                }
             }
         }
 
@@ -675,7 +734,7 @@ export class PostService {
         };
     }
 
-    async translateCaption(postId: string, targetLang: string = 'vi') {
+    async translateCaption(postId: string, targetLang: string = 'en') {
         if (!Types.ObjectId.isValid(postId)) {
             throw new HttpException('Invalid postId', HttpStatus.BAD_REQUEST);
         }
@@ -694,13 +753,27 @@ export class PostService {
         }
 
         try {
-            const result = await this.googleTranslationService.translate(caption, targetLang);
+            const detected = await this.googleTranslationService.detectLanguage(caption);
+            const normalizedTarget = targetLang || 'en';
+
+            if (langsMatch(detected, normalizedTarget)) {
+                return {
+                    originalCaption: caption,
+                    translatedCaption: caption,
+                    sourceLang: detected,
+                    targetLang: normalizedTarget,
+                    translationNotNeeded: true,
+                };
+            }
+
+            const result = await this.googleTranslationService.translate(caption, normalizedTarget);
 
             return {
                 originalCaption: caption,
                 translatedCaption: result.translatedText,
                 sourceLang: result.sourceLang,
                 targetLang: result.targetLang,
+                translationNotNeeded: false,
             };
         } catch (error) {
             this.logger.error(
@@ -709,6 +782,50 @@ export class PostService {
             );
             throw new HttpException(
                 'Failed to translate caption',
+                HttpStatus.BAD_GATEWAY,
+            );
+        }
+    }
+
+    async getCaptionTranslationEligibility(postId: string, targetLang: string) {
+        if (!Types.ObjectId.isValid(postId)) {
+            throw new HttpException('Invalid postId', HttpStatus.BAD_REQUEST);
+        }
+
+        const postObjectId = new Types.ObjectId(postId);
+        const post = await this.postModel.findById(postObjectId).select('caption').lean();
+
+        if (!post) {
+            throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
+        }
+
+        const caption: string | undefined = (post as any).caption;
+
+        if (!caption || !caption.trim()) {
+            return {
+                translationNotNeeded: true,
+                sourceLang: 'und',
+                targetLang: targetLang || 'en',
+            };
+        }
+
+        try {
+            const detected = await this.googleTranslationService.detectLanguage(caption);
+            const normalizedTarget = targetLang || 'en';
+            const translationNotNeeded = langsMatch(detected, normalizedTarget);
+
+            return {
+                translationNotNeeded,
+                sourceLang: detected,
+                targetLang: normalizedTarget,
+            };
+        } catch (error) {
+            this.logger.error(
+                `Failed caption translation eligibility for post ${postId}`,
+                error as any,
+            );
+            throw new HttpException(
+                'Failed to check caption translation',
                 HttpStatus.BAD_GATEWAY,
             );
         }

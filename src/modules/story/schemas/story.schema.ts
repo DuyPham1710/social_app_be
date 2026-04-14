@@ -29,9 +29,13 @@ export class Story extends PrivacyBase {
     // Thời gian hết hạn (mặc định 24h kể từ createdAt)
     @Prop({ type: Date, default: new Date(Date.now() + 24 * 60 * 60 * 1000) })
     expireAt: Date;
+
+    // Lưu trữ story để xem lại 
+    @Prop({ type: Boolean, default: false })
+    isArchived: boolean;
+
+    @Prop({ type: Date })
+    archivedAt?: Date;
 }
 
 export const StorySchema = SchemaFactory.createForClass(Story);
-
-// Index tự động xóa story khi hết hạn
-StorySchema.index({ expireAt: 1 }, { expireAfterSeconds: 0 });

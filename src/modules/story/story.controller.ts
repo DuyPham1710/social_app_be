@@ -38,6 +38,28 @@ export class StoryController {
     return this.storyService.getStories(ownerId, ownerId);
   }
 
+  @Get('/me/active')
+  @ApiOperation({ summary: 'Lấy danh sách story còn hiệu lực của user đang đăng nhập' })
+  getMyActiveStories(
+    @Req() req: any,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 50,
+  ): Promise<GroupedStoryListDto> {
+    const viewerId = req.user.userId;
+    return this.storyService.getMyActiveStories(viewerId, Number(page), Number(limit));
+  }
+
+  @Get('/me/archive')
+  @ApiOperation({ summary: 'Lấy danh sách story đã hết hạn/lưu trữ của user đang đăng nhập' })
+  getMyArchivedStories(
+    @Req() req: any,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 20,
+  ): Promise<GroupedStoryListDto> {
+    const viewerId = req.user.userId;
+    return this.storyService.getMyArchivedStories(viewerId, Number(page), Number(limit));
+  }
+
   @Get('user/:userId')
   @ApiOperation({ summary: 'Lấy danh sách story của user khác' })
   getStoriesByUserId(@Param('userId') ownerId: string, @Req() req: any) {

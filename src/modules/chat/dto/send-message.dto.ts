@@ -1,4 +1,4 @@
-import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsOptional, IsString, IsNumber, Max, Min, ArrayMaxSize } from 'class-validator';
 
 class AttachmentDto {
     @IsString()
@@ -9,6 +9,17 @@ class AttachmentDto {
 
     @IsOptional()
     size?: number;
+
+    @IsOptional()
+    @IsNumber()
+    @Max(60)
+    @Min(0)
+    duration?: number;
+
+    @IsOptional()
+    @IsArray()
+    @ArrayMaxSize(40)
+    waveform?: number[];
 }
 
 export class SendMessageDto {
