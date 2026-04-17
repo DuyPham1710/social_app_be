@@ -34,8 +34,8 @@ export class Post extends PrivacyBase {
     // @Prop({ default: 0 })
     // shareCount: number;
 
-    // @Prop({ default: 0 })
-    // viewCount: number;
+    @Prop({ default: 0 })
+    viewCount: number;
 
     @Prop({ type: Boolean, default: false })
     isHidden?: boolean;
