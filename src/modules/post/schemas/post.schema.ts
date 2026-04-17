@@ -4,6 +4,12 @@ import { PrivacyBase } from 'src/common/base/privacy.base';
 import { LayoutType } from 'src/shared/enums/layout_type';
 import { PrivacyType } from 'src/shared/enums/privacy_type';
 
+export enum CommunityPostStatus {
+    PENDING = 'pending',
+    APPROVED = 'approved',
+    REJECTED = 'rejected',
+}
+
 export type PostDocument = Post & Document;
 
 @Schema({ timestamps: true }) // tự động tạo createdAt & updatedAt
@@ -39,9 +45,23 @@ export class Post extends PrivacyBase {
 
     @Prop({ type: Boolean, default: false })
     isHidden?: boolean;
+
+    // Nếu là bài viết trong cộng đồng, lưu communityId
+    @Prop({ type: Types.ObjectId, ref: 'Community', default: null })
+    communityId?: Types.ObjectId;
+
+    // Trạng thái duyệt bài trong cộng đồng (chỉ dùng khi communityId != null)
+    @Prop({
+        type: String,
+        enum: CommunityPostStatus,
+        default: null,
+    })
+    communityStatus?: CommunityPostStatus;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);
 
 // Index để query nhanh hơn theo user và privacy
 PostSchema.index({ userId: 1, privacy_type: 1 });
+// Index cho community posts
+PostSchema.index({ communityId: 1, communityStatus: 1 });
