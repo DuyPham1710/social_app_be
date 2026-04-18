@@ -60,11 +60,12 @@ export class CommunityController {
     @ApiQuery({ name: 'limit', required: false })
     @ApiQuery({ name: 'search', required: false })
     getAllCommunities(
+        @Req() req: any,
         @Query('page') page: number = 1,
         @Query('limit') limit: number = 10,
         @Query('search') search?: string,
     ) {
-        return this.communityService.getAllCommunities(Number(page), Number(limit), search);
+        return this.communityService.getAllCommunities(Number(page), Number(limit), search, req.user.userId);
     }
 
     @Get('me')

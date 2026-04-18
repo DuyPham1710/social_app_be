@@ -124,7 +124,7 @@ export class CommunityService {
         return community;
     }
 
-    async getAllCommunities(page: number = 1, limit: number = 10, search?: string) {
+    async getAllCommunities(page: number = 1, limit: number = 10, search?: string, userId?: string) {
         const skip = (page - 1) * limit;
         const query: any = {};
 
@@ -143,8 +143,32 @@ export class CommunityService {
             this.communityModel.countDocuments(query),
         ]);
 
+        // Thêm memberStatus cho từng community nếu có userId
+        let result = communities;
+        if (userId) {
+            result = await Promise.all(
+                communities.map(async (c: any) => {
+                    const member = await this.memberModel.findOne({
+                        userId: new Types.ObjectId(userId),
+                        communityId: new Types.ObjectId(c._id),
+                    });
+                    const pendingRequest = await this.requestModel.findOne({
+                        userId: new Types.ObjectId(userId),
+                        communityId: new Types.ObjectId(c._id),
+                        type: 'join',
+                        status: 'pending',
+                    });
+                    return {
+                        ...c,
+                        memberStatus: member ? 'member' : (pendingRequest ? 'pending' : null),
+                        myRole: member?.role ?? null,
+                    };
+                }),
+            );
+        }
+
         return {
-            data: communities,
+            data: result,
             page,
             limit,
             total,
@@ -165,10 +189,11 @@ export class CommunityService {
             .populate('adminId', 'fullName username avatarUrl')
             .lean();
 
-        // Gán thêm role của user trong từng community
+        // Gán thêm role và memberStatus của user trong từng community
         const roleMap = new Map(members.map((m) => [m.communityId.toString(), m.role]));
         return communities.map((c: any) => ({
             ...c,
+            memberStatus: 'member',
             myRole: roleMap.get(c._id.toString()) ?? 'member',
         }));
     }
@@ -365,9 +390,6 @@ export class CommunityService {
         if (!joinRequest) throw new NotFoundException('Không tìm thấy yêu cầu tham gia');
 
         if (dto.action === RequestAction.APPROVE) {
-            joinRequest.status = 'approved';
-            await joinRequest.save();
-
             // Thêm vào danh sách thành viên
             await this.memberModel.create({
                 userId: joinRequest.userId,
@@ -376,6 +398,9 @@ export class CommunityService {
             });
 
             await this.communityModel.findByIdAndUpdate(community._id, { $inc: { memberCount: 1 } });
+
+            // Xóa request sau khi duyệt
+            await joinRequest.deleteOne();
 
             // Thông báo cho user được duyệt
             this.eventEmitter.emit('notification.create', {
@@ -389,8 +414,8 @@ export class CommunityService {
 
             return { message: 'Đã chấp nhận yêu cầu tham gia' };
         } else {
-            joinRequest.status = 'rejected';
-            await joinRequest.save();
+            // Xóa request khi từ chối
+            await joinRequest.deleteOne();
 
             // Thông báo từ chối
             this.eventEmitter.emit('notification.create', {
@@ -438,13 +463,13 @@ export class CommunityService {
                 await this.communityModel.findByIdAndUpdate(communityId, { $inc: { memberCount: 1 } });
             }
 
-            invite.status = 'approved';
-            await invite.save();
+            // Xóa invite sau khi chấp nhận
+            await invite.deleteOne();
 
             return { message: `Đã tham gia cộng đồng "${community.name}"` };
         } else {
-            invite.status = 'rejected';
-            await invite.save();
+            // Xóa invite khi từ chối
+            await invite.deleteOne();
             return { message: 'Đã từ chối lời mời' };
         }
     }
@@ -462,7 +487,14 @@ export class CommunityService {
         });
         if (!member) throw new NotFoundException('Bạn không phải thành viên của cộng đồng này');
 
+        // Xóa member
         await member.deleteOne();
+        // Xóa luôn join request pending của user
+        await this.requestModel.deleteMany({
+            userId: new Types.ObjectId(userId),
+            communityId: community._id,
+            type: 'join',
+        });
         await this.communityModel.findByIdAndUpdate(community._id, { $inc: { memberCount: -1 } });
 
         return { message: 'Đã rời khỏi cộng đồng' };
