@@ -52,6 +52,10 @@ export enum AppEvents {
 
     // ===== CHAT =====
     CHAT_SEND_MESSAGE = 'chat.sendMessage',
+
+    // ===== PRESENCE =====
+    PRESENCE_ONLINE = 'presence.online',
+    PRESENCE_OFFLINE = 'presence.offline',
     REACT_COMMENT_GET = "REACT_COMMENT_GET",
     REACT_COMMENT_FIND_BY_USER = "REACT_COMMENT_FIND_BY_USER",
 

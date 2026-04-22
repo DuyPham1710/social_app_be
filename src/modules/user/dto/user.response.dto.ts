@@ -58,4 +58,10 @@ export default class UserResponseDto {
 
     @Expose()
     fcmToken?: string;
+
+    @Expose()
+    isOnline?: boolean;
+
+    @Expose()
+    lastSeenAt?: Date;
 }

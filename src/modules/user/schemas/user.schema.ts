@@ -70,6 +70,14 @@ export class User {
     // role of user
     @Prop({ type: String, enum: UserRole, default: UserRole.USER })
     role: UserRole;
+
+    // Presence (chat/friend online status)
+    @Prop({ type: Boolean, default: false, index: true })
+    isOnline?: boolean;
+
+    // Timestamp when user last went offline (disconnect with no remaining sockets)
+    @Prop({ type: Date })
+    lastSeenAt?: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

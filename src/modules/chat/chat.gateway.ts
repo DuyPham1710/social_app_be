@@ -13,6 +13,7 @@ import { SendMessageDto, MarkAsReadDto, CreateConversationDto, UpdateMessageDto,
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AppEvents } from 'src/shared/enums/app-events.enum';
 import { FcmService } from 'src/shared/services/fcm.service';
+import { PresenceService } from 'src/shared/services/presence.service';
 
 @WebSocketGateway({
   cors: {
@@ -24,8 +25,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
-  // Map để lưu userId -> socketId
-  private userSockets = new Map<string, string>();
+  // Map để lưu userId -> Set<socketId> (multi-device)
+  private userSockets = new Map<string, Set<string>>();
+
+  // Map để tra socketId -> userId (để disconnect nhanh)
+  private socketToUserId = new Map<string, string>();
 
   // Map để track users đang join conversation: conversationId -> Set<userId>
   private conversationUsers = new Map<string, Set<string>>();
@@ -34,9 +38,30 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly chatService: ChatService,
     private readonly eventEmitter: EventEmitter2,
     private readonly fcmService: FcmService,
+    private readonly presenceService: PresenceService,
   ) {
     // Listen for video call ended/rejected to send message
     this.eventEmitter.on(AppEvents.CHAT_SEND_MESSAGE, this.handleSendMessageFromEvent.bind(this));
+
+    // Presence transitions may come from any namespace (friend/chat/...)
+    this.eventEmitter.on(AppEvents.PRESENCE_ONLINE, (payload: { userId: string }) => {
+      const userId = payload?.userId;
+      if (!userId) return;
+      this.server.emit('presence:online', { userId });
+      // backward compatible
+      this.server.emit('user:online', { userId });
+    });
+
+    this.eventEmitter.on(
+      AppEvents.PRESENCE_OFFLINE,
+      (payload: { userId: string; lastSeenAt?: Date }) => {
+        const userId = payload?.userId;
+        if (!userId) return;
+        this.server.emit('presence:offline', { userId, lastSeenAt: payload?.lastSeenAt });
+        // backward compatible
+        this.server.emit('user:offline', { userId });
+      },
+    );
   }
 
   async handleConnection(client: Socket) {
@@ -56,13 +81,17 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   handleDisconnect(client: Socket) {
-    // Find user by socket ID
-    let disconnectedUserId: string | null = null;
-    for (const [userId, socketId] of this.userSockets.entries()) {
-      if (socketId === client.id) {
-        disconnectedUserId = userId;
-        this.userSockets.delete(userId);
-        break;
+    const disconnectedUserId = this.socketToUserId.get(client.id) ?? null;
+    if (disconnectedUserId) {
+      this.socketToUserId.delete(client.id);
+      const sockets = this.userSockets.get(disconnectedUserId);
+      if (sockets) {
+        sockets.delete(client.id);
+        if (sockets.size === 0) {
+          this.userSockets.delete(disconnectedUserId);
+        } else {
+          this.userSockets.set(disconnectedUserId, sockets);
+        }
       }
     }
 
@@ -80,8 +109,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         }
       }
 
-      // Emit offline status
-      client.broadcast.emit('user:offline', { userId: disconnectedUserId });
+      this.presenceService
+        .markOffline(disconnectedUserId, client.id)
+        .then(({ becameOffline, lastSeenAt }) => {
+          if (!becameOffline) return;
+          // Presence broadcast will be handled via AppEvents.PRESENCE_OFFLINE
+        })
+        .catch((error) => {
+          console.error('[ChatGateway] Presence markOffline error:', error);
+        });
+
       console.log(`Client disconnected: ${client.id} - User: ${disconnectedUserId}`);
     } else {
       console.log(`Client disconnected: ${client.id} - Unknown user`);
@@ -105,8 +142,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         return;
       }
 
-      // Set user socket mapping
-      this.userSockets.set(userId.trim(), client.id);
+      const normalizedUserId = userId.trim();
+
+      // Set user socket mapping (multi-device)
+      const sockets = this.userSockets.get(normalizedUserId) ?? new Set<string>();
+      sockets.add(client.id);
+      this.userSockets.set(normalizedUserId, sockets);
+      this.socketToUserId.set(client.id, normalizedUserId);
 
       console.log(`User registered: ${userId} (${username || 'Unknown'}) - Socket: ${client.id}`);
 
@@ -119,8 +161,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         timestamp: new Date(),
       });
 
-      // Emit online status to others
-      client.broadcast.emit('user:online', { userId });
+      const { becameOnline } = await this.presenceService.markOnline(normalizedUserId, client.id);
+
+      // Presence broadcast will be handled via AppEvents.PRESENCE_ONLINE
 
       return { success: true };
     } catch (error) {
@@ -129,6 +172,31 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         message: 'Failed to register user',
         event: 'register'
       });
+    }
+  }
+
+  @SubscribeMessage('presence:get')
+  async handleGetPresence(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { userIds: string[] },
+  ) {
+    try {
+      const userIds = Array.isArray(data?.userIds) ? data.userIds : [];
+      const presence = await this.presenceService.getPresence(userIds);
+
+      client.emit('presence:list', {
+        users: presence,
+        timestamp: new Date(),
+      });
+
+      return { success: true, users: presence };
+    } catch (error) {
+      console.error('Get presence error:', error);
+      client.emit('error', {
+        message: 'Failed to get presence',
+        event: 'presence:get',
+      });
+      return { error: 'Failed to get presence' };
     }
   }
 
@@ -185,11 +253,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
         // Emit event cho tất cả participants
         participantIds.forEach((participantId: string) => {
-          const socketId = this.userSockets.get(participantId);
-          if (socketId) {
-            this.server.to(socketId).emit('conversation:created', {
-              conversation,
-              isNew, // Thêm flag để biết conversation mới hay đã tồn tại
+          const socketIds = this.userSockets.get(participantId);
+          if (socketIds && socketIds.size > 0) {
+            socketIds.forEach((socketId) => {
+              this.server.to(socketId).emit('conversation:created', {
+                conversation,
+                isNew, // Thêm flag để biết conversation mới hay đã tồn tại
+              });
             });
           }
         });
@@ -706,9 +776,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   // Helper method để gửi tin nhắn đến một user cụ thể
   sendToUser(userId: string, event: string, data: any) {
-    const socketId = this.userSockets.get(userId);
-    if (socketId) {
-      this.server.to(socketId).emit(event, data);
+    const socketIds = this.userSockets.get(userId);
+    if (socketIds && socketIds.size > 0) {
+      socketIds.forEach((socketId) => {
+        this.server.to(socketId).emit(event, data);
+      });
     }
   }
 
