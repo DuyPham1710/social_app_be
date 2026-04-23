@@ -25,6 +25,7 @@ import { File } from 'multer';
 import * as fs from 'fs';
 import { ImageModerationService } from '../../shared/services/image-moderation.service';
 import { TextModerationService } from '../../shared/services/text-moderation.service';
+import { langsMatch } from 'src/shared/translation/lang-compare.util';
 
 @Injectable()
 export class PostService {
@@ -338,7 +339,7 @@ export class PostService {
             for (const videoFile of videoFiles) {
                 try {
                     const videoResult = await this.imageModerationService.checkVideo(videoFile);
-                    
+
                     if (!videoResult.is_safe) {
                         // Nếu video bị chặn hoàn toàn (vi phạm > 90%)
                         if (videoResult.block_completely) {
@@ -464,6 +465,22 @@ export class PostService {
                         this.logger.warn(`Không thể xóa file video blur tạm ${blurredPath}: ${err.message}`);
                     }
                 }
+            }
+        }
+
+        // Async: detect faces trong ảnh post và search vector DB (fire-and-forget, dùng Cloudinary URLs)
+        if (files && files.length > 0) {
+            const postUrls = await this.postUrlModel.find({ _id: { $in: post.urls } }).lean().exec();
+            const imageUrls = postUrls
+                .map((u: any) => u.url as string)
+                .filter((url: string) => url.match(/\.(jpg|jpeg|png|webp|gif)(\?|$)/i));
+
+            if (imageUrls.length > 0) {
+                this.eventEmitter.emit(AppEvents.FACE_SEARCH_IN_POST, {
+                    postId: post._id.toString(),
+                    posterId: userId,
+                    imageUrls,
+                });
             }
         }
 

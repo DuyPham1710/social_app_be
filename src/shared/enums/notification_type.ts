@@ -8,4 +8,5 @@ export enum NotificationType {
   STORY_REACTION = "STORY_REACTION",
   COMMENT_REACTION = "COMMENT_REACTION",
   POST_REPORT_REVIEWED = 'POST_REPORT_REVIEWED', // Admin đã xử lý báo cáo bài viết của bạn
+  FACE_DETECTED = 'FACE_DETECTED',               // Mặt bạn được phát hiện trong ảnh của ai đó
 }

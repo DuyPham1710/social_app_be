@@ -105,4 +105,9 @@ export enum AppEvents {
     GET_ADMIN_ID = "GET_ADMIN_ID",
     DELETE_NOTIFICATION_FRIEND = "DELETE_NOTIFICATION_FRIEND",
     FRIEND_REQUEST_GET_BY_ID = "FRIEND_REQUEST_GET_BY_ID",
+
+    // ===== FACE RECOGNITION =====
+    FACE_ENROLL = 'face.enroll',
+    FACE_SEARCH_IN_POST = 'face.searchInPost',
+    FACE_DETECTED_IN_POST = 'face.detectedInPost',
 }
