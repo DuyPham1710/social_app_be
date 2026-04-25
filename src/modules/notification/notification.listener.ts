@@ -111,4 +111,16 @@ export class NotificationListener {
       });
 
   }
+
+  @OnEvent(AppEvents.FACE_DETECTED_IN_POST)
+  async handleFaceDetected(payload: { receiver: string; sender: string; postId: string }) {
+      await this.notificationService.createAndEmit({
+          receiver: payload.receiver,
+          sender: payload.sender,
+          type: NotificationType.FACE_DETECTED,
+          targetId: payload.postId,
+          message: 'đã đăng một bài viết có mặt bạn',
+          content: '',
+      });
+  }
 }
