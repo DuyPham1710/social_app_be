@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
+import { TEXT_MODERATION_PROMPT } from '../../common/prompts';
 
 export interface TextModerationResult {
     is_safe: boolean;
@@ -38,7 +39,7 @@ export class TextModerationService {
         try {
             const url = this.configService.get<string>('HUGGINGFACE_URL', 'https://router.huggingface.co/v1/chat/completions');
             const modelName = this.configService.get<string>('HUGGINGFACE_MODEL', 'Qwen/Qwen2.5-72B-Instruct');
-            const prompt = this.configService.get<string>('HUGGINGFACE_PROMPT', 'Bạn là hệ thống kiểm duyệt nội dung mạng xã hội tiếng Việt. Đánh giá xem câu sau có vi phạm tiêu chuẩn cộng đồng không. Các loại vi phạm: Tục tĩu chửi bậy (PROFANITY), Xúc phạm/Lăng mạ (INSULT), Đe dọa bạo lực (THREAT), Kích động thù hận/Phân biệt (HATE_SPEECH), Khiêu dâm (SEXUAL). Chú ý nhận diện các từ lóng, teencode thô tục tiếng Việt (ví dụ: "cc", "dcm", "đcm", "vl", "cl", "djt", "đjt", "Iồn"). Quan trọng: Câu bình thường phải an toàn (SAFE). Chỉ bắt lỗi khi có ý đồ. Trả lời bằng định dạng JSON thuần túy (không dùng markdown code blocks, KHÔNG thêm chữ nào bên ngoài): {"is_safe": boolean, "violated_categories": ["CATEGORY_NAME"]}');
+            const prompt = TEXT_MODERATION_PROMPT;
 
             const payload = {
                 model: modelName,

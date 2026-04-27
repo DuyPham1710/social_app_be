@@ -158,6 +158,15 @@ export class UserService {
 
         await this.userModel.findByIdAndUpdate(userIdObject, updateUserDto, { new: true });
 
+        // Nếu avatar được cập nhật -> enroll face vào vector DB (async, không block response)
+        if (updateUserDto.avatarUrl && updateUserDto.avatarUrl.length > 0) {
+            this.eventEmitter.emit(AppEvents.FACE_ENROLL, {
+                userId,
+                imageUrl: updateUserDto.avatarUrl,
+                source: 'avatar',
+            });
+        }
+
         const user = await this.userModel.findById(userIdObject).exec();
 
         return plainToInstance(UserResponseDto, user, {
