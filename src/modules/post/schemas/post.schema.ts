@@ -57,6 +57,12 @@ export class Post extends PrivacyBase {
         default: null,
     })
     communityStatus?: CommunityPostStatus;
+
+    @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], default: [] })
+    taggedUserIds: Types.ObjectId[];
+
+    @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], default: [] })
+    visibleOnProfileUserIds: Types.ObjectId[];
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);
@@ -65,3 +71,7 @@ export const PostSchema = SchemaFactory.createForClass(Post);
 PostSchema.index({ userId: 1, privacy_type: 1 });
 // Index cho community posts
 PostSchema.index({ communityId: 1, communityStatus: 1 });
+// Index cho tagged users
+PostSchema.index({ taggedUserIds: 1 });
+// Index cho visible on profile tagged users
+PostSchema.index({ visibleOnProfileUserIds: 1 });

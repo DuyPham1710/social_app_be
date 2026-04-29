@@ -30,6 +30,7 @@ export enum AppEvents {
     POST_GET_USER_ID = 'post.getUserId',
     POST_GET_ALL_BY_USER = 'post.getAllByUser',
     POST_GET_DETAIL = 'post.getDetail',
+    POST_TAGGED = 'post.tagged',
 
     // ===== REACT POST =====
     REACT_POST_GET = 'react-post.get',

@@ -106,7 +106,11 @@ export class PostService {
 
             const postObjectId = new Types.ObjectId(postId);
 
-            const post = await this.postModel.findOne({ _id: postObjectId, isHidden: { $ne: true } }).populate('userId', 'username fullName avatarUrl').populate({ path: 'urls', options: { sort: { order: 1 } } }).exec();
+            const post = await this.postModel.findOne({ _id: postObjectId, isHidden: { $ne: true } })
+                .populate('userId', 'username fullName avatarUrl')
+                .populate('taggedUserIds', 'username fullName avatarUrl')
+                .populate({ path: 'urls', options: { sort: { order: 1 } } })
+                .exec();
             if (!post) {
                 throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
             }
@@ -123,6 +127,7 @@ export class PostService {
             return {
                 ...post.toObject(),
                 userId: cleanedUser,
+                taggedUsers: post.taggedUserIds?.map(u => omitBy(plainToInstance(UserResponseDto, u, { excludeExtraneousValues: true }), isUndefined)),
                 reacts: reactsMap[postId] || [],
                 isReact: reactMap[postId] || null
             } as unknown as PostResponseDto;
@@ -159,14 +164,23 @@ export class PostService {
 
         const ownerObjectId = new Types.ObjectId(ownerId);
 
-        const totalPosts = await this.postModel.countDocuments({ userId: ownerObjectId, isHidden: { $ne: true } });
+        const query = {
+            $or: [
+                { userId: ownerObjectId },
+                { visibleOnProfileUserIds: ownerObjectId }
+            ],
+            isHidden: { $ne: true }
+        };
+
+        const totalPosts = await this.postModel.countDocuments(query);
 
         const posts = await this.postModel
-            .find({ userId: ownerObjectId, isHidden: { $ne: true } })
+            .find(query)
             .sort({ updatedAt: -1, caption: -1 })
             .skip(skip)
             .limit(limit)
             .populate('userId', 'username fullName avatarUrl')
+            .populate('taggedUserIds', 'username fullName avatarUrl')
             .populate({
                 path: 'urls',
                 options: { sort: { order: 1 } }, // sort ảnh theo order
@@ -199,6 +213,14 @@ export class PostService {
                     avatarUrl: post.userId.avatarUrl,
                     username: post.userId.username,
                 };
+            }
+            if (post && post.taggedUserIds && Array.isArray(post.taggedUserIds)) {
+                post.taggedUsers = post.taggedUserIds.map((u: any) => ({
+                    userId: u._id,
+                    fullName: u.fullName,
+                    avatarUrl: u.avatarUrl,
+                    username: u.username,
+                }));
             }
             return post;
         });
@@ -240,6 +262,7 @@ export class PostService {
         let friendsPosts: PostDocument[] = await this.postModel
             .find({ userId: { $in: friendIds }, isHidden: { $ne: true } })
             .populate('userId', 'username fullName avatarUrl')
+            .populate('taggedUserIds', 'username fullName avatarUrl')
             .populate({ path: 'urls', options: { sort: { order: 1 } } })
             .sort({ createdAt: -1 })
             // .skip(skip)
@@ -264,6 +287,7 @@ export class PostService {
         const myPosts: PostDocument[] = await this.postModel
             .find({ userId: new Types.ObjectId(viewerId), isHidden: { $ne: true } })
             .populate('userId', 'username fullName avatarUrl')
+            .populate('taggedUserIds', 'username fullName avatarUrl')
             .populate({ path: 'urls', options: { sort: { order: 1 } } })
             .sort({ createdAt: -1 })
             // .skip(skip)
@@ -291,6 +315,7 @@ export class PostService {
                     isHidden: { $ne: true }
                 })
                 .populate('userId', 'username fullName avatarUrl')
+                .populate('taggedUserIds', 'username fullName avatarUrl')
                 .populate({ path: 'urls', options: { sort: { order: 1 } } })
                 .sort({ createdAt: -1 })
                 .lean()
@@ -322,6 +347,14 @@ export class PostService {
                     avatarUrl: post.userId.avatarUrl,
                     username: post.userId.username,
                 };
+            }
+            if (post && post.taggedUserIds && Array.isArray(post.taggedUserIds)) {
+                post.taggedUsers = post.taggedUserIds.map((u: any) => ({
+                    userId: u._id,
+                    fullName: u.fullName,
+                    avatarUrl: u.avatarUrl,
+                    username: u.username,
+                }));
             }
             return post;
         });
@@ -356,7 +389,7 @@ export class PostService {
     }
 
     async createPost(createPostDto: CreatePostDto, userId: string, files?: File[]): Promise<{ message: string }> {
-        const { caption, titles = [], orders = [], layout, privacy_type, friends_except, friends_detail, communityId } = createPostDto;
+        const { caption, titles = [], orders = [], layout, privacy_type, friends_except, friends_detail, communityId, taggedUserIds } = createPostDto;
 
         // Kiểm duyệt nội dung caption trước
         if (caption && caption.trim().length > 0) {
@@ -441,6 +474,7 @@ export class PostService {
             privacy_type,
             friends_except: friends_except ? friends_except.map(id => new Types.ObjectId(id)) : undefined,
             friends_detail: friends_detail ? friends_detail.map(id => new Types.ObjectId(id)) : undefined,
+            taggedUserIds: taggedUserIds ? taggedUserIds.map(id => new Types.ObjectId(id)) : undefined,
             // Nếu có communityId thì set trạng thái pending cần duyệt
             ...(communityId ? {
                 communityId: new Types.ObjectId(communityId),
@@ -541,6 +575,23 @@ export class PostService {
                     imageUrls,
                 });
             }
+        }
+
+        if (taggedUserIds && taggedUserIds.length > 0) {
+            taggedUserIds.forEach(async (id) => {
+                const [canView] = await this.eventEmitter.emitAsync(AppEvents.POST_CAN_VIEW, {
+                    postId: post._id.toString(),
+                    viewerId: id,
+                });
+
+                if (canView) {
+                    this.eventEmitter.emit(AppEvents.POST_TAGGED, {
+                        sender: userId,
+                        receiver: id,
+                        postId: post._id.toString(),
+                    });
+                }
+            });
         }
 
         return {
@@ -1641,5 +1692,56 @@ export class PostService {
         await post.save();
 
         return { userId: post.userId };
+    }
+
+    async updateTagVisibility(postId: string, userId: string, isVisible: boolean) {
+        if (!Types.ObjectId.isValid(postId)) {
+            throw new HttpException('Invalid postId', HttpStatus.BAD_REQUEST);
+        }
+
+        const post = await this.postModel.findById(postId);
+        if (!post) {
+            throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
+        }
+
+        const userObjectId = new Types.ObjectId(userId);
+
+        // Kiểm tra xem user có được tag không
+        const isTagged = post.taggedUserIds.some(id => id.toString() === userId);
+        if (!isTagged) {
+            throw new HttpException('Bạn không được gắn thẻ trong bài viết này', HttpStatus.FORBIDDEN);
+        }
+
+        if (isVisible) {
+            // Thêm vào danh sách hiển thị nếu chưa có
+            if (!post.visibleOnProfileUserIds.some(id => id.toString() === userId)) {
+                post.visibleOnProfileUserIds.push(userObjectId);
+            }
+        } else {
+            // Xóa khỏi danh sách hiển thị
+            post.visibleOnProfileUserIds = post.visibleOnProfileUserIds.filter(id => id.toString() !== userId);
+        }
+
+        await post.save();
+        return { message: isVisible ? 'Đã hiển thị trên trang cá nhân' : 'Đã ẩn khỏi trang cá nhân' };
+    }
+
+    async removeTag(postId: string, userId: string) {
+        if (!Types.ObjectId.isValid(postId)) {
+            throw new HttpException('Invalid postId', HttpStatus.BAD_REQUEST);
+        }
+
+        const post = await this.postModel.findById(postId);
+        if (!post) {
+            throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
+        }
+
+        // Xóa khỏi danh sách tag
+        post.taggedUserIds = post.taggedUserIds.filter(id => id.toString() !== userId);
+        // Xóa khỏi danh sách hiển thị
+        post.visibleOnProfileUserIds = post.visibleOnProfileUserIds.filter(id => id.toString() !== userId);
+
+        await post.save();
+        return { message: 'Đã gỡ gắn thẻ' };
     }
 }

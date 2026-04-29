@@ -155,4 +155,21 @@ export class CreatePostDto {
     @IsOptional()
     @IsString()
     communityId?: string;
+
+    @IsOptional()
+    @Transform(({ value }) => {
+        if (!value) return undefined;
+        if (Array.isArray(value)) return value; 
+        try {
+            const parsed = JSON.parse(value);
+            if (Array.isArray(parsed)) return parsed;
+        } catch {
+            if (typeof value === 'string') {
+                return value.split(',').map((v) => v.trim());
+            }
+        }
+        return [String(value)];
+    })
+    @ApiProperty({ example: ['1', '2', '3'], required: false })
+    taggedUserIds?: string[];
 }

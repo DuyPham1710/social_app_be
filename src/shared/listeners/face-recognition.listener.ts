@@ -82,8 +82,24 @@ export class FaceRecognitionListener {
             }
 
             // Lọc bỏ poster (không gửi thông báo cho chính mình)
-            const usersToNotify = Array.from(allMatchedMap.entries())
+            const initialUsersToNotify = Array.from(allMatchedMap.entries())
                 .filter(([userId]) => userId !== payload.posterId);
+
+            const usersToNotify: [string, number][] = [];
+
+            // Kiểm tra quyền riêng tư của bài viết với từng user
+            for (const [userId, confidence] of initialUsersToNotify) {
+                const [canView] = await this.eventEmitter.emitAsync(AppEvents.POST_CAN_VIEW, {
+                    postId: payload.postId,
+                    viewerId: userId,
+                });
+
+                if (canView) {
+                    usersToNotify.push([userId, confidence]);
+                } else {
+                    this.logger.log(`Skipping notification for user ${userId}: no permission to view post ${payload.postId}`);
+                }
+            }
 
             // Gửi notification cho từng user qua EventEmitter
             for (const [userId, confidence] of usersToNotify) {

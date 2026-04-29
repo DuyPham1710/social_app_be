@@ -123,4 +123,16 @@ export class NotificationListener {
           content: '',
       });
   }
+
+  @OnEvent(AppEvents.POST_TAGGED)
+  async handlePostTagged(payload: { receiver: string; sender: string; postId: string }) {
+      await this.notificationService.createAndEmit({
+          receiver: payload.receiver,
+          sender: payload.sender,
+          type: NotificationType.TAG_POST,
+          targetId: payload.postId,
+          message: 'đã gắn thẻ bạn trong một bài viết',
+          content: '',
+      });
+  }
 }
