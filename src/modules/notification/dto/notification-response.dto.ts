@@ -9,6 +9,11 @@ export interface NotificationResponse {
     fullName: string;
     avatarUrl?: string;
   } | null;
+  community?: {
+    _id: string;
+    name: string;
+    avatar?: string;
+  } | null;
   type: NotificationType;
   targetId?: string;
   message: string;

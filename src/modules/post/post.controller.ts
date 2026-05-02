@@ -15,6 +15,21 @@ import { ReportPostDto } from './dto/report-post.dto';
 export class PostController {
   constructor(private readonly postService: PostService) { }
 
+  @Get('community-posts/user')
+  @ApiOperation({ summary: 'Lấy danh sách bài viết trong cộng đồng của user đang đăng nhập (cả pending và approved)' })
+  @ApiQuery({ name: 'page', required: false })
+  @ApiQuery({ name: 'limit', required: false })
+  @ApiQuery({ name: 'status', required: false, description: 'pending|approved|all' })
+  getUserCommunityPosts(
+    @Req() req: any,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Query('status') status: string = 'all',
+  ) {
+    const userId = req.user.userId;
+    return this.postService.getUserCommunityPosts(userId, Number(page), Number(limit), status);
+  }
+
   @Get('user/:id')
   @ApiOperation({ summary: 'Lấy danh sách bài viết của user' })
   getPostByUserId(

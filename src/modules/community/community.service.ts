@@ -23,6 +23,7 @@ import { RespondRequestDto, RequestAction } from './dto/respond-request.dto';
 
 import { AppEvents } from 'src/shared/enums/app-events.enum';
 import { NotificationType } from 'src/shared/enums/notification_type';
+import { CommunityPrivacy } from 'src/shared/enums/community_privacy';
 import { CommunityPostStatus } from '../post/schemas/post.schema';
 
 import { File } from 'multer';
@@ -278,38 +279,59 @@ export class CommunityService {
 
     async requestJoin(userId: string, communityId: string) {
         const community = await this.findCommunityOrFail(communityId);
+        const userIdObj = new Types.ObjectId(userId);
 
         // Kiểm tra đã là thành viên chưa
         const existing = await this.memberModel.findOne({
-            userId: new Types.ObjectId(userId),
+            userId: userIdObj,
             communityId: community._id,
         });
         if (existing) throw new BadRequestException('Bạn đã là thành viên của cộng đồng này');
 
         // Kiểm tra đã gửi yêu cầu chưa
         const existingReq = await this.requestModel.findOne({
-            userId: new Types.ObjectId(userId),
+            userId: userIdObj,
             communityId: community._id,
             type: 'join',
             status: 'pending',
         });
         if (existingReq) throw new BadRequestException('Bạn đã gửi yêu cầu tham gia rồi');
 
+        // PUBLIC: Tự động thêm thành viên, không cần duyệt
+        if (community.privacy === CommunityPrivacy.PUBLIC) {
+            await this.memberModel.create({
+                userId: userIdObj,
+                communityId: community._id,
+                role: 'member',
+            });
+
+            await this.communityModel.findByIdAndUpdate(community._id, { $inc: { memberCount: 1 } });
+
+            // Thông báo cho admin khi user tham gia PUBLIC community
+            this.eventEmitter.emit('community.auto.join', {
+                receiver: community.adminId.toString(),
+                sender: userId,
+                communityId: communityId,
+                communityName: community.name,
+            });
+
+            return { message: `Đã tham gia cộng đồng "${community.name}" thành công` };
+        }
+
+        // PRIVATE: Tạo yêu cầu chờ duyệt
         const joinRequest = await this.requestModel.create({
-            userId: new Types.ObjectId(userId),
+            userId: userIdObj,
             communityId: community._id,
             type: 'join',
             status: 'pending',
         });
 
         // Thông báo cho admin
-        this.eventEmitter.emit('notification.create', {
+        this.eventEmitter.emit('community.join.request', {
             receiver: community.adminId.toString(),
             sender: userId,
-            type: NotificationType.COMMUNITY_JOIN_REQUEST,
-            targetId: (joinRequest._id as Types.ObjectId).toString(),
-            message: ` đã gửi yêu cầu tham gia cộng đồng "${community.name}"`,
-            content: communityId,
+            communityId: communityId,
+            communityName: community.name,
         });
 
         return { message: 'Đã gửi yêu cầu tham gia cộng đồng', requestId: (joinRequest._id as Types.ObjectId).toString() };
@@ -365,13 +387,11 @@ export class CommunityService {
         });
 
         // Thông báo cho người được mời
-        this.eventEmitter.emit('notification.create', {
+        this.eventEmitter.emit('community.invite', {
             receiver: targetUserId,
             sender: adminId,
-            type: NotificationType.COMMUNITY_INVITE,
-            targetId: (invite._id as Types.ObjectId).toString(),
-            message: ` đã mời bạn tham gia cộng đồng "${community.name}"`,
-            content: communityId,
+            communityId: communityId,
+            communityName: community.name,
         });
 
         return { message: 'Đã gửi lời mời thành công', inviteId: (invite._id as Types.ObjectId).toString() };
@@ -403,13 +423,11 @@ export class CommunityService {
             await joinRequest.deleteOne();
 
             // Thông báo cho user được duyệt
-            this.eventEmitter.emit('notification.create', {
+            this.eventEmitter.emit('community.join.approved', {
                 receiver: joinRequest.userId.toString(),
                 sender: adminId,
-                type: NotificationType.COMMUNITY_JOIN_APPROVED,
-                targetId: communityId,
-                message: ` đã chấp nhận yêu cầu tham gia cộng đồng "${community.name}" của bạn`,
-                content: communityId,
+                communityId: communityId,
+                communityName: community.name,
             });
 
             return { message: 'Đã chấp nhận yêu cầu tham gia' };
@@ -418,13 +436,11 @@ export class CommunityService {
             await joinRequest.deleteOne();
 
             // Thông báo từ chối
-            this.eventEmitter.emit('notification.create', {
+            this.eventEmitter.emit('community.join.rejected', {
                 receiver: joinRequest.userId.toString(),
                 sender: adminId,
-                type: NotificationType.COMMUNITY_JOIN_REJECTED,
-                targetId: communityId,
-                message: ` đã từ chối yêu cầu tham gia cộng đồng "${community.name}" của bạn`,
-                content: communityId,
+                communityId: communityId,
+                communityName: community.name,
             });
 
             return { message: 'Đã từ chối yêu cầu tham gia' };
@@ -630,6 +646,112 @@ export class CommunityService {
         return { status: 'none' };
     }
 
+    async getAvailableFriends(userId: string, communityId: string) {
+        if (!Types.ObjectId.isValid(communityId)) throw new BadRequestException('communityId không hợp lệ');
+
+        // Kiểm tra user là thành viên cộng đồng
+        const isMember = await this.memberModel.findOne({
+            userId: new Types.ObjectId(userId),
+            communityId: new Types.ObjectId(communityId),
+        });
+        if (!isMember) throw new ForbiddenException('Bạn không phải là thành viên cộng đồng');
+
+        // Lấy danh sách bạn bè của user
+        const [friendList] = await this.eventEmitter.emitAsync(AppEvents.GET_FRIENDS, { userId });
+        if (!friendList || !Array.isArray(friendList)) return [];
+
+        const friendIds = friendList.map(f => new Types.ObjectId(f._id || f.userId || f.id));
+
+        // Lấy các bạn bè chưa tham gia cộng đồng và không có lời mời pending
+        const availableFriends = await this.memberModel
+            .aggregate([
+                {
+                    $match: {
+                        communityId: new Types.ObjectId(communityId),
+                    },
+                },
+                {
+                    $group: { _id: null, members: { $push: '$userId' } },
+                },
+            ]);
+
+        const existingMemberIds = availableFriends[0]?.members || [];
+
+        // Lấy bạn bè chưa mời và chưa là thành viên
+        const pendingInvites = await this.requestModel.find({
+            communityId: new Types.ObjectId(communityId),
+            type: 'invite',
+            status: 'pending',
+            userId: { $in: friendIds },
+        });
+
+        const pendingInviteIds = pendingInvites.map(p => p.userId.toString());
+
+        const availableFriendsData = friendList.filter(friend => {
+            const friendId = (friend._id || friend.userId || friend.id).toString();
+            return !existingMemberIds.some(m => m.toString() === friendId) && !pendingInviteIds.includes(friendId);
+        });
+
+        return availableFriendsData;
+    }
+
+    async inviteFriend(userId: string, communityId: string, targetUserId: string) {
+        if (!Types.ObjectId.isValid(communityId)) throw new BadRequestException('communityId không hợp lệ');
+        if (!Types.ObjectId.isValid(targetUserId)) throw new BadRequestException('targetUserId không hợp lệ');
+
+        const community = await this.findCommunityOrFail(communityId);
+
+        // Kiểm tra user là thành viên cộng đồng
+        const isMember = await this.memberModel.findOne({
+            userId: new Types.ObjectId(userId),
+            communityId: community._id,
+        });
+        if (!isMember) throw new ForbiddenException('Bạn không phải là thành viên cộng đồng');
+
+        // Kiểm tra target user tồn tại
+        const [userExists] = await this.eventEmitter.emitAsync(AppEvents.USER_CHECK_EXISTS, { userId: targetUserId });
+        if (!userExists) throw new NotFoundException('Không tìm thấy người dùng');
+
+        // Kiểm tra có phải bạn bè không
+        const [isFriend] = await this.eventEmitter.emitAsync(AppEvents.CHECK_FRIEND_RELATIONSHIP, { userId, targetUserId });
+        if (!isFriend) throw new ForbiddenException('Bạn không phải bạn bè của người này');
+
+        // Kiểm tra đã là thành viên chưa
+        const existing = await this.memberModel.findOne({
+            userId: new Types.ObjectId(targetUserId),
+            communityId: community._id,
+        });
+        if (existing) throw new BadRequestException('Người này đã là thành viên');
+
+        // Kiểm tra đã có invite pending chưa
+        const existingInvite = await this.requestModel.findOne({
+            userId: new Types.ObjectId(targetUserId),
+            communityId: community._id,
+            type: 'invite',
+            status: 'pending',
+        });
+        if (existingInvite) throw new BadRequestException('Đã gửi lời mời cho người này rồi');
+
+        const invite = await this.requestModel.create({
+            userId: new Types.ObjectId(targetUserId),
+            communityId: community._id,
+            type: 'invite',
+            status: 'pending',
+        });
+
+        // Thông báo cho người được mời
+        this.eventEmitter.emit('notification.create', {
+            receiver: targetUserId,
+            sender: userId,
+            type: NotificationType.COMMUNITY_INVITE,
+            targetId: (invite._id as Types.ObjectId).toString(),
+            message: ` đã mời bạn tham gia cộng đồng "${community.name}"`,
+            content: communityId,
+        });
+
+        return { message: 'Đã gửi lời mời thành công', inviteId: (invite._id as Types.ObjectId).toString() };
+    }
+
     // ================================================================
     // COMMUNITY POSTS
     // ================================================================
@@ -693,14 +815,23 @@ export class CommunityService {
                 ? ` đã duyệt bài viết của bạn trong cộng đồng "${community.name}"`
                 : ` đã từ chối bài viết của bạn trong cộng đồng "${community.name}"`;
 
-        this.eventEmitter.emit('notification.create', {
-            receiver: result.userId.toString(),
-            sender: adminId,
-            type: notificationType,
-            targetId: postId,
-            message,
-            content: communityId,
-        });
+        if (dto.action === PostAction.APPROVE) {
+            this.eventEmitter.emit('community.post.approved', {
+                receiver: result.userId.toString(),
+                sender: adminId,
+                postId: postId,
+                communityId: communityId,
+                communityName: community.name,
+            });
+        } else {
+            this.eventEmitter.emit('community.post.rejected', {
+                receiver: result.userId.toString(),
+                sender: adminId,
+                postId: postId,
+                communityId: communityId,
+                communityName: community.name,
+            });
+        }
 
         return {
             message: dto.action === PostAction.APPROVE ? 'Đã duyệt bài viết' : 'Đã từ chối bài viết',
@@ -711,17 +842,38 @@ export class CommunityService {
     // EVENT LISTENERS (dùng bởi các module khác)
     // ================================================================
 
-    @OnEvent('notification.create')
-    async handleCreateNotification(payload: {
-        receiver: string;
-        sender: string;
-        type: NotificationType;
-        targetId: string;
-        message: string;
-        content: string;
-    }) {
-        // Delegate sang NotificationService qua event
-        await this.eventEmitter.emitAsync('notification.internal.create', payload);
+    @OnEvent(AppEvents.COMMUNITY_GET_INFO)
+    async handleGetCommunityInfo(payload: { communityId: string }) {
+        const community = await this.communityModel
+            .findById(payload.communityId)
+            .select('_id name adminId');
+        
+        if (!community) return null;
+
+        return {
+            id: community._id?.toString(),
+            name: community.name,
+            adminId: community.adminId,
+        };
+    }
+
+    @OnEvent(AppEvents.COMMUNITY_GET_MEMBER_ROLE)
+    async handleGetMemberRole(payload: { communityId: string; userId: string }) {
+        const { communityId, userId } = payload;
+
+        if (!Types.ObjectId.isValid(communityId) || !Types.ObjectId.isValid(userId)) {
+            return { role: null };
+        }
+
+        const member = await this.memberModel
+            .findOne({
+                communityId: new Types.ObjectId(communityId),
+                userId: new Types.ObjectId(userId),
+            })
+            .select('role')
+            .lean();
+
+        return { role: member?.role ?? null };
     }
 
     // ================================================================

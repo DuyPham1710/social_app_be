@@ -22,6 +22,8 @@ export enum AppEvents {
 
     // ===== FRIENDS =====
     FRIENDS_GET = 'friends.get',
+    GET_FRIENDS = 'get.friends',
+    CHECK_FRIEND_RELATIONSHIP = 'check.friendRelationship',
     USER_AGGREGATE = 'user.aggregate',
 
     // ===== POST =====
@@ -109,5 +111,7 @@ export enum AppEvents {
     // ===== COMMUNITY =====
     COMMUNITY_GET_APPROVED_POSTS = 'community.getApprovedPosts',
     COMMUNITY_GET_PENDING_POSTS = 'community.getPendingPosts',
+    COMMUNITY_GET_MEMBER_ROLE = 'community.getMemberRole',
+    COMMUNITY_GET_INFO = 'community.getInfo', // Lấy thông tin community (bao gồm admin)
 }
 

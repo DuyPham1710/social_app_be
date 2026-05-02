@@ -33,6 +33,7 @@ export class NotificationService {
   const n = new this.notificationModel({
     receiver: this.toObjectId(dto.receiver),
     sender: dto.sender ? this.toObjectId(dto.sender) : undefined,
+    community: dto.communityId ? this.toObjectId(dto.communityId) : undefined,
     type: dto.type,
     targetId: dto.targetId ? this.toObjectId(dto.targetId) : undefined,
     message: dto.message,
@@ -43,10 +44,10 @@ export class NotificationService {
   let saved = await n.save();
 
   // Populate sender
-  saved = await saved.populate({
-    path: 'sender',
-    select: 'username fullName avatarUrl _id'
-  });
+  saved = await saved.populate([
+    { path: 'sender', select: 'username fullName avatarUrl _id' },
+    { path: 'community', select: 'name avatar _id' },
+  ]);
 
   return saved;
 }
@@ -71,6 +72,13 @@ async createAndEmit(dto: CreateNotificationDto) {
       : null,
     type: saved.type,
     targetId: saved.targetId ? saved.targetId.toString() : null,
+    community: saved.community
+      ? {
+          _id: (saved.community as any)._id?.toString() || (saved.community as any).toString(),
+          name: (saved.community as any).name,
+          avatar: (saved.community as any).avatar,
+        }
+      : null,
     message: saved.message,
     content: saved.content,
     isRead: saved.isRead,
@@ -100,10 +108,10 @@ async createAndEmit(dto: CreateNotificationDto) {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .populate({
-        path: 'sender',
-        select: 'username fullName avatarUrl _id',
-      })
+      .populate([
+        { path: 'sender', select: 'username fullName avatarUrl _id' },
+        { path: 'community', select: 'name avatar _id' },
+      ])
       .lean()
       .exec();
 
@@ -117,6 +125,13 @@ async createAndEmit(dto: CreateNotificationDto) {
             username: n.sender.username,
             fullName: n.sender.fullName,
             avatarUrl: n.sender.avatarUrl,
+          }
+        : null,
+      community: n.community
+        ? {
+            _id: n.community._id ? n.community._id.toString() : n.community.toString(),
+            name: n.community.name,
+            avatar: n.community.avatar,
           }
         : null,
 

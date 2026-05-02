@@ -133,6 +133,12 @@ export class CommunityController {
         return this.communityService.getMemberStatus(req.user.userId, communityId);
     }
 
+    @Get(':communityId/available-friends')
+    @ApiOperation({ summary: 'Lấy danh sách bạn bè chưa tham gia cộng đồng' })
+    getAvailableFriends(@Req() req: any, @Param('communityId') communityId: string) {
+        return this.communityService.getAvailableFriends(req.user.userId, communityId);
+    }
+
     @Post(':communityId/join')
     @ApiOperation({ summary: 'Gửi yêu cầu tham gia cộng đồng' })
     requestJoin(@Req() req: any, @Param('communityId') communityId: string) {
@@ -159,6 +165,16 @@ export class CommunityController {
         @Body() dto: InviteMemberDto,
     ) {
         return this.communityService.inviteMember(req.user.userId, communityId, dto);
+    }
+
+    @Post(':communityId/invite-friend')
+    @ApiOperation({ summary: 'Thành viên mời bạn bè tham gia cộng đồng' })
+    inviteFriend(
+        @Req() req: any,
+        @Param('communityId') communityId: string,
+        @Body() dto: InviteMemberDto,
+    ) {
+        return this.communityService.inviteFriend(req.user.userId, communityId, dto.userId);
     }
 
     // ================================================================

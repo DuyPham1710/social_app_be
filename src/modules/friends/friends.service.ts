@@ -265,6 +265,23 @@ export class FriendsService {
     return await this.getFriends(payload.userId);
   }
 
+  @OnEvent(AppEvents.GET_FRIENDS)
+  async onGetFriendsNewEvent(payload: { userId: string }) {
+    return await this.getFriends(payload.userId);
+  }
+
+  @OnEvent(AppEvents.CHECK_FRIEND_RELATIONSHIP)
+  async onCheckFriendRelationship(payload: { userId: string; targetUserId: string }) {
+    const { userId, targetUserId } = payload;
+    const friendship = await this.friendModel.findOne({
+      $or: [
+        { user_id: new Types.ObjectId(userId), friend_id: new Types.ObjectId(targetUserId) },
+        { user_id: new Types.ObjectId(targetUserId), friend_id: new Types.ObjectId(userId) }
+      ]
+    });
+    return !!friendship;
+  }
+
   // Tìm kiếm bạn bè
   async searchFriends(userId: string, searchDto: SearchFriendsDto) {
     const { query, page = 1, limit = 10 } = searchDto;

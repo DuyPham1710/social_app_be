@@ -18,6 +18,10 @@ export class Notification {
   @Prop({ type: Types.ObjectId }) 
   targetId: Types.ObjectId;
 
+  // optional related community for community-related notifications
+  @Prop({ type: Types.ObjectId, ref: 'Community', required: false })
+  community?: Types.ObjectId;
+
   @Prop({ required: true })
   message: string;
 

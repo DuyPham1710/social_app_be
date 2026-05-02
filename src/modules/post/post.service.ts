@@ -26,6 +26,7 @@ import * as fs from 'fs';
 import { ImageModerationService } from '../../shared/services/image-moderation.service';
 import { TextModerationService } from '../../shared/services/text-moderation.service';
 import { langsMatch } from 'src/shared/translation/lang-compare.util';
+import { CommunityPostStatus } from './schemas/post.schema';
 
 @Injectable()
 export class PostService {
@@ -113,6 +114,7 @@ export class PostService {
             .skip(skip)
             .limit(limit)
             .populate('userId', 'username fullName avatarUrl')
+            .populate('communityId', 'name avatar')
             .populate({
                 path: 'urls',
                 options: { sort: { order: 1 } }, // sort ảnh theo order
@@ -171,6 +173,62 @@ export class PostService {
         };
     }
 
+    async getUserCommunityPosts(userId: string, page: number = 1, limit: number = 10, status: string = 'all') {
+        if (!Types.ObjectId.isValid(userId)) {
+            throw new HttpException('Invalid userId', HttpStatus.BAD_REQUEST);
+        }
+
+        const skip = (page - 1) * limit;
+        const userObjectId = new Types.ObjectId(userId);
+
+        // Build filter
+        let filter: any = {
+            userId: userObjectId,
+            communityId: { $ne: null },
+            isHidden: { $ne: true },
+        };
+
+        if (status === 'pending') {
+            filter.communityStatus = 'pending';
+        } else if (status === 'approved') {
+            filter.communityStatus = 'approved';
+        }
+        // if status === 'all', include all posts with any communityStatus
+
+        const [posts, total] = await Promise.all([
+            this.postModel
+                .find(filter)
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
+                .populate('userId', 'username fullName avatarUrl')
+                .populate('communityId', 'name avatar')
+                .populate({ path: 'urls', options: { sort: { order: 1 } } })
+                .lean()
+                .exec(),
+            this.postModel.countDocuments(filter),
+        ]);
+
+        // Lấy react info
+        const postIds = posts.map((p: any) => p._id.toString());
+        const [reactsMap] = await this.eventEmitter.emitAsync(AppEvents.REACT_POST_GET, { postIds, viewerId: userId });
+        const [reactMap] = await this.eventEmitter.emitAsync(AppEvents.REACT_POST_FIND_BY_USER, { userId, postIds });
+
+        const postsWithReacts = posts.map((post: any) => ({
+            ...post,
+            reacts: reactsMap?.[post._id.toString()] || [],
+            isReact: reactMap?.[post._id.toString()] || null,
+        }));
+
+        return {
+            data: postsWithReacts,
+            page,
+            limit,
+            total,
+            hasNext: skip + posts.length < total,
+        };
+    }
+
     async getAllPostsHomePage(viewerId: string, page: number = 1, limit: number = 5): Promise<PostListDto> {
         if (!Types.ObjectId.isValid(viewerId)) {
             throw new HttpException('Invalid viewerId', HttpStatus.BAD_REQUEST);
@@ -186,6 +244,7 @@ export class PostService {
         let friendsPosts: PostDocument[] = await this.postModel
             .find({ userId: { $in: friendIds }, isHidden: { $ne: true } })
             .populate('userId', 'username fullName avatarUrl')
+            .populate('communityId', 'name avatar')
             .populate({ path: 'urls', options: { sort: { order: 1 } } })
             .sort({ createdAt: -1 })
             // .skip(skip)
@@ -210,6 +269,7 @@ export class PostService {
         const myPosts: PostDocument[] = await this.postModel
             .find({ userId: new Types.ObjectId(viewerId), isHidden: { $ne: true } })
             .populate('userId', 'username fullName avatarUrl')
+            .populate('communityId', 'name avatar')
             .populate({ path: 'urls', options: { sort: { order: 1 } } })
             .sort({ createdAt: -1 })
             // .skip(skip)
@@ -304,6 +364,18 @@ export class PostService {
     async createPost(createPostDto: CreatePostDto, userId: string, files?: File[]): Promise<{ message: string }> {
         const { caption, titles = [], orders = [], layout, privacy_type, friends_except, friends_detail, communityId } = createPostDto;
 
+        let communityPostStatus: CommunityPostStatus | null = null;
+        if (communityId) {
+            const [memberInfo] = await this.eventEmitter.emitAsync(AppEvents.COMMUNITY_GET_MEMBER_ROLE, {
+                communityId,
+                userId,
+            });
+
+            communityPostStatus = memberInfo?.role === 'admin'
+                ? CommunityPostStatus.APPROVED
+                : CommunityPostStatus.PENDING;
+        }
+
         // Kiểm duyệt nội dung caption trước
         if (caption && caption.trim().length > 0) {
             const textResult = await this.textModerationService.checkText(caption);
@@ -387,10 +459,10 @@ export class PostService {
             privacy_type,
             friends_except: friends_except ? friends_except.map(id => new Types.ObjectId(id)) : undefined,
             friends_detail: friends_detail ? friends_detail.map(id => new Types.ObjectId(id)) : undefined,
-            // Nếu có communityId thì set trạng thái pending cần duyệt
+            // Nếu có communityId: admin được duyệt ngay, còn lại chờ duyệt
             ...(communityId ? {
                 communityId: new Types.ObjectId(communityId),
-                communityStatus: 'pending',
+                communityStatus: communityPostStatus,
             } : {}),
         });
 
@@ -470,6 +542,28 @@ export class PostService {
                         this.logger.warn(`Không thể xóa file video blur tạm ${blurredPath}: ${err.message}`);
                     }
                 }
+            }
+        }
+
+        console.log('>>>>>>>>>>>Created post with ID:', post._id.toString());
+        console.log('>>>>>>>>>Community Post Status:', communityPostStatus);
+        console.log('>>>>>>>>>Community ID:', communityId);
+
+        // Thông báo cho admin nếu post cần duyệt trong community
+        if (communityId && communityPostStatus === CommunityPostStatus.PENDING) {
+            const [communityInfo] = await this.eventEmitter.emitAsync(AppEvents.COMMUNITY_GET_INFO, {
+                communityId,
+            });
+
+            if (communityInfo?.adminId) {
+                console.log('Gửi notification cho adminId:', communityInfo.adminId.toString());
+                this.eventEmitter.emit('community.post.pending', {
+                    receiver: communityInfo.adminId.toString(),
+                    sender: userId,
+                    postId: post._id.toString(),
+                    communityId: communityId,
+                    communityName: communityInfo.name,
+                });
             }
         }
 
@@ -1496,6 +1590,7 @@ export class PostService {
                 .skip(skip)
                 .limit(limit)
                 .populate('userId', 'username fullName avatarUrl')
+                .populate('communityId', 'name avatar')
                 .populate({ path: 'urls', options: { sort: { order: 1 } } })
                 .lean()
                 .exec(),
@@ -1539,6 +1634,7 @@ export class PostService {
                 .skip(skip)
                 .limit(limit)
                 .populate('userId', 'username fullName avatarUrl')
+                .populate('communityId', 'name avatar')
                 .populate({ path: 'urls', options: { sort: { order: 1 } } })
                 .lean()
                 .exec(),

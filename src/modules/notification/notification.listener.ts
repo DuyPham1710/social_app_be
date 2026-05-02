@@ -109,6 +109,101 @@ export class NotificationListener {
           message: `đã nhắc đến bạn trong một bình luận: "${payload.content}"`,
           content: payload.postId,
       });
+  }
 
+  @OnEvent('community.post.pending')
+  async handleCommunityPostPending(payload: any) {
+    await this.notificationService.createAndEmit({
+      receiver: payload.receiver,
+      sender: payload.sender,
+      type: NotificationType.COMMUNITY_POST_PENDING,
+      targetId: payload.postId,
+      message: ` gửi yêu cầu đăng bài vào cộng đồng "${payload.communityName}" cần bạn phê duyệt`,
+      content: payload.communityId,
+    });
+  }
+
+  @OnEvent('community.join.request')
+  async handleCommunityJoinRequest(payload: any) {
+    await this.notificationService.createAndEmit({
+      receiver: payload.receiver,
+      sender: payload.sender,
+      type: NotificationType.COMMUNITY_JOIN_REQUEST,
+      targetId: payload.communityId,
+      message: ` đã gửi yêu cầu tham gia cộng đồng "${payload.communityName}"`,
+      content: payload.communityId,
+    });
+  }
+
+  @OnEvent('community.auto.join')
+  async handleCommunityAutoJoin(payload: any) {
+    await this.notificationService.createAndEmit({
+      receiver: payload.receiver,
+      sender: payload.sender,
+      type: NotificationType.COMMUNITY_JOIN_REQUEST,
+      targetId: payload.communityId,
+      message: ` đã tham gia cộng đồng "${payload.communityName}"`,
+      content: payload.communityId,
+    });
+  }
+
+  @OnEvent('community.join.approved')
+  async handleCommunityJoinApproved(payload: any) {
+    await this.notificationService.createAndEmit({
+      receiver: payload.receiver,
+      sender: payload.sender,
+      type: NotificationType.COMMUNITY_JOIN_APPROVED,
+      targetId: payload.communityId,
+      message: ` đã phê duyệt yêu cầu tham gia cộng đồng "${payload.communityName}"`,
+      content: payload.communityId,
+    });
+  }
+
+  @OnEvent('community.join.rejected')
+  async handleCommunityJoinRejected(payload: any) {
+    await this.notificationService.createAndEmit({
+      receiver: payload.receiver,
+      sender: payload.sender,
+      type: NotificationType.COMMUNITY_JOIN_REJECTED,
+      targetId: payload.communityId,
+      message: ` đã từ chối yêu cầu tham gia cộng đồng "${payload.communityName}"`,
+      content: payload.communityId,
+    });
+  }
+
+  @OnEvent('community.invite')
+  async handleCommunityInvite(payload: any) {
+    await this.notificationService.createAndEmit({
+      receiver: payload.receiver,
+      sender: payload.sender,
+      type: NotificationType.COMMUNITY_INVITE,
+      targetId: payload.communityId,
+      message: ` đã mời bạn tham gia cộng đồng "${payload.communityName}"`,
+      content: payload.communityId,
+    });
+  }
+
+  @OnEvent('community.post.approved')
+  async handleCommunityPostApproved(payload: any) {
+    await this.notificationService.createAndEmit({
+      receiver: payload.receiver,
+      sender: payload.sender,
+      type: NotificationType.COMMUNITY_POST_APPROVED,
+      targetId: payload.postId,
+      message: ` đã duyệt bài viết của bạn trong cộng đồng "${payload.communityName}"`,
+      content: payload.communityId,
+    });
+  }
+
+  @OnEvent('community.post.rejected')
+  async handleCommunityPostRejected(payload: any) {
+    await this.notificationService.createAndEmit({
+      receiver: payload.receiver,
+      sender: payload.sender,
+      type: NotificationType.COMMUNITY_POST_REJECTED,
+      targetId: payload.postId,
+      message: ` đã từ chối bài viết của bạn trong cộng đồng "${payload.communityName}"`,
+      content: payload.communityId,
+    });
   }
 }

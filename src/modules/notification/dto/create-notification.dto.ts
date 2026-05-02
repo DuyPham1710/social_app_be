@@ -15,6 +15,9 @@ export class CreateNotificationDto {
   @IsOptional()
   targetId?: string;
 
+  @IsOptional()
+  communityId?: string;
+
   @IsNotEmpty()
   @IsString()
   message: string;
