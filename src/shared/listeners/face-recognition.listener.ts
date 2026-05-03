@@ -41,7 +41,12 @@ export class FaceRecognitionListener {
      * Nếu có matched users (trừ poster) → gửi notification.
      */
     @OnEvent(AppEvents.FACE_SEARCH_IN_POST)
-    async handleSearchInPost(payload: { postId: string; posterId: string; imageUrls: string[] }) {
+    async handleSearchInPost(payload: {
+        postId: string;
+        posterId: string;
+        imageUrls: string[];
+        taggedUserIds?: string[];
+    }) {
         try {
             this.logger.log(`Searching faces in post ${payload.postId} (${payload.imageUrls.length} images)`);
             const result = await this.faceRecognitionService.searchFaces(payload.imageUrls);
@@ -101,7 +106,7 @@ export class FaceRecognitionListener {
                 }
             }
 
-            // Gửi notification cho từng user qua EventEmitter
+            // Gửi notification "có mặt bạn trong ảnh" cho từng matched user
             for (const [userId, confidence] of usersToNotify) {
                 this.logger.log(
                     `Notifying user ${userId} (confidence: ${(confidence * 100).toFixed(1)}%) about post ${payload.postId}`,
@@ -113,9 +118,25 @@ export class FaceRecognitionListener {
                 });
             }
 
+            // Gửi gợi ý tag cho poster (lọc bỏ user đã tag rồi)
+            const alreadyTaggedIds = payload.taggedUserIds ?? [];
+            const suggestableUsers = usersToNotify
+                .filter(([userId]) => !alreadyTaggedIds.includes(userId));
+
+            if (suggestableUsers.length > 0) {
+                this.logger.log(
+                    `Suggesting ${suggestableUsers.length} user(s) to tag for poster ${payload.posterId}`,
+                );
+                this.eventEmitter.emit(AppEvents.FACE_TAG_SUGGEST, {
+                    receiver: payload.posterId,
+                    postId: payload.postId,
+                    suggestedUserIds: suggestableUsers.map(([userId]) => userId),
+                });
+            }
+
             // Tổng kết
             this.logger.log(
-                `Post ${payload.postId}: ${allMatchedMap.size} matched user(s), ${usersToNotify.length} notification(s) sent`,
+                `Post ${payload.postId}: ${allMatchedMap.size} matched user(s), ${usersToNotify.length} notification(s) sent, ${suggestableUsers.length} tag suggestion(s)`,
             );
         } catch (error) {
             this.logger.error(`Face search failed for post ${payload.postId}: ${error.message}`);

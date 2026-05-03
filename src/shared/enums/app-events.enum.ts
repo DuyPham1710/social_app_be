@@ -115,5 +115,6 @@ export enum AppEvents {
     FACE_ENROLL = 'face.enroll',
     FACE_SEARCH_IN_POST = 'face.searchInPost',
     FACE_DETECTED_IN_POST = 'face.detectedInPost',
+    FACE_TAG_SUGGEST = 'face.tagSuggest',
 }
 

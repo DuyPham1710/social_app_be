@@ -176,7 +176,7 @@ export class PostService {
 
         const posts = await this.postModel
             .find(query)
-            .sort({ updatedAt: -1, caption: -1 })
+            .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)
             .populate('userId', 'username fullName avatarUrl')
@@ -573,6 +573,7 @@ export class PostService {
                     postId: post._id.toString(),
                     posterId: userId,
                     imageUrls,
+                    taggedUserIds: taggedUserIds ?? [],
                 });
             }
         }
@@ -665,12 +666,50 @@ export class PostService {
             post.urls = newUrls.map(u => u._id as Types.ObjectId);
         }
 
+        // Update taggedUserIds
+        if (updatePostDto.taggedUserIds !== undefined) {
+            const oldTaggedIds = post.taggedUserIds.map(id => id.toString());
+            const newTaggedIds = updatePostDto.taggedUserIds;
+            const newTaggedObjectIds = newTaggedIds.map(id => new Types.ObjectId(id));
+
+            // Xóa visibleOnProfileUserIds của những user bị bỏ tag
+            const removedUserIds = oldTaggedIds.filter(id => !newTaggedIds.includes(id));
+            if (removedUserIds.length > 0) {
+                post.visibleOnProfileUserIds = post.visibleOnProfileUserIds.filter(
+                    id => !removedUserIds.includes(id.toString()),
+                );
+            }
+
+            // Cập nhật danh sách tag
+            post.taggedUserIds = newTaggedObjectIds;
+
+            // Gửi notification cho user mới được tag
+            const newlyTaggedIds = newTaggedIds.filter(id => !oldTaggedIds.includes(id));
+            if (newlyTaggedIds.length > 0) {
+                newlyTaggedIds.forEach(async (id) => {
+                    const [canView] = await this.eventEmitter.emitAsync(AppEvents.POST_CAN_VIEW, {
+                        postId: post._id.toString(),
+                        viewerId: id,
+                    });
+
+                    if (canView) {
+                        this.eventEmitter.emit(AppEvents.POST_TAGGED, {
+                            sender: userId,
+                            receiver: id,
+                            postId: post._id.toString(),
+                        });
+                    }
+                });
+            }
+        }
+
         await post.save();
 
         // Trả về post kèm populate
         return this.postModel
             .findById(post._id)
             .populate('userId', 'username fullName avatarUrl')
+            .populate('taggedUserIds', 'username fullName avatarUrl')
             .populate({ path: 'urls', options: { sort: { order: 1 } } })
             .exec();
     }
