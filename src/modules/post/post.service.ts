@@ -2,6 +2,7 @@ import { ForbiddenException, HttpException, HttpStatus, Injectable, Inject, forw
 import { InjectModel } from '@nestjs/mongoose';
 import { Post, PostDocument } from './schemas/post.schema';
 import { PostUrl, PostUrlDocument } from './schemas/post-url.schema';
+import { PostView, PostViewDocument } from './schemas/post-view.schema';
 import { Model, Types } from 'mongoose';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -36,6 +37,7 @@ export class PostService {
         @InjectModel(Post.name) private postModel: Model<PostDocument>,
         @InjectModel(PostUrl.name) private postUrlModel: Model<PostUrlDocument>,
         @InjectModel(PostReport.name) private postReportModel: Model<PostReportDocument>,
+        @InjectModel(PostView.name) private postViewModel: Model<PostViewDocument>,
         private readonly eventEmitter: EventEmitter2,
         @Inject(forwardRef(() => NotificationService))
         private readonly notificationService: NotificationService,
@@ -43,6 +45,58 @@ export class PostService {
         private readonly googleTranslationService: GoogleTranslationService,
         private readonly textModerationService: TextModerationService,
     ) { }
+
+    private async recordUniquePostView(postId: Types.ObjectId, userId: Types.ObjectId): Promise<boolean> {
+        const result = await this.postViewModel.updateOne(
+            { postId, userId },
+            { $setOnInsert: { postId, userId } },
+            { upsert: true },
+        );
+
+        // Nếu insert mới thì Mongo sẽ trả về upsertedId (tuỳ phiên bản Mongoose)
+        return Boolean((result as any)?.upsertedId);
+    }
+
+    async viewPost(postId: string, userId: string): Promise<{ viewCount: number; isFirstTimeView: boolean }> {
+        const canView = await this.canViewPost({
+            postId: postId.toString(),
+            viewerId: userId.toString(),
+        });
+        if (!canView) {
+            throw new ForbiddenException('Bạn không có quyền xem bài viết này');
+        }
+
+        if (!Types.ObjectId.isValid(postId)) {
+            throw new HttpException('Invalid postId', HttpStatus.BAD_REQUEST);
+        }
+        if (!Types.ObjectId.isValid(userId)) {
+            throw new HttpException('Invalid userId', HttpStatus.BAD_REQUEST);
+        }
+
+        const postObjectId = new Types.ObjectId(postId);
+        const userObjectId = new Types.ObjectId(userId);
+
+        const post = await this.postModel
+            .findOne({ _id: postObjectId, isHidden: { $ne: true } })
+            .select('viewCount')
+            .lean()
+            .exec();
+        if (!post) {
+            throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
+        }
+
+        const isFirstTimeView = await this.recordUniquePostView(postObjectId, userObjectId);
+        if (isFirstTimeView) {
+            const updated = await this.postModel
+                .findByIdAndUpdate(postObjectId, { $inc: { viewCount: 1 } }, { new: true })
+                .select('viewCount')
+                .lean()
+                .exec();
+            return { viewCount: (updated as any)?.viewCount ?? (post as any)?.viewCount ?? 0, isFirstTimeView };
+        }
+
+        return { viewCount: (post as any)?.viewCount ?? 0, isFirstTimeView };
+    }
 
     async getPostDetail(postId: string, userId: string): Promise<PostResponseDto> {
         const canView = await this.canViewPost({ postId: postId.toString(), viewerId: userId.toString() });
@@ -411,7 +465,7 @@ export class PostService {
             for (const videoFile of videoFiles) {
                 try {
                     const videoResult = await this.imageModerationService.checkVideo(videoFile);
-                    
+
                     if (!videoResult.is_safe) {
                         // Nếu video bị chặn hoàn toàn (vi phạm > 90%)
                         if (videoResult.block_completely) {
@@ -544,6 +598,21 @@ export class PostService {
                 }
             }
         }
+        // Async: detect faces trong ảnh post và search vector DB (fire-and-forget, dùng Cloudinary URLs)
+        if (files && files.length > 0) {
+            const postUrls = await this.postUrlModel.find({ _id: { $in: post.urls } }).lean().exec();
+            const imageUrls = postUrls
+                .map((u: any) => u.url as string)
+                .filter((url: string) => url.match(/\.(jpg|jpeg|png|webp|gif)(\?|$)/i));
+
+            if (imageUrls.length > 0) {
+                this.eventEmitter.emit(AppEvents.FACE_SEARCH_IN_POST, {
+                    postId: post._id.toString(),
+                    posterId: userId,
+                    imageUrls,
+                });
+            }
+        }
 
         console.log('>>>>>>>>>>>Created post with ID:', post._id.toString());
         console.log('>>>>>>>>>Community Post Status:', communityPostStatus);
@@ -563,6 +632,7 @@ export class PostService {
                     postId: post._id.toString(),
                     communityId: communityId,
                     communityName: communityInfo.name,
+
                 });
             }
         }

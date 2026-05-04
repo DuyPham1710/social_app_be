@@ -8,6 +8,9 @@ import {
 import { Logger } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { FriendsService } from './friends.service';
+import { PresenceService } from 'src/shared/services/presence.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { AppEvents } from 'src/shared/enums/app-events.enum';
 
 interface UserConnection {
   userId: string;
@@ -34,7 +37,31 @@ export class FriendGateway implements OnGatewayConnection, OnGatewayDisconnect {
   // Map để lưu danh sách bạn bè của mỗi user: userId -> Set<friendId>
   private userFriendsMap = new Map<string, Set<string>>();
 
-  constructor(private readonly friendsService: FriendsService) {}
+  constructor(
+    private readonly friendsService: FriendsService,
+    private readonly presenceService: PresenceService,
+    private readonly eventEmitter: EventEmitter2,
+  ) {
+    // Presence transitions may come from any namespace (chat/friend/...)
+    this.eventEmitter.on(AppEvents.PRESENCE_ONLINE, (payload: { userId: string }) => {
+      const userId = payload?.userId;
+      if (!userId) return;
+      this.handlePresenceOnline(userId).catch((e) => {
+        this.logger.warn(`handlePresenceOnline failed: ${e?.message ?? e}`);
+      });
+    });
+
+    this.eventEmitter.on(
+      AppEvents.PRESENCE_OFFLINE,
+      (payload: { userId: string; lastSeenAt?: Date }) => {
+        const userId = payload?.userId;
+        if (!userId) return;
+        this.handlePresenceOffline(userId, payload?.lastSeenAt).catch((e) => {
+          this.logger.warn(`handlePresenceOffline failed: ${e?.message ?? e}`);
+        });
+      },
+    );
+  }
 
   handleConnection(client: Socket) {
     this.logger.log(`🔌 New client connected: ${client.id}`);
@@ -52,33 +79,20 @@ export class FriendGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const userConnection = this.connectedUsers.get(client.id);
       if (userConnection) {
         const { userId } = userConnection;
-        
-        // Xóa connection
-        this.connectedUsers.delete(client.id);
-        
-        // Kiểm tra xem còn connection nào khác của user này không
-        const hasOtherConnections = Array.from(this.connectedUsers.entries()).some(
-          ([socketId, conn]) => conn.userId === userId && socketId !== client.id,
-        );
-        
-        if (!hasOtherConnections) {
-          // Cập nhật lastSeen trước khi disconnect
-          const connection = this.connectedUsers.get(client.id);
-          if (connection) {
-            connection.lastSeen = new Date();
-          }
 
-          // Lấy danh sách bạn bè và thông báo cho họ
-          const friends = this.userFriendsMap.get(userId);
-          if (friends) {
-            friends.forEach((friendId) => {
-              this.notifyFriendOffline(userId, friendId, connection?.lastSeen);
-            });
-          }
-          
-          // Xóa khỏi map
-          this.userFriendsMap.delete(userId);
-        }
+        // Xóa connection (friend namespace)
+        this.connectedUsers.delete(client.id);
+
+        // Update presence store + persist lastSeenAt (only when truly offline)
+        this.presenceService
+          .markOffline(userId, client.id)
+          .then(({ becameOffline, lastSeenAt }) => {
+            if (!becameOffline) return;
+            // Notifications will be handled via AppEvents.PRESENCE_OFFLINE
+          })
+          .catch((error) => {
+            this.logger.warn(`Presence markOffline failed for user ${userId}: ${error?.message ?? error}`);
+          });
 
         this.logger.log(`❌ Client disconnected: ${client.id}, userId: ${userId}`);
       } else {
@@ -112,13 +126,12 @@ export class FriendGateway implements OnGatewayConnection, OnGatewayDisconnect {
       // Lưu connection
       this.connectedUsers.set(client.id, userConnection);
 
+      await this.presenceService.markOnline(userId, client.id);
+
       // Lấy danh sách bạn bè của user
       const friends = await this.friendsService.getFriends(userId);
       const friendIds = friends.map((friend: any) => friend._id.toString());
-      
-      // Kiểm tra xem user đã có trong map chưa (trường hợp reconnect hoặc nhiều tab)
-      const wasAlreadyOnline = this.userFriendsMap.has(userId);
-      
+
       // Lưu/cập nhật danh sách bạn bè vào map
       this.userFriendsMap.set(userId, new Set(friendIds));
 
@@ -126,12 +139,7 @@ export class FriendGateway implements OnGatewayConnection, OnGatewayDisconnect {
         `✅ User registered: ${client.id}, userId: ${userId}, username: ${username || 'Unknown'}, friends: ${friendIds.length}`,
       );
 
-      // Chỉ thông báo cho bạn bè nếu user chưa online trước đó (tránh spam khi reconnect)
-      if (!wasAlreadyOnline) {
-        friendIds.forEach((friendId: string) => {
-          this.notifyFriendOnline(userId, friendId, username);
-        });
-      }
+      // Notifications will be handled via AppEvents.PRESENCE_ONLINE
 
       // Lấy danh sách bạn bè đang online với thông tin chi tiết
       const onlineFriendsInfo = await this.getOnlineFriendsInfo(userId);
@@ -249,12 +257,9 @@ export class FriendGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const friends = await this.friendsService.getFriends(userId);
       const friendIds = friends.map((friend: any) => friend._id.toString());
 
-      // Lấy danh sách user đang online
-      const onlineUserIds = new Set(
-        Array.from(this.connectedUsers.values()).map((conn) => conn.userId),
-      );
+      // Dùng PresenceService (global) để biết online/offline
+      const presences = await this.presenceService.getPresence(friendIds);
 
-      // Tạo map userId -> connection để lấy thông tin
       const userIdToConnection = new Map<string, UserConnection>();
       this.connectedUsers.forEach((conn) => {
         if (!userIdToConnection.has(conn.userId)) {
@@ -262,24 +267,55 @@ export class FriendGateway implements OnGatewayConnection, OnGatewayDisconnect {
         }
       });
 
-      // Lọc và tạo danh sách bạn bè đang online
       const onlineFriendsInfo: Array<{ userId: string; username?: string; lastSeen?: Date }> = [];
-      
-      friendIds.forEach((friendId: string) => {
-        if (onlineUserIds.has(friendId)) {
-          const connection = userIdToConnection.get(friendId);
-          onlineFriendsInfo.push({
-            userId: friendId,
-            username: connection?.username,
-            lastSeen: connection?.connectedAt, // Sử dụng connectedAt như lastSeen khi online
-          });
-        }
-      });
+      for (const p of presences) {
+        if (!p.isOnline) continue;
+        const conn = userIdToConnection.get(p.userId);
+        onlineFriendsInfo.push({
+          userId: p.userId,
+          username: conn?.username,
+          lastSeen: conn?.connectedAt,
+        });
+      }
 
       return onlineFriendsInfo;
     } catch (error) {
       this.logger.error(`Error getting online friends info: ${error.message}`);
       return [];
+    }
+  }
+
+  private async handlePresenceOnline(userId: string) {
+    try {
+      // Notify only friends who are currently connected to /friend
+      const friends = await this.friendsService.getFriends(userId);
+      const friendIds = friends.map((friend: any) => friend._id.toString());
+
+      // Username is best-effort (only available if userId is connected to /friend)
+      const username =
+        Array.from(this.connectedUsers.values()).find((c) => c.userId === userId)?.username;
+
+      friendIds.forEach((friendId) => {
+        this.notifyFriendOnline(userId, friendId, username);
+      });
+    } catch (e) {
+      this.logger.warn(`Error handling presence online for ${userId}: ${e?.message ?? e}`);
+    }
+  }
+
+  private async handlePresenceOffline(userId: string, lastSeenAt?: Date) {
+    try {
+      const friends = await this.friendsService.getFriends(userId);
+      const friendIds = friends.map((friend: any) => friend._id.toString());
+
+      friendIds.forEach((friendId) => {
+        this.notifyFriendOffline(userId, friendId, lastSeenAt ?? new Date());
+      });
+
+      // Cleanup cache if this user had registered in /friend before
+      this.userFriendsMap.delete(userId);
+    } catch (e) {
+      this.logger.warn(`Error handling presence offline for ${userId}: ${e?.message ?? e}`);
     }
   }
 

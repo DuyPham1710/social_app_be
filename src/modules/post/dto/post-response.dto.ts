@@ -12,6 +12,7 @@ export interface PostResponseDto extends PrivacyBase {
     userId: UserResponseDto;
     urls: PostUrlResponseDto[];
     layout: LayoutType;
+    viewCount?: number;
     // reactCount?: number;
     // commentCount?: number;
     reacts?: ReactPostResponseDto[];

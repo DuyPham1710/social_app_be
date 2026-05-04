@@ -5,13 +5,15 @@ import { FriendGateway } from './friend.gateway';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Friend, FriendSchema } from './schemas/friend.schemas';
 import { FriendRequest, FriendRequestSchema } from './schemas/friend-request.schema';
+import { PresenceModule } from 'src/shared/presence.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: Friend.name, schema: FriendSchema },
       { name: FriendRequest.name, schema: FriendRequestSchema },
-    ])
+    ]),
+    PresenceModule,
   ],
   controllers: [FriendsController],
   providers: [FriendsService, FriendGateway],

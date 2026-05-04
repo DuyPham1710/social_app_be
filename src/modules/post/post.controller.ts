@@ -100,6 +100,13 @@ export class PostController {
     return this.postService.getPostDetail(postId, userId);
   }
 
+  @Post('/:postId/view')
+  @ApiOperation({ summary: 'Ghi lượt xem bài viết (mỗi user chỉ tính 1 lần)' })
+  viewPost(@Req() req: any, @Param('postId') postId: string) {
+    const userId = req.user.userId;
+    return this.postService.viewPost(postId, userId);
+  }
+
   @Get('/privacy/:postId')
   @ApiOperation({ summary: 'Lấy quyền riêng tư của bài viết' })
   getPostPrivacy(@Param('postId') postId: string) {

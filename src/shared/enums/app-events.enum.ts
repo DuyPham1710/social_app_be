@@ -54,6 +54,10 @@ export enum AppEvents {
 
     // ===== CHAT =====
     CHAT_SEND_MESSAGE = 'chat.sendMessage',
+
+    // ===== PRESENCE =====
+    PRESENCE_ONLINE = 'presence.online',
+    PRESENCE_OFFLINE = 'presence.offline',
     REACT_COMMENT_GET = "REACT_COMMENT_GET",
     REACT_COMMENT_FIND_BY_USER = "REACT_COMMENT_FIND_BY_USER",
 
@@ -113,5 +117,11 @@ export enum AppEvents {
     COMMUNITY_GET_PENDING_POSTS = 'community.getPendingPosts',
     COMMUNITY_GET_MEMBER_ROLE = 'community.getMemberRole',
     COMMUNITY_GET_INFO = 'community.getInfo', // Lấy thông tin community (bao gồm admin)
+
+    // ===== FACE RECOGNITION =====
+    FACE_ENROLL = 'face.enroll',
+    FACE_SEARCH_IN_POST = 'face.searchInPost',
+    FACE_DETECTED_IN_POST = 'face.detectedInPost',
+
 }
 
