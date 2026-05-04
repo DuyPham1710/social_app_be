@@ -32,6 +32,7 @@ export enum AppEvents {
     POST_GET_USER_ID = 'post.getUserId',
     POST_GET_ALL_BY_USER = 'post.getAllByUser',
     POST_GET_DETAIL = 'post.getDetail',
+    POST_TAGGED = 'post.tagged',
 
     // ===== REACT POST =====
     REACT_POST_GET = 'react-post.get',
@@ -116,12 +117,12 @@ export enum AppEvents {
     COMMUNITY_GET_APPROVED_POSTS = 'community.getApprovedPosts',
     COMMUNITY_GET_PENDING_POSTS = 'community.getPendingPosts',
     COMMUNITY_GET_MEMBER_ROLE = 'community.getMemberRole',
-    COMMUNITY_GET_INFO = 'community.getInfo', // Lấy thông tin community (bao gồm admin)
+    COMMUNITY_GET_INFO = 'community.getInfo', // L?y th�ng tin community (bao g?m admin)
 
     // ===== FACE RECOGNITION =====
     FACE_ENROLL = 'face.enroll',
     FACE_SEARCH_IN_POST = 'face.searchInPost',
     FACE_DETECTED_IN_POST = 'face.detectedInPost',
-
+    FACE_TAG_SUGGEST = 'face.tagSuggest',
 }
 

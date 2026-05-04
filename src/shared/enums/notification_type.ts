@@ -9,6 +9,8 @@ export enum NotificationType {
   COMMENT_REACTION = "COMMENT_REACTION",
   POST_REPORT_REVIEWED = 'POST_REPORT_REVIEWED', // Admin đã xử lý báo cáo bài viết của bạn
   FACE_DETECTED = 'FACE_DETECTED',               // Mặt bạn được phát hiện trong ảnh của ai đó
+  FACE_TAG_SUGGEST = 'FACE_TAG_SUGGEST',           // Gợi ý gắn thẻ từ face recognition
+  TAG_POST = 'TAG_POST',                         // Ai đó gắn thẻ bạn trong bài viết
 
   // Community
   COMMUNITY_JOIN_REQUEST = 'COMMUNITY_JOIN_REQUEST',   // Ai đó gửi yêu cầu vào cộng đồng

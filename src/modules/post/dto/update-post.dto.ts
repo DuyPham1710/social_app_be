@@ -59,4 +59,15 @@ export class UpdatePostDto {
     @IsEnum(LayoutType)
     @ApiProperty({ example: LayoutType.CLASSIC, required: false })
     layout?: LayoutType;
+
+    @ApiProperty({
+        type: [String],
+        example: ['userId1', 'userId2'],
+        required: false,
+        description: 'Danh sách userId được gắn thẻ',
+    })
+    @IsOptional()
+    @IsArray()
+    @IsString({ each: true })
+    taggedUserIds?: string[];
 }

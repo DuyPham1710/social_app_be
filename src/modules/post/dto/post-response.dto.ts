@@ -17,6 +17,8 @@ export interface PostResponseDto extends PrivacyBase {
     // commentCount?: number;
     reacts?: ReactPostResponseDto[];
     isReact?: EmojiResponseDto | null;
+    taggedUsers?: UserResponseDto[];
+    visibleOnProfileUserIds?: string[];
     createdAt: Date;
     updatedAt: Date;
 }

@@ -218,4 +218,31 @@ export class NotificationListener {
           content: '',
       });
   }
+
+  @OnEvent(AppEvents.POST_TAGGED)
+  async handlePostTagged(payload: { receiver: string; sender: string; postId: string }) {
+      await this.notificationService.createAndEmit({
+          receiver: payload.receiver,
+          sender: payload.sender,
+          type: NotificationType.TAG_POST,
+          targetId: payload.postId,
+          message: 'đã gắn thẻ bạn trong một bài viết',
+          content: '',
+      });
+  }
+
+  @OnEvent(AppEvents.FACE_TAG_SUGGEST)
+  async handleFaceTagSuggest(payload: {
+      receiver: string;
+      postId: string;
+      suggestedUserIds: string[];
+  }) {
+      await this.notificationService.createAndEmit({
+          receiver: payload.receiver,
+          type: NotificationType.FACE_TAG_SUGGEST,
+          targetId: payload.postId,
+          message: `Nhận diện ${payload.suggestedUserIds.length} người trong ảnh của bạn. Gắn thẻ ngay!`,
+          content: JSON.stringify(payload.suggestedUserIds),
+      });
+  }
 }

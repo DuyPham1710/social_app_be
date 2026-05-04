@@ -176,4 +176,21 @@ export class PostController {
     return this.postService.translateCaption(postId, targetLang || 'en');
   }
 
+  @Patch(':postId/tag-visibility')
+  @ApiOperation({ summary: 'Cập nhật trạng thái hiển thị của bài viết được tag trên trang cá nhân' })
+  updateTagVisibility(
+    @Param('postId') postId: string,
+    @Req() req: any,
+    @Body('isVisible') isVisible: boolean,
+  ) {
+    const userId = req.user.userId;
+    return this.postService.updateTagVisibility(postId, userId, isVisible);
+  }
+
+  @Delete(':postId/tag')
+  @ApiOperation({ summary: 'Gỡ gắn thẻ khỏi bài viết' })
+  removeTag(@Param('postId') postId: string, @Req() req: any) {
+    const userId = req.user.userId;
+    return this.postService.removeTag(postId, userId);
+  }
 }
