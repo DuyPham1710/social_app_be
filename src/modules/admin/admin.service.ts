@@ -404,25 +404,19 @@ export class AdminService {
 
   // ===== Dashboard Stats Methods =====
   async getDashboardStats() {
-    const [userStats, postStats, storyStats, commentStats] = await Promise.all([
-      this.eventEmitter.emitAsync(AppEvents.ADMIN_DASHBOARD_STATS),
-      this.eventEmitter.emitAsync(AppEvents.ADMIN_DASHBOARD_STATS),
-      this.eventEmitter.emitAsync(AppEvents.ADMIN_DASHBOARD_STATS),
-      this.eventEmitter.emitAsync(AppEvents.ADMIN_DASHBOARD_STATS),
-    ]);
-
-    const userData = userStats[0] || {};
-    const postData = postStats[0] || {};
-    const storyData = storyStats[0] || {};
-    const commentData = commentStats[0] || {};
+    const statsResults = await this.eventEmitter.emitAsync(AppEvents.ADMIN_DASHBOARD_STATS);
+    const mergedStats = statsResults.reduce((acc, current) => ({
+      ...acc,
+      ...(current || {}),
+    }), {} as Record<string, number>);
 
     return {
-      totalUsers: userData.totalUsers || 0,
-      totalPosts: postData.totalPosts || 0,
-      totalStories: storyData.totalStories || 0,
-      totalComments: commentData.totalComments || 0,
-      newUsersThisMonth: userData.newUsersThisMonth || 0,
-      newPostsThisMonth: postData.newPostsThisMonth || 0,
+      totalUsers: mergedStats.totalUsers || 0,
+      totalPosts: mergedStats.totalPosts || 0,
+      totalStories: mergedStats.totalStories || 0,
+      totalComments: mergedStats.totalComments || 0,
+      newUsersThisMonth: mergedStats.newUsersThisMonth || 0,
+      newPostsThisMonth: mergedStats.newPostsThisMonth || 0,
     };
   }
 
