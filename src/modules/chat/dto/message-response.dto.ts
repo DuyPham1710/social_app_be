@@ -61,7 +61,7 @@ export class ParentMessageDto {
 
 class MessageMetadataDto {
     @Expose()
-    type?: string; // 'video_call' | 'audio_call'
+    type?: string; // 'video_call' | 'audio_call' | 'location'
 
     @Expose()
     callStatus?: string; // 'completed' | 'missed' | 'rejected'
@@ -71,6 +71,19 @@ class MessageMetadataDto {
 
     @Expose()
     callId?: string;
+
+    // Location message metadata
+    @Expose()
+    latitude?: number;
+
+    @Expose()
+    longitude?: number;
+
+    @Expose()
+    mapUrl?: string;
+
+    @Expose()
+    label?: string;
 }
 
 export class MessageResponseDto {
