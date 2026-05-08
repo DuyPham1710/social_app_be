@@ -15,6 +15,9 @@ export class CommunityRequest {
 
     @Prop({ type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' })
     status: string;
+
+    @Prop({ type: Types.ObjectId, ref: 'User', required: false, default: null })
+    senderId: Types.ObjectId;
 }
 
 export const CommunityRequestSchema = SchemaFactory.createForClass(CommunityRequest);

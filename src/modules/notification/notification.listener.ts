@@ -118,7 +118,7 @@ export class NotificationListener {
       sender: payload.sender,
       type: NotificationType.COMMUNITY_POST_PENDING,
       targetId: payload.postId,
-      message: ` gửi yêu cầu đăng bài vào cộng đồng "${payload.communityName}" cần bạn phê duyệt`,
+      message: ` đã gửi yêu cầu đăng bài vào cộng đồng `,
       content: payload.communityName,
       communityId: payload.communityId,
     });
@@ -131,7 +131,7 @@ export class NotificationListener {
       sender: payload.sender,
       type: NotificationType.COMMUNITY_JOIN_REQUEST,
       targetId: payload.requestId,
-      message: ` đã gửi yêu cầu tham gia cộng đồng "${payload.communityName}"`,
+      message: ` đã gửi yêu cầu tham gia cộng đồng `,
       content: payload.communityName,
       communityId: payload.communityId,
     });
@@ -142,9 +142,9 @@ export class NotificationListener {
     await this.notificationService.createAndEmit({
       receiver: payload.receiver,
       sender: payload.sender,
-      type: NotificationType.COMMUNITY_JOIN_REQUEST,
+      type: NotificationType.COMMUNITY_PUBLIC_JOIN,
       targetId: payload.communityId,
-      message: ` đã tham gia cộng đồng "${payload.communityName}"`,
+      message: ` đã tham gia cộng đồng `,
       content: payload.communityName,
       communityId: payload.communityId,
     });
@@ -157,7 +157,7 @@ export class NotificationListener {
       sender: payload.sender,
       type: NotificationType.COMMUNITY_JOIN_APPROVED,
       targetId: payload.communityId,
-      message: `Admin đã chấp nhận yêu cầu tham gia cộng đồng`,
+      message: `Admin đã chấp nhận yêu cầu tham gia cộng đồng `,
       content: payload.communityName,
       communityId: payload.communityId,
     });
@@ -170,7 +170,7 @@ export class NotificationListener {
       sender: payload.sender,
       type: NotificationType.COMMUNITY_JOIN_REJECTED,
       targetId: payload.communityId,
-      message: `Admin đã từ chối yêu cầu tham gia cộng đồng`,
+      message: `Admin đã từ chối yêu cầu tham gia cộng đồng `,
       content: payload.communityName,
       communityId: payload.communityId,
     });
@@ -178,12 +178,14 @@ export class NotificationListener {
 
   @OnEvent('community.invite')
   async handleCommunityInvite(payload: any) {
+
+    console.log('NotificationListener - handleCommunityInvite - payload:', payload);
     await this.notificationService.createAndEmit({
       receiver: payload.receiver,
       sender: payload.sender,
       type: NotificationType.COMMUNITY_INVITE,
       targetId: payload.communityId,
-      message: ` đã mời bạn tham gia cộng đồng "${payload.communityName}"`,
+      message: ` đã mời bạn tham gia cộng đồng `,
       content: payload.communityName,
       communityId: payload.communityId,
     });
@@ -196,7 +198,7 @@ export class NotificationListener {
       sender: payload.sender,
       type: NotificationType.COMMUNITY_POST_APPROVED,
       targetId: payload.postId,
-      message: ` đã duyệt bài viết của bạn trong cộng đồng "${payload.communityName}"`,
+      message: `Admin đã duyệt bài viết của bạn trong cộng đồng `,
       content: payload.communityName,
       communityId: payload.communityId,
     });
@@ -209,7 +211,7 @@ export class NotificationListener {
       sender: payload.sender,
       type: NotificationType.COMMUNITY_POST_REJECTED,
       targetId: payload.postId,
-      message: ` đã từ chối bài viết của bạn trong cộng đồng "${payload.communityName}"`,
+      message: `Admin đã từ chối bài viết của bạn trong cộng đồng `,
       content: payload.communityName,
       communityId: payload.communityId,
     });

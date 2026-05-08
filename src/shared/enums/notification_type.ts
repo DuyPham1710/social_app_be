@@ -19,5 +19,6 @@ export enum NotificationType {
   COMMUNITY_JOIN_REJECTED = 'COMMUNITY_JOIN_REJECTED', // Yêu cầu tham gia bị từ chối
   COMMUNITY_POST_APPROVED = 'COMMUNITY_POST_APPROVED', // Bài viết cộng đồng được duyệt
   COMMUNITY_POST_REJECTED = 'COMMUNITY_POST_REJECTED', // Bài viết cộng đồng bị từ chối
-  COMMUNITY_POST_PENDING = 'COMMUNITY_POST_PENDING', // Bài viết cộng đồng chờ duyệt
+  COMMUNITY_POST_PENDING = 'COMMUNITY_POST_PENDING',
+  COMMUNITY_PUBLIC_JOIN = "COMMUNITY_PUBLIC_JOIN", // Có người tham gia cộng đồng công khai
 }

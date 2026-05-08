@@ -324,6 +324,7 @@ export class CommunityService {
             communityId: community._id,
             type: 'join',
             status: 'pending',
+            senderId: null,
         });
 
         // Thông báo cho admin
@@ -385,6 +386,7 @@ export class CommunityService {
             communityId: community._id,
             type: 'invite',
             status: 'pending',
+            senderId: new Types.ObjectId(adminId),
         });
 
         // Thông báo cho người được mời
@@ -462,8 +464,6 @@ export class CommunityService {
         });
         if (!invite) throw new NotFoundException('Không tìm thấy lời mời');
 
-        const community = await this.findCommunityOrFail(communityId);
-
         if (dto.action === RequestAction.APPROVE) {
             // Kiểm tra đã là thành viên chưa (đề phòng)
             const existing = await this.memberModel.findOne({
@@ -472,18 +472,36 @@ export class CommunityService {
             });
 
             if (!existing) {
-                await this.memberModel.create({
-                    userId: new Types.ObjectId(userId),
-                    communityId: new Types.ObjectId(communityId),
-                    role: 'member',
+                const community = await this.findCommunityOrFail(communityId);
+                const inviterIsAdmin = await this.memberModel.findOne({
+                    userId: invite.senderId,
+                    communityId: community._id,
+                    role: 'admin',
                 });
-                await this.communityModel.findByIdAndUpdate(communityId, { $inc: { memberCount: 1 } });
+                // kiểm tra nếu cộng đông public hoặc người gửi invite là admin thì tự động thêm thành viên, ngược lại tạo yêu cầu join chờ admin duyệt
+                if (community.privacy === CommunityPrivacy.PUBLIC || inviterIsAdmin) {
+                    
+                    await this.memberModel.create({
+                        userId: new Types.ObjectId(userId),
+                        communityId: new Types.ObjectId(communityId),
+                        role: 'member',
+                    });
+                    await this.communityModel.findByIdAndUpdate(communityId, { $inc: { memberCount: 1 } });
+                }
+                else{
+                    try {
+                        await this.requestJoin(userId, communityId);
+                    } catch (error) {
+                        await invite.deleteOne();
+                        throw new BadRequestException('Gặp lỗi khi chấp nhận lời mời');
+                    }
+                }
             }
 
             // Xóa invite sau khi chấp nhận
             await invite.deleteOne();
 
-            return { message: `Đã tham gia cộng đồng "${community.name}"` };
+            return { message: `Đã tham gia cộng đồng` };
         } else {
             // Xóa invite khi từ chối
             await invite.deleteOne();
@@ -738,10 +756,19 @@ export class CommunityService {
             communityId: community._id,
             type: 'invite',
             status: 'pending',
+            senderId: new Types.ObjectId(userId),
         });
 
         // Thông báo cho người được mời
-        this.eventEmitter.emit('notification.create', {
+        console.log('>>>>>>>>>Emitting notification for community invite:', {
+            receiver: targetUserId,
+            sender: userId,
+            type: NotificationType.COMMUNITY_INVITE,
+            targetId: (invite._id as Types.ObjectId).toString(),
+            message: ` đã mời bạn tham gia cộng đồng "${community.name}"`,
+            content: communityId,
+        });
+        this.eventEmitter.emit('community.invite', {
             receiver: targetUserId,
             sender: userId,
             type: NotificationType.COMMUNITY_INVITE,
