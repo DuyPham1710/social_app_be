@@ -332,6 +332,7 @@ export class CommunityService {
             sender: userId,
             communityId: communityId,
             communityName: community.name,
+            requestId: (joinRequest._id as Types.ObjectId).toString(),
         });
 
         return { message: 'Đã gửi yêu cầu tham gia cộng đồng', requestId: (joinRequest._id as Types.ObjectId).toString() };
