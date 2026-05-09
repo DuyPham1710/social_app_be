@@ -203,7 +203,7 @@ export class CommunityService {
         // Kiểm duyệt hình ảnh bằng AI trước khi upload
         await this.moderateImage(avatarFile);
         await this.moderateImage(coverImageFile);
-        
+
         const [avatarUrl, coverImageUrl] = await Promise.all([
             avatarFile ? this.uploadCommunityImageToCloudinary(avatarFile, userId, 'avatar') : Promise.resolve(undefined),
             coverImageFile ? this.uploadCommunityImageToCloudinary(coverImageFile, userId, 'coverImage') : Promise.resolve(undefined),
@@ -233,7 +233,7 @@ export class CommunityService {
             updatePayload.coverImage = coverImageUrl;
         }
 
-        
+
         const community = await this.findCommunityOrFail(communityId);
         this.assertAdmin(community, userId);
 
@@ -480,7 +480,7 @@ export class CommunityService {
                 });
                 // kiểm tra nếu cộng đông public hoặc người gửi invite là admin thì tự động thêm thành viên, ngược lại tạo yêu cầu join chờ admin duyệt
                 if (community.privacy === CommunityPrivacy.PUBLIC || inviterIsAdmin) {
-                    
+
                     await this.memberModel.create({
                         userId: new Types.ObjectId(userId),
                         communityId: new Types.ObjectId(communityId),
@@ -488,7 +488,7 @@ export class CommunityService {
                     });
                     await this.communityModel.findByIdAndUpdate(communityId, { $inc: { memberCount: 1 } });
                 }
-                else{
+                else {
                     try {
                         await this.requestJoin(userId, communityId);
                     } catch (error) {
@@ -759,22 +759,14 @@ export class CommunityService {
             senderId: new Types.ObjectId(userId),
         });
 
-        // Thông báo cho người được mời
-        console.log('>>>>>>>>>Emitting notification for community invite:', {
-            receiver: targetUserId,
-            sender: userId,
-            type: NotificationType.COMMUNITY_INVITE,
-            targetId: (invite._id as Types.ObjectId).toString(),
-            message: ` đã mời bạn tham gia cộng đồng "${community.name}"`,
-            content: communityId,
-        });
         this.eventEmitter.emit('community.invite', {
             receiver: targetUserId,
             sender: userId,
             type: NotificationType.COMMUNITY_INVITE,
             targetId: (invite._id as Types.ObjectId).toString(),
-            message: ` đã mời bạn tham gia cộng đồng "${community.name}"`,
+            message: ` đã mời bạn tham gia cộng đồng`,
             content: communityId,
+            communityId: communityId.toString(),
         });
 
         return { message: 'Đã gửi lời mời thành công', inviteId: (invite._id as Types.ObjectId).toString() };
@@ -875,7 +867,7 @@ export class CommunityService {
         const community = await this.communityModel
             .findById(payload.communityId)
             .select('_id name adminId');
-        
+
         if (!community) return null;
 
         return {

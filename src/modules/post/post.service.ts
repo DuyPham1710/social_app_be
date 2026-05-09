@@ -111,6 +111,7 @@ export class PostService {
                 .populate('userId', 'username fullName avatarUrl')
                 .populate('taggedUserIds', 'username fullName avatarUrl')
                 .populate({ path: 'urls', options: { sort: { order: 1 } } })
+                .populate('communityId', 'name avatar')
                 .exec();
             if (!post) {
                 throw new HttpException('Post not found', HttpStatus.NOT_FOUND);

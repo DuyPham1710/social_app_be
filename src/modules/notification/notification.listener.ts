@@ -9,7 +9,7 @@ import { AppEvents } from 'src/shared/enums/app-events.enum';
 export class NotificationListener {
   constructor(
     private readonly notificationService: NotificationService,
-    private readonly eventEmitter: EventEmitter2) {}
+    private readonly eventEmitter: EventEmitter2) { }
 
   @OnEvent('friend.request')
   async handleFriendRequest(payload: any) {
@@ -30,7 +30,7 @@ export class NotificationListener {
       sender: payload.sender,
       type: NotificationType.POST_COMMENT,
       targetId: payload.commentId,
-      message: ` đã bình luận về bài viết của bạn: "${payload.content.substring(0, 100)}"`,
+      message: ` đã bình luận về bài viết của bạn: "${payload.content}"`,
       content: payload.postId,
     });
   }
@@ -58,7 +58,7 @@ export class NotificationListener {
   @OnEvent('react.story.created')
   async handleReactStoryCreated(payload: any) {
     const [story] = await this.eventEmitter.emitAsync(AppEvents.STORY_GET_USER_ID, { storyId: payload.storyId });
-    if (!story) return; 
+    if (!story) return;
 
     const ownerId = story.userId.toString();
 
@@ -80,7 +80,7 @@ export class NotificationListener {
   async handleReactCommentCreated(payload: any) {
     const [comment] = await this.eventEmitter.emitAsync(AppEvents.COMMENT_GET_USER_ID, { commentId: payload.commentId });
 
-    if (!comment) return; 
+    if (!comment) return;
 
     const ownerId = comment.userId.toString();
 
@@ -90,25 +90,25 @@ export class NotificationListener {
     if (ownerId === payload.sender) return;
 
     await this.notificationService.createAndEmit({
-          receiver: comment.userId.toString(),
-          sender: payload.sender,
-          type: NotificationType.COMMENT_REACTION,
-          targetId: payload.commentId,         
-          message: `đã thả cảm xúc về bình luận của bạn: "${payload.content}"`,
-          content: comment?.postId.toString() || '',
-      });
+      receiver: comment.userId.toString(),
+      sender: payload.sender,
+      type: NotificationType.COMMENT_REACTION,
+      targetId: payload.commentId,
+      message: `đã thả cảm xúc về bình luận của bạn: "${payload.content}"`,
+      content: comment?.postId.toString() || '',
+    });
   }
 
   @OnEvent('comment.tagged')
   async handleCommentTagged(payload: any) {
-      await this.notificationService.createAndEmit({
-          receiver: payload.receiver,
-          sender: payload.sender,
-          type: NotificationType.POST_COMMENT,
-          targetId: payload.commentId,         
-          message: `đã nhắc đến bạn trong một bình luận: "${payload.content}"`,
-          content: payload.postId,
-      });
+    await this.notificationService.createAndEmit({
+      receiver: payload.receiver,
+      sender: payload.sender,
+      type: NotificationType.POST_COMMENT,
+      targetId: payload.commentId,
+      message: `đã nhắc đến bạn trong một bình luận: "${payload.content}"`,
+      content: payload.postId,
+    });
   }
 
   @OnEvent('community.post.pending')
@@ -184,9 +184,9 @@ export class NotificationListener {
       receiver: payload.receiver,
       sender: payload.sender,
       type: NotificationType.COMMUNITY_INVITE,
-      targetId: payload.communityId,
-      message: ` đã mời bạn tham gia cộng đồng `,
-      content: payload.communityName,
+      targetId: payload.targetId,
+      message: payload.message,
+      content: payload.content,
       communityId: payload.communityId,
     });
   }
@@ -219,40 +219,40 @@ export class NotificationListener {
 
   @OnEvent(AppEvents.FACE_DETECTED_IN_POST)
   async handleFaceDetected(payload: { receiver: string; sender: string; postId: string }) {
-      await this.notificationService.createAndEmit({
-          receiver: payload.receiver,
-          sender: payload.sender,
-          type: NotificationType.FACE_DETECTED,
-          targetId: payload.postId,
-          message: 'đã đăng một bài viết có mặt bạn',
-          content: '',
-      });
+    await this.notificationService.createAndEmit({
+      receiver: payload.receiver,
+      sender: payload.sender,
+      type: NotificationType.FACE_DETECTED,
+      targetId: payload.postId,
+      message: 'đã đăng một bài viết có mặt bạn',
+      content: '',
+    });
   }
 
   @OnEvent(AppEvents.POST_TAGGED)
   async handlePostTagged(payload: { receiver: string; sender: string; postId: string }) {
-      await this.notificationService.createAndEmit({
-          receiver: payload.receiver,
-          sender: payload.sender,
-          type: NotificationType.TAG_POST,
-          targetId: payload.postId,
-          message: 'đã gắn thẻ bạn trong một bài viết',
-          content: '',
-      });
+    await this.notificationService.createAndEmit({
+      receiver: payload.receiver,
+      sender: payload.sender,
+      type: NotificationType.TAG_POST,
+      targetId: payload.postId,
+      message: 'đã gắn thẻ bạn trong một bài viết',
+      content: '',
+    });
   }
 
   @OnEvent(AppEvents.FACE_TAG_SUGGEST)
   async handleFaceTagSuggest(payload: {
-      receiver: string;
-      postId: string;
-      suggestedUserIds: string[];
+    receiver: string;
+    postId: string;
+    suggestedUserIds: string[];
   }) {
-      await this.notificationService.createAndEmit({
-          receiver: payload.receiver,
-          type: NotificationType.FACE_TAG_SUGGEST,
-          targetId: payload.postId,
-          message: `Nhận diện ${payload.suggestedUserIds.length} người trong ảnh của bạn. Gắn thẻ ngay!`,
-          content: JSON.stringify(payload.suggestedUserIds),
-      });
+    await this.notificationService.createAndEmit({
+      receiver: payload.receiver,
+      type: NotificationType.FACE_TAG_SUGGEST,
+      targetId: payload.postId,
+      message: `Nhận diện ${payload.suggestedUserIds.length} người trong ảnh của bạn. Gắn thẻ ngay!`,
+      content: JSON.stringify(payload.suggestedUserIds),
+    });
   }
 }
