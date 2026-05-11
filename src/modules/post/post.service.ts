@@ -1830,6 +1830,14 @@ export class PostService {
         return { userId: post.userId };
     }
 
+    @OnEvent('post.community.delete-post')
+    async handleCommunityPostDelete(payload: {
+        communityId: string;
+    }) {
+        await this.postModel.deleteMany({
+            communityId: new Types.ObjectId(payload.communityId),
+        });
+    }
     async updateTagVisibility(postId: string, userId: string, isVisible: boolean) {
         if (!Types.ObjectId.isValid(postId)) {
             throw new HttpException('Invalid postId', HttpStatus.BAD_REQUEST);

@@ -270,6 +270,11 @@ export class CommunityService {
             community.deleteOne(),
         ]);
 
+        //Xóa tất cả bài viết trong community
+        this.eventEmitter.emit('post.community.delete-post', {
+            communityId: communityId,
+        });
+
         return { message: 'Đã xóa cộng đồng thành công' };
     }
 
