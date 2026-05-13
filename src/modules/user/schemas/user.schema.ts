@@ -75,6 +75,10 @@ export class User {
     @Prop({ type: Boolean, default: false, index: true })
     isOnline?: boolean;
 
+    // Face Registration Status
+    @Prop({ type: Boolean, default: false })
+    isFaceRegistered: boolean;
+
     // Timestamp when user last went offline (disconnect with no remaining sockets)
     @Prop({ type: Date })
     lastSeenAt?: Date;

@@ -135,6 +135,18 @@ export class UserService {
         );
     }
 
+    async updateFaceRegistrationStatus(userId: string, isRegistered: boolean): Promise<void> {
+        if (!Types.ObjectId.isValid(userId)) {
+            throw new HttpException('Invalid userId', HttpStatus.BAD_REQUEST);
+        }
+
+        await this.userModel.findByIdAndUpdate(
+            userId,
+            { isFaceRegistered: isRegistered },
+            { new: true }
+        );
+    }
+
     async getFcmToken(userId: string): Promise<string | null> {
         if (!Types.ObjectId.isValid(userId)) {
             return null;

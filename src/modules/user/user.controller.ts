@@ -12,12 +12,16 @@ import { RolesGuard } from 'src/common/guards/roles.guard';
 import { UserRole } from 'src/shared/enums/user_role';
 import { Roles } from 'src/common/decorators/role.decorator';
 import { File } from 'multer';
+import { FaceRecognitionService } from 'src/shared/services/face-recognition.service';
 
 @ApiBearerAuth()
 @Controller('user')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(
+    private readonly userService: UserService,
+    private readonly faceRecognitionService: FaceRecognitionService,
+  ) { }
 
   @Get()
   @Roles(UserRole.ADMIN)
@@ -179,5 +183,32 @@ export class UserController {
     const userId = req.user.userId;
     await this.userService.updateFcmToken(userId, updateFcmTokenDto.fcmToken);
     return { message: 'FCM token updated successfully' };
+  }
+
+  @Public()
+  @Post('face-registration')
+  @ApiOperation({ summary: 'Đăng ký khuôn mặt (5 góc) khi tạo tài khoản hoặc quét lại sau' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      required: ['userId', 'images'],
+      properties: {
+        userId: { type: 'string', description: 'ID của user đăng ký mặt' },
+        images: {
+          type: 'array',
+          items: { type: 'string' },
+          description: '5 ảnh base64 theo thứ tự: center, up, down, left, right',
+        },
+      },
+    },
+  })
+  async registerFace(
+    @Body() body: { userId: string; images: string[] },
+  ) {
+    const result = await this.faceRecognitionService.registerFace(body.userId, body.images);
+    if (result.success) {
+      await this.userService.updateFaceRegistrationStatus(body.userId, true);
+    }
+    return result;
   }
 }
