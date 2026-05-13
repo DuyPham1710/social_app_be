@@ -1,16 +1,17 @@
 import { v2 as cloudinary } from 'cloudinary';
 import { AttachmentType } from 'src/shared/enums/Attachment_type';
-import { File } from 'multer';
+//import { File } from 'multer';
 
 export interface UploadedAttachment {
     url: string;
     type: AttachmentType;
     size: number;
+    name?: string;
 }
 
 // Upload file từ Multer (Express.Multer.File) lên Cloudinary
 export async function uploadChatAttachmentFromFile(
-    file: File,
+    file: Express.Multer.File,
     conversationId: string,
 ): Promise<UploadedAttachment> {
     const mimetype = file.mimetype;
@@ -41,6 +42,18 @@ export async function uploadChatAttachmentFromFile(
         'm4a',
         'aac',
         'ogg',
+        // File formats
+        'pdf',
+        'doc',
+        'docx',
+        'xls',
+        'xlsx',
+        'ppt',
+        'pptx',
+        'zip',
+        'rar',
+        'txt',
+        'csv',
     ];
 
     // Cấu hình upload dựa trên loại file
@@ -71,8 +84,13 @@ export async function uploadChatAttachmentFromFile(
         // Cấu hình cho file audio (Cloudinary chung audio vào loại video)
         uploadOptions.resource_type = 'video';
     } else {
-        // Tự động phát hiện loại file
-        uploadOptions.resource_type = 'auto';
+        // Tự động phát hiện loại file cho các tệp raw (PDF, DOCX, v.v.)
+        uploadOptions.resource_type = 'raw';
+        // Xóa allowed_formats cho raw resource type để Cloudinary không báo lỗi format
+        delete uploadOptions.allowed_formats;
+        // Set public_id để giữ lại tên và phần mở rộng của file gốc
+        const safeFilename = filename.replace(/[^a-zA-Z0-9.-]/g, '_');
+        uploadOptions.public_id = `${Date.now()}_${safeFilename}`;
     }
 
     // Upload từ buffer của Multer
@@ -103,6 +121,7 @@ export async function uploadChatAttachmentFromFile(
                     url: result!.secure_url,
                     type: attachmentType,
                     size: result!.bytes,
+                    name: filename,
                 });
             },
         );
@@ -114,7 +133,7 @@ export async function uploadChatAttachmentFromFile(
 
 // Upload nhiều files từ Multer lên Cloudinary
 export async function uploadChatAttachmentsFromFiles(
-    files: File[],
+    files: Express.Multer.File[],
     conversationId: string,
 ): Promise<UploadedAttachment[]> {
     const uploadPromises = files.map((file) =>

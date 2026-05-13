@@ -13,6 +13,9 @@ export class AttachmentDto {
     size: number;
 
     @Expose()
+    name?: string;
+
+    @Expose()
     duration?: number;
 
     @Expose()

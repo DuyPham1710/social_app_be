@@ -11,6 +11,10 @@ class AttachmentDto {
     size?: number;
 
     @IsOptional()
+    @IsString()
+    name?: string;
+
+    @IsOptional()
     @IsNumber()
     @Max(60)
     @Min(0)

@@ -15,6 +15,9 @@ export class Attachment {
     @Prop({ required: true })
     size: number;
 
+    @Prop({ required: false })
+    name?: string;
+
     @Prop({ required: false, max: 60 })
     duration?: number;
 

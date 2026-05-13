@@ -739,6 +739,7 @@ export class ChatService {
                     url: att.url,
                     type: att.type,
                     size: att.size,
+                    name: att.name,
                 }));
             } catch (error) {
                 console.error('Error uploading files:', error);
