@@ -26,6 +26,16 @@ export interface SearchResult {
     results: ImageSearchResult[];
 }
 
+export interface RegisterFaceResult {
+    success: boolean;
+    message: string;
+    embeddings_saved?: number;
+    point_ids?: string[];
+    failed_pose?: string;
+    similarity?: number;
+    matched_user_id?: string;
+}
+
 @Injectable()
 export class FaceRecognitionService {
     private readonly logger = new Logger(FaceRecognitionService.name);
@@ -73,6 +83,31 @@ export class FaceRecognitionService {
             return response.data;
         } catch (error) {
             this.logger.error(`Face search failed: ${error.message}`);
+            throw error;
+        }
+    }
+
+    /**
+     * Đăng ký khuôn mặt (5 góc) khi tạo tài khoản hoặc quét lại.
+     * Gửi 5 ảnh base64 trực tiếp cho AI service → extract embeddings → lưu Qdrant.
+     */
+    async registerFace(userId: string, images: string[]): Promise<RegisterFaceResult> {
+        try {
+            const response = await this.httpService.axiosRef.post(
+                `${this.aiServiceUrl}/face-recognition/register`,
+                {
+                    user_id: userId,
+                    images,
+                    poses: ['center', 'up', 'down', 'left', 'right'],
+                },
+                { timeout: 120000 }, // 120s timeout — 5 ảnh cần xử lý lâu hơn
+            );
+            this.logger.log(
+                `Face registration for user ${userId}: ${response.data.message}`,
+            );
+            return response.data;
+        } catch (error) {
+            this.logger.error(`Face registration failed for user ${userId}: ${error.message}`);
             throw error;
         }
     }
