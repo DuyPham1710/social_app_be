@@ -4,6 +4,7 @@ import { Model, Types } from 'mongoose';
 import { Conversation } from './schemas/conversation.schema';
 import { Message } from './schemas/message.schema';
 import { MessageEditLog } from './schemas/message-edit-log.schema';
+import { ChatFile } from './schemas/chat-file.schema';
 import { plainToInstance } from 'class-transformer';
 import { File } from 'multer';
 import {
@@ -18,7 +19,8 @@ import {
     DeleteMessageDto,
     AttachmentDto,
 } from './dto';
-import { uploadChatAttachmentsFromFiles } from './helpers/upload-attachments.helper';
+import { uploadChatAttachmentFromFile } from './helpers/upload-attachments.helper';
+import { AttachmentType } from 'src/shared/enums/Attachment_type';
 
 @Injectable()
 export class ChatService {
@@ -26,6 +28,7 @@ export class ChatService {
         @InjectModel(Conversation.name) private readonly conversationModel: Model<Conversation>,
         @InjectModel(Message.name) private readonly messageModel: Model<Message>,
         @InjectModel(MessageEditLog.name) private readonly messageEditLogModel: Model<MessageEditLog>,
+        @InjectModel(ChatFile.name) private readonly chatFileModel: Model<ChatFile>,
     ) { }
 
     // Lấy tất cả cuộc hội thoại của user với phân trang
@@ -701,7 +704,8 @@ export class ChatService {
     async sendMessageWithFiles(
         userId: string,
         sendMessageDto: SendMessageDto,
-        files?: File[],
+        baseUrl: string,
+        files?: Express.Multer.File[],
     ): Promise<AttachmentDto[]> {
         const { conversationId } = sendMessageDto;
 
@@ -728,19 +732,37 @@ export class ChatService {
         let finalAttachments: AttachmentDto[] = [];
         if (files && files.length > 0) {
             try {
-                // Upload files lên Cloudinary từ Multer files
-                const uploadedAttachments = await uploadChatAttachmentsFromFiles(
-                    files,
-                    conversationId,
-                );
+                for (const file of files) {
+                    const mimetype = file.mimetype;
+                    const isVideo = mimetype?.startsWith('video/');
+                    const isImage = mimetype?.startsWith('image/');
+                    const isAudio = mimetype?.startsWith('audio/');
 
-                // Chuyển đổi sang format AttachmentDto
-                finalAttachments = uploadedAttachments.map((att) => ({
-                    url: att.url,
-                    type: att.type,
-                    size: att.size,
-                    name: att.name,
-                }));
+                    if (isVideo || isImage || isAudio) {
+                        const uploaded = await uploadChatAttachmentFromFile(file, conversationId);
+                        finalAttachments.push({
+                            url: uploaded.url,
+                            type: uploaded.type,
+                            size: uploaded.size,
+                            name: uploaded.name,
+                        });
+                    } else {
+                        // Raw files: save to DB
+                        const chatFile = await this.chatFileModel.create({
+                            filename: file.originalname,
+                            mimetype: file.mimetype,
+                            data: file.buffer,
+                            size: file.size,
+                        });
+
+                        finalAttachments.push({
+                            url: `/chat/file/${chatFile._id}`,
+                            type: AttachmentType.FILE as any, 
+                            size: file.size,
+                            name: file.originalname,
+                        });
+                    }
+                }
             } catch (error) {
                 console.error('Error uploading files:', error);
                 throw new HttpException(
@@ -1254,5 +1276,10 @@ export class ChatService {
 
         // Transform message sang response format
         return this.transformToMessageResponseDto(populatedMessage);
+    }
+
+    async getFile(id: string) {
+        if (!Types.ObjectId.isValid(id)) return null;
+        return this.chatFileModel.findById(id).exec();
     }
 }

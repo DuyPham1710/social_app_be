@@ -18,6 +18,8 @@ import { SendMessageDto } from './dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { File } from 'multer';
 import { Response } from 'express';
+import { Get, Param } from '@nestjs/common';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @Controller('chat')
 @UseGuards(JwtAuthGuard)
@@ -42,10 +44,13 @@ export class ChatController {
                 throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
             }
 
+            const baseUrl = `${req.protocol}://${req.get('host')}`;
+
             // Gọi service để upload files và trả về attachments
             const attachments = await this.chatService.sendMessageWithFiles(
                 userId,
                 sendMessageDto,
+                baseUrl,
                 files,
             );
 
@@ -102,6 +107,29 @@ export class ChatController {
             throw new HttpException(
                 error.message || 'Failed to apply voice effect',
                 error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
+
+    @Public()
+    @Get('file/:id')
+    async getFile(@Param('id') id: string, @Res() res: Response) {
+        try {
+            const file = await this.chatService.getFile(id);
+            if (!file) {
+                throw new HttpException('File not found', HttpStatus.NOT_FOUND);
+            }
+            res.set({
+                'Content-Type': file.mimetype,
+                'Content-Disposition': `attachment; filename="${encodeURIComponent(file.filename)}"`,
+                'Content-Length': file.size.toString(),
+            });
+            return res.send(file.data);
+        } catch (error) {
+            console.error('Error getting file:', error);
+            throw new HttpException(
+                'File not found',
+                HttpStatus.NOT_FOUND,
             );
         }
     }

@@ -7,6 +7,7 @@ import { VoiceEffectService } from './helpers/voice-effect.service';
 import { Conversation, ConversationSchema } from './schemas/conversation.schema';
 import { Message, MessageSchema } from './schemas/message.schema';
 import { MessageEditLog, MessageEditLogSchema } from './schemas/message-edit-log.schema';
+import { ChatFile, ChatFileSchema } from './schemas/chat-file.schema';
 import { PresenceModule } from 'src/shared/presence.module';
 
 @Module({
@@ -15,6 +16,7 @@ import { PresenceModule } from 'src/shared/presence.module';
       { name: Conversation.name, schema: ConversationSchema },
       { name: Message.name, schema: MessageSchema },
       { name: MessageEditLog.name, schema: MessageEditLogSchema },
+      { name: ChatFile.name, schema: ChatFileSchema },
     ]),
     PresenceModule,
   ],
