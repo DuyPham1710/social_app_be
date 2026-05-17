@@ -211,4 +211,18 @@ export class UserController {
     }
     return result;
   }
+
+  @Delete('face-registration')
+  @ApiOperation({ summary: 'Xóa dữ liệu khuôn mặt' })
+  async deleteFaceRegistration(@Req() req: any) {
+    const userId = req.user.userId;
+    
+    // 1. Xóa dữ liệu từ AI Service
+    await this.faceRecognitionService.deleteFace(userId);
+    
+    // 2. Cập nhật trạng thái trong DB
+    await this.userService.updateFaceRegistrationStatus(userId, false);
+    
+    return { success: true, message: 'Đã xóa dữ liệu khuôn mặt' };
+  }
 }

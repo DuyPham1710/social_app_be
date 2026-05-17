@@ -64,4 +64,7 @@ export default class UserResponseDto {
 
     @Expose()
     lastSeenAt?: Date;
+
+    @Expose()
+    isFaceRegistered?: boolean;
 }
