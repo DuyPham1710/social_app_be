@@ -28,6 +28,9 @@ export class Message {
     @Prop({ type: Types.ObjectId, ref: 'Message', default: null })
     replyTo?: Types.ObjectId; // reply message
 
+    @Prop({ type: Types.ObjectId, ref: 'Story', default: null })
+    storyId?: Types.ObjectId; // story being replied to
+
     @Prop({ type: [ReactionSchema], default: [] })
     reactions: Reaction[];
 

@@ -9,6 +9,7 @@ import { Message, MessageSchema } from './schemas/message.schema';
 import { MessageEditLog, MessageEditLogSchema } from './schemas/message-edit-log.schema';
 import { ChatFile, ChatFileSchema } from './schemas/chat-file.schema';
 import { PresenceModule } from 'src/shared/presence.module';
+import { Story, StorySchema } from 'src/modules/story/schemas/story.schema';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { PresenceModule } from 'src/shared/presence.module';
       { name: Message.name, schema: MessageSchema },
       { name: MessageEditLog.name, schema: MessageEditLogSchema },
       { name: ChatFile.name, schema: ChatFileSchema },
+      { name: Story.name, schema: StorySchema },
     ]),
     PresenceModule,
   ],

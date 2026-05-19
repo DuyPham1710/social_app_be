@@ -43,6 +43,10 @@ export class SendMessageDto {
     @IsOptional()
     replyTo?: string;
 
+    @IsString()
+    @IsOptional()
+    storyId?: string;
+
     @IsOptional()
     metadata?: {
         type?: 'video_call' | 'audio_call';

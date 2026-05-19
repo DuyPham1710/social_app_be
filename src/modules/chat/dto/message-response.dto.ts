@@ -89,6 +89,27 @@ class MessageMetadataDto {
     label?: string;
 }
 
+export class StoryReplyDto {
+    @Expose()
+    _id: string;
+
+    @Expose()
+    title?: string;
+
+    @Expose()
+    mediaUrl?: string;
+
+    @Expose()
+    mediaType: string;
+
+    @Expose()
+    @Type(() => UserResponseDto)
+    userId: UserResponseDto;
+
+    @Expose()
+    createdAt: Date;
+}
+
 export class MessageResponseDto {
     @Expose()
     _id: string;
@@ -110,6 +131,10 @@ export class MessageResponseDto {
     @Expose()
     @Type(() => ParentMessageDto)
     replyTo?: ParentMessageDto;
+
+    @Expose()
+    @Type(() => StoryReplyDto)
+    story?: StoryReplyDto;
 
     @Expose()
     @Type(() => ReactionDto)
