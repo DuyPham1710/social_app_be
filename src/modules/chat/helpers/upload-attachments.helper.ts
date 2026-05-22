@@ -1,6 +1,6 @@
 import { v2 as cloudinary } from 'cloudinary';
 import { AttachmentType } from 'src/shared/enums/Attachment_type';
-//import { File } from 'multer';
+import { File } from 'multer';
 
 export interface UploadedAttachment {
     url: string;
@@ -11,7 +11,7 @@ export interface UploadedAttachment {
 
 // Upload file từ Multer (Express.Multer.File) lên Cloudinary
 export async function uploadChatAttachmentFromFile(
-    file: Express.Multer.File,
+    file: File,
     conversationId: string,
 ): Promise<UploadedAttachment> {
     const mimetype = file.mimetype;
@@ -133,7 +133,7 @@ export async function uploadChatAttachmentFromFile(
 
 // Upload nhiều files từ Multer lên Cloudinary
 export async function uploadChatAttachmentsFromFiles(
-    files: Express.Multer.File[],
+    files: File[],
     conversationId: string,
 ): Promise<UploadedAttachment[]> {
     const uploadPromises = files.map((file) =>

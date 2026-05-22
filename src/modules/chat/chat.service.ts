@@ -705,7 +705,7 @@ export class ChatService {
         userId: string,
         sendMessageDto: SendMessageDto,
         baseUrl: string,
-        files?: Express.Multer.File[],
+        files?: File[],
     ): Promise<AttachmentDto[]> {
         const { conversationId } = sendMessageDto;
 
