@@ -6,7 +6,8 @@ import { Message } from './schemas/message.schema';
 import { MessageEditLog } from './schemas/message-edit-log.schema';
 import { ChatFile } from './schemas/chat-file.schema';
 import { plainToInstance } from 'class-transformer';
-import { File } from 'multer';
+//import { File } from 'multer';
+import { Story } from '../story/schemas/story.schema';
 import {
     ConversationResponseDto,
     CreateConversationDto,
@@ -29,6 +30,7 @@ export class ChatService {
         @InjectModel(Message.name) private readonly messageModel: Model<Message>,
         @InjectModel(MessageEditLog.name) private readonly messageEditLogModel: Model<MessageEditLog>,
         @InjectModel(ChatFile.name) private readonly chatFileModel: Model<ChatFile>,
+        @InjectModel(Story.name) private readonly storyModel: Model<Story>,
     ) { }
 
     // Lấy tất cả cuộc hội thoại của user với phân trang
@@ -148,7 +150,14 @@ export class ChatService {
                     participants: { $all: allParticipants, $size: 2 },
                 })
                 .populate('participants', 'username fullName avatarUrl')
-                .populate('lastMessage.sender', 'username fullName avatarUrl')
+                .populate({
+                    path: 'lastMessageId',
+                    select: 'text createdAt senderId attachments',
+                    populate: {
+                        path: 'senderId',
+                        select: 'username fullName avatarUrl'
+                    }
+                })
                 .lean()
                 .exec();
 
@@ -477,6 +486,14 @@ export class ChatService {
                         select: 'username fullName avatarUrl'
                     }
                 })
+                .populate({
+                    path: 'storyId',
+                    select: 'title mediaUrl mediaType userId createdAt',
+                    populate: {
+                        path: 'userId',
+                        select: 'username fullName avatarUrl'
+                    }
+                })
                 .populate('reactions.userId', 'username fullName avatarUrl')
                 .populate('reactions.emojiId', 'label icon')
                 .populate('seenBy.userId', 'username fullName avatarUrl')
@@ -595,6 +612,14 @@ export class ChatService {
                     select: 'username fullName avatarUrl'
                 }
             })
+            .populate({
+                path: 'storyId',
+                select: 'title mediaUrl mediaType userId createdAt',
+                populate: {
+                    path: 'userId',
+                    select: 'username fullName avatarUrl'
+                }
+            })
             .populate('reactions.userId', 'username fullName avatarUrl')
             .populate('reactions.emojiId', 'label icon')
             .populate('seenBy.userId', 'username fullName avatarUrl')
@@ -627,7 +652,7 @@ export class ChatService {
         userId: string,
         sendMessageDto: SendMessageDto,
     ): Promise<MessageResponseDto> {
-        const { conversationId, text, attachments, replyTo, metadata } = sendMessageDto;
+        const { conversationId, text, attachments, replyTo, metadata, storyId } = sendMessageDto;
 
         if (!Types.ObjectId.isValid(conversationId)) {
             throw new HttpException('Invalid conversation ID', HttpStatus.BAD_REQUEST);
@@ -648,6 +673,17 @@ export class ChatService {
             );
         }
 
+        // Verify story exists if storyId is provided
+        if (storyId) {
+            if (!Types.ObjectId.isValid(storyId)) {
+                throw new HttpException('Invalid story ID', HttpStatus.BAD_REQUEST);
+            }
+            const story = await this.storyModel.findById(storyId).exec();
+            if (!story) {
+                throw new HttpException('Story not found', HttpStatus.NOT_FOUND);
+            }
+        }
+
         // Tạo tin nhắn mới
         const newMessage = await this.messageModel.create({
             conversationId: new Types.ObjectId(conversationId),
@@ -655,6 +691,7 @@ export class ChatService {
             text: text || null,
             attachments: attachments || [],
             replyTo: replyTo ? new Types.ObjectId(replyTo) : null,
+            storyId: storyId ? new Types.ObjectId(storyId) : null,
             metadata: metadata || null,
             seenBy: [
                 {
@@ -683,6 +720,14 @@ export class ChatService {
                 },
                 populate: {
                     path: 'senderId',
+                    select: 'username fullName avatarUrl'
+                }
+            })
+            .populate({
+                path: 'storyId',
+                select: 'title mediaUrl mediaType userId createdAt',
+                populate: {
+                    path: 'userId',
                     select: 'username fullName avatarUrl'
                 }
             })
@@ -883,6 +928,14 @@ export class ChatService {
                     select: 'username fullName avatarUrl'
                 }
             })
+            .populate({
+                path: 'storyId',
+                select: 'title mediaUrl mediaType userId createdAt',
+                populate: {
+                    path: 'userId',
+                    select: 'username fullName avatarUrl'
+                }
+            })
             .populate('reactions.userId', 'username fullName avatarUrl')
             .populate('reactions.emojiId', 'label icon')
             .populate('seenBy.userId', 'username fullName avatarUrl')
@@ -985,6 +1038,14 @@ export class ChatService {
                     select: 'username fullName avatarUrl'
                 }
             })
+            .populate({
+                path: 'storyId',
+                select: 'title mediaUrl mediaType userId createdAt',
+                populate: {
+                    path: 'userId',
+                    select: 'username fullName avatarUrl'
+                }
+            })
             .populate('reactions.userId', 'username fullName avatarUrl')
             .populate('reactions.emojiId', 'label icon')
             .populate('seenBy.userId', 'username fullName avatarUrl')
@@ -1073,6 +1134,19 @@ export class ChatService {
             };
         }
 
+        // Transform storyId: trả về thông tin story nếu có
+        let story = null;
+        if (msg.storyId && typeof msg.storyId === 'object') {
+            story = {
+                ...msg.storyId,
+                _id: msg.storyId._id?.toString() || msg.storyId.toString(),
+                userId: msg.storyId.userId ? {
+                    ...msg.storyId.userId,
+                    _id: msg.storyId.userId._id?.toString() || msg.storyId.userId.toString(),
+                } : null,
+            };
+        }
+
         // Transform reactions: userId -> user, emojiId -> emoji
         const reactions = msg.reactions?.map((reaction: any) => ({
             user: reaction.userId,
@@ -1094,6 +1168,7 @@ export class ChatService {
             _id: msg._id.toString(),
             conversationId: msg.conversationId.toString(),
             replyTo,
+            story,
             reactions,
             seenBy,
             metadata: msg.metadata || null, // Explicitly include metadata
@@ -1261,6 +1336,14 @@ export class ChatService {
                 },
                 populate: {
                     path: 'senderId',
+                    select: 'username fullName avatarUrl'
+                }
+            })
+            .populate({
+                path: 'storyId',
+                select: 'title mediaUrl mediaType userId createdAt',
+                populate: {
+                    path: 'userId',
                     select: 'username fullName avatarUrl'
                 }
             })

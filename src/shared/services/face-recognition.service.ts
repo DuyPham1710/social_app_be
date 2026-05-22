@@ -111,4 +111,23 @@ export class FaceRecognitionService {
             throw error;
         }
     }
+
+    /**
+     * Xóa toàn bộ dữ liệu khuôn mặt của user khỏi hệ thống AI (Qdrant).
+     */
+    async deleteFace(userId: string): Promise<boolean> {
+        try {
+            const response = await this.httpService.axiosRef.delete(
+                `${this.aiServiceUrl}/face-recognition/user/${userId}`,
+                { timeout: 30000 },
+            );
+            this.logger.log(
+                `Face deletion for user ${userId}: ${JSON.stringify(response.data)}`,
+            );
+            return true;
+        } catch (error) {
+            this.logger.error(`Face deletion failed for user ${userId}: ${error.message}`);
+            throw error;
+        }
+    }
 }
