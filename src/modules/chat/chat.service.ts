@@ -6,8 +6,9 @@ import { Message } from './schemas/message.schema';
 import { MessageEditLog } from './schemas/message-edit-log.schema';
 import { ChatFile } from './schemas/chat-file.schema';
 import { plainToInstance } from 'class-transformer';
-//import { File } from 'multer';
-import { Story } from '../story/schemas/story.schema';
+import { File } from 'multer';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { AppEvents } from 'src/shared/enums/app-events.enum';
 import {
     ConversationResponseDto,
     CreateConversationDto,
@@ -30,7 +31,7 @@ export class ChatService {
         @InjectModel(Message.name) private readonly messageModel: Model<Message>,
         @InjectModel(MessageEditLog.name) private readonly messageEditLogModel: Model<MessageEditLog>,
         @InjectModel(ChatFile.name) private readonly chatFileModel: Model<ChatFile>,
-        @InjectModel(Story.name) private readonly storyModel: Model<Story>,
+        private readonly eventEmitter: EventEmitter2,
     ) { }
 
     // Lấy tất cả cuộc hội thoại của user với phân trang
@@ -678,7 +679,7 @@ export class ChatService {
             if (!Types.ObjectId.isValid(storyId)) {
                 throw new HttpException('Invalid story ID', HttpStatus.BAD_REQUEST);
             }
-            const story = await this.storyModel.findById(storyId).exec();
+            const [story] = await this.eventEmitter.emitAsync(AppEvents.STORY_GET_USER_ID, { storyId });
             if (!story) {
                 throw new HttpException('Story not found', HttpStatus.NOT_FOUND);
             }
@@ -750,7 +751,7 @@ export class ChatService {
         userId: string,
         sendMessageDto: SendMessageDto,
         baseUrl: string,
-        files?: Express.Multer.File[],
+        files?: File[],
     ): Promise<AttachmentDto[]> {
         const { conversationId } = sendMessageDto;
 
@@ -802,7 +803,7 @@ export class ChatService {
 
                         finalAttachments.push({
                             url: `/chat/file/${chatFile._id}`,
-                            type: AttachmentType.FILE as any, 
+                            type: AttachmentType.FILE as any,
                             size: file.size,
                             name: file.originalname,
                         });
