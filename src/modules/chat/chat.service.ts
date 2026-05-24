@@ -6,7 +6,7 @@ import { Message } from './schemas/message.schema';
 import { MessageEditLog } from './schemas/message-edit-log.schema';
 import { ChatFile } from './schemas/chat-file.schema';
 import { plainToInstance } from 'class-transformer';
-//import { File } from 'multer';
+import { File } from 'multer';
 import { Story } from '../story/schemas/story.schema';
 import {
     ConversationResponseDto,

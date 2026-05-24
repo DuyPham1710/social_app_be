@@ -30,7 +30,7 @@ export class NotificationListener {
       sender: payload.sender,
       type: NotificationType.POST_COMMENT,
       targetId: payload.commentId,
-      message: ` đã bình luận về bài viết của bạn: "${payload.content}"`,
+      message: `${payload.content}`,
       content: payload.postId,
     });
   }
@@ -50,7 +50,7 @@ export class NotificationListener {
       sender: payload.sender,
       type: NotificationType.POST_REACTION,
       targetId: payload.postId,
-      message: ` đã bày tỏ cảm xúc về bài viết của bạn: "${payload.content.substring(0, 100)}"`,
+      message: `${payload.content.substring(0, 100)}`,
       content: payload.content,
     });
   }
@@ -71,7 +71,7 @@ export class NotificationListener {
       sender: payload.sender,
       type: NotificationType.STORY_REACTION,
       targetId: payload.storyId,
-      message: ` đã bày tỏ cảm xúc về tin của bạn của bạn: "${payload.content.substring(0, 100)}"`,
+      message: payload.content.substring(0, 100),
       content: payload.content,
     });
   }
@@ -94,7 +94,7 @@ export class NotificationListener {
       sender: payload.sender,
       type: NotificationType.COMMENT_REACTION,
       targetId: payload.commentId,
-      message: `đã thả cảm xúc về bình luận của bạn: "${payload.content}"`,
+      message: `${payload.content}`,
       content: comment?.postId.toString() || '',
     });
   }
@@ -106,7 +106,7 @@ export class NotificationListener {
       sender: payload.sender,
       type: NotificationType.POST_COMMENT,
       targetId: payload.commentId,
-      message: `đã nhắc đến bạn trong một bình luận: "${payload.content}"`,
+      message: `${payload.content}`,
       content: payload.postId,
     });
   }
@@ -251,7 +251,7 @@ export class NotificationListener {
       receiver: payload.receiver,
       type: NotificationType.FACE_TAG_SUGGEST,
       targetId: payload.postId,
-      message: `Nhận diện ${payload.suggestedUserIds.length} người trong ảnh của bạn. Gắn thẻ ngay!`,
+      message: `${payload.suggestedUserIds.length}`,
       content: JSON.stringify(payload.suggestedUserIds),
     });
   }
