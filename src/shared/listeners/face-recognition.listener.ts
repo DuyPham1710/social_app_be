@@ -134,6 +134,29 @@ export class FaceRecognitionListener {
                 });
             }
 
+            // Ghi nhận co-appearance để phục vụ gợi ý kết bạn
+            // Bao gồm poster (confidence=1.0) + các user đã qua privacy check
+            if (usersToNotify.length > 0) {
+                const confidenceRecord: Record<string, number> = {
+                    [payload.posterId]: 1.0,
+                };
+                for (const [userId, confidence] of usersToNotify) {
+                    confidenceRecord[userId] = confidence;
+                }
+
+                const coAppearanceUserIds = [payload.posterId, ...usersToNotify.map(([uid]) => uid)];
+
+                this.eventEmitter.emit(AppEvents.FACE_CO_APPEARANCE_RECORD, {
+                    postId: payload.postId,
+                    userIds: coAppearanceUserIds,
+                    confidences: confidenceRecord,
+                });
+
+                this.logger.log(
+                    `Emitted co-appearance record for post ${payload.postId} with ${coAppearanceUserIds.length} user(s)`,
+                );
+            }
+
             // Tổng kết
             this.logger.log(
                 `Post ${payload.postId}: ${allMatchedMap.size} matched user(s), ${usersToNotify.length} notification(s) sent, ${suggestableUsers.length} tag suggestion(s)`,

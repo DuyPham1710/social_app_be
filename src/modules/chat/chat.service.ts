@@ -705,7 +705,7 @@ export class ChatService {
         userId: string,
         sendMessageDto: SendMessageDto,
         baseUrl: string,
-        files?: Express.Multer.File[],
+        files?: File[],
     ): Promise<AttachmentDto[]> {
         const { conversationId } = sendMessageDto;
 
@@ -757,7 +757,7 @@ export class ChatService {
 
                         finalAttachments.push({
                             url: `/chat/file/${chatFile._id}`,
-                            type: AttachmentType.FILE as any, 
+                            type: AttachmentType.FILE as any,
                             size: file.size,
                             name: file.originalname,
                         });
