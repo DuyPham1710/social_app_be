@@ -1,0 +1,14 @@
+services:
+  nest-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: social-nest-api
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./tmp:/app/tmp
+      - /home/ubuntu/apps/social_app_be/firebase/serviceAccountKey.json:/app/firebase/serviceAccountKey.json:ro
