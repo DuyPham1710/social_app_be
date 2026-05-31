@@ -133,5 +133,23 @@ export class ChatController {
             );
         }
     }
+
+    @Post('conversation/:conversationId/summary-unread')
+    async postSummaryUnread(
+        @Req() req: any,
+        @Param('conversationId') conversationId: string,
+        @Body() body: { messages: string[], lang?: string },
+    ) {
+        try {
+            const userId = req.user.userId;
+            return await this.chatService.getSummaryUnread(conversationId, userId, body.messages, body.lang);
+        } catch (error) {
+            throw new HttpException(
+                error.message || 'Failed to summarize unread messages',
+                error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
 }
+
 

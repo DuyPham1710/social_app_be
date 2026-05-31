@@ -23,6 +23,7 @@ import {
 } from './dto';
 import { uploadChatAttachmentFromFile } from './helpers/upload-attachments.helper';
 import { AttachmentType } from 'src/shared/enums/Attachment_type';
+import { AiService } from 'src/shared/services/summarize-messages.service';
 
 @Injectable()
 export class ChatService {
@@ -32,6 +33,7 @@ export class ChatService {
         @InjectModel(MessageEditLog.name) private readonly messageEditLogModel: Model<MessageEditLog>,
         @InjectModel(ChatFile.name) private readonly chatFileModel: Model<ChatFile>,
         private readonly eventEmitter: EventEmitter2,
+        private readonly aiService: AiService,
     ) { }
 
     // Lấy tất cả cuộc hội thoại của user với phân trang
@@ -1365,5 +1367,20 @@ export class ChatService {
     async getFile(id: string) {
         if (!Types.ObjectId.isValid(id)) return null;
         return this.chatFileModel.findById(id).exec();
+    }
+
+    async getSummaryUnread(conversationId: string, userId: string, messages: string[], lang?: string): Promise<{ summary: string }> {
+        const isParticipant = await this.checkUserInConversation(conversationId, userId);
+        if (!isParticipant) {
+            throw new HttpException('You are not a participant in this conversation', HttpStatus.FORBIDDEN);
+        }
+
+        if (!messages || messages.length === 0) {
+            return { summary: lang?.startsWith('vi') ? 'Không có tin nhắn chưa đọc.' : 'No unread messages.' };
+        }
+
+        const messagesText = messages.join('\n');
+        const summary = await this.aiService.summarizeMessages(messagesText, lang);
+        return { summary };
     }
 }
