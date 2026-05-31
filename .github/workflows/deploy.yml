@@ -1,0 +1,39 @@
+name: Deploy Backend to AWS EC2
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  deploy:
+    name: Deploy NestJS Backend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+
+            echo "Go to project directory"
+            cd ${{ secrets.EC2_APP_DIR }}
+
+            echo "Pull latest code from develop"
+            git pull origin develop
+
+            echo "Create tmp folder"
+            mkdir -p tmp
+
+            echo "Build and restart Docker containers"
+            docker compose up -d --build
+
+            echo "Clean unused Docker images"
+            docker image prune -f
+
+            echo "Show containers"
+            docker compose ps
