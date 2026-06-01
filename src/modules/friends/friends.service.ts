@@ -8,6 +8,7 @@ import { RespondFriendRequestDto } from './dto/respond-friend-request.dto';
 import { RemoveFriendDto } from './dto/remove-friend.dto';
 import { SearchFriendsDto } from './dto/search-friends.dto';
 import { FriendSuggestionsDto } from './dto/friend-suggestions.dto';
+import { FaceCoAppearanceService } from './face-co-appearance.service';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { AppEvents } from 'src/shared/enums/app-events.enum';
 
@@ -17,6 +18,7 @@ export class FriendsService {
     @InjectModel(Friend.name) private readonly friendModel: Model<FriendDocument>,
     @InjectModel(FriendRequest.name) private readonly friendRequestModel: Model<FriendRequestDocument>,
     private readonly eventEmitter: EventEmitter2,
+    private readonly faceCoAppearanceService: FaceCoAppearanceService,
   ) { }
 
   // Gửi lời mời kết bạn
@@ -639,7 +641,7 @@ export class FriendsService {
           relationshipStatus: 1,
           createdAt: 1,
           mutualFriendsCount: 1,
-          suggestionScore: 1
+          suggestionScore: '$baseScore'
         }
       }
     ];
@@ -658,33 +660,47 @@ export class FriendsService {
     const suggestionsRaw = suggestionsRawResult[0] || [];
     const countData = countResult[0] || [];
 
+    // Lấy điểm co-appearance (song song với DB query phía trên)
+    const coAppearanceScores = await this.faceCoAppearanceService.getCoAppearanceScores(userId);
+
     // Tính điểm số dựa trên các tiêu chí sau khi aggregation
     const suggestions = suggestionsRaw.map((user: any) => {
       let score = user.suggestionScore || 0;
-      
+      const reasons: string[] = [];
+
+      // Bạn chung (điểm đã tính sẵn trong baseScore)
+      if ((user.mutualFriendsCount || 0) > 0) {
+        reasons.push('mutual_friends');
+      }
+
       // Cùng trường học (+150 điểm)
       if (user.school && currentUserSchool && user.school === currentUserSchool) {
         score += 150;
+        reasons.push('same_school');
       }
       
       // Cùng thành phố hiện tại (+150 điểm)
       if (user.currentCity && currentUserCurrentCity && user.currentCity === currentUserCurrentCity) {
         score += 150;
+        reasons.push('same_city');
       }
       
       // Cùng quê quán (+150 điểm)
       if (user.hometown && currentUserHometown && user.hometown === currentUserHometown) {
         score += 150;
+        reasons.push('same_hometown');
       }
       
       // Cùng nơi làm việc (+150 điểm)
       if (user.workplace && currentUserWorkplace && user.workplace === currentUserWorkplace) {
         score += 150;
+        reasons.push('same_workplace');
       }
       
       // Cùng trạng thái quan hệ (+100 điểm)
       if (user.relationshipStatus && currentUserRelationshipStatus && user.relationshipStatus === currentUserRelationshipStatus) {
         score += 100;
+        reasons.push('same_relationship_status');
       }
       
       // Cùng độ tuổi (+100 điểm nếu chênh lệch <= 3 năm)
@@ -692,12 +708,32 @@ export class FriendsService {
         const userBirthYear = parseInt(user.dateOfBirth.substring(0, 4)) || 0;
         if (userBirthYear > 0 && Math.abs(userBirthYear - currentUserBirthYear) <= 3) {
           score += 100;
+          reasons.push('similar_age');
         }
+      }
+
+      // Điểm từ face co-appearance (xuất hiện chung trong ảnh)
+      const coAppearanceCount = coAppearanceScores.get(user._id.toString()) || 0;
+      if (coAppearanceCount > 0) {
+        let faceBonus = 0;
+        if (coAppearanceCount >= 10) {
+          faceBonus = 1000;
+        } else if (coAppearanceCount >= 5) {
+          faceBonus = 600;
+        } else if (coAppearanceCount >= 2) {
+          faceBonus = 400;
+        } else {
+          faceBonus = 200;
+        }
+        score += faceBonus;
+        reasons.push('face_co_appearance');
       }
       
       return {
         ...user,
-        suggestionScore: score
+        suggestionScore: score,
+        faceCoAppearanceCount: coAppearanceCount,
+        suggestionReasons: reasons,
       };
     });
 

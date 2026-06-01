@@ -124,5 +124,7 @@ export enum AppEvents {
     FACE_SEARCH_IN_POST = 'face.searchInPost',
     FACE_DETECTED_IN_POST = 'face.detectedInPost',
     FACE_TAG_SUGGEST = 'face.tagSuggest',
+    /** Ghi nhan cap user cung xuat hien trong anh post -> dung cho goi y ket ban */
+    FACE_CO_APPEARANCE_RECORD = 'face.coAppearance.record',
 }
 
