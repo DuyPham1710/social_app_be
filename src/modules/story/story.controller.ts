@@ -74,6 +74,13 @@ export class StoryController {
     return this.storyService.deleteStory(storyId, ownerId);
   }
 
+  @Patch(':storyId/archive')
+  @ApiOperation({ summary: 'Lưu trữ tin' })
+  archiveStory(@Param('storyId') storyId: string, @Req() req: any) {
+    const ownerId = req.user.userId;
+    return this.storyService.archiveStory(storyId, ownerId);
+  }
+
   @Get('home')
   @ApiOperation({ summary: 'Lấy danh sách story của bạn bè, gom theo từng user, có phân trang theo user' })
   getAllStoriesHomePage(

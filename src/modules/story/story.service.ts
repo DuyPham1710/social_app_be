@@ -145,8 +145,13 @@ export class StoryService {
 
         await this.markExpiredStoriesArchived();
 
+        const query: any = { userId: new Types.ObjectId(ownerId) };
+        if (ownerId !== viewerId) {
+            query.isArchived = { $ne: true };
+        }
+
         const stories: StoryDocument[] = await this.storyModel
-            .find({ userId: new Types.ObjectId(ownerId) })
+            .find(query)
             .populate('userId', 'username fullName avatarUrl')
             .sort({ createdAt: -1 })
             .lean()
@@ -208,7 +213,8 @@ export class StoryService {
                 const stories: StoryDocument[] = await this.storyModel
                     .find({
                         userId: friend._id,
-                        createdAt: { $gte: expireTime } // chỉ lấy story trong 24h gần nhất
+                        createdAt: { $gte: expireTime }, // chỉ lấy story trong 24h gần nhất
+                        isArchived: { $ne: true }
                     })
                     .populate('userId', 'username fullName avatarUrl')
                     .sort({ createdAt: 1 })
@@ -270,7 +276,8 @@ export class StoryService {
                 const currentUserStories: StoryDocument[] = await this.storyModel
                     .find({
                         userId: new Types.ObjectId(viewerId),
-                        createdAt: { $gte: expireTime }
+                        createdAt: { $gte: expireTime },
+                        isArchived: { $ne: true }
                     })
                     .populate('userId', 'username fullName avatarUrl')
                     .sort({ createdAt: 1 })
@@ -572,6 +579,27 @@ export class StoryService {
         await story.deleteOne();
 
         return { message: 'Story deleted successfully' };
+    }
+
+    async archiveStory(storyId: string, ownerId: string) {
+        if (!Types.ObjectId.isValid(storyId)) {
+            throw new HttpException('Invalid storyId', HttpStatus.BAD_REQUEST);
+        }
+
+        const story = await this.storyModel.findById(storyId);
+        if (!story) {
+            throw new HttpException('Story not found', HttpStatus.NOT_FOUND);
+        }
+
+        if (story.userId.toString() !== ownerId) {
+            throw new ForbiddenException('You are not allowed to archive this story');
+        }
+
+        story.isArchived = true;
+        story.archivedAt = new Date();
+        await story.save();
+
+        return { message: 'Story archived successfully' };
     }
 
     @OnEvent(AppEvents.STORY_GET_USER_ID)
