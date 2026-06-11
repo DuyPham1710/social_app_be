@@ -13,6 +13,7 @@ import { UserRole } from 'src/shared/enums/user_role';
 import { Roles } from 'src/common/decorators/role.decorator';
 import { File } from 'multer';
 import { FaceRecognitionService } from 'src/shared/services/face-recognition.service';
+import { ReportUserDto } from './dto/report-user.dto';
 
 @ApiBearerAuth()
 @Controller('user')
@@ -216,13 +217,24 @@ export class UserController {
   @ApiOperation({ summary: 'Xóa dữ liệu khuôn mặt' })
   async deleteFaceRegistration(@Req() req: any) {
     const userId = req.user.userId;
-    
+
     // 1. Xóa dữ liệu từ AI Service
     await this.faceRecognitionService.deleteFace(userId);
-    
+
     // 2. Cập nhật trạng thái trong DB
     await this.userService.updateFaceRegistrationStatus(userId, false);
-    
+
     return { success: true, message: 'Đã xóa dữ liệu khuôn mặt' };
+  }
+
+  @Post(':id/report')
+  @ApiOperation({ summary: 'Báo cáo người dùng' })
+  async reportUser(
+    @Param('id') reportedUserId: string,
+    @Req() req: any,
+    @Body() reportUserDto: ReportUserDto,
+  ) {
+    const reporterId = req.user.userId;
+    return this.userService.reportUser(reportedUserId, reporterId, reportUserDto);
   }
 }

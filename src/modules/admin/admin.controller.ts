@@ -9,6 +9,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
 import { UpdatePostReportStatusDto } from './dto/update-post-report-status.dto';
 import { BulkUpdatePostReportStatusDto } from './dto/bulk-update-post-report-status.dto';
+import { UpdateUserReportStatusDto } from './dto/update-user-report-status.dto';
+import { BulkUpdateUserReportStatusDto } from './dto/bulk-update-user-report-status.dto';
 
 @ApiBearerAuth()
 @ApiTags('Admin')
@@ -20,11 +22,12 @@ export class AdminController {
   // ===== User Management =====
   @Get('users')
   @Roles(UserRole.ADMIN)
-  @ApiOperation({ summary: 'Lấy danh sách người dùng (phân trang, tìm kiếm, lọc theo thời gian/status)' })
+  @ApiOperation({ summary: 'Lấy danh sách người dùng (phân trang, tìm kiếm, lọc theo thời gian/status/ban)' })
   @ApiQuery({ name: 'page', required: false, type: Number, description: 'Số trang' })
   @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Số lượng mỗi trang' })
   @ApiQuery({ name: 'search', required: false, type: String, description: 'Tìm kiếm theo email, username, fullName' })
   @ApiQuery({ name: 'isActive', required: false, type: Boolean, description: 'Lọc theo trạng thái active' })
+  @ApiQuery({ name: 'isBan', required: false, type: Boolean, description: 'Lọc theo trạng thái bị cấm (ban)' })
   @ApiQuery({ name: 'dateFrom', required: false, type: String, description: 'Lọc từ ngày tạo tài khoản (ISO date)' })
   @ApiQuery({ name: 'dateTo', required: false, type: String, description: 'Lọc đến ngày tạo tài khoản (ISO date)' })
   getAllUsers(
@@ -32,10 +35,12 @@ export class AdminController {
     @Query('limit') limit: number = 10,
     @Query('search') search?: string,
     @Query('isActive') isActive?: string,
+    @Query('isBan') isBan?: string,
     @Query('dateFrom') dateFrom?: string,
     @Query('dateTo') dateTo?: string,
   ) {
     const isActiveBool = isActive !== undefined ? isActive === 'true' : undefined;
+    const isBanBool = isBan !== undefined ? isBan === 'true' : undefined;
     const dateFromDate = dateFrom ? new Date(dateFrom) : undefined;
     const dateToDate = dateTo ? new Date(dateTo) : undefined;
     return this.adminService.getAllUsers(
@@ -43,6 +48,7 @@ export class AdminController {
       Number(limit),
       search,
       isActiveBool,
+      isBanBool,
       dateFromDate,
       dateToDate
     );
@@ -280,6 +286,66 @@ export class AdminController {
   @ApiBody({ type: BulkUpdatePostReportStatusDto })
   bulkUpdatePostReportStatus(@Body() body: BulkUpdatePostReportStatusDto) {
     return this.adminService.bulkUpdatePostReportStatus(
+      body.reportIds,
+      body.status,
+      body.note,
+    );
+  }
+
+  // ===== User Report Management =====
+
+  @Get('user-reports')
+  @Roles(UserRole.ADMIN)
+  @ApiOperation({
+    summary: 'Lấy danh sách báo cáo người dùng (phân trang, lọc theo status)',
+  })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    enum: ['pending', 'reviewed', 'rejected'],
+  })
+  getUserReports(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Query('status') status?: 'pending' | 'reviewed' | 'rejected',
+  ) {
+    return this.adminService.getUserReports(
+      Number(page),
+      Number(limit),
+      status,
+    );
+  }
+
+  @Get('user-reports/:reportId')
+  @Roles(UserRole.ADMIN)
+  @ApiOperation({ summary: 'Lấy chi tiết một báo cáo người dùng' })
+  getUserReportById(@Param('reportId') reportId: string) {
+    return this.adminService.getUserReportById(reportId);
+  }
+
+  @Put('user-reports/:reportId/status')
+  @Roles(UserRole.ADMIN)
+  @ApiOperation({ summary: 'Cập nhật trạng thái xử lý của báo cáo người dùng' })
+  @ApiBody({ type: UpdateUserReportStatusDto })
+  updateUserReportStatus(
+    @Param('reportId') reportId: string,
+    @Body() body: UpdateUserReportStatusDto,
+  ) {
+    return this.adminService.updateUserReportStatus(
+      reportId,
+      body.status,
+      body.note,
+    );
+  }
+
+  @Put('user-reports/bulk-update')
+  @Roles(UserRole.ADMIN)
+  @ApiOperation({ summary: 'Cập nhật trạng thái xử lý của nhiều báo cáo người dùng cùng lúc' })
+  @ApiBody({ type: BulkUpdateUserReportStatusDto })
+  bulkUpdateUserReportStatus(@Body() body: BulkUpdateUserReportStatusDto) {
+    return this.adminService.bulkUpdateUserReportStatus(
       body.reportIds,
       body.status,
       body.note,

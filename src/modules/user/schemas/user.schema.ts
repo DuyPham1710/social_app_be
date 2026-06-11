@@ -54,6 +54,9 @@ export class User {
     @Prop({ type: Boolean, default: false })
     isActive: boolean;
 
+    @Prop({ type: Boolean, default: false })
+    isBan: boolean;
+
     @Prop({ type: String })
     otp?: string;
 

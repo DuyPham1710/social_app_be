@@ -65,5 +65,9 @@ export class CreateUserDto {
   @ApiProperty({ example: true, required: false, default: true })
   @IsOptional()
   isActive?: boolean;
+
+  @ApiProperty({ example: false, required: false, default: false })
+  @IsOptional()
+  isBan?: boolean;
 }
 
