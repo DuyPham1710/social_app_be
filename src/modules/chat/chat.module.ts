@@ -9,6 +9,7 @@ import { Message, MessageSchema } from './schemas/message.schema';
 import { MessageEditLog, MessageEditLogSchema } from './schemas/message-edit-log.schema';
 import { ChatFile, ChatFileSchema } from './schemas/chat-file.schema';
 import { PresenceModule } from 'src/shared/presence.module';
+import { GoogleTranslationService } from 'src/shared/translation/google-translation.service';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { PresenceModule } from 'src/shared/presence.module';
     PresenceModule,
   ],
   controllers: [ChatController],
-  providers: [ChatGateway, ChatService, VoiceEffectService],
+  providers: [ChatGateway, ChatService, VoiceEffectService, GoogleTranslationService],
   exports: [ChatService],
 })
 export class ChatModule { }

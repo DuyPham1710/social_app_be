@@ -24,6 +24,8 @@ import {
 import { uploadChatAttachmentFromFile } from './helpers/upload-attachments.helper';
 import { AttachmentType } from 'src/shared/enums/Attachment_type';
 import { AiService } from 'src/shared/services/summarize-messages.service';
+import { GoogleTranslationService } from 'src/shared/translation/google-translation.service';
+import { langsMatch } from 'src/shared/translation/lang-compare.util';
 
 @Injectable()
 export class ChatService {
@@ -34,6 +36,7 @@ export class ChatService {
         @InjectModel(ChatFile.name) private readonly chatFileModel: Model<ChatFile>,
         private readonly eventEmitter: EventEmitter2,
         private readonly aiService: AiService,
+        private readonly googleTranslationService: GoogleTranslationService,
     ) { }
 
     // Lấy tất cả cuộc hội thoại của user với phân trang
@@ -1382,5 +1385,71 @@ export class ChatService {
         const messagesText = messages.join('\n');
         const summary = await this.aiService.summarizeMessages(messagesText, lang);
         return { summary };
+    }
+
+    async translateMessage(
+        messageId: string,
+        userId: string,
+        targetLang: string = 'en',
+    ) {
+        if (!Types.ObjectId.isValid(messageId)) {
+            throw new HttpException('Invalid message ID', HttpStatus.BAD_REQUEST);
+        }
+
+        const message = await this.messageModel.findById(messageId).exec();
+
+        if (!message) {
+            throw new HttpException('Message not found', HttpStatus.NOT_FOUND);
+        }
+
+        const conversation = await this.conversationModel
+            .findOne({
+                _id: message.conversationId,
+                participants: new Types.ObjectId(userId),
+            })
+            .exec();
+
+        if (!conversation) {
+            throw new HttpException(
+                'You do not have access to this message',
+                HttpStatus.FORBIDDEN,
+            );
+        }
+
+        const text = message.text;
+        if (!text || !text.trim()) {
+            throw new HttpException('Message has no text to translate', HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            const detected = await this.googleTranslationService.detectLanguage(text);
+            const normalizedTarget = targetLang || 'en';
+
+            if (langsMatch(detected, normalizedTarget)) {
+                return {
+                    originalText: text,
+                    translatedText: text,
+                    sourceLang: detected,
+                    targetLang: normalizedTarget,
+                    translationNotNeeded: true,
+                };
+            }
+
+            const result = await this.googleTranslationService.translate(text, normalizedTarget);
+
+            return {
+                originalText: text,
+                translatedText: result.translatedText,
+                sourceLang: result.sourceLang,
+                targetLang: result.targetLang,
+                translationNotNeeded: false,
+            };
+        } catch (error) {
+            console.error(`Failed to translate message ${messageId}:`, error);
+            throw new HttpException(
+                'Failed to translate message',
+                HttpStatus.BAD_GATEWAY,
+            );
+        }
     }
 }
