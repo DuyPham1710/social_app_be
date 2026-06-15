@@ -204,4 +204,9 @@ export class AuthService {
             user: userResponse
         };
     }
+    async deleteIncompleteRegistration(userId: string) {
+        const [result] = await this.eventEmitter.emitAsync(AppEvents.USER_HARD_DELETE, { userId });
+        return result;
+    }
+
 }

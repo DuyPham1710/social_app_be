@@ -1,4 +1,4 @@
-import { Body, Controller, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import RegisterUserDto from '../user/dto/register.user.dto';
 import UserResponseDto from '../user/dto/user.response.dto';
@@ -46,5 +46,11 @@ export class AuthController {
   refreshToken(@Req() req: any) {
     return this.authService.refreshToken(req.user);
   }
+
+  @Delete('incomplete-registration/:id')
+  deleteIncompleteRegistration(@Param('id') id: string) {
+    return this.authService.deleteIncompleteRegistration(id);
+  }
+
 
 }

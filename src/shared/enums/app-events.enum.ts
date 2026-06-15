@@ -13,6 +13,7 @@ export enum AppEvents {
     USER_VALIDATE_BY_EMAIL = 'user.validateByEmail',
     USER_CHECK_EXISTS = 'user.checkExists',
     USER_GET_BASIC_INFO = 'user.getBasicInfo',
+    USER_HARD_DELETE = 'user.hardDelete',
 
     // ===== MAIL =====
     MAIL_SEND = 'mail.send',
@@ -117,7 +118,7 @@ export enum AppEvents {
     COMMUNITY_GET_APPROVED_POSTS = 'community.getApprovedPosts',
     COMMUNITY_GET_PENDING_POSTS = 'community.getPendingPosts',
     COMMUNITY_GET_MEMBER_ROLE = 'community.getMemberRole',
-    COMMUNITY_GET_INFO = 'community.getInfo', // L?y thông tin community (bao g?m admin)
+    COMMUNITY_GET_INFO = 'community.getInfo', // L?y thï¿½ng tin community (bao g?m admin)
 
     // ===== FACE RECOGNITION =====
     FACE_ENROLL = 'face.enroll',
