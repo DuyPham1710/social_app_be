@@ -8,6 +8,7 @@ import { PostReport, PostReportSchema } from './schemas/post-report.schema';
 import { PostView, PostViewSchema } from './schemas/post-view.schema';
 import { NotificationModule } from '../notification/notification.module';
 import { GoogleTranslationService } from 'src/shared/translation/google-translation.service';
+import { RecommendationsModule } from 'src/recommendations/recommendations.module';
 
 @Module({
   controllers: [PostController],
@@ -20,6 +21,7 @@ import { GoogleTranslationService } from 'src/shared/translation/google-translat
       { name: PostView.name, schema: PostViewSchema },
     ]),
     forwardRef(() => NotificationModule),
+    RecommendationsModule,
   ],
   exports: [PostService],
 })

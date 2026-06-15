@@ -2,6 +2,7 @@ import {
   Injectable,
   ConflictException,
   NotFoundException,
+  Logger,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
@@ -9,13 +10,18 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AppEvents } from '../../shared/enums/app-events.enum';
 import { Saved, SaveDocument } from './schemas/saved.schema';
 import { CreateSaveDto } from './dto/create-save.dto';
+import { RecommendationInteractionService } from 'src/recommendations/services/recommendation-interaction.service';
+import { PostInteractionType } from 'src/common/enums/post-interaction-type.enum';
 
 @Injectable()
 export class SaveService {
+  private readonly logger = new Logger(SaveService.name);
+
   constructor(
     @InjectModel(Saved.name)
     private readonly saveModel: Model<SaveDocument>,
     private readonly eventEmitter: EventEmitter2,
+    private readonly recommendationInteractionService: RecommendationInteractionService,
   ) {}
 
   // Lưu bài post (hoặc reel, comment)
@@ -29,6 +35,11 @@ export class SaveService {
         collection: dto.collection || 'default',
         note: dto.note || '',
       });
+
+      if (dto.type === 'post') {
+        await this.trackRecommendationInteraction(userId, dto.targetId);
+      }
+
       return saved;
     } catch (error) {
       if (error.code === 11000) {
@@ -153,5 +164,17 @@ export class SaveService {
       targetId: new Types.ObjectId(targetId),
       type,
     });
+  }
+
+  private async trackRecommendationInteraction(userId: string, postId: string): Promise<void> {
+    try {
+      await this.recommendationInteractionService.trackInteraction(
+        userId,
+        postId,
+        PostInteractionType.SAVE,
+      );
+    } catch (error) {
+      this.logger.warn(`Không thể ghi nhận recommendation interaction cho save post: ${error.message}`);
+    }
   }
 }

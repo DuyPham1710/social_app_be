@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { CreateReactPostDto } from './dto/create-react-post.dto';
@@ -10,13 +10,18 @@ import { EmojiResponseDto } from '../emoji/dto/emoji_response.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { BaseReactionService } from '../reaction/base-reaction.service';
 import { Reaction, ReactionDocument } from '../reaction/schemas/reaction.schema';
+import { RecommendationInteractionService } from 'src/recommendations/services/recommendation-interaction.service';
+import { PostInteractionType } from 'src/common/enums/post-interaction-type.enum';
 
 @Injectable()
 export class ReactPostService extends BaseReactionService {
+  private readonly logger = new Logger(ReactPostService.name);
+
   constructor(
     @InjectModel(Reaction.name)
     reactionModel: Model<ReactionDocument>,
     eventEmitter: EventEmitter2,
+    private readonly recommendationInteractionService: RecommendationInteractionService,
   ) {
     super(reactionModel, eventEmitter);
   }
@@ -40,6 +45,10 @@ export class ReactPostService extends BaseReactionService {
           username: result.userId['username'],
         }
       });
+    }
+
+    if (!isDeleted) {
+      await this.trackRecommendationInteraction(userId, postId);
     }
 
     const mapped = this.mapToTargetField(result);
@@ -66,7 +75,9 @@ export class ReactPostService extends BaseReactionService {
 
   //Cập nhật emoji
   async update(userId: string, postId: string, dto: UpdateReactPostDto) {
-    return this.updateReaction(userId, postId, dto.emojiId);
+    const updated = await this.updateReaction(userId, postId, dto.emojiId);
+    await this.trackRecommendationInteraction(userId, postId);
+    return updated;
   }
 
   //xóa react
@@ -110,5 +121,17 @@ export class ReactPostService extends BaseReactionService {
       .exec();
 
     return reactions || [];
+  }
+
+  private async trackRecommendationInteraction(userId: string, postId: string): Promise<void> {
+    try {
+      await this.recommendationInteractionService.trackInteraction(
+        userId,
+        postId,
+        PostInteractionType.REACT,
+      );
+    } catch (error) {
+      this.logger.warn(`Không thể ghi nhận recommendation interaction cho react post: ${error.message}`);
+    }
   }
 }

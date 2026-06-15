@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Comment, CommentDocument } from './schemas/comment.schema';
@@ -8,14 +8,19 @@ import { NotificationType } from 'src/shared/enums/notification_type';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { AppEvents } from 'src/shared/enums/app-events.enum';
 import { TextModerationService } from 'src/shared/services/text-moderation.service';
+import { RecommendationInteractionService } from 'src/recommendations/services/recommendation-interaction.service';
+import { PostInteractionType } from 'src/common/enums/post-interaction-type.enum';
 
 @Injectable()
 export class CommentService {
+    private readonly logger = new Logger(CommentService.name);
+
     constructor(
         @InjectModel(Comment.name) private readonly commentModel: Model<CommentDocument>,
         @InjectModel(CommentLog.name) private readonly commentLogModel: Model<CommentLogDocument>,
         private eventEmitter: EventEmitter2,
         private readonly textModerationService: TextModerationService,
+        private readonly recommendationInteractionService: RecommendationInteractionService,
     ) { }
 
     async checkCommentContent(content: string) {
@@ -49,6 +54,8 @@ export class CommentService {
         });
 
         const saved = await comment.save();
+        await this.trackRecommendationInteraction(userId, postId.toString());
+
         const [post] = await this.eventEmitter.emitAsync(AppEvents.POST_GET_USER_ID, { postId: createCommentDto.postId });
         const postOwnerId = post?.userId;
         const populated = await saved.populate([
@@ -113,6 +120,18 @@ export class CommentService {
             }
         }
         return populated;
+    }
+
+    private async trackRecommendationInteraction(userId: string, postId: string): Promise<void> {
+        try {
+            await this.recommendationInteractionService.trackInteraction(
+                userId,
+                postId,
+                PostInteractionType.COMMENT,
+            );
+        } catch (error) {
+            this.logger.warn(`Không thể ghi nhận recommendation interaction cho comment: ${error.message}`);
+        }
     }
 
     async update(commentId: string, content: string, userId: string) {

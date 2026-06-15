@@ -11,7 +11,7 @@ import { ReportPostDto } from './dto/report-post.dto';
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('post')
+@Controller(['post', 'posts'])
 export class PostController {
   constructor(private readonly postService: PostService) { }
 
@@ -62,7 +62,7 @@ export class PostController {
     @Query('limit') limit: number = 10,
   ) {
     const viewerId = req.user.userId;
-    return this.postService.getAllPostsHomePage(viewerId, Number(page), Number(limit));
+    return this.postService.getAllPostsHomePage(viewerId, Number(page), 10);
   }
 
   @Post()

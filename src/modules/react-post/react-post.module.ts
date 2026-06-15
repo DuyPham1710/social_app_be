@@ -2,9 +2,10 @@ import { Module } from '@nestjs/common';
 import { ReactPostController } from './react-post.controller';
 import { ReactPostService } from './react-post.service';
 import { ReactionModule } from '../reaction/reaction.module';
+import { RecommendationsModule } from 'src/recommendations/recommendations.module';
 
 @Module({
-  imports: [ReactionModule],
+  imports: [ReactionModule, RecommendationsModule],
   controllers: [ReactPostController],
   providers: [ReactPostService],
   exports: [ReactPostService],

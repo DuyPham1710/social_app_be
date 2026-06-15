@@ -25,6 +25,7 @@ import { SharedModule } from './shared/shared.module';
 import { ReactionModule } from './modules/reaction/reaction.module';
 import { SaveModule } from './modules/save/save.module';
 import { CommunityModule } from './modules/community/community.module';
+import { RecommendationsModule } from './recommendations/recommendations.module';
 
 
 
@@ -56,6 +57,7 @@ import { CommunityModule } from './modules/community/community.module';
     ReactionModule,
     SaveModule,
     CommunityModule,
+    RecommendationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

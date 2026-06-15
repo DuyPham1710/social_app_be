@@ -1,6 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { PrivacyBase } from 'src/common/base/privacy.base';
+import { PostCategory } from 'src/common/enums/post-category.enum';
+import { PostCategorySource } from 'src/common/enums/post-category-source.enum';
 import { LayoutType } from 'src/shared/enums/layout_type';
 import { PrivacyType } from 'src/shared/enums/privacy_type';
 
@@ -17,6 +19,28 @@ export class Post extends PrivacyBase {
     _id: Types.ObjectId;
     @Prop()
     caption: string;
+
+    @Prop({
+        type: String,
+        enum: Object.values(PostCategory),
+        default: null,
+        select: false,
+    })
+    category?: PostCategory | null;
+
+    @Prop({ type: Number, default: 0, select: false })
+    categoryConfidence: number;
+
+    @Prop({
+        type: String,
+        enum: Object.values(PostCategorySource),
+        default: PostCategorySource.NONE,
+        select: false,
+    })
+    categorySource: PostCategorySource;
+
+    @Prop({ type: Boolean, default: false, select: false })
+    isRecommendable: boolean;
 
     @Prop({ type: Types.ObjectId, ref: 'User', required: true })
     userId: Types.ObjectId;
@@ -75,3 +99,7 @@ PostSchema.index({ communityId: 1, communityStatus: 1 });
 PostSchema.index({ taggedUserIds: 1 });
 // Index cho visible on profile tagged users
 PostSchema.index({ visibleOnProfileUserIds: 1 });
+// Indexes cho recommendation feed
+PostSchema.index({ category: 1, createdAt: -1 });
+PostSchema.index({ userId: 1, createdAt: -1 });
+PostSchema.index({ isRecommendable: 1, category: 1, createdAt: -1 });
