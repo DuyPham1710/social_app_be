@@ -13,6 +13,7 @@ export enum AppEvents {
     USER_VALIDATE_BY_EMAIL = 'user.validateByEmail',
     USER_CHECK_EXISTS = 'user.checkExists',
     USER_GET_BASIC_INFO = 'user.getBasicInfo',
+    USER_HARD_DELETE = 'user.hardDelete',
 
     // ===== MAIL =====
     MAIL_SEND = 'mail.send',

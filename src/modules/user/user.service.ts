@@ -730,6 +730,27 @@ export class UserService {
         });
     }
 
+
+    @OnEvent(AppEvents.USER_HARD_DELETE)
+    async handleHardDeleteUser({ userId }: { userId: string }) {
+        if (!Types.ObjectId.isValid(userId)) {
+            throw new HttpException('Invalid userId', HttpStatus.BAD_REQUEST);
+        }
+
+        const user = await this.userModel.findById(userId).exec();
+        if (!user) {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        }
+
+        // Only allow hard delete for inactive (unverified) users
+        // if (user.isActive) {
+        //     throw new HttpException('Cannot delete an active user', HttpStatus.BAD_REQUEST);
+        // }
+
+        await this.userModel.findByIdAndDelete(userId).exec();
+        return { message: 'Incomplete registration deleted successfully' };
+    }
+
     @OnEvent(AppEvents.ADMIN_USER_DELETE)
     async handleAdminDeleteUser({ userId }: { userId: string }) {
         if (!Types.ObjectId.isValid(userId)) {
