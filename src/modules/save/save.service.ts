@@ -10,7 +10,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AppEvents } from '../../shared/enums/app-events.enum';
 import { Saved, SaveDocument } from './schemas/saved.schema';
 import { CreateSaveDto } from './dto/create-save.dto';
-import { RecommendationInteractionService } from 'src/recommendations/services/recommendation-interaction.service';
+import { RecommendationInteractionService } from 'src/modules/recommendations/services/recommendation-interaction.service';
 import { PostInteractionType } from 'src/common/enums/post-interaction-type.enum';
 
 @Injectable()
@@ -70,7 +70,12 @@ export class SaveService {
     collection?: string,
     page: number = 1,
     limit: number = 20,
-  ): Promise<{ data: SaveDocument[]; total: number; page: number; limit: number }> {
+  ): Promise<{
+    data: SaveDocument[];
+    total: number;
+    page: number;
+    limit: number;
+  }> {
     const filter: any = { userId: new Types.ObjectId(userId) };
 
     if (type) {
@@ -106,8 +111,12 @@ export class SaveService {
               itemObj.authorId = postResult.userId.userId;
               itemObj.authorName = postResult.userId.fullName;
               itemObj.authorAvatar = postResult.userId.avatarUrl;
-              
-              if (postResult.urls && postResult.urls.length > 0 && typeof postResult.urls[0] === 'object') {
+
+              if (
+                postResult.urls &&
+                postResult.urls.length > 0 &&
+                typeof postResult.urls[0] === 'object'
+              ) {
                 itemObj.content = postResult.urls[0].url;
               } else if (postResult.caption) {
                 itemObj.content = postResult.caption;
@@ -119,7 +128,9 @@ export class SaveService {
               { commentId: itemObj.targetId.toString() },
             );
             if (commentResult && commentResult.userId) {
-              itemObj.authorId = commentResult.userId._id?.toString() || commentResult.userId.userId;
+              itemObj.authorId =
+                commentResult.userId._id?.toString() ||
+                commentResult.userId.userId;
               itemObj.authorName = commentResult.userId.fullName;
               itemObj.authorAvatar = commentResult.userId.avatarUrl;
               itemObj.content = commentResult.content;
@@ -130,12 +141,13 @@ export class SaveService {
               { storyId: itemObj.targetId.toString() },
             );
             if (reelResult && reelResult.userId) {
-               itemObj.authorId = reelResult.userId._id?.toString() || reelResult.userId.userId;
-               itemObj.authorName = reelResult.userId.fullName;
-               itemObj.authorAvatar = reelResult.userId.avatarUrl;
-               if (reelResult.url) {
-                 itemObj.content = reelResult.url;
-               }
+              itemObj.authorId =
+                reelResult.userId._id?.toString() || reelResult.userId.userId;
+              itemObj.authorName = reelResult.userId.fullName;
+              itemObj.authorAvatar = reelResult.userId.avatarUrl;
+              if (reelResult.url) {
+                itemObj.content = reelResult.url;
+              }
             }
           }
         } catch (e) {
@@ -149,7 +161,11 @@ export class SaveService {
   }
 
   // Kiểm tra user đã lưu mục này chưa
-  async isSaved(userId: string, targetId: string, type: string): Promise<boolean> {
+  async isSaved(
+    userId: string,
+    targetId: string,
+    type: string,
+  ): Promise<boolean> {
     const exists = await this.saveModel.exists({
       userId: new Types.ObjectId(userId),
       targetId: new Types.ObjectId(targetId),
@@ -166,7 +182,10 @@ export class SaveService {
     });
   }
 
-  private async trackRecommendationInteraction(userId: string, postId: string): Promise<void> {
+  private async trackRecommendationInteraction(
+    userId: string,
+    postId: string,
+  ): Promise<void> {
     try {
       await this.recommendationInteractionService.trackInteraction(
         userId,
@@ -174,7 +193,9 @@ export class SaveService {
         PostInteractionType.SAVE,
       );
     } catch (error) {
-      this.logger.warn(`Không thể ghi nhận recommendation interaction cho save post: ${error.message}`);
+      this.logger.warn(
+        `Không thể ghi nhận recommendation interaction cho save post: ${error.message}`,
+      );
     }
   }
 }

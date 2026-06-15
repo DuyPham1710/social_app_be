@@ -5,7 +5,7 @@ import { Comment, CommentSchema } from './schemas/comment.schema';
 import { CommentLog, CommentLogSchema } from './schemas/comment-log.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { NotificationModule } from '../notification/notification.module';
-import { RecommendationsModule } from 'src/recommendations/recommendations.module';
+import { RecommendationsModule } from 'src/modules/recommendations/recommendations.module';
 
 @Module({
   imports: [

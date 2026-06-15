@@ -1,14 +1,14 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
-import { FilterQuery, Model, Types } from 'mongoose';
+import { FilterQuery, Model, PipelineStage, Types } from 'mongoose';
 import { PostCategory } from 'src/common/enums/post-category.enum';
 import { PostViewSource } from 'src/common/enums/post-view-source.enum';
 import { isMongoDuplicateKeyError } from 'src/common/utils/mongo-duplicate-key.util';
 import { shuffle } from 'src/common/utils/shuffle.util';
 import { Post, PostDocument } from 'src/modules/post/schemas/post.schema';
-import { PrivacyType } from 'src/shared/enums/privacy_type';
 import { AppEvents } from 'src/shared/enums/app-events.enum';
+import { PrivacyType } from 'src/shared/enums/privacy_type';
 import { GetRecommendationFeedQueryDto } from '../dto/get-recommendation-feed-query.dto';
 import {
   UserCategoryPreference,
@@ -65,55 +65,42 @@ export class RecommendationFeedService {
       `[recommend-feed] start userId=${userId}, page=${page}, limit=${limit}, userPostViewCollection=${this.userPostViewModel.collection.name}`,
     );
 
-    const [topCategories, viewedPostIds, friendIds] = await Promise.all([
+    const [topCategories, friendIds] = await Promise.all([
       this.getTopCategories(userObjectId),
-      this.getViewedPostIds(userObjectId),
-      this.getFriendIds(userId),
+      this.getFriendIds(userObjectId),
     ]);
 
     const strategy: RecommendationStrategy =
       topCategories.length > 0 ? 'personalized' : 'cold_start';
     const counts = this.getStrategyCounts(strategy, limit);
-    const viewedObjectIds = viewedPostIds.map((id) => new Types.ObjectId(id));
     const friendObjectIds = friendIds.map((id) => new Types.ObjectId(id));
 
     this.logger.log(
-      `[recommend-feed] context userId=${userId}, strategy=${strategy}, topCategories=${topCategories.join(',') || 'none'}, viewedCount=${viewedPostIds.length}, friendCount=${friendIds.length}, counts=${JSON.stringify(counts)}`,
+      `[recommend-feed] context userId=${userId}, strategy=${strategy}, topCategories=${topCategories.join(',') || 'none'}, friendCount=${friendIds.length}, counts=${JSON.stringify(counts)}`,
     );
 
     const [recommendedPosts, friendPosts, explorePosts] = await Promise.all([
       this.fetchRecommendedPosts(
         userObjectId,
         topCategories,
-        viewedObjectIds,
         counts.recommendedCount,
         strategy,
       ),
-      this.fetchFriendPosts(
-        userObjectId,
-        friendObjectIds,
-        viewedObjectIds,
-        counts.friendCount,
-      ),
+      this.fetchFriendPosts(userObjectId, friendObjectIds, counts.friendCount),
       this.fetchExplorePosts(
         userObjectId,
         topCategories,
-        viewedObjectIds,
         counts.exploreCount,
         strategy,
       ),
     ]);
 
-    const visibleFriendPosts = await this.filterVisiblePosts(
-      friendPosts,
-      userId,
-    );
     let mergedPosts = this.dedupePosts([
       ...recommendedPosts.map((post) => ({
         post,
         source: PostViewSource.RECOMMENDATION,
       })),
-      ...visibleFriendPosts.map((post) => ({
+      ...friendPosts.map((post) => ({
         post,
         source: PostViewSource.FRIEND,
       })),
@@ -121,7 +108,7 @@ export class RecommendationFeedService {
     ]);
 
     this.logger.log(
-      `[recommend-feed] fetched userId=${userId}, recommended=${recommendedPosts.length}, friendRaw=${friendPosts.length}, friendVisible=${visibleFriendPosts.length}, explore=${explorePosts.length}, mergedBeforeShuffle=${mergedPosts.length}`,
+      `[recommend-feed] fetched userId=${userId}, recommended=${recommendedPosts.length}, friend=${friendPosts.length}, explore=${explorePosts.length}, mergedBeforeShuffle=${mergedPosts.length}`,
     );
 
     mergedPosts = shuffle(mergedPosts).slice(0, limit);
@@ -130,10 +117,8 @@ export class RecommendationFeedService {
       const additionalPosts = await this.fetchAdditionalPosts({
         userObjectId,
         friendObjectIds,
-        viewedObjectIds,
         existingPostIds: mergedPosts.map(({ post }) => post._id.toString()),
         limit: limit - mergedPosts.length,
-        viewerId: userId,
       });
 
       mergedPosts = this.dedupePosts([
@@ -192,27 +177,16 @@ export class RecommendationFeedService {
     return preferences.map((preference) => preference.category);
   }
 
-  private async getViewedPostIds(userId: Types.ObjectId): Promise<string[]> {
-    const views = await this.userPostViewModel
-      .find({ userId })
-      .select('postId')
-      .lean()
-      .exec();
-
-    return views.map((view) => view.postId.toString());
-  }
-
-  private async getFriendIds(userId: string): Promise<string[]> {
+  private async getFriendIds(userId: Types.ObjectId): Promise<string[]> {
     try {
-      const [friends] = await this.eventEmitter.emitAsync(
-        AppEvents.FRIENDS_GET,
-        { userId },
+      const [friendIds] = await this.eventEmitter.emitAsync(
+        AppEvents.FRIEND_IDS_GET,
+        { userId: userId.toString() },
       );
-      return (friends || [])
-        .map((friend: any) => friend?._id?.toString())
-        .filter(
-          (id: string | undefined) => id && Types.ObjectId.isValid(id),
-        ) as string[];
+
+      return (friendIds || []).filter((id: string | undefined) =>
+        Boolean(id && Types.ObjectId.isValid(id)),
+      );
     } catch {
       return [];
     }
@@ -248,7 +222,6 @@ export class RecommendationFeedService {
   private fetchRecommendedPosts(
     userObjectId: Types.ObjectId,
     topCategories: PostCategory[],
-    viewedPostIds: Types.ObjectId[],
     limit: number,
     strategy: RecommendationStrategy,
   ): Promise<any[]> {
@@ -259,7 +232,6 @@ export class RecommendationFeedService {
     const filter: FilterQuery<PostDocument> = {
       isRecommendable: true,
       userId: { $ne: userObjectId },
-      _id: { $nin: viewedPostIds },
       isHidden: { $ne: true },
       privacy_type: PrivacyType.PUBLIC,
     };
@@ -268,13 +240,12 @@ export class RecommendationFeedService {
       filter.category = { $in: topCategories };
     }
 
-    return this.fetchPosts(filter, limit);
+    return this.fetchPosts(filter, limit, userObjectId);
   }
 
   private fetchFriendPosts(
     userObjectId: Types.ObjectId,
     friendObjectIds: Types.ObjectId[],
-    viewedPostIds: Types.ObjectId[],
     limit: number,
   ): Promise<any[]> {
     if (limit <= 0 || friendObjectIds.length === 0) {
@@ -283,18 +254,22 @@ export class RecommendationFeedService {
 
     return this.fetchPosts(
       {
-        userId: { $in: friendObjectIds, $ne: userObjectId },
-        _id: { $nin: viewedPostIds },
-        isHidden: { $ne: true },
+        $and: [
+          {
+            userId: { $in: friendObjectIds, $ne: userObjectId },
+            isHidden: { $ne: true },
+          },
+          this.buildVisiblePostFilter(userObjectId, friendObjectIds),
+        ],
       },
-      Math.max(limit * 2, limit),
-    ).then((posts) => posts.slice(0, limit));
+      limit,
+      userObjectId,
+    );
   }
 
   private fetchExplorePosts(
     userObjectId: Types.ObjectId,
     topCategories: PostCategory[],
-    viewedPostIds: Types.ObjectId[],
     limit: number,
     strategy: RecommendationStrategy,
   ): Promise<any[]> {
@@ -305,7 +280,6 @@ export class RecommendationFeedService {
     const filter: FilterQuery<PostDocument> = {
       isRecommendable: true,
       userId: { $ne: userObjectId },
-      _id: { $nin: viewedPostIds },
       isHidden: { $ne: true },
       privacy_type: PrivacyType.PUBLIC,
     };
@@ -314,45 +288,52 @@ export class RecommendationFeedService {
       filter.category = { $nin: topCategories };
     }
 
-    return this.fetchPosts(filter, limit);
+    return this.fetchPosts(filter, limit, userObjectId);
   }
 
   private async fetchAdditionalPosts(params: {
     userObjectId: Types.ObjectId;
     friendObjectIds: Types.ObjectId[];
-    viewedObjectIds: Types.ObjectId[];
     existingPostIds: string[];
     limit: number;
-    viewerId: string;
   }): Promise<SourcedPost[]> {
     if (params.limit <= 0) {
       return [];
     }
 
-    const excludedPostIds = [
-      ...params.viewedObjectIds,
-      ...params.existingPostIds.map((id) => new Types.ObjectId(id)),
-    ];
+    const excludedPostIds = params.existingPostIds.map(
+      (id) => new Types.ObjectId(id),
+    );
 
     const posts = await this.fetchPosts(
       {
-        userId: { $ne: params.userObjectId },
-        _id: { $nin: excludedPostIds },
-        isHidden: { $ne: true },
-        $or: [
-          { privacy_type: PrivacyType.PUBLIC },
-          { userId: { $in: params.friendObjectIds } },
+        $and: [
+          {
+            userId: { $ne: params.userObjectId },
+            _id: { $nin: excludedPostIds },
+            isHidden: { $ne: true },
+          },
+          {
+            $or: [
+              { privacy_type: PrivacyType.PUBLIC },
+              { userId: { $in: params.friendObjectIds } },
+            ],
+          },
+          this.buildVisiblePostFilter(
+            params.userObjectId,
+            params.friendObjectIds,
+          ),
         ],
       },
-      Math.max(params.limit * 3, params.limit),
+      params.limit,
+      params.userObjectId,
     );
 
-    const visiblePosts = await this.filterVisiblePosts(posts, params.viewerId);
     const friendIdSet = new Set(
       params.friendObjectIds.map((id) => id.toString()),
     );
 
-    return visiblePosts.slice(0, params.limit).map((post) => ({
+    return posts.map((post) => ({
       post,
       source: friendIdSet.has(
         post.userId?._id?.toString?.() || post.userId?.toString?.(),
@@ -365,46 +346,86 @@ export class RecommendationFeedService {
   private fetchPosts(
     filter: FilterQuery<PostDocument>,
     limit: number,
+    viewerObjectId: Types.ObjectId,
   ): Promise<any[]> {
     if (limit <= 0) {
       return Promise.resolve([]);
     }
 
+    const pipeline: PipelineStage[] = [
+      { $match: filter as any },
+      ...this.buildNotViewedStages(viewerObjectId),
+      { $sort: { createdAt: -1 } },
+      { $limit: limit },
+    ];
+
     return this.postModel
-      .find(filter)
-      .sort({ createdAt: -1 })
-      .limit(limit)
-      .populate('userId', 'username fullName avatarUrl')
-      .populate('taggedUserIds', 'username fullName avatarUrl')
-      .populate('communityId', 'name avatar')
-      .populate({ path: 'urls', options: { sort: { order: 1 } } })
-      .lean()
-      .exec();
+      .aggregate(pipeline)
+      .exec()
+      .then((posts) => this.populatePosts(posts));
   }
 
-  private async filterVisiblePosts(
-    posts: any[],
-    viewerId: string,
-  ): Promise<any[]> {
-    const visiblePosts = await Promise.all(
-      posts.map(async (post) => {
-        try {
-          const [canView] = await this.eventEmitter.emitAsync(
-            AppEvents.POST_CAN_VIEW,
+  private populatePosts(posts: any[]): Promise<any[]> {
+    return this.postModel.populate(posts, [
+      { path: 'userId', select: 'username fullName avatarUrl' },
+      { path: 'taggedUserIds', select: 'username fullName avatarUrl' },
+      { path: 'communityId', select: 'name avatar' },
+      { path: 'urls', options: { sort: { order: 1 } } },
+    ]);
+  }
+
+  private buildNotViewedStages(
+    viewerObjectId: Types.ObjectId,
+  ): PipelineStage[] {
+    return [
+      {
+        $lookup: {
+          from: this.userPostViewModel.collection.name,
+          let: { postId: '$_id' },
+          pipeline: [
             {
-              postId: post._id.toString(),
-              viewerId,
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$userId', viewerObjectId] },
+                    { $eq: ['$postId', '$$postId'] },
+                  ],
+                },
+              },
             },
-          );
+            { $limit: 1 },
+          ],
+          as: 'viewedByUser',
+        },
+      },
+      { $match: { viewedByUser: { $eq: [] } } },
+      { $project: { viewedByUser: 0 } },
+    ];
+  }
 
-          return canView ? post : null;
-        } catch {
-          return null;
-        }
-      }),
-    );
-
-    return visiblePosts.filter(Boolean);
+  private buildVisiblePostFilter(
+    viewerObjectId: Types.ObjectId,
+    friendObjectIds: Types.ObjectId[],
+  ): FilterQuery<PostDocument> {
+    return {
+      $or: [
+        { privacy_type: PrivacyType.PUBLIC },
+        { userId: viewerObjectId },
+        {
+          privacy_type: PrivacyType.FRIENDS,
+          userId: { $in: friendObjectIds },
+        },
+        {
+          privacy_type: PrivacyType.FRIENDS_EXCEPT,
+          userId: { $in: friendObjectIds },
+          friends_except: { $nin: [viewerObjectId] },
+        },
+        {
+          privacy_type: PrivacyType.FRIENDS_DETAIL,
+          friends_detail: viewerObjectId,
+        },
+      ],
+    };
   }
 
   private dedupePosts(posts: SourcedPost[]): SourcedPost[] {

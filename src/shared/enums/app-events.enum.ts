@@ -22,6 +22,7 @@ export enum AppEvents {
 
     // ===== FRIENDS =====
     FRIENDS_GET = 'friends.get',
+    FRIEND_IDS_GET = 'friends.getIds',
     GET_FRIENDS = 'get.friends',
     CHECK_FRIEND_RELATIONSHIP = 'check.friendRelationship',
     USER_AGGREGATE = 'user.aggregate',

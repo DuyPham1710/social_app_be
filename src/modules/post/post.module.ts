@@ -8,7 +8,7 @@ import { PostReport, PostReportSchema } from './schemas/post-report.schema';
 import { PostView, PostViewSchema } from './schemas/post-view.schema';
 import { NotificationModule } from '../notification/notification.module';
 import { GoogleTranslationService } from 'src/shared/translation/google-translation.service';
-import { RecommendationsModule } from 'src/recommendations/recommendations.module';
+import { RecommendationsModule } from 'src/modules/recommendations/recommendations.module';
 
 @Module({
   controllers: [PostController],
@@ -25,4 +25,4 @@ import { RecommendationsModule } from 'src/recommendations/recommendations.modul
   ],
   exports: [PostService],
 })
-export class PostModule { }
+export class PostModule {}

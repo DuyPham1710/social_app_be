@@ -12,7 +12,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Post, PostDocument } from './schemas/post.schema';
 import { PostUrl, PostUrlDocument } from './schemas/post-url.schema';
 import { PostView, PostViewDocument } from './schemas/post-view.schema';
-import { Model, Types } from 'mongoose';
+import { Model, PipelineStage, Types } from 'mongoose';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { UpdatePrivacyDto } from 'src/common/dto/update-privacy.dto';
@@ -40,11 +40,11 @@ import { CommunityPostStatus } from './schemas/post.schema';
 import {
   PostCategoryClassifierService,
   PostCategoryClassificationResult,
-} from 'src/recommendations/services/post-category-classifier.service';
+} from 'src/modules/recommendations/services/post-category-classifier.service';
 import { PostCategorySource } from 'src/common/enums/post-category-source.enum';
-import { RecommendationInteractionService } from 'src/recommendations/services/recommendation-interaction.service';
+import { RecommendationInteractionService } from 'src/modules/recommendations/services/recommendation-interaction.service';
 import { PostInteractionType } from 'src/common/enums/post-interaction-type.enum';
-import { RECOMMENDATION_FEED_GET_EVENT } from 'src/recommendations/services/recommendation-feed.service';
+import { RECOMMENDATION_FEED_GET_EVENT } from 'src/modules/recommendations/services/recommendation-feed.service';
 
 @Injectable()
 export class PostService {
@@ -260,49 +260,52 @@ export class PostService {
 
     const ownerObjectId = new Types.ObjectId(ownerId);
 
+    const viewerObjectId = new Types.ObjectId(effectiveViewerId);
+    const isOwnProfile = ownerId === effectiveViewerId;
     const query = {
       $or: [
         { userId: ownerObjectId },
         { visibleOnProfileUserIds: ownerObjectId },
       ],
       isHidden: { $ne: true },
+      communityId: null,
+    };
+    const visibilityStages = this.buildProfilePostVisibilityStages(
+      viewerObjectId,
+      isOwnProfile,
+    );
+    const hiddenRecommendationFieldsProjection = {
+      category: 0,
+      categoryConfidence: 0,
+      categorySource: 0,
+      isRecommendable: 0,
+      viewerFriendship: 0,
     };
 
-    const totalPosts = await this.postModel.countDocuments(query);
+    const [rawPosts, countResult] = await Promise.all([
+      this.postModel
+        .aggregate([
+          { $match: query },
+          ...visibilityStages,
+          { $project: hiddenRecommendationFieldsProjection },
+          { $sort: { createdAt: -1 } },
+          { $skip: skip },
+          { $limit: limit },
+        ] as PipelineStage[])
+        .exec(),
+      this.postModel
+        .aggregate([
+          { $match: query },
+          ...visibilityStages,
+          { $count: 'total' },
+        ] as PipelineStage[])
+        .exec(),
+    ]);
 
-    const posts = await this.postModel
-      .find(query)
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .populate('userId', 'username fullName avatarUrl')
-      .populate('taggedUserIds', 'username fullName avatarUrl')
-      .populate('communityId', 'name avatar')
-      .populate({
-        path: 'urls',
-        options: { sort: { order: 1 } }, // sort ảnh theo order
-      })
-      .lean()
-      .exec();
+    const totalPosts = countResult[0]?.total ?? 0;
+    const posts = await this.populateProfilePosts(rawPosts);
 
-    // lọc theo quyền riêng tư
-    // nếu ownerId === viewerId thì ko cần lọc
-    let filteredPosts = posts;
-    if (ownerId !== effectiveViewerId) {
-      filteredPosts = (
-        await Promise.all(
-          posts.map(async (post) => {
-            const canView = await this.canUserViewPost(
-              post._id.toString(),
-              effectiveViewerId,
-            );
-            return canView ? post : null;
-          }),
-        )
-      ).filter((p) => p !== null);
-    }
-
-    filteredPosts = filteredPosts.map((post: any) => {
+    const filteredPosts = posts.map((post: any) => {
       if (
         post &&
         post.userId &&
@@ -327,7 +330,7 @@ export class PostService {
       return post;
     });
 
-    const hasNext = skip + filteredPosts.length < totalPosts;
+    const hasNext = skip + posts.length < totalPosts;
 
     // Lấy danh sách react của từng post thông qua event emitter
     const [reactsMap] = await this.eventEmitter.emitAsync(
@@ -356,6 +359,68 @@ export class PostService {
       total: postsWithReacts.length,
       hasNext,
     };
+  }
+
+  private buildProfilePostVisibilityStages(
+    viewerObjectId: Types.ObjectId,
+    isOwnProfile: boolean,
+  ): PipelineStage[] {
+    if (isOwnProfile) {
+      return [];
+    }
+
+    return [
+      {
+        $lookup: {
+          from: 'friends',
+          let: { authorId: '$userId' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$user_id', '$$authorId'] },
+                    { $eq: ['$friend_id', viewerObjectId] },
+                  ],
+                },
+              },
+            },
+            { $limit: 1 },
+          ],
+          as: 'viewerFriendship',
+        },
+      },
+      {
+        $match: {
+          $or: [
+            { privacy_type: PrivacyType.PUBLIC },
+            { userId: viewerObjectId },
+            {
+              privacy_type: PrivacyType.FRIENDS,
+              viewerFriendship: { $ne: [] },
+            },
+            {
+              privacy_type: PrivacyType.FRIENDS_EXCEPT,
+              viewerFriendship: { $ne: [] },
+              friends_except: { $nin: [viewerObjectId] },
+            },
+            {
+              privacy_type: PrivacyType.FRIENDS_DETAIL,
+              friends_detail: viewerObjectId,
+            },
+          ],
+        },
+      },
+    ];
+  }
+
+  private populateProfilePosts(posts: any[]): Promise<any[]> {
+    return this.postModel.populate(posts, [
+      { path: 'userId', select: 'username fullName avatarUrl' },
+      { path: 'taggedUserIds', select: 'username fullName avatarUrl' },
+      { path: 'communityId', select: 'name avatar' },
+      { path: 'urls', options: { sort: { order: 1 } } },
+    ]);
   }
 
   async getUserCommunityPosts(

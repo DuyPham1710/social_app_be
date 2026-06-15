@@ -9,8 +9,11 @@ import { AppEvents } from 'src/shared/enums/app-events.enum';
 import { EmojiResponseDto } from '../emoji/dto/emoji_response.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { BaseReactionService } from '../reaction/base-reaction.service';
-import { Reaction, ReactionDocument } from '../reaction/schemas/reaction.schema';
-import { RecommendationInteractionService } from 'src/recommendations/services/recommendation-interaction.service';
+import {
+  Reaction,
+  ReactionDocument,
+} from '../reaction/schemas/reaction.schema';
+import { RecommendationInteractionService } from 'src/modules/recommendations/services/recommendation-interaction.service';
 import { PostInteractionType } from 'src/common/enums/post-interaction-type.enum';
 
 @Injectable()
@@ -26,13 +29,21 @@ export class ReactPostService extends BaseReactionService {
     super(reactionModel, eventEmitter);
   }
 
-  protected get targetIdField(): string { return 'postId'; }
-  protected get reactionType(): string { return 'post'; }
+  protected get targetIdField(): string {
+    return 'postId';
+  }
+  protected get reactionType(): string {
+    return 'post';
+  }
 
   //Thêm hoặc đổi emoji
   async createOrUpdate(userId: string, dto: CreateReactPostDto) {
     const { postId, emojiId } = dto;
-    const { result, isDeleted } = await this.createOrUpdateReaction(userId, postId, emojiId);
+    const { result, isDeleted } = await this.createOrUpdateReaction(
+      userId,
+      postId,
+      emojiId,
+    );
 
     if (!isDeleted) {
       this.eventEmitter.emit('react.created', {
@@ -43,7 +54,7 @@ export class ReactPostService extends BaseReactionService {
         user: {
           fullName: result.userId['fullName'],
           username: result.userId['username'],
-        }
+        },
       });
     }
 
@@ -56,7 +67,10 @@ export class ReactPostService extends BaseReactionService {
   }
 
   //Lấy người dùng react bài post, kèm số bạn chung (nếu có viewerId)
-  async findByPost(postId: string, viewerId?: string): Promise<ReactPostResponseDto[]> {
+  async findByPost(
+    postId: string,
+    viewerId?: string,
+  ): Promise<ReactPostResponseDto[]> {
     const reacts = await this.findReactionsByTarget(postId);
     const mapped = this.mapManyToTargetField(reacts);
     let reactDtos = ReactPostResponseDto.fromReactPosts(mapped);
@@ -69,7 +83,10 @@ export class ReactPostService extends BaseReactionService {
   }
 
   //kiểm tra user hiện tại có react bài post không
-  async findUserReactOnPost(userId: string, postId: string): Promise<EmojiResponseDto | null> {
+  async findUserReactOnPost(
+    userId: string,
+    postId: string,
+  ): Promise<EmojiResponseDto | null> {
     return this.findUserReactionOnTarget(userId, postId);
   }
 
@@ -86,7 +103,7 @@ export class ReactPostService extends BaseReactionService {
   }
 
   @OnEvent(AppEvents.REACT_POST_GET)
-  async onGetReactsEvent(payload: { postIds: string[], viewerId?: string }) {
+  async onGetReactsEvent(payload: { postIds: string[]; viewerId?: string }) {
     return this.getReactionsMapForTargets(
       payload.postIds,
       payload.viewerId,
@@ -95,12 +112,15 @@ export class ReactPostService extends BaseReactionService {
   }
 
   @OnEvent(AppEvents.REACT_POST_FIND_BY_USER)
-  async onFindByUserEvent(payload: { userId: string, postIds: string[] }): Promise<{ [key: string]: EmojiResponseDto | null }> {
+  async onFindByUserEvent(payload: {
+    userId: string;
+    postIds: string[];
+  }): Promise<{ [key: string]: EmojiResponseDto | null }> {
     return this.findUserReactionsOnTargets(payload.userId, payload.postIds);
   }
 
   @OnEvent(AppEvents.REACT_POST_FIND_BY_POST)
-  async onFindByPostEvent(payload: { postId: string, viewerId?: string }) {
+  async onFindByPostEvent(payload: { postId: string; viewerId?: string }) {
     return this.findByPost(payload.postId, payload.viewerId);
   }
 
@@ -123,7 +143,10 @@ export class ReactPostService extends BaseReactionService {
     return reactions || [];
   }
 
-  private async trackRecommendationInteraction(userId: string, postId: string): Promise<void> {
+  private async trackRecommendationInteraction(
+    userId: string,
+    postId: string,
+  ): Promise<void> {
     try {
       await this.recommendationInteractionService.trackInteraction(
         userId,
@@ -131,7 +154,9 @@ export class ReactPostService extends BaseReactionService {
         PostInteractionType.REACT,
       );
     } catch (error) {
-      this.logger.warn(`Không thể ghi nhận recommendation interaction cho react post: ${error.message}`);
+      this.logger.warn(
+        `Không thể ghi nhận recommendation interaction cho react post: ${error.message}`,
+      );
     }
   }
 }
