@@ -85,6 +85,14 @@ export class User {
     // Timestamp when user last went offline (disconnect with no remaining sockets)
     @Prop({ type: Date })
     lastSeenAt?: Date;
+
+    @Prop({ type: Date })
+    otpExpiresAt?: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+UserSchema.index(
+    { otpExpiresAt: 1 },
+    { expireAfterSeconds: 0, partialFilterExpression: { isActive: false } }
+);

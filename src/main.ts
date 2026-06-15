@@ -25,15 +25,9 @@ async function bootstrap() {
   setupSwagger(app);
 
   app.enableCors({
-    origin: [
-      'https://www.commonshub.io.vn',
-      'https://commonshub.io.vn',
-      'http://localhost:3000',
-      'http://localhost:5173',
-    ],
-    credentials: false,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    origin: process.env.CORS_ORIGIN || '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
   });
 
   await app.listen(process.env.PORT ?? 3000);

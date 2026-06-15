@@ -104,4 +104,8 @@ export default class UpdateUserDto {
     @IsOptional()
     @IsDate()
     otpGeneratedTime?: Date;
+
+    @IsOptional()
+    @IsDate()
+    otpExpiresAt?: Date;
 }
