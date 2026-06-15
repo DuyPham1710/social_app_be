@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query } from '@nestjs/common';
 import { AppService } from './app.service';
 import { TextModerationService } from './shared/services/text-moderation.service';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import axios from 'axios';
 
 @ApiTags('Test API')
 @Controller()
@@ -14,6 +15,24 @@ export class AppController {
   @Get()
   getHello(): string {
     return this.appService.getHello();
+  }
+
+  @Get('deezer/chart')
+  async getDeezerChart() {
+    const response = await axios.get('https://api.deezer.com/chart');
+    return response.data;
+  }
+
+  @Get('deezer/search')
+  async searchDeezer(
+    @Query('q') q: string,
+    @Query('limit') limit: string,
+    @Query('index') index: string
+  ) {
+    const response = await axios.get(`https://api.deezer.com/search`, {
+      params: { q, limit, index }
+    });
+    return response.data;
   }
 
   @ApiOperation({ summary: 'Test kiểm duyệt nội dung (HuggingFace)' })

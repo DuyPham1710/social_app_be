@@ -12,3 +12,5 @@ services:
     volumes:
       - ./tmp:/app/tmp
       - /home/ubuntu/apps/social_app_be/firebase/serviceAccountKey.json:/app/firebase/serviceAccountKey.json:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

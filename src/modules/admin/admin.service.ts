@@ -17,6 +17,7 @@ export class AdminService {
     limit: number = 10,
     search?: string,
     isActive?: boolean,
+    isBan?: boolean,
     dateFrom?: Date,
     dateTo?: Date,
     nameInitial?: string,
@@ -26,6 +27,7 @@ export class AdminService {
       limit,
       search,
       isActive,
+      isBan,
       dateFrom,
       dateTo,
     });
@@ -395,6 +397,51 @@ export class AdminService {
     note?: string,
   ) {
     const [result] = await this.eventEmitter.emitAsync(AppEvents.ADMIN_POST_REPORT_BULK_UPDATE_STATUS, {
+      reportIds,
+      status,
+      note,
+    });
+    return result;
+  }
+
+  // ===== User Report Management Methods =====
+  async getUserReports(
+    page: number = 1,
+    limit: number = 10,
+    status?: 'pending' | 'reviewed' | 'rejected',
+  ) {
+    const [result] = await this.eventEmitter.emitAsync(AppEvents.ADMIN_USER_REPORT_GET_ALL, {
+      page,
+      limit,
+      status,
+    });
+    return result;
+  }
+
+  async getUserReportById(reportId: string) {
+    const [result] = await this.eventEmitter.emitAsync(AppEvents.ADMIN_USER_REPORT_GET_BY_ID, { reportId });
+    return result;
+  }
+
+  async updateUserReportStatus(
+    reportId: string,
+    status: 'pending' | 'reviewed' | 'rejected',
+    note?: string,
+  ) {
+    const [result] = await this.eventEmitter.emitAsync(AppEvents.ADMIN_USER_REPORT_UPDATE_STATUS, {
+      reportId,
+      status,
+      note,
+    });
+    return result;
+  }
+
+  async bulkUpdateUserReportStatus(
+    reportIds: string[],
+    status: 'pending' | 'reviewed' | 'rejected',
+    note?: string,
+  ) {
+    const [result] = await this.eventEmitter.emitAsync(AppEvents.ADMIN_USER_REPORT_BULK_UPDATE_STATUS, {
       reportIds,
       status,
       note,

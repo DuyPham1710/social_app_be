@@ -47,6 +47,8 @@ export class AuthService {
             password: hashedPassword,
             otp,
             otpGeneratedTime: new Date(),
+            status: "PENDING",
+            otpExpiresAt: new Date(Date.now() + 2 * 60 * 1000),
         });
 
         // Emit event để tạo privacy mặc định cho user mới
@@ -117,7 +119,8 @@ export class AuthService {
 
         const updateUser: UpdateUserDto = {
             otp: otp,
-            otpGeneratedTime: new Date()
+            otpGeneratedTime: new Date(),
+            otpExpiresAt: new Date(Date.now() + 2 * 60 * 1000)
         }
 
         await this.eventEmitter.emitAsync(AppEvents.USER_UPDATE, {
@@ -204,4 +207,9 @@ export class AuthService {
             user: userResponse
         };
     }
+    async deleteIncompleteRegistration(userId: string) {
+        const [result] = await this.eventEmitter.emitAsync(AppEvents.USER_HARD_DELETE, { userId });
+        return result;
+    }
+
 }

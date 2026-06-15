@@ -68,6 +68,11 @@ export class UpdateUserAdminDto {
   @IsBoolean()
   isActive?: boolean;
 
+  @ApiPropertyOptional({ example: false })
+  @IsOptional()
+  @IsBoolean()
+  isBan?: boolean;
+
   @ApiPropertyOptional({ example: UserRole.USER, enum: UserRole })
   @IsOptional()
   @IsString()

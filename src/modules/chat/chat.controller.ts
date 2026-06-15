@@ -18,7 +18,7 @@ import { SendMessageDto } from './dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { File } from 'multer';
 import { Response } from 'express';
-import { Get, Param } from '@nestjs/common';
+import { Get, Param, Query } from '@nestjs/common';
 import { Public } from 'src/common/decorators/public.decorator';
 
 @Controller('chat')
@@ -146,6 +146,26 @@ export class ChatController {
         } catch (error) {
             throw new HttpException(
                 error.message || 'Failed to summarize unread messages',
+                error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
+
+    @Post('message/:messageId/translate')
+    async translateMessage(
+        @Req() req: any,
+        @Param('messageId') messageId: string,
+        @Query('targetLang') targetLang: string = 'en',
+    ) {
+        try {
+            const userId = req.user.userId;
+            if (!userId) {
+                throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+            }
+            return await this.chatService.translateMessage(messageId, userId, targetLang);
+        } catch (error) {
+            throw new HttpException(
+                error.message || 'Failed to translate message',
                 error.status || HttpStatus.INTERNAL_SERVER_ERROR,
             );
         }

@@ -51,6 +51,9 @@ export default class UserResponseDto {
     isActive?: boolean;
 
     @Expose()
+    isBan?: boolean;
+
+    @Expose()
     createdAt?: Date;
 
     @Expose()

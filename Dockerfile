@@ -22,6 +22,8 @@ RUN npm ci --omit=dev
 
 COPY --from=builder /app/dist ./dist
 
+COPY --from=builder /app/src/modules/mail/templates ./src/modules/mail/templates
+
 EXPOSE 3000
 
 CMD ["node", "dist/main.js"]

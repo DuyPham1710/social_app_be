@@ -2,6 +2,8 @@ import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@n
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schemas/user.schema';
 import { SearchHistory, SearchHistoryDocument } from './schemas/search-history.schema';
+import { UserReport, UserReportDocument } from './schemas/user-report.schema';
+import { ReportUserDto } from './dto/report-user.dto';
 import { Model, Types } from 'mongoose';
 import UserResponseDto from './dto/user.response.dto';
 import { SearchHistoryResponseDto } from './dto/search-history-response.dto';
@@ -17,6 +19,7 @@ export class UserService {
     constructor(
         @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
         @InjectModel(SearchHistory.name) private readonly searchHistoryModel: Model<SearchHistoryDocument>,
+        @InjectModel(UserReport.name) private readonly userReportModel: Model<UserReportDocument>,
         //  private readonly friendsService: FriendsService,
         private readonly eventEmitter: EventEmitter2
     ) { }
@@ -99,6 +102,10 @@ export class UserService {
 
         if (!user.isActive) {
             throw new UnauthorizedException('Your account is not activated. Please verify your email to activate your account');
+        }
+
+        if (user.isBan) {
+            throw new HttpException('Your account has been banned due to violation of community standards', HttpStatus.FORBIDDEN);
         }
 
         return plainToInstance(UserResponseDto, user, {
@@ -548,10 +555,11 @@ export class UserService {
         limit?: number;
         search?: string;
         isActive?: boolean;
+        isBan?: boolean;
         dateFrom?: Date;
         dateTo?: Date;
     }) {
-        const { page = 1, limit = 10, search, isActive, dateFrom, dateTo } = payload;
+        const { page = 1, limit = 10, search, isActive, isBan, dateFrom, dateTo } = payload;
         const skip = (page - 1) * limit;
         const query: any = {};
 
@@ -567,6 +575,10 @@ export class UserService {
 
         if (isActive !== undefined) {
             query.isActive = isActive;
+        }
+
+        if (isBan !== undefined) {
+            query.isBan = isBan;
         }
 
         if (dateFrom || dateTo) {
@@ -718,6 +730,27 @@ export class UserService {
         });
     }
 
+
+    @OnEvent(AppEvents.USER_HARD_DELETE)
+    async handleHardDeleteUser({ userId }: { userId: string }) {
+        if (!Types.ObjectId.isValid(userId)) {
+            throw new HttpException('Invalid userId', HttpStatus.BAD_REQUEST);
+        }
+
+        const user = await this.userModel.findById(userId).exec();
+        if (!user) {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        }
+
+        // Only allow hard delete for inactive (unverified) users
+        // if (user.isActive) {
+        //     throw new HttpException('Cannot delete an active user', HttpStatus.BAD_REQUEST);
+        // }
+
+        await this.userModel.findByIdAndDelete(userId).exec();
+        return { message: 'Incomplete registration deleted successfully' };
+    }
+
     @OnEvent(AppEvents.ADMIN_USER_DELETE)
     async handleAdminDeleteUser({ userId }: { userId: string }) {
         if (!Types.ObjectId.isValid(userId)) {
@@ -813,5 +846,361 @@ export class UserService {
             throw new HttpException('User not found', HttpStatus.NOT_FOUND);
         }
         return user;
+    }
+
+    async reportUser(reportedUserId: string, reporterId: string, reportUserDto: ReportUserDto) {
+        if (!Types.ObjectId.isValid(reportedUserId)) {
+            throw new HttpException('Invalid reportedUserId', HttpStatus.BAD_REQUEST);
+        }
+        if (!Types.ObjectId.isValid(reporterId)) {
+            throw new HttpException('Invalid reporterId', HttpStatus.BAD_REQUEST);
+        }
+
+        if (reportedUserId === reporterId) {
+            throw new HttpException('You cannot report yourself', HttpStatus.BAD_REQUEST);
+        }
+
+        const reportedUser = await this.userModel.findById(reportedUserId).exec();
+        if (!reportedUser) {
+            throw new HttpException('User to report not found', HttpStatus.NOT_FOUND);
+        }
+
+        // If a report already exists for this reportedUser by this reporter, update it
+        const existingReport = await this.userReportModel.findOne({
+            reportedUserId: new Types.ObjectId(reportedUserId),
+            reporterId: new Types.ObjectId(reporterId),
+        }).exec();
+
+        if (existingReport) {
+            existingReport.reason = reportUserDto.reason;
+            existingReport.description = reportUserDto.description;
+            existingReport.status = 'pending';
+            await existingReport.save();
+        } else {
+            await this.userReportModel.create({
+                reportedUserId: new Types.ObjectId(reportedUserId),
+                reporterId: new Types.ObjectId(reporterId),
+                reason: reportUserDto.reason,
+                description: reportUserDto.description,
+                status: 'pending',
+            });
+        }
+
+        const pendingReportsCount = await this.userReportModel.countDocuments({
+            reportedUserId: new Types.ObjectId(reportedUserId),
+            status: 'pending',
+        });
+
+        // Auto-ban user if pending reports reach 50
+        if (pendingReportsCount >= 50 && (!reportedUser.isBan || reportedUser.isActive)) {
+            reportedUser.isBan = true;
+            reportedUser.isActive = false;
+            await reportedUser.save();
+        }
+
+        return {
+            message: 'Báo cáo người dùng thành công. Cảm ơn bạn đã đóng góp giúp cộng đồng an toàn hơn.',
+        };
+    }
+
+    // ===== ADMIN USER REPORT EVENT LISTENERS =====
+    @OnEvent(AppEvents.ADMIN_USER_REPORT_GET_ALL)
+    async handleAdminGetUserReports(payload: {
+        page?: number;
+        limit?: number;
+        status?: 'pending' | 'reviewed' | 'rejected';
+    }) {
+        const { page = 1, limit = 10, status } = payload;
+        const skip = (page - 1) * limit;
+        const matchQuery: any = {};
+
+        if (status) {
+            matchQuery.status = status;
+        }
+
+        const pipeline: any[] = [
+            {
+                $match: matchQuery,
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'reportedUserId',
+                    foreignField: '_id',
+                    as: 'reportedUserInfo',
+                },
+            },
+            {
+                $unwind: {
+                    path: '$reportedUserInfo',
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'reporterId',
+                    foreignField: '_id',
+                    as: 'reporterInfo',
+                },
+            },
+            {
+                $unwind: {
+                    path: '$reporterInfo',
+                    preserveNullAndEmptyArrays: true,
+                },
+            },
+            {
+                $group: {
+                    _id: '$reportedUserId',
+                    reportedUser: {
+                        $first: {
+                            _id: '$reportedUserInfo._id',
+                            fullName: '$reportedUserInfo.fullName',
+                            username: '$reportedUserInfo.username',
+                            avatarUrl: '$reportedUserInfo.avatarUrl',
+                            email: '$reportedUserInfo.email',
+                            isActive: '$reportedUserInfo.isActive',
+                            role: '$reportedUserInfo.role',
+                        }
+                    },
+                    reporters: {
+                        $push: {
+                            _id: '$_id',
+                            userId: {
+                                _id: '$reporterInfo._id',
+                                fullName: '$reporterInfo.fullName',
+                                username: '$reporterInfo.username',
+                                avatarUrl: '$reporterInfo.avatarUrl',
+                                email: '$reporterInfo.email',
+                            },
+                            reason: '$reason',
+                            description: '$description',
+                            status: '$status',
+                            createdAt: '$createdAt',
+                            updatedAt: '$updatedAt',
+                        },
+                    },
+                    totalReports: { $sum: 1 },
+                    pendingCount: {
+                        $sum: { $cond: [{ $eq: ['$status', 'pending'] }, 1, 0] },
+                    },
+                    reviewedCount: {
+                        $sum: { $cond: [{ $eq: ['$status', 'reviewed'] }, 1, 0] },
+                    },
+                    rejectedCount: {
+                        $sum: { $cond: [{ $eq: ['$status', 'rejected'] }, 1, 0] },
+                    },
+                    latestReportDate: { $max: '$createdAt' },
+                },
+            },
+            {
+                $sort: { latestReportDate: -1 },
+            },
+            {
+                $skip: skip,
+            },
+            {
+                $limit: limit,
+            },
+        ];
+
+        const countPipeline = [
+            {
+                $match: matchQuery,
+            },
+            {
+                $group: {
+                    _id: '$reportedUserId',
+                },
+            },
+            {
+                $count: 'total',
+            },
+        ];
+
+        const [groupedReports, countResult] = await Promise.all([
+            this.userReportModel.aggregate(pipeline).exec(),
+            this.userReportModel.aggregate(countPipeline).exec(),
+        ]);
+
+        const total = countResult.length > 0 ? countResult[0].total : 0;
+
+        const formattedData = groupedReports.map((item: any) => {
+            return {
+                reportedUser: item.reportedUser,
+                reporters: item.reporters || [],
+                reportCounts: {
+                    total: item.totalReports,
+                    pending: item.pendingCount,
+                    reviewed: item.reviewedCount,
+                    rejected: item.rejectedCount,
+                },
+                latestReportDate: item.latestReportDate,
+            };
+        });
+
+        return {
+            data: formattedData,
+            pagination: {
+                currentPage: page,
+                totalPages: Math.ceil(total / limit),
+                totalItems: total,
+                itemsPerPage: limit,
+                hasNextPage: page < Math.ceil(total / limit),
+                hasPrevPage: page > 1,
+            },
+        };
+    }
+
+    @OnEvent(AppEvents.ADMIN_USER_REPORT_GET_BY_ID)
+    async handleAdminGetUserReportById({ reportId }: { reportId: string }) {
+        if (!Types.ObjectId.isValid(reportId)) {
+            throw new HttpException('Invalid reportId', HttpStatus.BAD_REQUEST);
+        }
+
+        const report = await this.userReportModel
+            .findById(reportId)
+            .populate('reportedUserId', 'username fullName avatarUrl email isActive role')
+            .populate('reporterId', 'username fullName email avatarUrl')
+            .lean()
+            .exec();
+
+        if (!report) {
+            throw new HttpException('User report not found', HttpStatus.NOT_FOUND);
+        }
+
+        return report;
+    }
+
+    @OnEvent(AppEvents.ADMIN_USER_REPORT_UPDATE_STATUS)
+    async handleAdminUpdateUserReportStatus(payload: {
+        reportId: string;
+        status: 'pending' | 'reviewed' | 'rejected';
+        note?: string;
+    }) {
+        const { reportId, status, note } = payload;
+        if (!Types.ObjectId.isValid(reportId)) {
+            throw new HttpException('Invalid reportId', HttpStatus.BAD_REQUEST);
+        }
+
+        const report = await this.userReportModel.findById(reportId).exec();
+        if (!report) {
+            throw new HttpException('User report not found', HttpStatus.NOT_FOUND);
+        }
+
+        report.status = status;
+        await report.save();
+
+        const reportedUser = await this.userModel.findById(report.reportedUserId).exec();
+        if (reportedUser) {
+            if (status === 'reviewed') {
+                reportedUser.isBan = true;
+                await reportedUser.save();
+            } else if (status === 'rejected') {
+                const allReportsForUser = await this.userReportModel
+                    .find({ reportedUserId: report.reportedUserId })
+                    .lean()
+                    .exec();
+
+                const allRejected = allReportsForUser.every((r) => r.status === 'rejected');
+                if (allRejected) {
+                    reportedUser.isBan = false;
+                    await reportedUser.save();
+                }
+            }
+
+            if (status === 'reviewed') {
+                try {
+                    const message = `Tài khoản của bạn đã bị vô hiệu hóa do vi phạm tiêu chuẩn cộng đồng`;
+                    this.eventEmitter.emit('user.report.reviewed', {
+                        receiver: (reportedUser._id as any).toString(),
+                        targetId: report._id.toString(),
+                        message: message,
+                        content: note || undefined,
+                    });
+                } catch (error) {
+                    console.error(`Failed to send notification for user report ${reportId}:`, error);
+                }
+            }
+        }
+
+        return {
+            message: 'User report status updated successfully',
+            status: report.status,
+        };
+    }
+
+    @OnEvent(AppEvents.ADMIN_USER_REPORT_BULK_UPDATE_STATUS)
+    async handleAdminBulkUpdateUserReportStatus(payload: {
+        reportIds: string[];
+        status: 'pending' | 'reviewed' | 'rejected';
+        note?: string;
+    }) {
+        const { reportIds, status, note } = payload;
+        const validReportIds = reportIds.filter((id) => Types.ObjectId.isValid(id));
+        if (validReportIds.length === 0) {
+            throw new HttpException('No valid report IDs provided', HttpStatus.BAD_REQUEST);
+        }
+
+        const objectIds = validReportIds.map((id) => new Types.ObjectId(id));
+
+        const updateResult = await this.userReportModel.updateMany(
+            { _id: { $in: objectIds } },
+            { status },
+        );
+
+        if (updateResult.matchedCount === 0) {
+            throw new HttpException('No reports found', HttpStatus.NOT_FOUND);
+        }
+
+        const reports = await this.userReportModel
+            .find({ _id: { $in: objectIds } })
+            .select('reportedUserId')
+            .lean()
+            .exec();
+
+        const uniqueUserIds = [...new Set(reports.map((r) => r.reportedUserId.toString()))];
+
+        if (status === 'reviewed') {
+            await this.userModel.updateMany(
+                { _id: { $in: uniqueUserIds.map((id) => new Types.ObjectId(id)) } },
+                { isBan: true },
+            );
+        } else if (status === 'rejected') {
+            for (const userId of uniqueUserIds) {
+                const allReportsForUser = await this.userReportModel
+                    .find({ reportedUserId: new Types.ObjectId(userId) })
+                    .lean()
+                    .exec();
+
+                const allRejected = allReportsForUser.every((r) => r.status === 'rejected');
+                if (allRejected) {
+                    await this.userModel.findByIdAndUpdate(userId, { isBan: false });
+                }
+            }
+        }
+
+        if (status === 'reviewed') {
+            for (const userId of uniqueUserIds) {
+                try {
+                    const message = `Tài khoản của bạn đã bị vô hiệu hóa do vi phạm tiêu chuẩn cộng đồng`;
+                    this.eventEmitter.emit('user.report.reviewed', {
+                        receiver: userId,
+                        targetId: objectIds[0].toString(),
+                        message: message,
+                        content: note || undefined,
+                    });
+                } catch (error) {
+                    console.error(`Failed to send notification for bulk user report update:`, error);
+                }
+            }
+        }
+
+        return {
+            message: `Successfully updated ${updateResult.modifiedCount} user report(s)`,
+            updatedCount: updateResult.modifiedCount,
+            matchedCount: updateResult.matchedCount,
+        };
     }
 }
