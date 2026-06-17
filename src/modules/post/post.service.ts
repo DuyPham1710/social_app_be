@@ -2125,6 +2125,10 @@ export class PostService {
   async canViewPost(payload: any): Promise<boolean> {
     const post = await this.postModel.findById(payload.postId).lean();
     if (!post) return false;
+
+ 	// Chủ bài viết luôn có quyền xem bài viết của chính mình
+    if (post.userId.toString() === payload.viewerId) return true;
+
     // kiểm tra có phải admin không
     const [isAdmin] = await this.eventEmitter.emitAsync(
       AppEvents.USER_IS_ADMIN,
