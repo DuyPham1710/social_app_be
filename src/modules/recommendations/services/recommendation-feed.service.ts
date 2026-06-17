@@ -22,6 +22,11 @@ import {
 type RecommendationStrategy = 'personalized' | 'cold_start';
 export const RECOMMENDATION_FEED_GET_EVENT = 'recommendation.feed.get';
 
+interface CategoryPreference {
+  category: PostCategory;
+  score: number;
+}
+
 interface SourcedPost {
   post: any;
   source: PostViewSource;
@@ -65,10 +70,13 @@ export class RecommendationFeedService {
       `[recommend-feed] start userId=${userId}, page=${page}, limit=${limit}, userPostViewCollection=${this.userPostViewModel.collection.name}`,
     );
 
-    const [topCategories, friendIds] = await Promise.all([
-      this.getTopCategories(userObjectId),
+    const [topCategoryPreferences, friendIds] = await Promise.all([
+      this.getTopCategoryPreferences(userObjectId),
       this.getFriendIds(userObjectId),
     ]);
+    const topCategories = topCategoryPreferences.map(
+      (preference) => preference.category,
+    );
 
     const strategy: RecommendationStrategy =
       topCategories.length > 0 ? 'personalized' : 'cold_start';
@@ -82,7 +90,7 @@ export class RecommendationFeedService {
     const [recommendedPosts, friendPosts, explorePosts] = await Promise.all([
       this.fetchRecommendedPosts(
         userObjectId,
-        topCategories,
+        topCategoryPreferences,
         counts.recommendedCount,
         strategy,
       ),
@@ -160,9 +168,9 @@ export class RecommendationFeedService {
     });
   }
 
-  private async getTopCategories(
+  private async getTopCategoryPreferences(
     userId: Types.ObjectId,
-  ): Promise<PostCategory[]> {
+  ): Promise<CategoryPreference[]> {
     const preferences = await this.userCategoryPreferenceModel
       .find({
         userId,
@@ -170,11 +178,14 @@ export class RecommendationFeedService {
       })
       .sort({ score: -1 })
       .limit(5)
-      .select('category')
+      .select('category score')
       .lean()
       .exec();
 
-    return preferences.map((preference) => preference.category);
+    return preferences.map((preference) => ({
+      category: preference.category,
+      score: preference.score,
+    }));
   }
 
   private async getFriendIds(userId: Types.ObjectId): Promise<string[]> {
@@ -221,7 +232,7 @@ export class RecommendationFeedService {
 
   private fetchRecommendedPosts(
     userObjectId: Types.ObjectId,
-    topCategories: PostCategory[],
+    topCategoryPreferences: CategoryPreference[],
     limit: number,
     strategy: RecommendationStrategy,
   ): Promise<any[]> {
@@ -237,10 +248,16 @@ export class RecommendationFeedService {
     };
 
     if (strategy === 'personalized') {
+      const topCategories = topCategoryPreferences.map(
+        (preference) => preference.category,
+      );
       filter.category = { $in: topCategories };
     }
 
-    return this.fetchPosts(filter, limit, userObjectId);
+    return this.fetchPosts(filter, limit, userObjectId, {
+      scoreByCategoryPreferences:
+        strategy === 'personalized' ? topCategoryPreferences : [],
+    });
   }
 
   private fetchFriendPosts(
@@ -347,22 +364,61 @@ export class RecommendationFeedService {
     filter: FilterQuery<PostDocument>,
     limit: number,
     viewerObjectId: Types.ObjectId,
+    options: {
+      scoreByCategoryPreferences?: CategoryPreference[];
+    } = {},
   ): Promise<any[]> {
     if (limit <= 0) {
       return Promise.resolve([]);
     }
 
+    const categoryScoreStages = this.buildCategoryScoreStages(
+      options.scoreByCategoryPreferences ?? [],
+    );
     const pipeline: PipelineStage[] = [
       { $match: filter as any },
       ...this.buildNotViewedStages(viewerObjectId),
-      { $sort: { createdAt: -1 } },
+      ...categoryScoreStages,
+      {
+        $sort:
+          categoryScoreStages.length > 0
+            ? { recommendationCategoryScore: -1, createdAt: -1 }
+            : { createdAt: -1 },
+      },
       { $limit: limit },
+      ...(categoryScoreStages.length > 0
+        ? [{ $project: { recommendationCategoryScore: 0 } } as PipelineStage]
+        : []),
     ];
 
     return this.postModel
       .aggregate(pipeline)
       .exec()
       .then((posts) => this.populatePosts(posts));
+  }
+
+  private buildCategoryScoreStages(
+    categoryPreferences: CategoryPreference[],
+  ): PipelineStage[] {
+    if (categoryPreferences.length === 0) {
+      return [];
+    }
+
+    return [
+      {
+        $addFields: {
+          recommendationCategoryScore: {
+            $switch: {
+              branches: categoryPreferences.map((preference) => ({
+                case: { $eq: ['$category', preference.category] },
+                then: preference.score,
+              })),
+              default: 0,
+            },
+          },
+        },
+      },
+    ];
   }
 
   private populatePosts(posts: any[]): Promise<any[]> {
@@ -537,6 +593,7 @@ export class RecommendationFeedService {
     delete formatted.categoryConfidence;
     delete formatted.categorySource;
     delete formatted.isRecommendable;
+    delete formatted.recommendationCategoryScore;
 
     return formatted;
   }
