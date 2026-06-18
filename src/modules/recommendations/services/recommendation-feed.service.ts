@@ -382,8 +382,8 @@ export class RecommendationFeedService {
       {
         $sort:
           categoryScoreStages.length > 0
-            ? { recommendationCategoryScore: -1, createdAt: -1 }
-            : { createdAt: -1 },
+            ? { recommendationCategoryScore: -1, createdAt: 1 }
+            : { createdAt: 1 },
       },
       { $limit: limit },
       ...(categoryScoreStages.length > 0
