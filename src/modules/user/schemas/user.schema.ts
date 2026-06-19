@@ -57,6 +57,12 @@ export class User {
     @Prop({ type: Boolean, default: false })
     isBan: boolean;
 
+    @Prop({ type: Date })
+    banUntil?: Date;
+
+    @Prop({ type: String })
+    banReason?: string;
+
     @Prop({ type: String })
     otp?: string;
 

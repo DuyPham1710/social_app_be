@@ -10,12 +10,20 @@ export class UpdateUserReportStatusDto {
   @IsEnum(['pending', 'reviewed', 'rejected'] as any)
   status: 'pending' | 'reviewed' | 'rejected';
 
+
   @ApiProperty({
     required: false,
-    description: 'Ghi chú nội bộ cho admin (không bắt buộc)',
+    description: 'Thời hạn cấm tài khoản người dùng',
   })
   @IsString()
   @IsOptional()
-  @MaxLength(1000)
-  note?: string;
+  banUntil?: string;
+
+  @ApiProperty({
+    required: false,
+    description: 'Lý do cấm tài khoản người dùng',
+  })
+  @IsString()
+  @IsOptional()
+  banReason?: string;
 }

@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { Injectable, UnauthorizedException, HttpException, HttpStatus } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import { Strategy } from "passport-local";
 import UserResponseDto from "src/modules/user/dto/user.response.dto";
@@ -28,7 +28,11 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
 
         // Check if result is an error object
         if (result && typeof result === 'object' && 'error' in result) {
-            throw new UnauthorizedException(result.error);
+            const errorMsg = result.error;
+            if (errorMsg.includes('khóa')) {
+                throw new HttpException(errorMsg, HttpStatus.FORBIDDEN);
+            }
+            throw new UnauthorizedException(errorMsg);
         }
 
         if (!result) {

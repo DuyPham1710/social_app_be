@@ -426,12 +426,14 @@ export class AdminService {
   async updateUserReportStatus(
     reportId: string,
     status: 'pending' | 'reviewed' | 'rejected',
-    note?: string,
+    banUntil?: string,
+    banReason?: string,
   ) {
     const [result] = await this.eventEmitter.emitAsync(AppEvents.ADMIN_USER_REPORT_UPDATE_STATUS, {
       reportId,
       status,
-      note,
+      banUntil,
+      banReason,
     });
     return result;
   }
@@ -439,12 +441,14 @@ export class AdminService {
   async bulkUpdateUserReportStatus(
     reportIds: string[],
     status: 'pending' | 'reviewed' | 'rejected',
-    note?: string,
+    banUntil?: string,
+    banReason?: string,
   ) {
     const [result] = await this.eventEmitter.emitAsync(AppEvents.ADMIN_USER_REPORT_BULK_UPDATE_STATUS, {
       reportIds,
       status,
-      note,
+      banUntil,
+      banReason,
     });
     return result;
   }

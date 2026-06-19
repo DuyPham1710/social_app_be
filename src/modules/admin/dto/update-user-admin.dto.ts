@@ -73,6 +73,16 @@ export class UpdateUserAdminDto {
   @IsBoolean()
   isBan?: boolean;
 
+  @ApiPropertyOptional({ example: '2026-12-31T23:59:59.000Z' })
+  @IsOptional()
+  @IsString()
+  banUntil?: string;
+
+  @ApiPropertyOptional({ example: 'Vi phạm tiêu chuẩn cộng đồng' })
+  @IsOptional()
+  @IsString()
+  banReason?: string;
+
   @ApiPropertyOptional({ example: UserRole.USER, enum: UserRole })
   @IsOptional()
   @IsString()

@@ -37,6 +37,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
             return null; // For JWT strategy, returning null means authentication failed
         }
 
+        if (result && result.isBan) {
+            return null;
+        }
+
         return result;
     }
 

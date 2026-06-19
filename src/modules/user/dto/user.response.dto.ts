@@ -54,6 +54,12 @@ export default class UserResponseDto {
     isBan?: boolean;
 
     @Expose()
+    banUntil?: Date;
+
+    @Expose()
+    banReason?: string;
+
+    @Expose()
     createdAt?: Date;
 
     @Expose()

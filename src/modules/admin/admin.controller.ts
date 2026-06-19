@@ -336,7 +336,8 @@ export class AdminController {
     return this.adminService.updateUserReportStatus(
       reportId,
       body.status,
-      body.note,
+      body.banUntil,
+      body.banReason,
     );
   }
 
@@ -348,7 +349,8 @@ export class AdminController {
     return this.adminService.bulkUpdateUserReportStatus(
       body.reportIds,
       body.status,
-      body.note,
+      body.banUntil,
+      body.banReason,
     );
   }
 

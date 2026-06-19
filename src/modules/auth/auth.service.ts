@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException, HttpException, HttpStatus } from '@nestjs/common';
 import RegisterUserDto from '../user/dto/register.user.dto';
 import UserResponseDto from '../user/dto/user.response.dto';
 import { generateOtp } from 'src/common/utils/otp.util';
@@ -165,6 +165,27 @@ export class AuthService {
 
         if (!userFromDb) {
             throw new UnauthorizedException('User not found');
+        }
+
+        if (userFromDb.isBan) {
+            if (userFromDb.banUntil && new Date() > new Date(userFromDb.banUntil)) {
+                userFromDb.isBan = false;
+                userFromDb.banUntil = undefined;
+                userFromDb.banReason = undefined;
+                await this.eventEmitter.emitAsync(AppEvents.USER_UPDATE, {
+                    userId: userFromDb._id.toString(),
+                    updateData: userFromDb
+                });
+            } else {
+                const timeStr = userFromDb.banUntil
+                    ? ` đến ${new Date(userFromDb.banUntil).toLocaleString('vi-VN')}`
+                    : ' vĩnh viễn';
+                const reasonStr = userFromDb.banReason ? ` Lý do: ${userFromDb.banReason}` : '';
+                throw new HttpException(
+                    `Tài khoản của bạn đã bị khóa${timeStr}.${reasonStr}`,
+                    HttpStatus.FORBIDDEN,
+                );
+            }
         }
 
         if (!userFromDb.refreshToken) {

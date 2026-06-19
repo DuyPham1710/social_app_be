@@ -49,6 +49,14 @@ export class UserService {
         if (!user) {
             throw new HttpException(`User with ID ${userId} not found`, HttpStatus.NOT_FOUND);
         }
+
+        if (user.isBan && user.banUntil && new Date() > new Date(user.banUntil)) {
+            user.isBan = false;
+            user.banUntil = undefined;
+            user.banReason = undefined;
+            await user.save();
+        }
+
         return plainToInstance(UserResponseDto, user, {
             excludeExtraneousValues: true
         });
@@ -105,7 +113,21 @@ export class UserService {
         }
 
         if (user.isBan) {
-            throw new HttpException('Your account has been banned due to violation of community standards', HttpStatus.FORBIDDEN);
+            if (user.banUntil && new Date() > new Date(user.banUntil)) {
+                user.isBan = false;
+                user.banUntil = undefined;
+                user.banReason = undefined;
+                await user.save();
+            } else {
+                const timeStr = user.banUntil
+                    ? ` đến ${new Date(user.banUntil).toLocaleString('vi-VN')}`
+                    : ' vĩnh viễn';
+                const reasonStr = user.banReason ? ` Lý do: ${user.banReason}` : '';
+                throw new HttpException(
+                    `Tài khoản của bạn đã bị khóa${timeStr}.${reasonStr}`,
+                    HttpStatus.FORBIDDEN,
+                );
+            }
         }
 
         return plainToInstance(UserResponseDto, user, {
@@ -502,11 +524,11 @@ export class UserService {
     async handleValidateByEmail({ email, password }: { email: string, password: string }): Promise<UserResponseDto | { error: string }> {
         try {
             return await this.validateUserByEmail(email, password);
-        } catch (error) {
-            if (error instanceof UnauthorizedException) {
+        } catch (error: any) {
+            if (error instanceof HttpException) {
                 return { error: error.message };
             }
-            return { error: 'Authentication failed' };
+            return { error: error?.message || 'Authentication failed' };
         }
     }
 
@@ -716,6 +738,11 @@ export class UserService {
             updateData.password = await bcrypt.hash(restUpdate.password, 10);
         }
 
+        if (restUpdate.isBan === false) {
+            updateData.banUntil = null;
+            updateData.banReason = null;
+        }
+
         const updatedUser = await this.userModel
             .findByIdAndUpdate(userId, updateData, { new: true })
             .lean()
@@ -891,10 +918,9 @@ export class UserService {
             status: 'pending',
         });
 
-        // Auto-ban user if pending reports reach 50
-        if (pendingReportsCount >= 50 && (!reportedUser.isBan || reportedUser.isActive)) {
+        // Auto-ban user if pending reports reach 100
+        if (pendingReportsCount >= 100 && !reportedUser.isBan) {
             reportedUser.isBan = true;
-            reportedUser.isActive = false;
             await reportedUser.save();
         }
 
@@ -961,6 +987,7 @@ export class UserService {
                             avatarUrl: '$reportedUserInfo.avatarUrl',
                             email: '$reportedUserInfo.email',
                             isActive: '$reportedUserInfo.isActive',
+                            isBan: '$reportedUserInfo.isBan',
                             role: '$reportedUserInfo.role',
                         }
                     },
@@ -1061,7 +1088,7 @@ export class UserService {
 
         const report = await this.userReportModel
             .findById(reportId)
-            .populate('reportedUserId', 'username fullName avatarUrl email isActive role')
+            .populate('reportedUserId', 'username fullName avatarUrl email isActive isBan role')
             .populate('reporterId', 'username fullName email avatarUrl')
             .lean()
             .exec();
@@ -1077,9 +1104,10 @@ export class UserService {
     async handleAdminUpdateUserReportStatus(payload: {
         reportId: string;
         status: 'pending' | 'reviewed' | 'rejected';
-        note?: string;
+        banUntil?: string;
+        banReason?: string;
     }) {
-        const { reportId, status, note } = payload;
+        const { reportId, status, banUntil, banReason } = payload;
         if (!Types.ObjectId.isValid(reportId)) {
             throw new HttpException('Invalid reportId', HttpStatus.BAD_REQUEST);
         }
@@ -1096,6 +1124,8 @@ export class UserService {
         if (reportedUser) {
             if (status === 'reviewed') {
                 reportedUser.isBan = true;
+                reportedUser.banUntil = banUntil ? new Date(banUntil) : undefined;
+                reportedUser.banReason = banReason || undefined;
                 await reportedUser.save();
             } else if (status === 'rejected') {
                 const allReportsForUser = await this.userReportModel
@@ -1106,6 +1136,8 @@ export class UserService {
                 const allRejected = allReportsForUser.every((r) => r.status === 'rejected');
                 if (allRejected) {
                     reportedUser.isBan = false;
+                    reportedUser.banUntil = undefined;
+                    reportedUser.banReason = undefined;
                     await reportedUser.save();
                 }
             }
@@ -1117,7 +1149,7 @@ export class UserService {
                         receiver: (reportedUser._id as any).toString(),
                         targetId: report._id.toString(),
                         message: message,
-                        content: note || undefined,
+                        content: banReason || undefined,
                     });
                 } catch (error) {
                     console.error(`Failed to send notification for user report ${reportId}:`, error);
@@ -1135,9 +1167,10 @@ export class UserService {
     async handleAdminBulkUpdateUserReportStatus(payload: {
         reportIds: string[];
         status: 'pending' | 'reviewed' | 'rejected';
-        note?: string;
+        banUntil?: string;
+        banReason?: string;
     }) {
-        const { reportIds, status, note } = payload;
+        const { reportIds, status, banUntil, banReason } = payload;
         const validReportIds = reportIds.filter((id) => Types.ObjectId.isValid(id));
         if (validReportIds.length === 0) {
             throw new HttpException('No valid report IDs provided', HttpStatus.BAD_REQUEST);
@@ -1163,9 +1196,16 @@ export class UserService {
         const uniqueUserIds = [...new Set(reports.map((r) => r.reportedUserId.toString()))];
 
         if (status === 'reviewed') {
+            const updatePayload: any = { isBan: true };
+            if (banUntil !== undefined) {
+                updatePayload.banUntil = banUntil ? new Date(banUntil) : null;
+            }
+            if (banReason !== undefined) {
+                updatePayload.banReason = banReason || null;
+            }
             await this.userModel.updateMany(
                 { _id: { $in: uniqueUserIds.map((id) => new Types.ObjectId(id)) } },
-                { isBan: true },
+                updatePayload,
             );
         } else if (status === 'rejected') {
             for (const userId of uniqueUserIds) {
@@ -1176,7 +1216,11 @@ export class UserService {
 
                 const allRejected = allReportsForUser.every((r) => r.status === 'rejected');
                 if (allRejected) {
-                    await this.userModel.findByIdAndUpdate(userId, { isBan: false });
+                    await this.userModel.findByIdAndUpdate(userId, {
+                        isBan: false,
+                        banUntil: null,
+                        banReason: null,
+                    });
                 }
             }
         }
@@ -1189,7 +1233,7 @@ export class UserService {
                         receiver: userId,
                         targetId: objectIds[0].toString(),
                         message: message,
-                        content: note || undefined,
+                        content: banReason || undefined,
                     });
                 } catch (error) {
                     console.error(`Failed to send notification for bulk user report update:`, error);
