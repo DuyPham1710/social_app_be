@@ -20,6 +20,9 @@ export class Post extends PrivacyBase {
     @Prop()
     caption: string;
 
+    @Prop({ type: String, default: null })
+    location?: string;
+
     @Prop({
         type: String,
         enum: Object.values(PostCategory),

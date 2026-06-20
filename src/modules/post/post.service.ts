@@ -716,6 +716,7 @@ export class PostService {
       friends_detail,
       communityId,
       taggedUserIds,
+      location,
     } = createPostDto;
 
     let communityPostStatus: CommunityPostStatus | null = null;
@@ -825,6 +826,7 @@ export class PostService {
     // Tạo post trong database
     const post = await this.postModel.create({
       caption,
+      location,
       userId: new Types.ObjectId(userId),
       category: classification.category,
       categoryConfidence: classification.confidence,
