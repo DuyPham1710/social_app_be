@@ -9,6 +9,7 @@ import { EmojiResponseDto } from 'src/modules/emoji/dto/emoji_response.dto';
 export interface PostResponseDto extends PrivacyBase {
     _id: Types.ObjectId;
     caption: string;
+    location?: string;
     userId: UserResponseDto;
     urls: PostUrlResponseDto[];
     layout: LayoutType;

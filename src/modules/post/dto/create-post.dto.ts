@@ -27,6 +27,11 @@ export class CreatePostDto {
     @IsString()
     caption?: string;
 
+    @ApiProperty({ example: 'Hanoi, Vietnam', required: false })
+    @IsOptional()
+    @IsString()
+    location?: string;
+
     // @ApiProperty({
     //     type: [CreatePostUrlDto],
     //     example: [
