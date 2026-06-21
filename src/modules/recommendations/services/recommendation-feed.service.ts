@@ -48,6 +48,7 @@ export class RecommendationFeedService {
   async getRecommendedFeed(
     userId: string,
     query: GetRecommendationFeedQueryDto,
+    isRetry = false,
   ): Promise<{
     data: any[];
     meta: {
@@ -137,6 +138,14 @@ export class RecommendationFeedService {
       this.logger.log(
         `[recommend-feed] additional userId=${userId}, additional=${additionalPosts.length}, mergedAfterAdditional=${mergedPosts.length}`,
       );
+    }
+
+    if (mergedPosts.length === 0 && !isRetry) {
+      this.logger.log(
+        `[recommend-feed] exhausted posts userId=${userId}, clearing UserPostView and retrying`,
+      );
+      await this.userPostViewModel.deleteMany({ userId: userObjectId }).exec();
+      return this.getRecommendedFeed(userId, query, true);
     }
 
     await this.recordReturnedPostViews(userObjectId, mergedPosts);
