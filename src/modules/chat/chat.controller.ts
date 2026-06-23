@@ -20,6 +20,7 @@ import { File } from 'multer';
 import { Response } from 'express';
 import { Get, Param, Query } from '@nestjs/common';
 import { Public } from 'src/common/decorators/public.decorator';
+import { GetConversationMediaDto } from './dto';
 
 @Controller('chat')
 @UseGuards(JwtAuthGuard)
@@ -166,6 +167,32 @@ export class ChatController {
         } catch (error) {
             throw new HttpException(
                 error.message || 'Failed to translate message',
+                error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
+
+    @Get('conversation/:conversationId/media')
+    async getConversationMedia(
+        @Req() req: any,
+        @Param('conversationId') conversationId: string,
+        @Query() query: GetConversationMediaDto,
+    ) {
+        try {
+            const userId = req.user.userId;
+            if (!userId) {
+                throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+            }
+            return await this.chatService.getConversationMedia(
+                conversationId,
+                userId,
+                query.type ?? 'image',
+                query.page ?? 1,
+                query.limit ?? 30,
+            );
+        } catch (error) {
+            throw new HttpException(
+                error.message || 'Failed to get conversation media',
                 error.status || HttpStatus.INTERNAL_SERVER_ERROR,
             );
         }
