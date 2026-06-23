@@ -33,7 +33,7 @@ export class FriendGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   // Map để lưu thông tin connection: socketId -> UserConnection
   private connectedUsers = new Map<string, UserConnection>();
-  
+
   // Map để lưu danh sách bạn bè của mỗi user: userId -> Set<friendId>
   private userFriendsMap = new Map<string, Set<string>>();
 
@@ -207,7 +207,6 @@ export class FriendGateway implements OnGatewayConnection, OnGatewayDisconnect {
         timestamp: new Date(),
       });
 
-      this.logger.log(`Retrieved online friends count for user ${userId}: ${onlineCount}`);
     } catch (error) {
       this.logger.error(`Error getting online friends count: ${error.message}`);
       client.emit('error', {
