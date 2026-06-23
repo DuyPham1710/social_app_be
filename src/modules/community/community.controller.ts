@@ -269,8 +269,8 @@ export class CommunityController {
         return this.communityService.getPendingPosts(req.user.userId, communityId, Number(page), Number(limit));
     }
 
-    @Patch(':communityId/posts/:postId')
-    @ApiOperation({ summary: 'Admin duyệt / từ chối bài viết trong cộng đồng' })
+    @Patch(':communityId/posts/:postId/approve')
+    @ApiOperation({ summary: 'Duyệt hoặc từ chối bài viết (chỉ admin)' })
     approvePost(
         @Req() req: any,
         @Param('communityId') communityId: string,
@@ -278,5 +278,48 @@ export class CommunityController {
         @Body() dto: ApprovePostDto,
     ) {
         return this.communityService.approvePost(req.user.userId, communityId, postId, dto);
+    }
+
+    // ================================================================
+    // COMMUNITY ROADMAP
+    // ================================================================
+
+    @Get(':communityId/roadmap')
+    @ApiOperation({ summary: 'Lấy danh sách các điểm trên roadmap của cộng đồng' })
+    @ApiQuery({ name: 'page', required: false })
+    @ApiQuery({ name: 'limit', required: false })
+    getRoadmapPoints(
+        @Param('communityId') communityId: string,
+        @Query('page') page: number = 1,
+        @Query('limit') limit: number = 20,
+    ) {
+        return this.communityService.getRoadmapPoints(communityId, Number(page), Number(limit));
+    }
+
+    @Get(':communityId/roadmap/nearby')
+    @ApiOperation({ summary: 'Lấy các điểm roadmap gần vị trí user' })
+    @ApiQuery({ name: 'lat', required: true })
+    @ApiQuery({ name: 'lng', required: true })
+    @ApiQuery({ name: 'radius', required: false, description: 'Bán kính tìm kiếm (km), mặc định 5km' })
+    getNearbyRoadmapPoints(
+        @Param('communityId') communityId: string,
+        @Query('lat') lat: number,
+        @Query('lng') lng: number,
+        @Query('radius') radius: number = 5,
+    ) {
+        return this.communityService.getNearbyRoadmapPoints(communityId, Number(lat), Number(lng), Number(radius));
+    }
+
+    @Get(':communityId/roadmap/:roadmapId/posts')
+    @ApiOperation({ summary: 'Lấy các bài viết của một điểm roadmap' })
+    getRoadmapPointPosts(
+        @Param('communityId') communityId: string,
+        @Param('roadmapId') roadmapId: string,
+        @Query('page') page: string = '1',
+        @Query('limit') limit: string = '10',
+        @Req() req: any,
+    ) {
+        const userId = req.user.userId;
+        return this.communityService.getRoadmapPointPosts(communityId, roadmapId, Number(page), Number(limit), userId);
     }
 }

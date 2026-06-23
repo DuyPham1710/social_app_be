@@ -717,6 +717,8 @@ export class PostService {
       communityId,
       taggedUserIds,
       location,
+      latitude,
+      longitude,
     } = createPostDto;
 
     let communityPostStatus: CommunityPostStatus | null = null;
@@ -823,10 +825,11 @@ export class PostService {
 
     const classification = await this.classifyCaptionForRecommendation(caption);
 
-    // Tạo post trong database
     const post = await this.postModel.create({
       caption,
       location,
+      latitude,
+      longitude,
       userId: new Types.ObjectId(userId),
       category: classification.category,
       categoryConfidence: classification.confidence,
@@ -1012,6 +1015,17 @@ export class PostService {
           communityName: communityInfo.name,
         });
       }
+    } else if (communityId && communityPostStatus === CommunityPostStatus.APPROVED) {
+      if (location && latitude && longitude) {
+        this.eventEmitter.emit(AppEvents.COMMUNITY_ROADMAP_UPDATE, {
+          communityId,
+          postId: post._id.toString(),
+          locationName: location,
+          latitude,
+          longitude,
+          userId,
+        });
+      }
     }
 
     return {
@@ -1180,25 +1194,47 @@ export class PostService {
     }
 
     const postIdObject = new Types.ObjectId(postId);
-    const userIdObject = new Types.ObjectId(userId);
 
-    const post = await this.postModel.findOne({
-      _id: postIdObject,
-      userId: userIdObject,
-    });
+    const post = await this.postModel.findById(postIdObject);
     if (!post) {
       throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
     }
 
-    if (post.userId.toString() !== userId) {
-      throw new ForbiddenException('You are not allowed to update this post');
+    let canDelete = false;
+
+    if (post.userId.toString() === userId) {
+      canDelete = true;
+    } else if (post.communityId) {
+      const [response] = await this.eventEmitter.emitAsync(
+        AppEvents.COMMUNITY_GET_MEMBER_ROLE,
+        { communityId: post.communityId.toString(), userId },
+      );
+      if (response && response.role === 'admin') {
+        canDelete = true;
+      }
+    }
+
+    if (!canDelete) {
+      throw new ForbiddenException('You are not allowed to delete this post');
     }
 
     if (post.urls && post.urls.length > 0) {
       await this.postUrlModel.deleteMany({ _id: { $in: post.urls } });
     }
 
+    if (post.communityId) {
+      this.eventEmitter.emit(AppEvents.COMMUNITY_ROADMAP_REMOVE_POST, {
+        communityId: post.communityId.toString(),
+        postId: post._id.toString(),
+      });
+    }
+
     await post.deleteOne();
+
+    // Thông báo cho các module khác (saved, comments, reacts, ...) biết post đã bị xóa
+    this.eventEmitter.emit(AppEvents.POST_DELETED, {
+      postId: post._id.toString(),
+    });
 
     return { message: 'Post deleted successfully' };
   }
@@ -1603,6 +1639,11 @@ export class PostService {
     }
 
     await post.deleteOne();
+
+    // Thông báo cho các module khác biết post đã bị xóa
+    this.eventEmitter.emit(AppEvents.POST_DELETED, {
+      postId: post._id.toString(),
+    });
 
     return { message: 'Post deleted successfully' };
   }
@@ -2285,6 +2326,19 @@ export class PostService {
     post.communityStatus = status as any;
     await post.save();
 
+    if (status === CommunityPostStatus.APPROVED) {
+      if (post.location && post.latitude && post.longitude) {
+        this.eventEmitter.emit(AppEvents.COMMUNITY_ROADMAP_UPDATE, {
+          communityId,
+          postId: post._id.toString(),
+          locationName: post.location,
+          latitude: post.latitude,
+          longitude: post.longitude,
+          userId: post.userId.toString(),
+        });
+      }
+    }
+
     return { userId: post.userId };
   }
 
@@ -2362,5 +2416,56 @@ export class PostService {
 
     await post.save();
     return { message: 'Đã gỡ gắn thẻ' };
+  }
+
+  @OnEvent(AppEvents.COMMUNITY_ROADMAP_GET_POSTS)
+  async handleCommunityRoadmapGetPosts(payload: {
+    postIds: string[];
+    page: number;
+    limit: number;
+    reqUserId: string;
+  }) {
+    const { postIds, page, limit, reqUserId } = payload;
+    const skip = (page - 1) * limit;
+
+    const objectIds = postIds.map((id) => new Types.ObjectId(id));
+
+    // Lấy bài viết và populate thông tin
+    const posts = await this.postModel
+      .find({ _id: { $in: objectIds } })
+      .populate('userId', 'fullName username avatarUrl')
+      .populate('communityId', 'name avatar')
+      .populate({ path: 'urls', options: { sort: { order: 1 } } })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean()
+      .exec();
+
+    // Định dạng dữ liệu trả về giống với các API lấy bài viết khác
+    const postIdsStr = posts.map((p: any) => p._id.toString());
+    const [reactsMap] = await this.eventEmitter.emitAsync(
+      AppEvents.REACT_POST_GET,
+      { postIds: postIdsStr, viewerId: reqUserId },
+    );
+    const [reactMap] = await this.eventEmitter.emitAsync(
+      AppEvents.REACT_POST_FIND_BY_USER,
+      { userId: reqUserId, postIds: postIdsStr },
+    );
+
+    const formattedPosts = posts.map((post: any) => ({
+      ...post,
+      id: post._id,
+      reacts: reactsMap?.[post._id.toString()] || [],
+      isReact: reactMap?.[post._id.toString()] || null,
+    }));
+
+    const total = await this.postModel.countDocuments({ _id: { $in: objectIds } });
+
+    return {
+      data: formattedPosts,
+      total,
+      hasNext: skip + posts.length < total,
+    };
   }
 }
