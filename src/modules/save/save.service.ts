@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { AppEvents } from '../../shared/enums/app-events.enum';
 import { Saved, SaveDocument } from './schemas/saved.schema';
 import { CreateSaveDto } from './dto/create-save.dto';
@@ -195,6 +195,28 @@ export class SaveService {
     } catch (error) {
       this.logger.warn(
         `Không thể ghi nhận recommendation interaction cho save post: ${error.message}`,
+      );
+    }
+  }
+
+  @OnEvent(AppEvents.POST_DELETED)
+  async handlePostDeleted({ postId }: { postId: string }): Promise<void> {
+    try {
+      if (!Types.ObjectId.isValid(postId)) return;
+
+      const result = await this.saveModel.deleteMany({
+        targetId: new Types.ObjectId(postId),
+        type: 'post',
+      });
+
+      if (result.deletedCount > 0) {
+        this.logger.log(
+          `Đã xóa ${result.deletedCount} saved record(s) liên quan đến post ${postId}`,
+        );
+      }
+    } catch (error) {
+      this.logger.error(
+        `Lỗi khi xóa saved records của post ${postId}: ${error.message}`,
       );
     }
   }

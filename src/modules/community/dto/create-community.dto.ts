@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { CommunityPrivacy } from '../schemas/community.schema';
+import { CommunityType } from 'src/shared/enums/community_type';
 import { File } from 'multer';
 
 export class CreateCommunityDto {
@@ -41,4 +42,13 @@ export class CreateCommunityDto {
     @IsEnum(CommunityPrivacy)
     @IsOptional()
     privacy?: CommunityPrivacy;
+
+    @ApiProperty({
+        description: 'Loại cộng đồng: standard | travel',
+        enum: CommunityType,
+        default: CommunityType.STANDARD,
+    })
+    @IsEnum(CommunityType)
+    @IsOptional()
+    type?: CommunityType;
 }

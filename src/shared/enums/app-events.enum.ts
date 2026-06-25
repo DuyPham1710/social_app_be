@@ -126,7 +126,10 @@ export enum AppEvents {
     COMMUNITY_GET_APPROVED_POSTS = 'community.getApprovedPosts',
     COMMUNITY_GET_PENDING_POSTS = 'community.getPendingPosts',
     COMMUNITY_GET_MEMBER_ROLE = 'community.getMemberRole',
-    COMMUNITY_GET_INFO = 'community.getInfo', // L?y th�ng tin community (bao g?m admin)
+    COMMUNITY_GET_INFO = 'community.getInfo', // L?y thng tin community (bao g?m admin)
+    COMMUNITY_ROADMAP_UPDATE = 'community.roadmap.update',
+    COMMUNITY_ROADMAP_REMOVE_POST = 'community.roadmap.removePost',
+    COMMUNITY_ROADMAP_GET_POSTS = 'community.roadmap.getPosts',
 
     // ===== FACE RECOGNITION =====
     FACE_ENROLL = 'face.enroll',

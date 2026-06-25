@@ -11,4 +11,5 @@ export * from './update-conversation.dto';
 export * from './react-message.dto';
 export * from './delete-message.dto';
 export * from './message-edit-log-response.dto';
+export * from './get-conversation-media.dto';
 

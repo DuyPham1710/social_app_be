@@ -23,6 +23,12 @@ export class Post extends PrivacyBase {
     @Prop({ type: String, default: null })
     location?: string;
 
+    @Prop({ type: Number, default: null })
+    latitude?: number;
+
+    @Prop({ type: Number, default: null })
+    longitude?: number;
+
     @Prop({
         type: String,
         enum: Object.values(PostCategory),
@@ -106,3 +112,5 @@ PostSchema.index({ visibleOnProfileUserIds: 1 });
 PostSchema.index({ category: 1, createdAt: -1 });
 PostSchema.index({ userId: 1, createdAt: -1 });
 PostSchema.index({ isRecommendable: 1, category: 1, createdAt: -1 });
+// Index cho location mapping
+PostSchema.index({ latitude: 1, longitude: 1 });

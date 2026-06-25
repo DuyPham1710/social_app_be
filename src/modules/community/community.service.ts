@@ -14,6 +14,7 @@ import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { Community, CommunityDocument } from './schemas/community.schema';
 import { CommunityMember, CommunityMemberDocument } from './schemas/community_member.schema';
 import { CommunityRequest, CommunityRequestDocument } from './schemas/community_request.schema';
+import { CommunityRoadmapPoint, CommunityRoadmapPointDocument } from './schemas/community_roadmap_point.schema';
 
 import { CreateCommunityDto } from './dto/create-community.dto';
 import { UpdateCommunityDto } from './dto/update-community.dto';
@@ -39,6 +40,7 @@ export class CommunityService {
         @InjectModel(Community.name) private communityModel: Model<CommunityDocument>,
         @InjectModel(CommunityMember.name) private memberModel: Model<CommunityMemberDocument>,
         @InjectModel(CommunityRequest.name) private requestModel: Model<CommunityRequestDocument>,
+        @InjectModel(CommunityRoadmapPoint.name) private roadmapModel: Model<CommunityRoadmapPointDocument>,
         private readonly imageModerationService: ImageModerationService,
         private readonly eventEmitter: EventEmitter2,
     ) { }
@@ -899,6 +901,170 @@ export class CommunityService {
             .lean();
 
         return { role: member?.role ?? null };
+    }
+
+    // ================================================================
+    // COMMUNITY ROADMAP
+    // ================================================================
+
+    @OnEvent(AppEvents.COMMUNITY_ROADMAP_UPDATE)
+    async handleCommunityRoadmapUpdate(payload: {
+        communityId: string;
+        postId: string;
+        locationName: string;
+        latitude: number;
+        longitude: number;
+        userId: string;
+    }) {
+        const { communityId, postId, locationName, latitude, longitude, userId } = payload;
+        
+        const existingPoint = await this.roadmapModel.findOne({
+            communityId: new Types.ObjectId(communityId),
+            locationName,
+        });
+
+        if (existingPoint) {
+            // Update existing roadmap point
+            if (!existingPoint.postIds.includes(new Types.ObjectId(postId))) {
+                existingPoint.postIds.push(new Types.ObjectId(postId));
+                existingPoint.postCount += 1;
+                existingPoint.lastPostedAt = new Date();
+                await existingPoint.save();
+            }
+        } else {
+            // Create new roadmap point
+            await this.roadmapModel.create({
+                communityId: new Types.ObjectId(communityId),
+                locationName,
+                locationCoordinates: {
+                    type: 'Point',
+                    coordinates: [longitude, latitude], // GeoJSON expects [longitude, latitude]
+                },
+                postCount: 1,
+                postIds: [new Types.ObjectId(postId)],
+                firstPostedBy: new Types.ObjectId(userId),
+                firstPostedAt: new Date(),
+                lastPostedAt: new Date(),
+            });
+        }
+    }
+
+    @OnEvent(AppEvents.COMMUNITY_ROADMAP_REMOVE_POST)
+    async handleCommunityRoadmapRemovePost(payload: {
+        communityId: string;
+        postId: string;
+    }) {
+        const { communityId, postId } = payload;
+        
+        const existingPoint = await this.roadmapModel.findOne({
+            communityId: new Types.ObjectId(communityId),
+            postIds: new Types.ObjectId(postId),
+        });
+
+        if (existingPoint) {
+            existingPoint.postIds = existingPoint.postIds.filter(
+                (id) => id.toString() !== postId
+            );
+            
+            if (existingPoint.postIds.length === 0) {
+                // No more posts at this location, remove the point
+                await this.roadmapModel.deleteOne({ _id: existingPoint._id });
+            } else {
+                existingPoint.postCount = existingPoint.postIds.length;
+                await existingPoint.save();
+            }
+        }
+    }
+
+    async getRoadmapPoints(communityId: string, page: number = 1, limit: number = 20) {
+        if (!Types.ObjectId.isValid(communityId)) {
+            throw new BadRequestException('communityId không hợp lệ');
+        }
+
+        const skip = (page - 1) * limit;
+
+        const [points, total] = await Promise.all([
+            this.roadmapModel
+                .find({ communityId: new Types.ObjectId(communityId) })
+                .sort({ lastPostedAt: -1 })
+                .skip(skip)
+                .limit(limit)
+                .populate('firstPostedBy', 'fullName username avatarUrl')
+                .lean(),
+            this.roadmapModel.countDocuments({ communityId: new Types.ObjectId(communityId) }),
+        ]);
+
+        return {
+            data: points,
+            page,
+            limit,
+            total,
+            hasNext: skip + points.length < total,
+        };
+    }
+
+    async getNearbyRoadmapPoints(communityId: string, lat: number, lng: number, radiusKm: number = 5) {
+        if (!Types.ObjectId.isValid(communityId)) {
+            throw new BadRequestException('communityId không hợp lệ');
+        }
+
+        const points = await this.roadmapModel.aggregate([
+            {
+                $geoNear: {
+                    near: { type: 'Point', coordinates: [lng, lat] },
+                    distanceField: 'distance',
+                    maxDistance: radiusKm * 1000, // meters
+                    query: { communityId: new Types.ObjectId(communityId) },
+                    spherical: true,
+                },
+            },
+            {
+                $sort: { distance: 1 }
+            },
+            {
+                $limit: 20
+            }
+        ]);
+
+        await this.roadmapModel.populate(points, { path: 'firstPostedBy', select: 'fullName username avatarUrl' });
+
+        return {
+            data: points,
+            page: 1,
+            limit: 20,
+            total: points.length,
+            hasNext: false,
+        };
+    }
+
+    async getRoadmapPointPosts(communityId: string, roadmapPointId: string, page: number = 1, limit: number = 10, reqUserId: string) {
+        if (!Types.ObjectId.isValid(communityId) || !Types.ObjectId.isValid(roadmapPointId)) {
+            throw new BadRequestException('ID không hợp lệ');
+        }
+
+        const point = await this.roadmapModel.findOne({
+            _id: new Types.ObjectId(roadmapPointId),
+            communityId: new Types.ObjectId(communityId)
+        });
+
+        if (!point) {
+            throw new NotFoundException('Không tìm thấy điểm roadmap này');
+        }
+
+        const [postsResponse] = await this.eventEmitter.emitAsync(AppEvents.COMMUNITY_ROADMAP_GET_POSTS, {
+            postIds: point.postIds.map(id => id.toString()),
+            page,
+            limit,
+            reqUserId,
+        });
+
+        return {
+            data: postsResponse?.data || [],
+            page,
+            limit,
+            total: point.postCount,
+            hasNext: postsResponse?.hasNext || false,
+        };
     }
 
     // ================================================================

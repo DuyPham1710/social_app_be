@@ -32,6 +32,16 @@ export class CreatePostDto {
     @IsString()
     location?: string;
 
+    @ApiProperty({ example: 21.028511, required: false })
+    @IsOptional()
+    @Transform(({ value }) => (value ? Number(value) : undefined))
+    latitude?: number;
+
+    @ApiProperty({ example: 105.804817, required: false })
+    @IsOptional()
+    @Transform(({ value }) => (value ? Number(value) : undefined))
+    longitude?: number;
+
     // @ApiProperty({
     //     type: [CreatePostUrlDto],
     //     example: [

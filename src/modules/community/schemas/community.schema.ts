@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { CommunityPrivacy } from 'src/shared/enums/community_privacy';
+import { CommunityType } from 'src/shared/enums/community_type';
 
 export type CommunityDocument = Community & Document;
 
@@ -28,6 +29,10 @@ export class Community {
     // Loại cộng đồng: public (ai cũng thấy) | private (phải được duyệt)
     @Prop({ type: String, enum: CommunityPrivacy, default: CommunityPrivacy.PUBLIC })
     privacy: CommunityPrivacy;
+
+    // Loại hình: tiêu chuẩn, du lịch...
+    @Prop({ type: String, enum: CommunityType, default: CommunityType.STANDARD })
+    type: CommunityType;
 
     // Số lượng thành viên (cached)
     @Prop({ type: Number, default: 0 })

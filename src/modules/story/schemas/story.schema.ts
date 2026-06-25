@@ -27,7 +27,7 @@ export class Story extends PrivacyBase {
     music?: DeezerMusic;
 
     // Thời gian hết hạn (mặc định 24h kể từ createdAt)
-    @Prop({ type: Date, default: new Date(Date.now() + 24 * 60 * 60 * 1000) })
+    @Prop({ type: Date })
     expireAt: Date;
 
     // Lưu trữ story để xem lại 
@@ -39,3 +39,10 @@ export class Story extends PrivacyBase {
 }
 
 export const StorySchema = SchemaFactory.createForClass(Story);
+
+StorySchema.pre('save', function (this: StoryDocument, next) {
+    if (this.isNew && !this.expireAt) {
+        this.expireAt = new Date((this as any).createdAt.getTime() + 24 * 60 * 60 * 1000);
+    }
+    next();
+});

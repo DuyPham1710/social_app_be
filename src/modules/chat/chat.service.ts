@@ -1452,4 +1452,140 @@ export class ChatService {
             );
         }
     }
+
+    // Lấy danh sách ảnh / video / file / link trong đoạn chat với phân trang
+    async getConversationMedia(
+        conversationId: string,
+        userId: string,
+        type: 'image' | 'video' | 'file' | 'link' | 'audio',
+        page: number = 1,
+        limit: number = 30,
+    ): Promise<PaginatedResponseDto<any>> {
+        if (!Types.ObjectId.isValid(conversationId)) {
+            throw new HttpException('Invalid conversation ID', HttpStatus.BAD_REQUEST);
+        }
+
+        // Kiểm tra user có trong cuộc hội thoại không
+        const conversation = await this.conversationModel
+            .findOne({
+                _id: new Types.ObjectId(conversationId),
+                participants: new Types.ObjectId(userId),
+            })
+            .exec();
+
+        if (!conversation) {
+            throw new HttpException(
+                'Conversation not found or you are not a participant',
+                HttpStatus.FORBIDDEN,
+            );
+        }
+
+        const userIdObjectId = new Types.ObjectId(userId);
+        const skip = (page - 1) * limit;
+
+        if (type === 'link') {
+            // Tìm tin nhắn có chứa URL trong text
+            const URL_REGEX = /(https?:\/\/[^\s]+)/g;
+            const [messages, totalRaw] = await Promise.all([
+                this.messageModel
+                    .find({
+                        conversationId: new Types.ObjectId(conversationId),
+                        deletedFor: { $nin: [userIdObjectId] },
+                        deletedForEveryone: false,
+                        text: { $regex: 'https?://', $options: 'i' },
+                    })
+                    .populate('senderId', 'username fullName avatarUrl')
+                    .select('text senderId createdAt')
+                    .sort({ createdAt: -1 })
+                    .skip(skip)
+                    .limit(limit)
+                    .lean()
+                    .exec(),
+                this.messageModel.countDocuments({
+                    conversationId: new Types.ObjectId(conversationId),
+                    deletedFor: { $nin: [userIdObjectId] },
+                    deletedForEveryone: false,
+                    text: { $regex: 'https?://', $options: 'i' },
+                }),
+            ]);
+
+            // Trích xuất danh sách URLs từ mỗi message
+            const items = messages.flatMap((msg: any) => {
+                const urls: string[] = msg.text?.match(URL_REGEX) || [];
+                return urls.map((url) => ({
+                    url,
+                    messageId: msg._id.toString(),
+                    sender: msg.senderId,
+                    sentAt: msg.createdAt,
+                }));
+            });
+
+            const totalPages = Math.ceil(totalRaw / limit);
+            return {
+                data: items,
+                pagination: {
+                    currentPage: page,
+                    totalPages,
+                    totalItems: totalRaw,
+                    itemsPerPage: limit,
+                    hasNextPage: page < totalPages,
+                    hasPrevPage: page > 1,
+                },
+            };
+        }
+
+        // Với image / video / file: tìm tin nhắn có attachments theo type
+        const [messages, totalRaw] = await Promise.all([
+            this.messageModel
+                .find({
+                    conversationId: new Types.ObjectId(conversationId),
+                    deletedFor: { $nin: [userIdObjectId] },
+                    deletedForEveryone: false,
+                    'attachments.type': type,
+                })
+                .populate('senderId', 'username fullName avatarUrl')
+                .select('attachments senderId createdAt')
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
+                .lean()
+                .exec(),
+            this.messageModel.countDocuments({
+                conversationId: new Types.ObjectId(conversationId),
+                deletedFor: { $nin: [userIdObjectId] },
+                deletedForEveryone: false,
+                'attachments.type': type,
+            }),
+        ]);
+
+        // Trích xuất chỉ attachments đúng type
+        const items = messages.flatMap((msg: any) =>
+            (msg.attachments as any[])
+                .filter((a) => a.type === type)
+                .map((a) => ({
+                    url: a.url,
+                    type: a.type,
+                    size: a.size,
+                    name: a.name,
+                    duration: a.duration,
+                    waveform: a.waveform,
+                    messageId: msg._id.toString(),
+                    sender: msg.senderId,
+                    sentAt: msg.createdAt,
+                })),
+        );
+
+        const totalPages = Math.ceil(totalRaw / limit);
+        return {
+            data: items,
+            pagination: {
+                currentPage: page,
+                totalPages,
+                totalItems: totalRaw,
+                itemsPerPage: limit,
+                hasNextPage: page < totalPages,
+                hasPrevPage: page > 1,
+            },
+        };
+    }
 }
