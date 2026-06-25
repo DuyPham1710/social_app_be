@@ -11,12 +11,15 @@ import UpdateUserDto from '../user/dto/update.user.dto';
 import ResetPasswordDto from './dto/reset_password.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AppEvents } from 'src/shared/enums/app-events.enum';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class AuthService {
     constructor(
         private readonly jwtService: JwtService,
-        private readonly eventEmitter: EventEmitter2
+        private readonly eventEmitter: EventEmitter2,
+        private readonly httpService: HttpService,
     ) { }
 
     async register(dto: RegisterUserDto): Promise<UserResponseDto> {
@@ -231,6 +234,75 @@ export class AuthService {
     async deleteIncompleteRegistration(userId: string) {
         const [result] = await this.eventEmitter.emitAsync(AppEvents.USER_HARD_DELETE, { userId });
         return result;
+    }
+
+    async googleAuth(idToken: string) {
+        // Verify idToken with Google
+        let googleUser: any;
+        try {
+            const response = await firstValueFrom(
+                this.httpService.get(`https://oauth2.googleapis.com/tokeninfo?id_token=${idToken}`)
+            );
+            googleUser = response.data;
+        } catch (error) {
+            throw new UnauthorizedException('Invalid Google token');
+        }
+
+        // Verify audience matches our client ID
+        const clientId = process.env.GOOGLE_CLIENT_ID;
+        if (googleUser.aud !== clientId) {
+            throw new UnauthorizedException('Invalid Google token audience');
+        }
+
+        const { email, name, picture, sub: googleId } = googleUser;
+
+        // Find user by googleId
+        const [existingGoogleUser] = await this.eventEmitter.emitAsync(AppEvents.USER_FIND_BY_GOOGLE_ID, { googleId });
+        if (existingGoogleUser) {
+            // Existing Google user → login
+            const userResponse = plainToInstance(UserResponseDto, existingGoogleUser.toObject(), {
+                excludeExtraneousValues: true,
+            });
+            const loginResult = await this.login(userResponse);
+            return { ...loginResult, isNewUser: false };
+        }
+
+        // Find user by email
+        const [existingEmailUser] = await this.eventEmitter.emitAsync(AppEvents.USER_FIND_BY_EMAIL, { email });
+        if (existingEmailUser) {
+            // Email exists with local auth → reject
+            throw new BadRequestException('Email đã được sử dụng với tài khoản khác');
+        }
+
+        // Create new user
+        // Generate unique username from email
+        let username = email.split('@')[0];
+        const [existingUsername] = await this.eventEmitter.emitAsync(AppEvents.USER_FIND_BY_USERNAME, { username });
+        if (existingUsername) {
+            username = `${username}_${Math.random().toString(36).substring(2, 7)}`;
+        }
+
+        const [newUser] = await this.eventEmitter.emitAsync(AppEvents.USER_CREATE, {
+            email,
+            username,
+            fullName: name || username,
+            avatarUrl: picture || '',
+            googleId,
+            authProvider: 'google',
+            isActive: true,
+        });
+
+        // Create privacy settings for new user
+        await this.eventEmitter.emitAsync(AppEvents.USER_CREATED, {
+            userId: newUser._id.toString(),
+        });
+
+        const userResponse = plainToInstance(UserResponseDto, newUser.toObject(), {
+            excludeExtraneousValues: true,
+        });
+
+        const loginResult = await this.login(userResponse);
+        return { ...loginResult, isNewUser: true };
     }
 
 }

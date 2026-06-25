@@ -14,6 +14,7 @@ export enum AppEvents {
     USER_CHECK_EXISTS = 'user.checkExists',
     USER_GET_BASIC_INFO = 'user.getBasicInfo',
     USER_HARD_DELETE = 'user.hardDelete',
+    USER_FIND_BY_GOOGLE_ID = 'user.findByGoogleId',
 
     // ===== MAIL =====
     MAIL_SEND = 'mail.send',
