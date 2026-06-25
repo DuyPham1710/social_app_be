@@ -77,7 +77,6 @@ export class StoryService {
         const story = new this.storyModel({
             ...createStoryDto,
             userId: new Types.ObjectId(userId),
-            expireAt: new Date(Date.now() + 24 * 60 * 60 * 1000)
         });
 
         // Lưu story trước để có storyId
