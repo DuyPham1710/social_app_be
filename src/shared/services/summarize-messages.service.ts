@@ -1,18 +1,19 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { HttpService } from '@nestjs/axios';
+import { Injectable, Logger, HttpException, HttpStatus } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import { getSummarizeMessagesPrompt } from '../../common/prompts';
 
 @Injectable()
 export class AiService {
     private readonly logger = new Logger(AiService.name);
-    private readonly hfToken: string;
+    private readonly geminiApiKey: string;
+    private readonly geminiModel: string;
 
     constructor(
-        private readonly httpService: HttpService,
         private readonly configService: ConfigService,
     ) {
-        this.hfToken = this.configService.get<string>('HUGGINGFACE_ACCESS_TOKEN', '');
+        this.geminiApiKey = this.configService.get<string>('GEMINI_API_KEY', '');
+        this.geminiModel = this.configService.get<string>('GEMINI_MODEL', 'gemini-2.0-flash');
     }
 
     async summarizeMessages(messagesText: string, lang?: string): Promise<string> {
@@ -20,53 +21,51 @@ export class AiService {
             return lang?.startsWith('vi') ? 'Không có nội dung tin nhắn để tóm tắt.' : 'No message content to summarize.';
         }
 
-        if (!this.hfToken) {
-            return lang?.startsWith('vi') ? 'Không thể tóm tắt do chưa cấu hình Hugging Face Token.' : 'Cannot summarize as Hugging Face Token is not configured.';
+        if (!this.geminiApiKey) {
+            return lang?.startsWith('vi') ? 'Không thể tóm tắt do chưa cấu hình Gemini API Key.' : 'Cannot summarize as Gemini API Key is not configured.';
         }
 
         try {
-            const url = this.configService.get<string>('HUGGINGFACE_URL', '');
-            const modelName = this.configService.get<string>('HUGGINGFACE_MODEL', '');
-
             const isVi = lang ? lang.startsWith('vi') : true;
             const targetLanguageName = isVi ? 'Tiếng Việt' : 'English';
 
             const systemPrompt = getSummarizeMessagesPrompt(targetLanguageName);
+            const userMessage = isVi
+                ? `Các tin nhắn chưa đọc cần tóm tắt:\n${messagesText}`
+                : `Unread messages to summarize:\n${messagesText}`;
 
-            const payload = {
-                model: modelName,
-                messages: [
-                    { role: 'system', content: systemPrompt },
-                    { role: 'user', content: isVi ? `Các tin nhắn chưa đọc cần tóm tắt:\n${messagesText}` : `Unread messages to summarize:\n${messagesText}` }
-                ],
-                max_tokens: 300,
-                temperature: 0.3
-            };
+            const genAI = new GoogleGenerativeAI(this.geminiApiKey);
+            const model = genAI.getGenerativeModel({
+                model: this.geminiModel,
+                systemInstruction: systemPrompt,
+            });
 
-            const response = await this.httpService.axiosRef.post(
-                url,
-                payload,
-                {
-                    headers: {
-                        'Authorization': `Bearer ${this.hfToken}`,
-                        'Content-Type': 'application/json'
-                    },
-                    timeout: 25000
-                }
-            );
+            const result = await model.generateContent(userMessage);
+            const summary = result.response.text();
 
-            const summary = response.data?.choices?.[0]?.message?.content;
             if (!summary) {
-                throw new Error('Không nhận được nội dung từ AI API.');
+                throw new Error('Không nhận được nội dung từ Gemini API.');
             }
 
             return summary.trim();
         } catch (error) {
-            this.logger.error(`Lỗi khi tóm tắt tin nhắn qua HuggingFace: ${error.message}`);
-            if (error.response?.data) {
-                this.logger.error(`Chi tiết lỗi API: ${JSON.stringify(error.response.data)}`);
+            this.logger.error(`Lỗi khi tóm tắt tin nhắn qua Gemini: ${error.message}`);
+            
+            const isVi = lang ? lang.startsWith('vi') : true;
+            const isRateLimit = error.status === 429 || error.message?.includes('429') || error.message?.includes('Too Many Requests');
+            const isOverloaded = error.status === 503 || error.message?.includes('503') || error.message?.includes('Service Unavailable');
+            
+            if (isRateLimit || isOverloaded) {
+                throw new HttpException(
+                    isVi ? 'Hệ thống AI đang quá tải. Vui lòng thử lại sau ít phút.' : 'AI system is overloaded. Please try again in a few minutes.',
+                    isRateLimit ? HttpStatus.TOO_MANY_REQUESTS : HttpStatus.SERVICE_UNAVAILABLE
+                );
             }
-            throw error;
+            
+            throw new HttpException(
+                isVi ? 'Lỗi khi xử lý tóm tắt bằng AI.' : 'Error processing AI summary.',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
         }
     }
 }

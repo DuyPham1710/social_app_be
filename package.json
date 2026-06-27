@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@google-cloud/translate": "^9.3.0",
+    "@google/generative-ai": "^0.24.1",
     "@nestjs-modules/mailer": "^2.0.2",
     "@nestjs/axios": "^4.0.1",
     "@nestjs/common": "^11.0.1",
