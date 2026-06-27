@@ -104,7 +104,7 @@ export class NotificationListener {
     await this.notificationService.createAndEmit({
       receiver: payload.receiver,
       sender: payload.sender,
-      type: NotificationType.POST_COMMENT,
+      type: NotificationType.MENTION,
       targetId: payload.commentId,
       message: `${payload.content}`,
       content: payload.postId,

@@ -89,6 +89,7 @@ export class CommentService {
 
     const user = populated.userId as any;
 
+    console.log('>>>>>>>>>>>>>uniqueTaggedIds', uniqueTaggedIds);
     if (uniqueTaggedIds.length > 0) {
       uniqueTaggedIds.forEach(async (taggedId) => {
         if (taggedId.toString() !== userId) {
