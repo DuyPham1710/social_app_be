@@ -16,6 +16,37 @@ export class AiService {
         this.geminiModel = this.configService.get<string>('GEMINI_MODEL', 'gemini-2.0-flash');
     }
 
+    private async generateWithRetry(
+        model:any,
+        prompt:string
+    ){
+        const retries = 3;
+        for(let i=0;i<retries;i++){
+            try{
+                return await model.generateContent(prompt);
+            }catch(error:any){
+                const status =
+                  error.status ||
+                  error?.response?.status;
+                if(status === 429 || status === 503){
+                    const delay =
+                      3000 * (i + 1);
+                    this.logger.warn(
+                      `Gemini busy. Retry ${i+1} after ${delay}ms`
+                    );
+                    await new Promise(
+                      r=>setTimeout(r,delay)
+                    );
+                    continue;
+                }
+                throw error;
+            }
+        }
+        throw new Error(
+          'Gemini unavailable'
+        );
+    }
+
     async summarizeMessages(messagesText: string, lang?: string): Promise<string> {
         if (!messagesText || messagesText.trim().length === 0) {
             return lang?.startsWith('vi') ? 'Không có nội dung tin nhắn để tóm tắt.' : 'No message content to summarize.';
@@ -40,7 +71,10 @@ export class AiService {
                 systemInstruction: systemPrompt,
             });
 
-            const result = await model.generateContent(userMessage);
+            const result = await this.generateWithRetry(
+                model,
+                userMessage
+            );
             const summary = result.response.text();
 
             if (!summary) {
