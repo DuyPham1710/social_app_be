@@ -103,7 +103,7 @@ export class PostService {
     const userObjectId = new Types.ObjectId(userId);
 
     const post = await this.postModel
-      .findOne({ _id: postObjectId, isHidden: { $ne: true } })
+      .findOne({ _id: postObjectId, isHidden: { $ne: true }, communityStatus: { $ne: CommunityPostStatus.REJECTED } })
       .select('viewCount')
       .lean()
       .exec();
@@ -170,7 +170,7 @@ export class PostService {
       const postObjectId = new Types.ObjectId(postId);
 
       const post = await this.postModel
-        .findOne({ _id: postObjectId, isHidden: { $ne: true } })
+        .findOne({ _id: postObjectId, isHidden: { $ne: true }, communityStatus: { $ne: CommunityPostStatus.REJECTED } })
         .populate('userId', 'username fullName avatarUrl')
         .populate('taggedUserIds', 'username fullName avatarUrl')
         .populate({ path: 'urls', options: { sort: { order: 1 } } })
@@ -447,8 +447,10 @@ export class PostService {
       filter.communityStatus = 'pending';
     } else if (status === 'approved') {
       filter.communityStatus = 'approved';
+    } else {
+      filter.communityStatus = { $ne: CommunityPostStatus.REJECTED };
     }
-    // if status === 'all', include all posts with any communityStatus
+    // if status === 'all', include all posts with any communityStatus except rejected
 
     const [posts, total] = await Promise.all([
       this.postModel
@@ -555,7 +557,7 @@ export class PostService {
 
     // Query post của bạn bè
     let friendsPosts: PostDocument[] = await this.postModel
-      .find({ userId: { $in: friendIds }, isHidden: { $ne: true } })
+      .find({ userId: { $in: friendIds }, isHidden: { $ne: true }, communityStatus: { $ne: CommunityPostStatus.REJECTED } })
       .populate('userId', 'username fullName avatarUrl')
       .populate('taggedUserIds', 'username fullName avatarUrl')
       .populate('communityId', 'name avatar')
@@ -581,7 +583,7 @@ export class PostService {
 
     // query post của mình
     const myPosts: PostDocument[] = await this.postModel
-      .find({ userId: new Types.ObjectId(viewerId), isHidden: { $ne: true } })
+      .find({ userId: new Types.ObjectId(viewerId), isHidden: { $ne: true }, communityStatus: { $ne: CommunityPostStatus.REJECTED } })
       .populate('userId', 'username fullName avatarUrl')
       .populate('taggedUserIds', 'username fullName avatarUrl')
       .populate('communityId', 'name avatar')
@@ -613,6 +615,7 @@ export class PostService {
           userId: { $nin: existingUserIds.map((id) => new Types.ObjectId(id)) },
           _id: { $nin: existingPostIds.map((id) => new Types.ObjectId(id)) },
           isHidden: { $ne: true },
+          communityStatus: { $ne: CommunityPostStatus.REJECTED },
         })
         .populate('userId', 'username fullName avatarUrl')
         .populate('taggedUserIds', 'username fullName avatarUrl')
@@ -1331,9 +1334,28 @@ export class PostService {
     }
 
     const post = await this.postModel
-      .findOne({ _id: postId, isHidden: { $ne: true } })
+      .findOne({ _id: postId, isHidden: { $ne: true }, communityStatus: { $ne: CommunityPostStatus.REJECTED } })
       .lean();
     if (!post) return false;
+
+    if (post.communityId) {
+      if (post.userId.toString() === viewerId) return true;
+      
+      const [isAdmin] = await this.eventEmitter.emitAsync(
+        AppEvents.USER_IS_ADMIN,
+        { userId: viewerId },
+      );
+      if (isAdmin) return true;
+
+      const [response] = await this.eventEmitter.emitAsync(
+        AppEvents.COMMUNITY_GET_MEMBER_ROLE,
+        { communityId: post.communityId.toString(), userId: viewerId },
+      );
+      if (response && response.role) {
+        return true;
+      }
+      return false;
+    }
 
     // Lấy danh sách bạn bè của chủ post
     const [friendsOfOwner] = await this.eventEmitter.emitAsync(
@@ -2178,6 +2200,18 @@ export class PostService {
       { userId: payload.viewerId },
     );
     if (isAdmin) return true;
+
+    if (post.communityId) {
+      const [response] = await this.eventEmitter.emitAsync(
+        AppEvents.COMMUNITY_GET_MEMBER_ROLE,
+        { communityId: post.communityId.toString(), userId: payload.viewerId },
+      );
+      if (response && response.role) {
+        return true;
+      }
+      return false;
+    }
+
     if (post.privacy_type === PrivacyType.PUBLIC) return true;
     if (post.privacy_type === PrivacyType.PRIVATE) {
       return post.userId.toString() === payload.viewerId;
