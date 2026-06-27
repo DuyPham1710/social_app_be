@@ -102,6 +102,11 @@ export class UserService {
             throw new UnauthorizedException('User not found');
         }
 
+        // Reject login for Google-only users
+        if (user.authProvider === 'google') {
+            throw new UnauthorizedException('Tài khoản này đã đăng ký bằng Google. Vui lòng sử dụng nút "Đăng nhập với Google".');
+        }
+
         const auth = await bcrypt.compare(password, user.password);
 
         if (!auth) {
@@ -553,6 +558,12 @@ export class UserService {
     async handleGetBasicUserInfo({ userId }: { userId: string }): Promise<{ userId: string; username: string; fullName: string; avatarUrl?: string } | null> {
         return this.getBasicUserInfo(userId);
     }
+
+    @OnEvent(AppEvents.USER_FIND_BY_GOOGLE_ID)
+    async handleFindByGoogleId({ googleId }: { googleId: string }): Promise<UserDocument | null> {
+        return this.userModel.findOne({ googleId }).exec();
+    }
+
     @OnEvent(AppEvents.USER_IS_ADMIN)
     async handleUserIsAdmin({ userId }: { userId: string }): Promise<boolean> {
         const user = await this.userModel.findById(userId).lean().exec();

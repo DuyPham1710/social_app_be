@@ -9,6 +9,7 @@ import { VerifyAccountDto } from './dto/verify.account';
 import { EmailDto } from './dto/email.dto';
 import ResetPasswordDto from './dto/reset_password.dto';
 import { JwtRefreshAuthGuard } from 'src/common/guards/jwt-refresh-auth.guard';
+import { GoogleAuthDto } from './dto/google-auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -52,5 +53,9 @@ export class AuthController {
     return this.authService.deleteIncompleteRegistration(id);
   }
 
+  @Post('google')
+  googleAuth(@Body() googleAuthDto: GoogleAuthDto) {
+    return this.authService.googleAuth(googleAuthDto.idToken);
+  }
 
 }

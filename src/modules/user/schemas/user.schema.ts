@@ -48,8 +48,14 @@ export class User {
     @Prop({ type: String, required: true, unique: true })
     username: string;
 
-    @Prop({ type: String, required: true })
+    @Prop({ type: String })
     password: string;
+
+    @Prop({ type: String, default: null })
+    googleId: string;
+
+    @Prop({ type: String, enum: ['local', 'google'], default: 'local' })
+    authProvider: string;
 
     @Prop({ type: Boolean, default: false })
     isActive: boolean;

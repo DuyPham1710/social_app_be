@@ -169,8 +169,6 @@ export class UserController {
   @Put()
   @ApiBody({ type: UpdateUserDto })
   updatePersonalInfo(@Body() updateUserDto: UpdateUserDto): Promise<UserResponseDto> {
-    updateUserDto.avatarUrl = '';
-    updateUserDto.coverUrl = '';
     return this.userService.update(updateUserDto._id ?? '', updateUserDto);
   }
 
