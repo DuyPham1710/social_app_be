@@ -2502,4 +2502,23 @@ export class PostService {
       hasNext: skip + posts.length < total,
     };
   }
+
+  @OnEvent(AppEvents.COMMUNITY_USER_REMOVED)
+  async handleCommunityUserRemoved(payload: { communityId: string; userId: string }) {
+    const { communityId, userId } = payload;
+    
+    // Tìm tất cả bài viết của user trong community
+    const posts = await this.postModel.find({
+      communityId: new Types.ObjectId(communityId),
+      userId: new Types.ObjectId(userId)
+    }).select('_id').lean();
+
+    for (const post of posts) {
+      try {
+        await this.deletePost(post._id.toString(), userId);
+      } catch (error) {
+        this.logger.error(`Lỗi khi xóa bài viết ${post._id} của user ${userId} khi rời cộng đồng:`, error);
+      }
+    }
+  }
 }

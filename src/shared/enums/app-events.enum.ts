@@ -130,6 +130,7 @@ export enum AppEvents {
     COMMUNITY_ROADMAP_UPDATE = 'community.roadmap.update',
     COMMUNITY_ROADMAP_REMOVE_POST = 'community.roadmap.removePost',
     COMMUNITY_ROADMAP_GET_POSTS = 'community.roadmap.getPosts',
+    COMMUNITY_USER_REMOVED = 'community.user.removed',
 
     // ===== FACE RECOGNITION =====
     FACE_ENROLL = 'face.enroll',

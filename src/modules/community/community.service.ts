@@ -539,6 +539,11 @@ export class CommunityService {
         });
         await this.communityModel.findByIdAndUpdate(community._id, { $inc: { memberCount: -1 } });
 
+        this.eventEmitter.emit(AppEvents.COMMUNITY_USER_REMOVED, {
+            communityId: communityId,
+            userId: userId,
+        });
+
         return { message: 'Đã rời khỏi cộng đồng' };
     }
 
@@ -556,6 +561,11 @@ export class CommunityService {
 
         await member.deleteOne();
         await this.communityModel.findByIdAndUpdate(community._id, { $inc: { memberCount: -1 } });
+
+        this.eventEmitter.emit(AppEvents.COMMUNITY_USER_REMOVED, {
+            communityId: communityId,
+            userId: memberId,
+        });
 
         return { message: 'Đã xóa thành viên khỏi cộng đồng' };
     }
