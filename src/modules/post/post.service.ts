@@ -557,7 +557,7 @@ export class PostService {
 
     // Query post của bạn bè
     let friendsPosts: PostDocument[] = await this.postModel
-      .find({ userId: { $in: friendIds }, isHidden: { $ne: true }, communityStatus: { $ne: CommunityPostStatus.REJECTED } })
+      .find({ userId: { $in: friendIds }, isHidden: { $ne: true }, communityStatus: { $nin: [CommunityPostStatus.REJECTED, CommunityPostStatus.PENDING] } })
       .populate('userId', 'username fullName avatarUrl')
       .populate('taggedUserIds', 'username fullName avatarUrl')
       .populate('communityId', 'name avatar')
@@ -583,7 +583,7 @@ export class PostService {
 
     // query post của mình
     const myPosts: PostDocument[] = await this.postModel
-      .find({ userId: new Types.ObjectId(viewerId), isHidden: { $ne: true }, communityStatus: { $ne: CommunityPostStatus.REJECTED } })
+      .find({ userId: new Types.ObjectId(viewerId), isHidden: { $ne: true }, communityStatus: { $nin: [CommunityPostStatus.REJECTED, CommunityPostStatus.PENDING] } })
       .populate('userId', 'username fullName avatarUrl')
       .populate('taggedUserIds', 'username fullName avatarUrl')
       .populate('communityId', 'name avatar')
@@ -615,7 +615,7 @@ export class PostService {
           userId: { $nin: existingUserIds.map((id) => new Types.ObjectId(id)) },
           _id: { $nin: existingPostIds.map((id) => new Types.ObjectId(id)) },
           isHidden: { $ne: true },
-          communityStatus: { $ne: CommunityPostStatus.REJECTED },
+          communityStatus: { $nin: [CommunityPostStatus.REJECTED, CommunityPostStatus.PENDING] },
         })
         .populate('userId', 'username fullName avatarUrl')
         .populate('taggedUserIds', 'username fullName avatarUrl')

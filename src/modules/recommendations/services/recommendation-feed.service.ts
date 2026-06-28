@@ -254,7 +254,7 @@ export class RecommendationFeedService {
       userId: { $ne: userObjectId },
       isHidden: { $ne: true },
       privacy_type: PrivacyType.PUBLIC,
-      communityStatus: { $ne: 'rejected' },
+      communityStatus: { $nin: ['rejected', 'pending'] },
     };
 
     if (strategy === 'personalized') {
@@ -285,7 +285,7 @@ export class RecommendationFeedService {
           {
             userId: { $in: friendObjectIds, $ne: userObjectId },
             isHidden: { $ne: true },
-            communityStatus: { $ne: 'rejected' },
+            communityStatus: { $nin: ['rejected', 'pending'] },
           },
           this.buildVisiblePostFilter(userObjectId, friendObjectIds),
         ],
@@ -310,7 +310,7 @@ export class RecommendationFeedService {
       userId: { $ne: userObjectId },
       isHidden: { $ne: true },
       privacy_type: PrivacyType.PUBLIC,
-      communityStatus: { $ne: 'rejected' },
+      communityStatus: { $nin: ['rejected', 'pending'] },
     };
 
     if (strategy === 'personalized' && topCategories.length > 0) {
@@ -341,7 +341,7 @@ export class RecommendationFeedService {
             userId: { $ne: params.userObjectId },
             _id: { $nin: excludedPostIds },
             isHidden: { $ne: true },
-            communityStatus: { $ne: 'rejected' },
+            communityStatus: { $nin: ['rejected', 'pending'] },
           },
           {
             $or: [
