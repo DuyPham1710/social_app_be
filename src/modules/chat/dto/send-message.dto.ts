@@ -47,6 +47,10 @@ export class SendMessageDto {
     @IsOptional()
     storyId?: string;
 
+    @IsString()
+    @IsOptional()
+    postId?: string;
+
     @IsOptional()
     metadata?: {
         type?: 'video_call' | 'audio_call';

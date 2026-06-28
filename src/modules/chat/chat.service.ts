@@ -500,6 +500,19 @@ export class ChatService {
                         select: 'username fullName avatarUrl'
                     }
                 })
+                .populate({
+                    path: 'postId',
+                    select: 'caption urls layout userId createdAt',
+                    populate: [
+                        {
+                            path: 'userId',
+                            select: 'username fullName avatarUrl'
+                        },
+                        {
+                            path: 'urls'
+                        }
+                    ]
+                })
                 .populate('reactions.userId', 'username fullName avatarUrl')
                 .populate('reactions.emojiId', 'label icon')
                 .populate('seenBy.userId', 'username fullName avatarUrl')
@@ -626,6 +639,19 @@ export class ChatService {
                     select: 'username fullName avatarUrl'
                 }
             })
+            .populate({
+                path: 'postId',
+                select: 'caption urls layout userId createdAt',
+                populate: [
+                    {
+                        path: 'userId',
+                        select: 'username fullName avatarUrl'
+                    },
+                    {
+                        path: 'urls'
+                    }
+                ]
+            })
             .populate('reactions.userId', 'username fullName avatarUrl')
             .populate('reactions.emojiId', 'label icon')
             .populate('seenBy.userId', 'username fullName avatarUrl')
@@ -658,7 +684,7 @@ export class ChatService {
         userId: string,
         sendMessageDto: SendMessageDto,
     ): Promise<MessageResponseDto> {
-        const { conversationId, text, attachments, replyTo, metadata, storyId } = sendMessageDto;
+        const { conversationId, text, attachments, replyTo, metadata, storyId, postId } = sendMessageDto;
 
         if (!Types.ObjectId.isValid(conversationId)) {
             throw new HttpException('Invalid conversation ID', HttpStatus.BAD_REQUEST);
@@ -698,6 +724,7 @@ export class ChatService {
             attachments: attachments || [],
             replyTo: replyTo ? new Types.ObjectId(replyTo) : null,
             storyId: storyId ? new Types.ObjectId(storyId) : null,
+            postId: postId ? new Types.ObjectId(postId) : null,
             metadata: metadata || null,
             seenBy: [
                 {
@@ -736,6 +763,19 @@ export class ChatService {
                     path: 'userId',
                     select: 'username fullName avatarUrl'
                 }
+            })
+            .populate({
+                path: 'postId',
+                select: 'caption urls layout userId createdAt',
+                populate: [
+                    {
+                        path: 'userId',
+                        select: 'username fullName avatarUrl'
+                    },
+                    {
+                        path: 'urls'
+                    }
+                ]
             })
             .populate('reactions.userId', 'username fullName avatarUrl')
             .populate('reactions.emojiId', 'label icon')
@@ -942,6 +982,19 @@ export class ChatService {
                     select: 'username fullName avatarUrl'
                 }
             })
+            .populate({
+                path: 'postId',
+                select: 'caption urls layout userId createdAt',
+                populate: [
+                    {
+                        path: 'userId',
+                        select: 'username fullName avatarUrl'
+                    },
+                    {
+                        path: 'urls'
+                    }
+                ]
+            })
             .populate('reactions.userId', 'username fullName avatarUrl')
             .populate('reactions.emojiId', 'label icon')
             .populate('seenBy.userId', 'username fullName avatarUrl')
@@ -1051,6 +1104,19 @@ export class ChatService {
                     path: 'userId',
                     select: 'username fullName avatarUrl'
                 }
+            })
+            .populate({
+                path: 'postId',
+                select: 'caption urls layout userId createdAt',
+                populate: [
+                    {
+                        path: 'userId',
+                        select: 'username fullName avatarUrl'
+                    },
+                    {
+                        path: 'urls'
+                    }
+                ]
             })
             .populate('reactions.userId', 'username fullName avatarUrl')
             .populate('reactions.emojiId', 'label icon')
@@ -1169,12 +1235,30 @@ export class ChatService {
             seenAt: seen.seenAt,
         })) || [];
 
+        // Transform postId: trả về thông tin post nếu có
+        let post = null;
+        if (msg.postId && typeof msg.postId === 'object') {
+            post = {
+                ...msg.postId,
+                _id: msg.postId._id?.toString() || msg.postId.toString(),
+                userId: msg.postId.userId ? {
+                    ...msg.postId.userId,
+                    _id: msg.postId.userId._id?.toString() || msg.postId.userId.toString(),
+                } : null,
+                urls: msg.postId.urls?.map((u: any) => ({
+                    ...u,
+                    _id: u._id?.toString() || u.toString(),
+                })) || [],
+            };
+        }
+
         return {
             ...msg,
             _id: msg._id.toString(),
             conversationId: msg.conversationId.toString(),
             replyTo,
             story,
+            post,
             reactions,
             seenBy,
             metadata: msg.metadata || null, // Explicitly include metadata
@@ -1352,6 +1436,19 @@ export class ChatService {
                     path: 'userId',
                     select: 'username fullName avatarUrl'
                 }
+            })
+            .populate({
+                path: 'postId',
+                select: 'caption urls layout userId createdAt',
+                populate: [
+                    {
+                        path: 'userId',
+                        select: 'username fullName avatarUrl'
+                    },
+                    {
+                        path: 'urls'
+                    }
+                ]
             })
             .populate('reactions.userId', 'username fullName avatarUrl')
             .populate('reactions.emojiId', 'label icon')

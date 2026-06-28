@@ -110,6 +110,42 @@ export class StoryReplyDto {
     createdAt: Date;
 }
 
+export class PostUrlDto {
+    @Expose()
+    _id: string;
+
+    @Expose()
+    url: string;
+
+    @Expose()
+    title?: string;
+
+    @Expose()
+    order: number;
+}
+
+export class PostShareDto {
+    @Expose()
+    _id: string;
+
+    @Expose()
+    caption?: string;
+
+    @Expose()
+    @Type(() => PostUrlDto)
+    urls: PostUrlDto[];
+
+    @Expose()
+    layout: string;
+
+    @Expose()
+    @Type(() => UserResponseDto)
+    userId: UserResponseDto;
+
+    @Expose()
+    createdAt: Date;
+}
+
 export class MessageResponseDto {
     @Expose()
     _id: string;
@@ -135,6 +171,10 @@ export class MessageResponseDto {
     @Expose()
     @Type(() => StoryReplyDto)
     story?: StoryReplyDto;
+
+    @Expose()
+    @Type(() => PostShareDto)
+    post?: PostShareDto;
 
     @Expose()
     @Type(() => ReactionDto)
