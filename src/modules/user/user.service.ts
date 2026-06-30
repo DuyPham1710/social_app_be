@@ -262,13 +262,15 @@ export class UserService {
                                 {
                                     autocomplete: {
                                         query: query,
-                                        path: 'fullName'
+                                        path: 'fullName',
+                                        fuzzy: { maxEdits: 1, prefixLength: 1 }
                                     }
                                 },
                                 {
                                     autocomplete: {
                                         query: query,
-                                        path: 'username'
+                                        path: 'username',
+                                        fuzzy: { maxEdits: 1, prefixLength: 1 }
                                     }
                                 }
                             ],
