@@ -227,16 +227,6 @@ export class UserService {
         const [friends] = await this.eventEmitter.emitAsync(AppEvents.FRIENDS_GET, { userId });
         const friendIds = friends.map(friend => friend._id);
 
-        // Tìm bạn bè trực tiếp phù hợp query
-        const friendsMatched = await this.userModel.find({
-            _id: { $in: friendIds },
-            role: { $ne: 'admin' },
-            $or: [
-                { username: qRegex },
-                { fullName: qRegex }
-            ]
-        });
-
         // Tìm mutual friends (friends-of-friends) match query
         const mutualFriendsArrays = await Promise.all(
             friendIds.map(friendId => this.eventEmitter.emitAsync(AppEvents.FRIENDS_GET, { userId: friendId.toString() }).then(([res]) => res))
@@ -254,25 +244,84 @@ export class UserService {
         });
         const mutualIds = Array.from(mutualIdsSet);
 
-        // Tìm mutual friends phù hợp query
-        const mutualMatched = await this.userModel.find({
-            _id: { $in: mutualIds },
-            role: { $ne: 'admin' },
-            $or: [
-                { username: qRegex },
-                { fullName: qRegex }
-            ]
-        });
+        const mongoUri = process.env.MONGO_URI || '';
+        const isAtlas = mongoUri.includes('mongodb+srv://') || mongoUri.includes('mongodb.net');
 
-        // Tìm tất cả user khác phù hợp query (ngoại trừ chính mình và bạn bè đã có)
-        const otherMatched = await this.userModel.find({
-            _id: { $nin: [userId, ...friendIds, ...mutualIds] },
-            role: { $ne: 'admin' },
-            $or: [
-                { username: qRegex },
-                { fullName: qRegex }
-            ]
-        });
+        let friendsMatched: any[] = [];
+        let mutualMatched: any[] = [];
+        let otherMatched: any[] = [];
+
+        if (query.trim() !== '' && isAtlas) {
+            // ATLAS SEARCH LOGIC
+            const atlasMatchedUsers = await this.userModel.aggregate([
+                {
+                    $search: {
+                        index: 'default',
+                        compound: {
+                            should: [
+                                {
+                                    autocomplete: {
+                                        query: query,
+                                        path: 'fullName'
+                                    }
+                                },
+                                {
+                                    autocomplete: {
+                                        query: query,
+                                        path: 'username'
+                                    }
+                                }
+                            ],
+                            minimumShouldMatch: 1
+                        }
+                    }
+                },
+                {
+                    $match: {
+                        role: { $ne: 'admin' }
+                    }
+                }
+            ]);
+
+            friendsMatched = atlasMatchedUsers.filter(u => friendIds.some(fid => fid.toString() === u._id.toString()));
+            mutualMatched = atlasMatchedUsers.filter(u => mutualIds.some(mid => mid.toString() === u._id.toString()));
+            otherMatched = atlasMatchedUsers.filter(u =>
+                u._id.toString() !== userId &&
+                !friendIds.some(fid => fid.toString() === u._id.toString()) &&
+                !mutualIds.some(mid => mid.toString() === u._id.toString())
+            );
+        } else {
+            // OLD LOGIC (Local / Fallback)
+            // Tìm bạn bè trực tiếp phù hợp query
+            friendsMatched = await this.userModel.find({
+                _id: { $in: friendIds },
+                role: { $ne: 'admin' },
+                $or: [
+                    { username: qRegex },
+                    { fullName: qRegex }
+                ]
+            });
+
+            // Tìm mutual friends phù hợp query
+            mutualMatched = await this.userModel.find({
+                _id: { $in: mutualIds },
+                role: { $ne: 'admin' },
+                $or: [
+                    { username: qRegex },
+                    { fullName: qRegex }
+                ]
+            });
+
+            // Tìm tất cả user khác phù hợp query (ngoại trừ chính mình và bạn bè đã có)
+            otherMatched = await this.userModel.find({
+                _id: { $nin: [userId, ...friendIds, ...mutualIds] },
+                role: { $ne: 'admin' },
+                $or: [
+                    { username: qRegex },
+                    { fullName: qRegex }
+                ]
+            });
+        }
 
         // Gộp lại theo thứ tự ưu tiên: bạn bè → mutual → người khác
         // Sử dụng Set và Map để loại bỏ duplicate dựa trên _id
