@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { HuggingFaceModule } from 'src/ai/huggingface/huggingface.module';
+import { CommunityMember, CommunityMemberSchema } from 'src/modules/community/schemas/community_member.schema';
 import { Post, PostSchema } from 'src/modules/post/schemas/post.schema';
 import { RecommendationsController } from './recommendations.controller';
 import {
@@ -26,6 +27,7 @@ import { RuleBasedPostCategoryService } from './services/rule-based-post-categor
         schema: UserCategoryPreferenceSchema,
       },
       { name: UserPostView.name, schema: UserPostViewSchema },
+      { name: CommunityMember.name, schema: CommunityMemberSchema },
     ]),
   ],
   controllers: [RecommendationsController],

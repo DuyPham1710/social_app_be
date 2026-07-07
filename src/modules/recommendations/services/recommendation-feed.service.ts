@@ -7,6 +7,10 @@ import { PostViewSource } from 'src/common/enums/post-view-source.enum';
 import { isMongoDuplicateKeyError } from 'src/common/utils/mongo-duplicate-key.util';
 import { shuffle } from 'src/common/utils/shuffle.util';
 import { Post, PostDocument } from 'src/modules/post/schemas/post.schema';
+import {
+  CommunityMember,
+  CommunityMemberDocument,
+} from 'src/modules/community/schemas/community_member.schema';
 import { AppEvents } from 'src/shared/enums/app-events.enum';
 import { PrivacyType } from 'src/shared/enums/privacy_type';
 import { GetRecommendationFeedQueryDto } from '../dto/get-recommendation-feed-query.dto';
@@ -38,12 +42,14 @@ export class RecommendationFeedService {
 
   constructor(
     @InjectModel(Post.name) private readonly postModel: Model<PostDocument>,
+    @InjectModel(CommunityMember.name)
+    private readonly communityMemberModel: Model<CommunityMemberDocument>,
     @InjectModel(UserCategoryPreference.name)
     private readonly userCategoryPreferenceModel: Model<UserCategoryPreferenceDocument>,
     @InjectModel(UserPostView.name)
     private readonly userPostViewModel: Model<UserPostViewDocument>,
     private readonly eventEmitter: EventEmitter2,
-  ) {}
+  ) { }
 
   async getRecommendedFeed(
     userId: string,
@@ -391,6 +397,7 @@ export class RecommendationFeedService {
     const pipeline: PipelineStage[] = [
       { $match: filter as any },
       ...this.buildNotViewedStages(viewerObjectId),
+      ...this.buildCommunityMemberFilterStages(viewerObjectId),
       ...categoryScoreStages,
       {
         $sort:
@@ -469,6 +476,42 @@ export class RecommendationFeedService {
       },
       { $match: { viewedByUser: { $eq: [] } } },
       { $project: { viewedByUser: 0 } },
+    ];
+  }
+
+  private buildCommunityMemberFilterStages(
+    viewerObjectId: Types.ObjectId,
+  ): PipelineStage[] {
+    return [
+      {
+        $lookup: {
+          from: this.communityMemberModel.collection.name,
+          let: { communityId: '$communityId' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$communityId', '$$communityId'] },
+                    { $eq: ['$userId', viewerObjectId] },
+                  ],
+                },
+              },
+            },
+            { $limit: 1 },
+          ],
+          as: 'communityMembership',
+        },
+      },
+      {
+        $match: {
+          $or: [
+            { communityId: null },
+            { communityMembership: { $ne: [] } },
+          ],
+        },
+      },
+      { $project: { communityMembership: 0 } },
     ];
   }
 
