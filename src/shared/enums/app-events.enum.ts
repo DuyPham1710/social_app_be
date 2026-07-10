@@ -139,5 +139,11 @@ export enum AppEvents {
     FACE_TAG_SUGGEST = 'face.tagSuggest',
     /** Ghi nhan cap user cung xuat hien trong anh post -> dung cho goi y ket ban */
     FACE_CO_APPEARANCE_RECORD = 'face.coAppearance.record',
+
+    // ===== ACTIVITY SUMMARY =====
+    ACTIVITY_POST_DATA = 'activity.post.data',
+    ACTIVITY_COMMENT_DATA = 'activity.comment.data',
+    ACTIVITY_REACT_POST_DATA = 'activity.reactPost.data',
+    ACTIVITY_STORY_DATA = 'activity.story.data',
 }
 

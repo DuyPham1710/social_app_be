@@ -2521,4 +2521,16 @@ export class PostService {
       }
     }
   }
+
+  @OnEvent(AppEvents.ACTIVITY_POST_DATA)
+  async handleActivityPostData(payload: { userId: string; startDate?: Date; endDate?: Date }): Promise<{ caption: string, createdAt: Date }[]> {
+    const filter: any = { userId: new Types.ObjectId(payload.userId), isHidden: { $ne: true } };
+    if (payload.startDate || payload.endDate) {
+      filter.createdAt = {};
+      if (payload.startDate) filter.createdAt.$gte = payload.startDate;
+      if (payload.endDate) filter.createdAt.$lte = payload.endDate;
+    }
+    const posts = await this.postModel.find(filter).select('caption createdAt').sort({ createdAt: -1 }).limit(30).exec();
+    return posts.map(p => ({ caption: p.caption, createdAt: (p as any).createdAt }));
+  }
 }

@@ -113,5 +113,16 @@ export class FriendsController {
     const userId = req.user.userId;
     return await this.friendsService.getFriendSuggestions(userId, suggestionsDto);
   }
+  @Get(':friendId/activities-summary')
+  @ApiOperation({ summary: 'Lấy tóm tắt hoạt động của một người bạn bằng AI' })
+  async getFriendActivitiesSummary(
+    @Req() req: any,
+    @Param('friendId') friendId: string,
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string
+  ) {
+    const userId = req.user.userId;
+    return await this.friendsService.getFriendActivitiesSummary(userId, friendId, startDate, endDate);
+  }
 }
 
