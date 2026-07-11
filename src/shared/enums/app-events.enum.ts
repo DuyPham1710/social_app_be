@@ -111,6 +111,8 @@ export enum AppEvents {
     
     // Admin Dashboard
     ADMIN_DASHBOARD_STATS = 'admin.dashboard.stats',
+    ADMIN_DASHBOARD_TOP_SPAMMERS = 'admin.dashboard.topSpammers',
+    ADMIN_DASHBOARD_TOP_CREATORS = 'admin.dashboard.topCreators',
     
     // Admin React
     ADMIN_REACT_POST_FIND_BY_USER = 'admin.reactPost.findByUser',

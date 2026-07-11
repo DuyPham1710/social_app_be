@@ -1323,4 +1323,57 @@ export class UserService {
             matchedCount: updateResult.matchedCount,
         };
     }
+
+    @OnEvent(AppEvents.ADMIN_DASHBOARD_TOP_SPAMMERS)
+    async handleAdminGetTopSpammers() {
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+        const topSpammers = await this.userReportModel.aggregate([
+            {
+                $match: {
+                    createdAt: { $gte: oneWeekAgo }
+                }
+            },
+            {
+                $group: {
+                    _id: '$reportedUserId',
+                    reportCount: { $sum: 1 }
+                }
+            },
+            {
+                $sort: { reportCount: -1 }
+            },
+            {
+                $limit: 5
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'user'
+                }
+            },
+            {
+                $unwind: '$user'
+            },
+            {
+                $project: {
+                    _id: 0,
+                    reportCount: 1,
+                    user: {
+                        userId: '$user._id',
+                        fullName: '$user.fullName',
+                        username: '$user.username',
+                        email: '$user.email',
+                        avatarUrl: '$user.avatarUrl',
+                        isBan: '$user.isBan'
+                    }
+                }
+            }
+        ]).exec();
+
+        return topSpammers;
+    }
 }

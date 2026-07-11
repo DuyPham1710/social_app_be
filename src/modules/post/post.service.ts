@@ -2535,4 +2535,48 @@ export class PostService {
       }
     }
   }
+
+  @OnEvent(AppEvents.ADMIN_DASHBOARD_TOP_CREATORS)
+  async handleAdminGetTopCreators() {
+    const topCreators = await this.postModel.aggregate([
+      {
+        $group: {
+          _id: '$userId',
+          postCount: { $sum: 1 }
+        }
+      },
+      {
+        $sort: { postCount: -1 }
+      },
+      {
+        $limit: 5
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'user'
+        }
+      },
+      {
+        $unwind: '$user'
+      },
+      {
+        $project: {
+          _id: 0,
+          postCount: 1,
+          user: {
+            userId: '$user._id',
+            fullName: '$user.fullName',
+            username: '$user.username',
+            email: '$user.email',
+            avatarUrl: '$user.avatarUrl'
+          }
+        }
+      }
+    ]).exec();
+
+    return topCreators;
+  }
 }
