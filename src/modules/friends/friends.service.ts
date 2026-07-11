@@ -14,6 +14,7 @@ import { FriendSuggestionsDto } from './dto/friend-suggestions.dto';
 import { FaceCoAppearanceService } from './face-co-appearance.service';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { AppEvents } from 'src/shared/enums/app-events.enum';
+import { AiService } from 'src/shared/services/ai.service';
 
 @Injectable()
 export class FriendsService {
@@ -24,7 +25,8 @@ export class FriendsService {
     private readonly friendRequestModel: Model<FriendRequestDocument>,
     private readonly eventEmitter: EventEmitter2,
     private readonly faceCoAppearanceService: FaceCoAppearanceService,
-  ) {}
+    private readonly aiService: AiService,
+  ) { }
 
   // Gửi lời mời kết bạn
   async sendFriendRequest(
@@ -916,6 +918,80 @@ export class FriendsService {
         hasNextPage: page < totalPages,
         hasPrevPage: page > 1,
       },
+    };
+  }
+
+  async getFriendActivitiesSummary(userId: string, targetUserId: string, startDate?: string, endDate?: string, language?: string) {
+    if (userId !== targetUserId) {
+      const friendship = await this.friendModel.findOne({
+        $or: [
+          { user_id: new Types.ObjectId(userId), friend_id: new Types.ObjectId(targetUserId) },
+          { user_id: new Types.ObjectId(targetUserId), friend_id: new Types.ObjectId(userId) },
+        ],
+      });
+
+      if (!friendship) {
+        throw new HttpException('Người này không nằm trong danh sách bạn bè của bạn', HttpStatus.FORBIDDEN);
+      }
+    }
+
+    const start = startDate ? new Date(startDate) : undefined;
+    const end = endDate ? new Date(endDate) : undefined;
+
+    const [targetUser] = await this.eventEmitter.emitAsync(AppEvents.USER_FIND_ONE, { userId: targetUserId });
+    const targetUserName = targetUser?.fullName.split(" ").pop() || targetUser?.username || 'bạn của bạn';
+
+    const [postDataResult] = await this.eventEmitter.emitAsync(AppEvents.ACTIVITY_POST_DATA, { userId: targetUserId, startDate: start, endDate: end });
+    const [commentDataResult] = await this.eventEmitter.emitAsync(AppEvents.ACTIVITY_COMMENT_DATA, { userId: targetUserId, startDate: start, endDate: end });
+    const [reactDataResult] = await this.eventEmitter.emitAsync(AppEvents.ACTIVITY_REACT_POST_DATA, { userId: targetUserId, startDate: start, endDate: end });
+    const [storyDataResult] = await this.eventEmitter.emitAsync(AppEvents.ACTIVITY_STORY_DATA, { userId: targetUserId, startDate: start, endDate: end });
+
+    const posts = postDataResult || [];
+    const comments = commentDataResult || [];
+    const reacts = reactDataResult || [];
+    const stories = storyDataResult || [];
+
+    const postCount = posts.length;
+    const commentCount = comments.length;
+    const reactCount = reacts.length;
+    const storyCount = stories.length;
+
+    let timeText = '';
+    if (start && end) {
+      timeText = `từ ngày ${start.toLocaleDateString('vi-VN')} đến ${end.toLocaleDateString('vi-VN')}`;
+    } else if (start) {
+      timeText = `từ ngày ${start.toLocaleDateString('vi-VN')}`;
+    } else if (end) {
+      timeText = `cho đến ngày ${end.toLocaleDateString('vi-VN')}`;
+    }
+
+    const postsText = posts.filter(p => p.caption).map(p => `"${p.caption}"`).join(', ');
+    const commentsText = comments.filter(c => c.content).map(c => `Bình luận "${c.content}"${c.postCaption ? ` trên bài viết "${c.postCaption}"` : ''}`).join(', ');
+    const reactsText = reacts.filter(r => r.emojiLabel).map(r => `"${r.emojiLabel}"`).join(', ');
+    const storiesText = stories.filter(s => s.title || s.music).map(s => {
+      let desc = '';
+      if (s.title) desc += `Tiêu đề: "${s.title}"`;
+      if (s.music) desc += `${desc ? ' kèm ' : ''}Bài hát: "${s.music.title}" - ${s.music.artist?.name || 'Unknown'}`;
+      return desc || 'Story hình ảnh/video';
+    }).join('; ');
+
+    const activityData = `
+      Khoảng thời gian: ${timeText || 'Không xác định'}
+      - Bài đăng (${postCount}): ${postsText || 'Không có'}
+      - Bình luận (${commentCount}): ${commentsText || 'Không có'}
+      - Story (${storyCount}): ${storiesText || 'Không có'}
+      - Cảm xúc đã thả (${reactCount}): ${reactsText || 'Không có'}`;
+
+    const summary = await this.aiService.summarizeUserActivities(activityData, targetUserName, language || 'vi');
+
+    return {
+      activities: {
+        postCount,
+        commentCount,
+        reactCount,
+        storyCount,
+      },
+      summary,
     };
   }
 }

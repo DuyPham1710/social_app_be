@@ -23,7 +23,7 @@ import {
 } from './dto';
 import { uploadChatAttachmentFromFile } from './helpers/upload-attachments.helper';
 import { AttachmentType } from 'src/shared/enums/Attachment_type';
-import { AiService } from 'src/shared/services/summarize-messages.service';
+import { AiService } from 'src/shared/services/ai.service';
 import { GoogleTranslationService } from 'src/shared/translation/google-translation.service';
 import { langsMatch } from 'src/shared/translation/lang-compare.util';
 

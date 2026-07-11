@@ -159,4 +159,26 @@ export class ReactPostService extends BaseReactionService {
       );
     }
   }
+
+  @OnEvent(AppEvents.ACTIVITY_REACT_POST_DATA)
+  async handleActivityReactPostData(payload: { userId: string; startDate?: Date; endDate?: Date }): Promise<{ emojiLabel: string | null, createdAt: Date }[]> {
+    const filter: any = { userId: new Types.ObjectId(payload.userId) };
+    if (payload.startDate || payload.endDate) {
+      filter.createdAt = {};
+      if (payload.startDate) filter.createdAt.$gte = payload.startDate;
+      if (payload.endDate) filter.createdAt.$lte = payload.endDate;
+    }
+    const reactions = await this.reactionModel
+      .find(filter)
+      .select('emojiId createdAt')
+      .populate('emojiId', 'label')
+      .sort({ createdAt: -1 })
+      .limit(30)
+      .exec();
+    
+    return reactions.map(r => ({
+      emojiLabel: r.emojiId ? (r.emojiId as any).label : null,
+      createdAt: (r as any).createdAt
+    }));
+  }
 }
