@@ -84,19 +84,24 @@ export class PostService {
     postId: string,
     userId: string,
   ): Promise<{ viewCount: number; isFirstTimeView: boolean }> {
-    const canView = await this.canViewPost({
-      postId: postId.toString(),
-      viewerId: userId.toString(),
-    });
-    if (!canView) {
-      throw new ForbiddenException('Bạn không có quyền xem bài viết này');
-    }
-
     if (!Types.ObjectId.isValid(postId)) {
       throw new HttpException('Invalid postId', HttpStatus.BAD_REQUEST);
     }
     if (!Types.ObjectId.isValid(userId)) {
       throw new HttpException('Invalid userId', HttpStatus.BAD_REQUEST);
+    }
+
+    const postt = await this.postModel.findById(postId).lean();
+    if (!postt) {
+      throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
+    }
+
+    const canView = await this.canViewPost({
+      postId: postId.toString(),
+      viewerId: userId.toString(),
+    });
+    if (!canView) {
+      throw new ForbiddenException('POST_NO_PERMISSION');
     }
 
     const postObjectId = new Types.ObjectId(postId);
@@ -158,66 +163,67 @@ export class PostService {
     postId: string,
     userId: string,
   ): Promise<PostResponseDto> {
+    if (!Types.ObjectId.isValid(postId)) {
+      throw new HttpException('Invalid postId', HttpStatus.BAD_REQUEST);
+    }
+
+    const postObjectId = new Types.ObjectId(postId);
+
+    const post = await this.postModel
+      .findOne({ _id: postObjectId, isHidden: { $ne: true }, communityStatus: { $ne: CommunityPostStatus.REJECTED } })
+      .populate('userId', 'username fullName avatarUrl')
+      .populate('taggedUserIds', 'username fullName avatarUrl')
+      .populate({ path: 'urls', options: { sort: { order: 1 } } })
+      .populate('communityId', 'name avatar')
+      .exec();
+    if (!post) {
+      throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
+    }
+
     const canView = await this.canViewPost({
       postId: postId.toString(),
       viewerId: userId.toString(),
     });
-    if (canView) {
-      if (!Types.ObjectId.isValid(postId)) {
-        throw new HttpException('Invalid postId', HttpStatus.BAD_REQUEST);
-      }
-
-      const postObjectId = new Types.ObjectId(postId);
-
-      const post = await this.postModel
-        .findOne({ _id: postObjectId, isHidden: { $ne: true }, communityStatus: { $ne: CommunityPostStatus.REJECTED } })
-        .populate('userId', 'username fullName avatarUrl')
-        .populate('taggedUserIds', 'username fullName avatarUrl')
-        .populate({ path: 'urls', options: { sort: { order: 1 } } })
-        .populate('communityId', 'name avatar')
-        .exec();
-      if (!post) {
-        throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
-      }
-
-      const userResponseDto: UserResponseDto = plainToInstance(
-        UserResponseDto,
-        post.userId,
-        {
-          excludeExtraneousValues: true,
-        },
-      );
-      const cleanedUser = omitBy(
-        userResponseDto,
-        isUndefined,
-      ) as UserResponseDto;
-
-      // Lấy danh sách react của từng post thông qua event emitter
-      const [reactsMap] = await this.eventEmitter.emitAsync(
-        AppEvents.REACT_POST_GET,
-        { postIds: [postId], viewerId: userId },
-      );
-      const [reactMap] = await this.eventEmitter.emitAsync(
-        AppEvents.REACT_POST_FIND_BY_USER,
-        { userId: userId, postIds: [postId] },
-      );
-
-      return {
-        ...post.toObject(),
-        userId: cleanedUser,
-        taggedUsers: post.taggedUserIds?.map((u) =>
-          omitBy(
-            plainToInstance(UserResponseDto, u, {
-              excludeExtraneousValues: true,
-            }),
-            isUndefined,
-          ),
-        ),
-        reacts: reactsMap[postId] || [],
-        isReact: reactMap[postId] || null,
-      } as unknown as PostResponseDto;
+    if (!canView) {
+      throw new ForbiddenException('POST_NO_PERMISSION');
     }
-    return null as unknown as PostResponseDto;
+
+    const userResponseDto: UserResponseDto = plainToInstance(
+      UserResponseDto,
+      post.userId,
+      {
+        excludeExtraneousValues: true,
+      },
+    );
+    const cleanedUser = omitBy(
+      userResponseDto,
+      isUndefined,
+    ) as UserResponseDto;
+
+    // Lấy danh sách react của từng post thông qua event emitter
+    const [reactsMap] = await this.eventEmitter.emitAsync(
+      AppEvents.REACT_POST_GET,
+      { postIds: [postId], viewerId: userId },
+    );
+    const [reactMap] = await this.eventEmitter.emitAsync(
+      AppEvents.REACT_POST_FIND_BY_USER,
+      { userId: userId, postIds: [postId] },
+    );
+
+    return {
+      ...post.toObject(),
+      userId: cleanedUser,
+      taggedUsers: post.taggedUserIds?.map((u) =>
+        omitBy(
+          plainToInstance(UserResponseDto, u, {
+            excludeExtraneousValues: true,
+          }),
+          isUndefined,
+        ),
+      ),
+      reacts: reactsMap[postId] || [],
+      isReact: reactMap[postId] || null,
+    } as unknown as PostResponseDto;
   }
 
   async getAllPostsByUser(
