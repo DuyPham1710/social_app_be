@@ -119,10 +119,11 @@ export class FriendsController {
     @Req() req: any,
     @Param('friendId') friendId: string,
     @Query('startDate') startDate?: string,
-    @Query('endDate') endDate?: string
+    @Query('endDate') endDate?: string,
+    @Query('language') language?: string
   ) {
     const userId = req.user.userId;
-    return await this.friendsService.getFriendActivitiesSummary(userId, friendId, startDate, endDate);
+    return await this.friendsService.getFriendActivitiesSummary(userId, friendId, startDate, endDate, language);
   }
 }
 

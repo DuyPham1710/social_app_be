@@ -921,7 +921,7 @@ export class FriendsService {
     };
   }
 
-  async getFriendActivitiesSummary(userId: string, targetUserId: string, startDate?: string, endDate?: string) {
+  async getFriendActivitiesSummary(userId: string, targetUserId: string, startDate?: string, endDate?: string, language?: string) {
     if (userId !== targetUserId) {
       const friendship = await this.friendModel.findOne({
         $or: [
@@ -982,7 +982,7 @@ export class FriendsService {
       - Story (${storyCount}): ${storiesText || 'Không có'}
       - Cảm xúc đã thả (${reactCount}): ${reactsText || 'Không có'}`;
 
-    const summary = await this.aiService.summarizeUserActivities(activityData, targetUserName, 'vi');
+    const summary = await this.aiService.summarizeUserActivities(activityData, targetUserName, language || 'vi');
 
     return {
       activities: {

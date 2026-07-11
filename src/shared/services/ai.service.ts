@@ -123,7 +123,7 @@ export class AiService {
 
             console.log("===systemPrompt: ", systemPrompt);
             console.log("===userMessage: ", userMessage);
-
+            console.log("===lang: ", lang);
             const result = await this.generateWithRetry(model, userMessage);
             const summary = result.response.text();
 

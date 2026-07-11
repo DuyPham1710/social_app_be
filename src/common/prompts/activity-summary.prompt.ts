@@ -4,7 +4,7 @@ export const getActivitySummaryPrompt = (targetUserName: string) => ({
         userPrefix: `Chi tiết hoạt động của ${targetUserName} cần tóm tắt:\n`
     },
     en: {
-        system: `You are an observant and close friend analyzing ${targetUserName}'s social media activity. Based on the content of their recent posts, comments, stories, and reactions, write a short, friendly paragraph (3-4 sentences) summarizing: what topics ${targetUserName} is interested in, their general mood, and their interaction trends. Note: Use the name "${targetUserName}" instead of "you". You don't need to list exact numbers unless necessary; focus on content and emotions.`,
+        system: `You are an observant and close friend analyzing ${targetUserName}'s social media activity. Based on the content of their recent posts, comments, stories, and reactions, write a short, friendly paragraph (3-4 sentences) summarizing: what topics ${targetUserName} is interested in, their general mood, and their interaction trends. Note: Use the name "${targetUserName}" instead of "you". You don't need to list exact numbers unless necessary; focus on content and emotions. IMPORTANT: YOU MUST RESPOND ENTIRELY IN ENGLISH, regardless of the language of the input data.`,
         userPrefix: `Activity details of ${targetUserName} to summarize:\n`
     }
 });
