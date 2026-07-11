@@ -1021,7 +1021,7 @@ export class UserService {
             {
                 $unwind: {
                     path: '$reportedUserInfo',
-                    preserveNullAndEmptyArrays: true,
+                    preserveNullAndEmptyArrays: false, // Drop reports for deleted users
                 },
             },
             {
@@ -1057,11 +1057,11 @@ export class UserService {
                         $push: {
                             _id: '$_id',
                             userId: {
-                                _id: '$reporterInfo._id',
-                                fullName: '$reporterInfo.fullName',
-                                username: '$reporterInfo.username',
-                                avatarUrl: '$reporterInfo.avatarUrl',
-                                email: '$reporterInfo.email',
+                                _id: { $ifNull: ['$reporterInfo._id', null] },
+                                fullName: { $ifNull: ['$reporterInfo.fullName', 'Người dùng đã bị xóa'] },
+                                username: { $ifNull: ['$reporterInfo.username', 'deleted_user'] },
+                                avatarUrl: { $ifNull: ['$reporterInfo.avatarUrl', ''] },
+                                email: { $ifNull: ['$reporterInfo.email', ''] },
                             },
                             reason: '$reason',
                             description: '$description',
@@ -1097,6 +1097,20 @@ export class UserService {
         const countPipeline = [
             {
                 $match: matchQuery,
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'reportedUserId',
+                    foreignField: '_id',
+                    as: 'reportedUserInfo',
+                },
+            },
+            {
+                $unwind: {
+                    path: '$reportedUserInfo',
+                    preserveNullAndEmptyArrays: false, // Drop reports for deleted users to match pipeline
+                },
             },
             {
                 $group: {

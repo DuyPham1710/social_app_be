@@ -1783,7 +1783,7 @@ export class PostService {
       {
         $unwind: {
           path: '$postInfo',
-          preserveNullAndEmptyArrays: true,
+          preserveNullAndEmptyArrays: false, // Drop reports for non-existent/deleted posts
         },
       },
       {
@@ -1835,11 +1835,11 @@ export class PostService {
             $push: {
               _id: '$_id',
               userId: {
-                _id: '$reporterInfo._id',
-                fullName: '$reporterInfo.fullName',
-                username: '$reporterInfo.username',
-                avatarUrl: '$reporterInfo.avatarUrl',
-                email: '$reporterInfo.email',
+                _id: { $ifNull: ['$reporterInfo._id', null] },
+                fullName: { $ifNull: ['$reporterInfo.fullName', 'Người dùng đã bị xóa'] },
+                username: { $ifNull: ['$reporterInfo.username', 'deleted_user'] },
+                avatarUrl: { $ifNull: ['$reporterInfo.avatarUrl', ''] },
+                email: { $ifNull: ['$reporterInfo.email', ''] },
               },
               reason: '$reason',
               description: '$description',
@@ -1864,7 +1864,7 @@ export class PostService {
       {
         $lookup: {
           from: 'posturls',
-          let: { urlIds: '$postId.urls' },
+          let: { urlIds: { $ifNull: ['$postId.urls', []] } },
           pipeline: [
             {
               $match: {
@@ -1899,6 +1899,20 @@ export class PostService {
     const countPipeline = [
       {
         $match: matchQuery,
+      },
+      {
+        $lookup: {
+          from: 'posts',
+          localField: 'postId',
+          foreignField: '_id',
+          as: 'postInfo',
+        },
+      },
+      {
+        $unwind: {
+          path: '$postInfo',
+          preserveNullAndEmptyArrays: false, // Drop reports for non-existent/deleted posts to match pipeline
+        },
       },
       {
         $group: {
