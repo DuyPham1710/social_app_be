@@ -94,6 +94,10 @@ export class User {
     @Prop({ type: Boolean, default: false })
     isFaceRegistered: boolean;
 
+    // Notification Settings
+    @Prop({ type: Boolean, default: true })
+    notifyOnFaceDetected: boolean;
+
     // Timestamp when user last went offline (disconnect with no remaining sockets)
     @Prop({ type: Date })
     lastSeenAt?: Date;

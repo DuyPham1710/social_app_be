@@ -91,6 +91,13 @@ export class UserController {
     return { message: 'Search history deleted successfully' };
   }
 
+  @Get('notification-settings')
+  @ApiOperation({ summary: 'Lấy cài đặt thông báo của người dùng' })
+  async getNotificationSettings(@Req() req: any) {
+    const userId = req.user.userId;
+    return this.userService.getNotificationSettings(userId);
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Lấy thông tin người dùng theo ID' })
   getById(@Param('id') id: string): Promise<UserResponseDto> {
@@ -170,6 +177,28 @@ export class UserController {
   @ApiBody({ type: UpdateUserDto })
   updatePersonalInfo(@Body() updateUserDto: UpdateUserDto): Promise<UserResponseDto> {
     return this.userService.update(updateUserDto._id ?? '', updateUserDto);
+  }
+
+
+  @Patch('notification-settings')
+  @ApiOperation({ summary: 'Cập nhật cài đặt thông báo (bật/tắt thông báo nhận diện khuôn mặt)' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        notifyOnFaceDetected: {
+          type: 'boolean',
+          description: 'Bật/tắt thông báo khi AI phát hiện mặt bạn trong ảnh bài viết của người khác',
+        },
+      },
+    },
+  })
+  async updateNotificationSettings(
+    @Req() req: any,
+    @Body() body: { notifyOnFaceDetected?: boolean },
+  ) {
+    const userId = req.user.userId;
+    return this.userService.updateNotificationSettings(userId, body);
   }
 
   @Post('fcm-token')

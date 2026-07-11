@@ -181,6 +181,51 @@ export class UserService {
         );
     }
 
+    async getNotificationSettings(userId: string): Promise<{ notifyOnFaceDetected: boolean }> {
+        if (!Types.ObjectId.isValid(userId)) {
+            throw new HttpException('Invalid userId', HttpStatus.BAD_REQUEST);
+        }
+
+        const user = await this.userModel
+            .findById(userId)
+            .select('notifyOnFaceDetected')
+            .lean()
+            .exec();
+
+        if (!user) {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        }
+
+        return {
+            notifyOnFaceDetected: (user as any).notifyOnFaceDetected !== false, // default true
+        };
+    }
+
+    async updateNotificationSettings(userId: string, settings: { notifyOnFaceDetected?: boolean }): Promise<{ notifyOnFaceDetected: boolean }> {
+        if (!Types.ObjectId.isValid(userId)) {
+            throw new HttpException('Invalid userId', HttpStatus.BAD_REQUEST);
+        }
+
+        const updateData: any = {};
+        if (settings.notifyOnFaceDetected !== undefined) {
+            updateData.notifyOnFaceDetected = settings.notifyOnFaceDetected;
+        }
+
+        const updated = await this.userModel
+            .findByIdAndUpdate(userId, updateData, { new: true })
+            .select('notifyOnFaceDetected')
+            .lean()
+            .exec();
+
+        if (!updated) {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        }
+
+        return {
+            notifyOnFaceDetected: (updated as any).notifyOnFaceDetected !== false,
+        };
+    }
+
     async getFcmToken(userId: string): Promise<string | null> {
         if (!Types.ObjectId.isValid(userId)) {
             return null;
@@ -935,6 +980,16 @@ export class UserService {
             throw new HttpException('User not found', HttpStatus.NOT_FOUND);
         }
         return user;
+    }
+
+    @OnEvent(AppEvents.USER_GET_NOTIFICATION_SETTINGS)
+    async handleGetNotificationSettings({ userId }: { userId: string }) {
+        return this.getNotificationSettings(userId);
+    }
+
+    @OnEvent(AppEvents.USER_UPDATE_NOTIFICATION_SETTINGS)
+    async handleUpdateNotificationSettings({ userId, settings }: { userId: string; settings: { notifyOnFaceDetected?: boolean } }) {
+        return this.updateNotificationSettings(userId, settings);
     }
 
     async reportUser(reportedUserId: string, reporterId: string, reportUserDto: ReportUserDto) {

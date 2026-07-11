@@ -15,6 +15,8 @@ export enum AppEvents {
     USER_GET_BASIC_INFO = 'user.getBasicInfo',
     USER_HARD_DELETE = 'user.hardDelete',
     USER_FIND_BY_GOOGLE_ID = 'user.findByGoogleId',
+    USER_GET_NOTIFICATION_SETTINGS = 'user.getNotificationSettings',
+    USER_UPDATE_NOTIFICATION_SETTINGS = 'user.updateNotificationSettings',
 
     // ===== MAIL =====
     MAIL_SEND = 'mail.send',
