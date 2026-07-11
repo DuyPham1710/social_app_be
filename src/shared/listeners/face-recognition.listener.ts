@@ -111,6 +111,19 @@ export class FaceRecognitionListener {
                 this.logger.log(
                     `Notifying user ${userId} (confidence: ${(confidence * 100).toFixed(1)}%) about post ${payload.postId}`,
                 );
+
+                // Kiểm tra cài đặt thông báo của user trước khi gửi
+                try {
+                    const [settings] = await this.eventEmitter.emitAsync(AppEvents.USER_GET_NOTIFICATION_SETTINGS, { userId });
+                    if (settings && settings.notifyOnFaceDetected === false) {
+                        this.logger.log(`Skipping FACE_DETECTED notification for user ${userId}: notifications disabled`);
+                        continue;
+                    }
+                } catch (err) {
+                    this.logger.warn(`Could not fetch notification settings for user ${userId}: ${err.message}`);
+                    // Nếu không lấy được settings thì vẫn gửi (default = true)
+                }
+
                 this.eventEmitter.emit(AppEvents.FACE_DETECTED_IN_POST, {
                     receiver: userId,
                     sender: payload.posterId,

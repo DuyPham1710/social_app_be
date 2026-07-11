@@ -712,4 +712,26 @@ export class StoryService {
             totalStories,
         };
     }
+
+    @OnEvent(AppEvents.ACTIVITY_STORY_DATA)
+    async handleActivityStoryData(payload: { userId: string; startDate?: Date; endDate?: Date }): Promise<{ title: string | null, music: any, createdAt: Date }[]> {
+        const filter: any = { userId: new Types.ObjectId(payload.userId) };
+        if (payload.startDate || payload.endDate) {
+            filter.createdAt = {};
+            if (payload.startDate) filter.createdAt.$gte = payload.startDate;
+            if (payload.endDate) filter.createdAt.$lte = payload.endDate;
+        }
+        const stories = await this.storyModel
+            .find(filter)
+            .select('title music createdAt')
+            .sort({ createdAt: -1 })
+            .limit(30)
+            .exec();
+        
+        return stories.map(s => ({
+            title: s.title || null,
+            music: s.music || null,
+            createdAt: (s as any).createdAt
+        }));
+    }
 }

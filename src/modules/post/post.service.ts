@@ -1789,7 +1789,7 @@ export class PostService {
       {
         $unwind: {
           path: '$postInfo',
-          preserveNullAndEmptyArrays: true,
+          preserveNullAndEmptyArrays: false, // Drop reports for non-existent/deleted posts
         },
       },
       {
@@ -1841,11 +1841,11 @@ export class PostService {
             $push: {
               _id: '$_id',
               userId: {
-                _id: '$reporterInfo._id',
-                fullName: '$reporterInfo.fullName',
-                username: '$reporterInfo.username',
-                avatarUrl: '$reporterInfo.avatarUrl',
-                email: '$reporterInfo.email',
+                _id: { $ifNull: ['$reporterInfo._id', null] },
+                fullName: { $ifNull: ['$reporterInfo.fullName', 'Người dùng đã bị xóa'] },
+                username: { $ifNull: ['$reporterInfo.username', 'deleted_user'] },
+                avatarUrl: { $ifNull: ['$reporterInfo.avatarUrl', ''] },
+                email: { $ifNull: ['$reporterInfo.email', ''] },
               },
               reason: '$reason',
               description: '$description',
@@ -1870,7 +1870,7 @@ export class PostService {
       {
         $lookup: {
           from: 'posturls',
-          let: { urlIds: '$postId.urls' },
+          let: { urlIds: { $ifNull: ['$postId.urls', []] } },
           pipeline: [
             {
               $match: {
@@ -1905,6 +1905,20 @@ export class PostService {
     const countPipeline = [
       {
         $match: matchQuery,
+      },
+      {
+        $lookup: {
+          from: 'posts',
+          localField: 'postId',
+          foreignField: '_id',
+          as: 'postInfo',
+        },
+      },
+      {
+        $unwind: {
+          path: '$postInfo',
+          preserveNullAndEmptyArrays: false, // Drop reports for non-existent/deleted posts to match pipeline
+        },
       },
       {
         $group: {
@@ -2526,5 +2540,61 @@ export class PostService {
         this.logger.error(`Lỗi khi xóa bài viết ${post._id} của user ${userId} khi rời cộng đồng:`, error);
       }
     }
+  }
+
+  @OnEvent(AppEvents.ADMIN_DASHBOARD_TOP_CREATORS)
+  async handleAdminGetTopCreators() {
+    const topCreators = await this.postModel.aggregate([
+      {
+        $group: {
+          _id: '$userId',
+          postCount: { $sum: 1 }
+        }
+      },
+      {
+        $sort: { postCount: -1 }
+      },
+      {
+        $limit: 5
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'user'
+        }
+      },
+      {
+        $unwind: '$user'
+      },
+      {
+        $project: {
+          _id: 0,
+          postCount: 1,
+          user: {
+            userId: '$user._id',
+            fullName: '$user.fullName',
+            username: '$user.username',
+            email: '$user.email',
+            avatarUrl: '$user.avatarUrl'
+          }
+        }
+      }
+    ]).exec();
+
+    return topCreators;
+  }
+
+  @OnEvent(AppEvents.ACTIVITY_POST_DATA)
+  async handleActivityPostData(payload: { userId: string; startDate?: Date; endDate?: Date }): Promise<{ caption: string, createdAt: Date }[]> {
+    const filter: any = { userId: new Types.ObjectId(payload.userId), isHidden: { $ne: true } };
+    if (payload.startDate || payload.endDate) {
+      filter.createdAt = {};
+      if (payload.startDate) filter.createdAt.$gte = payload.startDate;
+      if (payload.endDate) filter.createdAt.$lte = payload.endDate;
+    }
+    const posts = await this.postModel.find(filter).select('caption createdAt').sort({ createdAt: -1 }).limit(30).exec();
+    return posts.map(p => ({ caption: p.caption, createdAt: (p as any).createdAt }));
   }
 }

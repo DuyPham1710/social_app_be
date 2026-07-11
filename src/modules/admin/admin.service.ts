@@ -498,4 +498,16 @@ export class AdminService {
     const [result] = await this.eventEmitter.emitAsync(AppEvents.REACT_STORY_FIND_BY_STORY, { storyId });
     return result || [];
   }
+
+  async getTopRankings() {
+    const [topSpammers, topCreators] = await Promise.all([
+      this.eventEmitter.emitAsync(AppEvents.ADMIN_DASHBOARD_TOP_SPAMMERS),
+      this.eventEmitter.emitAsync(AppEvents.ADMIN_DASHBOARD_TOP_CREATORS),
+    ]);
+
+    return {
+      topSpammers: topSpammers[0] || [],
+      topCreators: topCreators[0] || [],
+    };
+  }
 }

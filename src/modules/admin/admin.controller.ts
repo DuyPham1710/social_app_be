@@ -381,4 +381,11 @@ export class AdminController {
   ) {
     return this.adminService.getPostsStats(groupBy, days ? Number(days) : 30);
   }
+
+  @Get('dashboard/top-rankings')
+  @Roles(UserRole.ADMIN)
+  @ApiOperation({ summary: 'Lấy danh sách bảng xếp hạng top spammer và top creators' })
+  getTopRankings() {
+    return this.adminService.getTopRankings();
+  }
 }

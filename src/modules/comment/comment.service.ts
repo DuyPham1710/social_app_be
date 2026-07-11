@@ -495,4 +495,27 @@ export class CommentService {
       totalComments,
     };
   }
+
+  @OnEvent(AppEvents.ACTIVITY_COMMENT_DATA)
+  async handleActivityCommentData(payload: { userId: string; startDate?: Date; endDate?: Date }): Promise<{ content: string, postCaption: string | null, createdAt: Date }[]> {
+    const filter: any = { userId: new Types.ObjectId(payload.userId) };
+    if (payload.startDate || payload.endDate) {
+      filter.createdAt = {};
+      if (payload.startDate) filter.createdAt.$gte = payload.startDate;
+      if (payload.endDate) filter.createdAt.$lte = payload.endDate;
+    }
+    const comments = await this.commentModel
+      .find(filter)
+      .select('content postId createdAt')
+      .populate('postId', 'caption')
+      .sort({ createdAt: -1 })
+      .limit(30)
+      .exec();
+    
+    return comments.map(c => ({
+      content: c.content,
+      postCaption: c.postId ? (c.postId as any).caption : null,
+      createdAt: (c as any).createdAt
+    }));
+  }
 }

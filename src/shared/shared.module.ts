@@ -5,7 +5,7 @@ import { ImageModerationService } from './services/image-moderation.service';
 import { TextModerationService } from './services/text-moderation.service';
 import { FaceRecognitionService } from './services/face-recognition.service';
 import { FaceRecognitionListener } from './listeners/face-recognition.listener';
-import { AiService } from './services/summarize-messages.service';
+import { AiService } from './services/ai.service';
 
 @Global()
 @Module({

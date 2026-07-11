@@ -15,6 +15,8 @@ export enum AppEvents {
     USER_GET_BASIC_INFO = 'user.getBasicInfo',
     USER_HARD_DELETE = 'user.hardDelete',
     USER_FIND_BY_GOOGLE_ID = 'user.findByGoogleId',
+    USER_GET_NOTIFICATION_SETTINGS = 'user.getNotificationSettings',
+    USER_UPDATE_NOTIFICATION_SETTINGS = 'user.updateNotificationSettings',
 
     // ===== MAIL =====
     MAIL_SEND = 'mail.send',
@@ -111,6 +113,8 @@ export enum AppEvents {
     
     // Admin Dashboard
     ADMIN_DASHBOARD_STATS = 'admin.dashboard.stats',
+    ADMIN_DASHBOARD_TOP_SPAMMERS = 'admin.dashboard.topSpammers',
+    ADMIN_DASHBOARD_TOP_CREATORS = 'admin.dashboard.topCreators',
     
     // Admin React
     ADMIN_REACT_POST_FIND_BY_USER = 'admin.reactPost.findByUser',
@@ -139,5 +143,11 @@ export enum AppEvents {
     FACE_TAG_SUGGEST = 'face.tagSuggest',
     /** Ghi nhan cap user cung xuat hien trong anh post -> dung cho goi y ket ban */
     FACE_CO_APPEARANCE_RECORD = 'face.coAppearance.record',
+
+    // ===== ACTIVITY SUMMARY =====
+    ACTIVITY_POST_DATA = 'activity.post.data',
+    ACTIVITY_COMMENT_DATA = 'activity.comment.data',
+    ACTIVITY_REACT_POST_DATA = 'activity.reactPost.data',
+    ACTIVITY_STORY_DATA = 'activity.story.data',
 }
 

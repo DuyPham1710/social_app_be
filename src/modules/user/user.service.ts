@@ -181,6 +181,51 @@ export class UserService {
         );
     }
 
+    async getNotificationSettings(userId: string): Promise<{ notifyOnFaceDetected: boolean }> {
+        if (!Types.ObjectId.isValid(userId)) {
+            throw new HttpException('Invalid userId', HttpStatus.BAD_REQUEST);
+        }
+
+        const user = await this.userModel
+            .findById(userId)
+            .select('notifyOnFaceDetected')
+            .lean()
+            .exec();
+
+        if (!user) {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        }
+
+        return {
+            notifyOnFaceDetected: (user as any).notifyOnFaceDetected !== false, // default true
+        };
+    }
+
+    async updateNotificationSettings(userId: string, settings: { notifyOnFaceDetected?: boolean }): Promise<{ notifyOnFaceDetected: boolean }> {
+        if (!Types.ObjectId.isValid(userId)) {
+            throw new HttpException('Invalid userId', HttpStatus.BAD_REQUEST);
+        }
+
+        const updateData: any = {};
+        if (settings.notifyOnFaceDetected !== undefined) {
+            updateData.notifyOnFaceDetected = settings.notifyOnFaceDetected;
+        }
+
+        const updated = await this.userModel
+            .findByIdAndUpdate(userId, updateData, { new: true })
+            .select('notifyOnFaceDetected')
+            .lean()
+            .exec();
+
+        if (!updated) {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        }
+
+        return {
+            notifyOnFaceDetected: (updated as any).notifyOnFaceDetected !== false,
+        };
+    }
+
     async getFcmToken(userId: string): Promise<string | null> {
         if (!Types.ObjectId.isValid(userId)) {
             return null;
@@ -937,6 +982,16 @@ export class UserService {
         return user;
     }
 
+    @OnEvent(AppEvents.USER_GET_NOTIFICATION_SETTINGS)
+    async handleGetNotificationSettings({ userId }: { userId: string }) {
+        return this.getNotificationSettings(userId);
+    }
+
+    @OnEvent(AppEvents.USER_UPDATE_NOTIFICATION_SETTINGS)
+    async handleUpdateNotificationSettings({ userId, settings }: { userId: string; settings: { notifyOnFaceDetected?: boolean } }) {
+        return this.updateNotificationSettings(userId, settings);
+    }
+
     async reportUser(reportedUserId: string, reporterId: string, reportUserDto: ReportUserDto) {
         if (!Types.ObjectId.isValid(reportedUserId)) {
             throw new HttpException('Invalid reportedUserId', HttpStatus.BAD_REQUEST);
@@ -1021,7 +1076,7 @@ export class UserService {
             {
                 $unwind: {
                     path: '$reportedUserInfo',
-                    preserveNullAndEmptyArrays: true,
+                    preserveNullAndEmptyArrays: false, // Drop reports for deleted users
                 },
             },
             {
@@ -1057,11 +1112,11 @@ export class UserService {
                         $push: {
                             _id: '$_id',
                             userId: {
-                                _id: '$reporterInfo._id',
-                                fullName: '$reporterInfo.fullName',
-                                username: '$reporterInfo.username',
-                                avatarUrl: '$reporterInfo.avatarUrl',
-                                email: '$reporterInfo.email',
+                                _id: { $ifNull: ['$reporterInfo._id', null] },
+                                fullName: { $ifNull: ['$reporterInfo.fullName', 'Người dùng đã bị xóa'] },
+                                username: { $ifNull: ['$reporterInfo.username', 'deleted_user'] },
+                                avatarUrl: { $ifNull: ['$reporterInfo.avatarUrl', ''] },
+                                email: { $ifNull: ['$reporterInfo.email', ''] },
                             },
                             reason: '$reason',
                             description: '$description',
@@ -1097,6 +1152,20 @@ export class UserService {
         const countPipeline = [
             {
                 $match: matchQuery,
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'reportedUserId',
+                    foreignField: '_id',
+                    as: 'reportedUserInfo',
+                },
+            },
+            {
+                $unwind: {
+                    path: '$reportedUserInfo',
+                    preserveNullAndEmptyArrays: false, // Drop reports for deleted users to match pipeline
+                },
             },
             {
                 $group: {
@@ -1308,5 +1377,58 @@ export class UserService {
             updatedCount: updateResult.modifiedCount,
             matchedCount: updateResult.matchedCount,
         };
+    }
+
+    @OnEvent(AppEvents.ADMIN_DASHBOARD_TOP_SPAMMERS)
+    async handleAdminGetTopSpammers() {
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+        const topSpammers = await this.userReportModel.aggregate([
+            {
+                $match: {
+                    createdAt: { $gte: oneWeekAgo }
+                }
+            },
+            {
+                $group: {
+                    _id: '$reportedUserId',
+                    reportCount: { $sum: 1 }
+                }
+            },
+            {
+                $sort: { reportCount: -1 }
+            },
+            {
+                $limit: 5
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'user'
+                }
+            },
+            {
+                $unwind: '$user'
+            },
+            {
+                $project: {
+                    _id: 0,
+                    reportCount: 1,
+                    user: {
+                        userId: '$user._id',
+                        fullName: '$user.fullName',
+                        username: '$user.username',
+                        email: '$user.email',
+                        avatarUrl: '$user.avatarUrl',
+                        isBan: '$user.isBan'
+                    }
+                }
+            }
+        ]).exec();
+
+        return topSpammers;
     }
 }
